@@ -1,13 +1,19 @@
-import "../styles/globals.css"
+"use client"
+import { Suspense } from "react";
+import "../styles/globals.css";
+import Loading from "./(components)/(Loading)/loading";
+
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html>
       <head />
-      <body>{children}</body>
+      <Suspense fallback={<Loading />}>
+        <body>{children}</body>
+      </Suspense>
     </html>
-  )
+  );
 }

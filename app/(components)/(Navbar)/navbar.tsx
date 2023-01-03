@@ -1,15 +1,19 @@
+"use client";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [data, setData] = useState<string>();
+  const [data, setData] = useState<string>("");
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("https://my-api.com/endpoint");
+      const response = await fetch("/api/get/company");
       const data = await response.text();
       setData(JSON.parse(data).company);
     };
     fetchData();
   }, []);
+  if (data == null) {
+    
+  }
   return (
     <>
       <div className="navbar bg-base-100">

@@ -1,6 +1,10 @@
+"use client"
+import Navbar from "./(components)/(Navbar)/navbar";
+
 export default function Page() {
   return (
     <>
+      <Navbar></Navbar>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
