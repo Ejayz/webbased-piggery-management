@@ -8,9 +8,7 @@ dotenv.config();
 const jwt_key: any = process.env.JWT_KEY;
 //API Function that only accepts post request
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  bcrypt.genSalt(15).then((salt) => {
-    bcrypt.hash("randomDdos1.com", salt).then(console.log);
-  });
+  bcrypt.genSalt(15).then((salt) => {});
 
   if (req.method !== "POST") {
     res.status(405).json({
@@ -19,14 +17,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     });
     return 0;
   }
-  const { username, password } = req.body;
+  const { username, password, rememberme } = req.body;
   const query = "select * from tbl_user where IS_EXIST='true' and USERNAME=?";
   VerifyUser(username, password, query)
     .then((result: any) => {
-      const expirationDate = new Date();
-      expirationDate.setDate(expirationDate.getDate() + 30);
       const data = result[0];
-      console.log(data);
       bcrypt.compare(password, data.password, (err, result) => {
         if (result) {
           const userInfo = {
@@ -38,20 +33,39 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             phone_number: data.phone_number,
             job: data.job,
           };
+          const expirationDate = new Date();
           const token = jwt.sign(userInfo, jwt_key);
-          res.setHeader(
-            "Set-Cookie",
-            `myCookie=value; expires=${expirationDate.toUTCString()}`
-          );
+          if (rememberme) {
+            expirationDate.setDate(expirationDate.getDate() + 30);
+            res.setHeader(
+              "Set-Cookie",
+              `auth=${token}; expires=${expirationDate.toUTCString()}`
+            );
+          } else {
+            expirationDate.setDate(expirationDate.getDate() + 1);
+            res.setHeader(
+              "Set-Cookie",
+              `auth=${token}; expires=${expirationDate.toUTCString()}`
+            );
+          }
           res.status(200).json({
             code: "200",
             message: `Welcome back ${data.username} .`,
+          });
+        } else {
+          res.status(200).json({
+            code: 401,
+            message:
+              "Username/Password do not match from our system. Please try again!",
           });
         }
       });
     })
     .catch((e) => {
-      console.log(e.message);
+      res.status(500).json({
+        code: 500,
+        message: `Internal server error:${e.code}`,
+      });
     });
 }
 

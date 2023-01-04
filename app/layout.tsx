@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
 import "../styles/globals.css";
-import Page from "./page";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({
   children,
@@ -10,9 +11,24 @@ export default function RootLayout({
 }) {
   const [theme, setTheme] = useState();
   return (
-    <html data-theme={theme}>
+    <html className="overflow-hidden">
       <head />
-      <body>{children}</body>
+
+      <body>
+        {children}{" "}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </body>
     </html>
   );
 }

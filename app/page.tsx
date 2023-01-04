@@ -1,19 +1,22 @@
 "use client";
-
-import { verify } from "crypto";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Navbar from "./(components)/(Navbar)/navbar";
 import getCompany from "./(components)/getCompany";
+import Image from "next/image";
 
 export default function Page({ information }: any) {
   //Prep Navigation Bar
   const loading = getCompany();
   //Create states for username password and remember me
-  const [username, setUsername] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [remember_me, setRemember] = useState<boolean>(false);
   const [requesting, isRequesting] = useState<boolean>(false);
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   //Request to verify user
   const VerifyUser = async () => {
@@ -40,7 +43,12 @@ export default function Page({ information }: any) {
     if (response.ok) {
       isRequesting(false);
     }
-    console.log(data);
+    const parsed = JSON.parse(data);
+
+    if (parsed.code == 200) {
+      toast.success(parsed.message);
+      console.log(router.push("/dashboard"));
+    }
   };
 
   //Load company name in navigation bar
@@ -83,13 +91,21 @@ export default function Page({ information }: any) {
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
-                <input
-                  value={password}
-                  type="password"
-                  placeholder="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input input-bordered"
-                />
+                <div className="input-group">
+                  <input
+                    value={password}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input input-bordered w-full"
+                  />
+                  <button
+                    className={`btn btn-square flex  ${
+                      showPassword ? "eyes" : "eyes-slash"
+                    }`}
+                    onClick={() => setShowPassword(!showPassword)}
+                  ></button>
+                </div>
                 <div
                   className="form-control tooltip"
                   data-tip="You will not be logged out for 30 days."
@@ -100,7 +116,9 @@ export default function Page({ information }: any) {
                       checked={remember_me}
                       type="checkbox"
                       value="false"
-                      onChange={(e) => setRemember(e.target.checked)}
+                      onChange={(e) => {
+                        setRemember(e.target.checked);
+                      }}
                       className="checkbox checkbox-primary"
                     />
                   </label>
