@@ -1,5 +1,8 @@
-"use client"
+"use client";
+
+import { lazy } from "react";
 import Navbar from "./(components)/(Navbar)/navbar";
+
 
 export default function Page() {
   return (
