@@ -33,27 +33,22 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             phone_number: data.phone_number,
             job: data.job,
           };
-          const expirationDate = new Date();
           const token = jwt.sign(userInfo, jwt_key);
           if (rememberme) {
-            expirationDate.setDate(expirationDate.getDate() + 30);
             res.setHeader(
               "Set-Cookie",
-              `auth=${token}; expires=${expirationDate.toUTCString()}`
+              `auth=${token}; path=/; max-age=2592000;"`
             );
           } else {
-            expirationDate.setDate(expirationDate.getDate() + 1);
-            res.setHeader(
-              "Set-Cookie",
-              `auth=${token}; expires=${expirationDate.toUTCString()}`
-            );
+            res.setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`);
           }
+          console.log(res.getHeader("Set-Cookie"));
           res.status(200).json({
             code: "200",
             message: `Welcome back ${data.username} .`,
           });
         } else {
-          res.status(200).json({
+          res.status(401).json({
             code: 401,
             message:
               "Username/Password do not match from our system. Please try again!",
