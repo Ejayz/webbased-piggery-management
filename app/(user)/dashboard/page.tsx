@@ -1,2 +1,4 @@
 "use client";
-export default function Page() {}
+export default function Page() {
+  return <>Hello</>;
+}
