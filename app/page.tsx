@@ -1,5 +1,6 @@
 "use client";
 
+import { verify } from "crypto";
 import Link from "next/link";
 import { lazy, useEffect, useState } from "react";
 import Navbar from "./(components)/(Navbar)/navbar";
@@ -12,7 +13,35 @@ export default function Page({ information }: any) {
   const [username, setUsername] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [remember_me, setRemember] = useState<boolean>(false);
-  const [requesting, isRequesting] = useState<boolean>();
+  const [requesting, isRequesting] = useState<boolean>(false);
+
+  //Request to verify user
+  const VerifyUser = async () => {
+    isRequesting(true);
+    let headersList = {
+      Accept: "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json",
+    };
+
+    let bodyContent = JSON.stringify({
+      username: username,
+      password: password,
+      remember_me: remember_me,
+    });
+
+    let response = await fetch("http://localhost:3000/api/post/login", {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    });
+
+    let data = await response.text();
+    if (response.ok) {
+      isRequesting(false);
+    }
+    console.log(data);
+  };
 
   //Load company name in navigation bar
   if (loading.loading) {
@@ -29,8 +58,6 @@ export default function Page({ information }: any) {
               Piggery management with seemlessly easy to use piggery management
               system
             </p>
-          </div>
-          <div className="text-center lg:text-left">
             <h1 className="text-5xl font-bold">No account? </h1>
             <p className="py-6">
               Contact server administrator for your account!
@@ -43,6 +70,7 @@ export default function Page({ information }: any) {
                   <span className="label-text">Username</span>
                 </label>
                 <input
+                  value={username}
                   onChange={(e) => {
                     setUsername(e.target.value);
                   }}
@@ -56,7 +84,8 @@ export default function Page({ information }: any) {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  type="text"
+                  value={password}
+                  type="password"
                   placeholder="password"
                   onChange={(e) => setPassword(e.target.value)}
                   className="input input-bordered"
@@ -68,6 +97,7 @@ export default function Page({ information }: any) {
                   <label className="label cursor-pointer">
                     <span className="label-text">Remember me</span>
                     <input
+                      checked={remember_me}
                       type="checkbox"
                       value="false"
                       onChange={(e) => setRemember(e.target.checked)}
@@ -83,8 +113,10 @@ export default function Page({ information }: any) {
               </div>
               <div className="form-control mt-6 ">
                 <button
+                  type="submit"
                   disabled={requesting}
-                  className={`btn btn-primary  ${requesting ? "" : "loading"}`}
+                  className={`btn btn-primary  ${requesting ? "loading" : ""}`}
+                  onClick={VerifyUser}
                 >
                   Login
                 </button>

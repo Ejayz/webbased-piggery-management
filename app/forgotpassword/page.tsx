@@ -8,11 +8,8 @@ export default function Page() {
   const loading = getCompany();
   useState();
 
-
   useEffect(() => {
-    const fetchData = async () => {
-     
-    };
+    const fetchData = async () => {};
     fetchData();
   });
 
@@ -25,7 +22,7 @@ export default function Page() {
     <>
       <Navbar company={loading.data}></Navbar>
       <div className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-col lg:flex-row-reverse">
+        <div className="hero-content flex-row lg:flex-row-reverse">
           <div className="text-center lg:text-left">
             <h1 className="text-5xl font-bold">Forgot Password?</h1>
             <p className="py-6">
