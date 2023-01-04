@@ -1,15 +1,18 @@
 import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 async function send_sms(phone: any, username: any) {
   let headersList = {};
-
+  const device_api: any = process.env.DEVICE_API;
+  const sms_api: any = process.env.API_KEY_SMS;
   let bodyContent = new FormData();
-  bodyContent.append("secret", "6328b02e2407a3c8949d32712a216c3a86019baf");
+  bodyContent.append("secret", sms_api);
   bodyContent.append("type", "sms");
   bodyContent.append("phone", `+63${phone}`);
   bodyContent.append("mode", "devices");
-  bodyContent.append("device", "00000000-0000-0000-f9a3-3157ce0939bd");
+  bodyContent.append("device", device_api);
   bodyContent.append("sim", "1");
   bodyContent.append(
     "message",
