@@ -1,17 +1,12 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Navbar from "../(components)/(Navbar)/navbar";
-import getCompany from "../(components)/getCompany";
+import Navbar from "../../(components)/(Navbar)/navbar";
+import getCompany from "../../(components)/getCompany";
 
 export default function Page() {
   const loading = getCompany();
-  useState();
-
-  useEffect(() => {
-    const fetchData = async () => {};
-    fetchData();
-  });
 
   //Load loading UI
   if (loading.loading) {
@@ -20,7 +15,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar company={loading.data}></Navbar>
+      <Navbar loads={loading.data}></Navbar>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-row lg:flex-row-reverse">
           <div className="text-center lg:text-left">
@@ -58,9 +53,13 @@ export default function Page() {
                   />
                 </label>
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
-                    Forgot password?
-                  </a>
+                  <Link
+                    href="#"
+                    as={"/"}
+                    className="label-text-alt link link-hover"
+                  >
+                    Remembered your password? Login.
+                  </Link>
                 </label>
               </div>
               <div className="form-control mt-6">

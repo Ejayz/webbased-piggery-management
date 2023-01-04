@@ -3,8 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Navbar from "./(components)/(Navbar)/navbar";
-import getCompany from "./(components)/getCompany";
+import Navbar from "../(components)/(Navbar)/navbar";
+import getCompany from "../(components)/getCompany";
 import Image from "next/image";
 
 export default function Page({ information }: any) {

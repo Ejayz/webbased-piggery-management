@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-import "../styles/globals.css";
+import "../../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({
@@ -9,7 +8,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [theme, setTheme] = useState();
   return (
     <html className="overflow-hidden">
       <body>
