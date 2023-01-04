@@ -8,14 +8,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-
+  const [theme, setTheme] = useState();
   return (
-    <html>
+    <html data-theme={theme}>
       <head />
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

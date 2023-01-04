@@ -6,8 +6,15 @@ import Navbar from "./(components)/(Navbar)/navbar";
 import getCompany from "./(components)/getCompany";
 
 export default function Page({ information }: any) {
+  //Prep Navigation Bar
   const loading = getCompany();
+  //Create states for username password and remember me
+  const [username, setUsername] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [remember_me, setRemember] = useState<boolean>(false);
+  const [requesting, isRequesting] = useState<boolean>();
 
+  //Load company name in navigation bar
   if (loading.loading) {
     return loading.loads;
   }
@@ -33,11 +40,14 @@ export default function Page({ information }: any) {
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Email</span>
+                  <span className="label-text">Username</span>
                 </label>
                 <input
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                  }}
                   type="text"
-                  placeholder="email"
+                  placeholder="username"
                   className="input input-bordered"
                 />
               </div>
@@ -48,16 +58,36 @@ export default function Page({ information }: any) {
                 <input
                   type="text"
                   placeholder="password"
+                  onChange={(e) => setPassword(e.target.value)}
                   className="input input-bordered"
                 />
+                <div
+                  className="form-control tooltip"
+                  data-tip="You will not be logged out for 30 days."
+                >
+                  <label className="label cursor-pointer">
+                    <span className="label-text">Remember me</span>
+                    <input
+                      type="checkbox"
+                      value="false"
+                      onChange={(e) => setRemember(e.target.checked)}
+                      className="checkbox checkbox-primary"
+                    />
+                  </label>
+                </div>
                 <label className="label">
                   <Link href="#" as={"/forgotpassword"}>
                     Forgot password?
                   </Link>
                 </label>
               </div>
-              <div className="form-control mt-6">
-                <button className="btn btn-primary">Login</button>
+              <div className="form-control mt-6 ">
+                <button
+                  disabled={requesting}
+                  className={`btn btn-primary  ${requesting ? "" : "loading"}`}
+                >
+                  Login
+                </button>
               </div>
             </div>
           </div>
