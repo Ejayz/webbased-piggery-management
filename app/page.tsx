@@ -100,8 +100,9 @@ export default function Page({ information }: any) {
                     className="input input-bordered w-full"
                   />
                   <button
-                    className={`btn btn-square flex  ${
-                      showPassword ? "eyes" : "eyes-slash"
+                    data-tip={showPassword?"Hide password":"Show password"}
+                    className={`btn tooltip btn-square flex  ${
+                      showPassword ? "eyes-slash" : "eyes"
                     }`}
                     onClick={() => setShowPassword(!showPassword)}
                   ></button>
