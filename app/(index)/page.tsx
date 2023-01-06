@@ -6,10 +6,6 @@ import { toast } from "react-toastify";
 import Navbar from "../(components)/(Navbar)/navbar";
 import getCompany from "../(components)/getCompany";
 import Image from "next/image";
-import * as dotenv from "dotenv";
-dotenv.config();
-
-
 
 export default function Page() {
   //Prep Navigation Bar
@@ -21,9 +17,15 @@ export default function Page() {
   const [requesting, isRequesting] = useState<boolean>(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [base_url, setBaseUrl] = useState<string>();
   const error = useSearchParams().get("error");
-  const base_url = process.env.SITE_BASE;
-  
+  useEffect(() => {
+    async function getBaseURL() {
+      setBaseUrl(location.origin);
+    }
+    getBaseURL();
+  });
+
   //Request to verify user
 
   async function getError() {
