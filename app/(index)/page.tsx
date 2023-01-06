@@ -6,6 +6,10 @@ import { toast } from "react-toastify";
 import Navbar from "../(components)/(Navbar)/navbar";
 import getCompany from "../(components)/getCompany";
 import Image from "next/image";
+import * as dotenv from "dotenv";
+dotenv.config();
+
+
 
 export default function Page() {
   //Prep Navigation Bar
@@ -18,6 +22,7 @@ export default function Page() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const error = useSearchParams().get("error");
+  const base_url = process.env.SITE_BASE;
   //Request to verify user
 
   async function getError() {
@@ -44,7 +49,7 @@ export default function Page() {
       remember_me: remember_me,
     });
 
-    let response = await fetch("http://localhost:3000/api/post/login", {
+    let response = await fetch(`${base_url}login`, {
       method: "POST",
       body: bodyContent,
       headers: headersList,
