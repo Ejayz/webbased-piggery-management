@@ -18,7 +18,7 @@ export default function Page() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [base_url, setBaseUrl] = useState<string>();
-  const error = useSearchParams().get("error");
+ 
   useEffect(() => {
     async function getBaseURL() {
       setBaseUrl(location.origin);
@@ -26,13 +26,8 @@ export default function Page() {
     getBaseURL();
   });
 
-  //Request to verify user
 
-  async function getError() {
-    if (error == "401") {
-      toast.error("Login first to access dashboard.");
-    }
-  }
+
 
   const VerifyUser = async () => {
     if (username == "" || password == "") {
@@ -77,7 +72,7 @@ export default function Page() {
   if (loading.loading) {
     return loading.loads;
   }
-  getError();
+
   return (
     <>
       <Navbar loads={loading.data}></Navbar>
