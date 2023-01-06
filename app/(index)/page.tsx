@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Navbar from "../(components)/(Navbar)/navbar";
@@ -17,8 +17,15 @@ export default function Page() {
   const [requesting, isRequesting] = useState<boolean>(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  const error = useSearchParams().get("error");
   //Request to verify user
+
+  async function getError() {
+    if (error == "401") {
+      toast.error("Login first to access dashboard.");
+    }
+  }
+
   const VerifyUser = async () => {
     if (username == "" || password == "") {
       toast.error("Username/Password is required");
@@ -51,7 +58,10 @@ export default function Page() {
 
     if (parsed.code == 200) {
       toast.success(parsed.message);
-      console.log(router.push("/dashboard"));
+      router.push("/dashboard");
+    } else {
+      isRequesting(false);
+      toast.error(parsed.message);
     }
   };
 
@@ -59,6 +69,7 @@ export default function Page() {
   if (loading.loading) {
     return loading.loads;
   }
+  getError();
   return (
     <>
       <Navbar loads={loading.data}></Navbar>

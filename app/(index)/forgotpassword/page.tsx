@@ -31,25 +31,25 @@ export default function Page() {
                 <label className="label">
                   <span className="label-text">Your Username</span>
                 </label>
-                <label className="input-group">
-                  <span>Username</span>
+                <label className="input-group text-center">
+                  <span className="w-1/4 px-2  mx-auto">Username</span>
                   <input
                     type="text"
                     placeholder="ex.Juan_123"
-                    className="input input-bordered"
+                    className="input input-bordered w-3/4"
                   />
                 </label>
               </div>
-              <div className="form-control">
+              <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">Phone Number</span>
                 </label>
                 <label className="input-group">
-                  <span> (+63)</span>
+                  <span className="w-1/4"> (+63)</span>
                   <input
                     type="text"
                     placeholder="ex.9123456789"
-                    className="input input-bordered"
+                    className="input input-bordered w-3/4"
                   />
                 </label>
                 <label className="label">
@@ -63,7 +63,7 @@ export default function Page() {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary loading"></button>
+                <button className="btn btn-primary">Reset Password</button>
               </div>
             </div>
           </div>

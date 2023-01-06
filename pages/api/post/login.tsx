@@ -19,42 +19,54 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username, password, rememberme } = req.body;
   VerifyUser(username)
     .then((result: any) => {
-      const data = result.piggery_tbl_users[0];
-      console.log(data);
-      bcrypt.compare(password, data.password, (err, result) => {
-        if (result) {
-          const userInfo = {
-            user_id: data.user_id,
-            user_name: data.username,
-            first_name: data.first_name,
-            middle_name: data.middle_name,
-            last_name: data.last_name,
-            phone_number: data.phone_number,
-            job: data.job,
-          };
-          const token = jwt.sign(userInfo, jwt_key);
-          if (rememberme) {
-            res.setHeader(
-              "Set-Cookie",
-              `auth=${token}; path=/; max-age=2592000;"`
-            );
+      console.log(result.piggery_tbl_users.length);
+      if (result.piggery_tbl_users.length !== 0) {
+        const data = result.piggery_tbl_users[0];
+        bcrypt.compare(password, data.password, (err, result) => {
+          if (result) {
+            const userInfo = {
+              user_id: data.user_id,
+              user_name: data.username,
+              first_name: data.first_name,
+              middle_name: data.middle_name,
+              last_name: data.last_name,
+              phone_number: data.phone_number,
+              job: data.job,
+            };
+            const token = jwt.sign(userInfo, jwt_key);
+            if (rememberme) {
+              res.setHeader(
+                "Set-Cookie",
+                `auth=${token}; path=/; max-age=2592000;"`
+              );
+            } else {
+              res.setHeader(
+                "Set-Cookie",
+                `auth=${token};path=/; max-age=86400;`
+              );
+            }
+            res.status(200).json({
+              code: "200",
+              message: `Welcome back ${data.username} .`,
+            });
           } else {
-            res.setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`);
+            res.status(401).json({
+              code: 401,
+              message:
+                "Username/Password do not match from our system. Please try again!",
+            });
           }
-          res.status(200).json({
-            code: "200",
-            message: `Welcome back ${data.username} .`,
-          });
-        } else {
-          res.status(401).json({
-            code: 401,
-            message:
-              "Username/Password do not match from our system. Please try again!",
-          });
-        }
-      });
+        });
+      } else {
+        res.status(401).json({
+          code: 401,
+          message:
+            "Username/Password do not match from our system. Please try again!",
+        });
+      }
     })
     .catch((e) => {
+      console.log(e);
       res.status(500).json({
         code: 500,
         message: `Internal server error:${e.code}`,
