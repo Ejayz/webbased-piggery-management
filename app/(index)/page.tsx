@@ -23,6 +23,7 @@ export default function Page() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const error = useSearchParams().get("error");
   const base_url = process.env.SITE_BASE;
+  
   //Request to verify user
 
   async function getError() {
