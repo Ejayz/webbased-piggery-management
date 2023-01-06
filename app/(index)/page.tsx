@@ -7,7 +7,7 @@ import Navbar from "../(components)/(Navbar)/navbar";
 import getCompany from "../(components)/getCompany";
 import Image from "next/image";
 
-export default function Page({ information }: any) {
+export default function Page() {
   //Prep Navigation Bar
   const loading = getCompany();
   //Create states for username password and remember me
@@ -20,6 +20,10 @@ export default function Page({ information }: any) {
 
   //Request to verify user
   const VerifyUser = async () => {
+    if (username == "" || password == "") {
+      toast.error("Username/Password is required");
+      return;
+    }
     isRequesting(true);
     let headersList = {
       Accept: "*/*",
@@ -100,7 +104,7 @@ export default function Page({ information }: any) {
                     className="input input-bordered w-full"
                   />
                   <button
-                    data-tip={showPassword?"Hide password":"Show password"}
+                    data-tip={showPassword ? "Hide password" : "Show password"}
                     className={`btn tooltip btn-square flex  ${
                       showPassword ? "eyes-slash" : "eyes"
                     }`}

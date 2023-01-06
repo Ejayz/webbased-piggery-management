@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
-import connection from "../mysql";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 dotenv.config();
-const secret: any = process.env.HASURA_SECRET;
+
+const secret: any = process.env.HASURA_KEY;
 const jwt_key: any = process.env.JWT_KEY;
+const hasura_base: any = process.env.HASURA_BASE_API;
 //API Function that only accepts post request
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -18,8 +19,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username, password, rememberme } = req.body;
   VerifyUser(username)
     .then((result: any) => {
-      console.log(result);
-      const data = result[0];
+      const data = result.piggery_tbl_users[0];
+      console.log(data);
       bcrypt.compare(password, data.password, (err, result) => {
         if (result) {
           const userInfo = {
@@ -40,7 +41,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           } else {
             res.setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`);
           }
-          console.log(res.getHeader("Set-Cookie"));
           res.status(200).json({
             code: "200",
             message: `Welcome back ${data.username} .`,
@@ -67,7 +67,6 @@ async function VerifyUser(username: string) {
   console.log(secret);
   let headersList: Record<string, string> = {
     Accept: "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
     "x-hasura-admin-secret": secret,
     "Content-Type": "application/json",
   };
@@ -76,7 +75,7 @@ async function VerifyUser(username: string) {
     username: username,
   });
 
-  let response = await fetch("http://localhost:8080/api/rest/login", {
+  let response = await fetch(`${hasura_base}login`, {
     method: "POST",
     body: bodyContent,
     headers: headersList,
