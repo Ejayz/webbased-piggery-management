@@ -52,7 +52,7 @@ export default function Page() {
       remember_me: remember_me,
     });
 
-    let response = await fetch(`${base_url}/login`, {
+    let response = await fetch(`${base_url}/api/post/login`, {
       method: "POST",
       body: bodyContent,
       headers: headersList,
