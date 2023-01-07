@@ -17,49 +17,26 @@ export default function Page() {
     <>
       <Navbar loads={loading.data}></Navbar>
       <div className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-row lg:flex-row-reverse">
+        <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl font-bold">Forgot Password?</h1>
-            <p className="py-6">
-              Reset your password by providing your username and phone number to
-              recieve OTP.
-            </p>
+            <h1 className="text-3xl font-bold">Forgot password</h1>
+            <p className="py-6">Enter your username and phone number to recieve OTP</p>
           </div>
           <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Your Username</span>
+                  <span className="label-text">Username</span>
                 </label>
-                <label className="input-group text-center">
-                  <span className="w-1/4 px-2  mx-auto">Username</span>
-                  <input
-                    type="text"
-                    placeholder="ex.Juan_123"
-                    className="input input-bordered w-3/4"
-                  />
-                </label>
+                <input type="text" placeholder="username" className="input input-bordered" />
               </div>
-              <div className="form-control w-full">
+              <div className="form-control">
                 <label className="label">
                   <span className="label-text">Phone Number</span>
                 </label>
-                <label className="input-group">
-                  <span className="w-1/4"> (+63)</span>
-                  <input
-                    type="text"
-                    placeholder="ex.9123456789"
-                    className="input input-bordered w-3/4"
-                  />
-                </label>
+                <input type="text" placeholder="(+63)9123456789" className="input input-bordered" />
                 <label className="label">
-                  <Link
-                    href="#"
-                    as={"/"}
-                    className="label-text-alt link link-hover"
-                  >
-                    Remembered your password? Login.
-                  </Link>
+                  <Link href="#" as="/" className="label-text-alt link link-hover">Remembered your password? Login</Link>
                 </label>
               </div>
               <div className="form-control mt-6">

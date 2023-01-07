@@ -61,16 +61,15 @@ export default function User({ children }: { children: React.ReactNode }) {
           <div className="flex flex-row h-full">
             {/* Menu */}
             <div
-              className={`drawer-side ${
-                toggleMenu ? "hidden" : "block "
-              } h-full`}
+              className={`drawer-side ${toggleMenu ? "hidden" : "block "
+                } h-full`}
             >
               <div className={`drawer-mobile   h-full`}>
                 <div className="drawer">
                   <input
                     id="my-drawer"
                     type="checkbox"
-                    className="drawer-toggle"
+                    className="drawer-toggle hidden"
                   />
                   <div className={`drawer-content  h-full`}></div>
                   <div className={`drawer-side h-full`}>
@@ -142,7 +141,7 @@ export default function User({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             {/* Contents  */}
-            <div className="h-screen w-auto">{children} </div>
+            <div className="h-full overflow-x-auto w-full">{children} </div>
           </div>
         </ErrorBoundary>
         <ToastContainer
