@@ -79,7 +79,7 @@ export default function Page() {
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl font-bold">Login now!</h1>
+            <h1 className="text-5xl font-bold">Hello bill</h1>
             <p className="py-6">
               Piggery management with seemlessly easy to use piggery management
               system
