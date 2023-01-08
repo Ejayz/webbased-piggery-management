@@ -1,95 +1,65 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import Navbar from "../../(components)/(Navbar)/navbar";
-import getCompany from "../../(components)/getCompany";
-
+"use client";
+import { useState } from "react";
+import Layout2 from "../../(components)/(forgotpassword)/(otp_form)/otp_form";
+import Layout3 from "../../(components)/(forgotpassword)/(otp_form)/change_password";
+import Layout1 from "../../(components)/(forgotpassword)/(otp_form)/verify_number";
 export default function Page() {
-  const [username, setUsername] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-
-  async function getOTP() {
-    if (username == "" || phone == "") {
-      toast.error("Username/Phone number should not be empty");
-    }
-    if (!phone.includes("+63")) {
-      toast.error("Phone number is invalid. It should start at (+63)");
-    } else {
-      let headersList = {
-        Accept: "*/*",
-        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-        "Content-Type": "application/json",
-      };
-
-      let bodyContent = JSON.stringify({
-        username: username,
-        phone: phone,
-      });
-
-      let response = await fetch("http://localhost:3000/api/post/sms", {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      });
-      let data = await response.text();
-      console.log(data);
-    }
+  const [data, setData] = useState<number>(1);
+  const [otp, setOtp] = useState<string>("");
+  const [isLastStep, setIsLastStep] = useState<boolean>(false);
+  if (data == 3) {
+    setIsLastStep(true);
   }
-
   return (
     <>
-      <div className="hero min-h-screen bg-base-200">
-        <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="text-center lg:text-left">
-            <h1 className="text-3xl font-bold">Forgot password</h1>
-            <p className="py-6">
-              Enter your username and phone number to recieve OTP
-            </p>
-          </div>
-          <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-            <div className="card-body">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Username</span>
-                </label>
-                <input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  type="text"
-                  placeholder="username"
-                  className="input input-bordered"
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Phone Number</span>
-                </label>
-                <input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  type="text"
-                  placeholder="(+63)9123456789"
-                  className="input input-bordered"
-                />
-                <label className="label">
-                  <Link
-                    href="#"
-                    as="/"
-                    className="label-text-alt link link-hover"
-                  >
-                    Remembered your password? Login
-                  </Link>
-                </label>
-              </div>
-              <div className="form-control mt-6">
-                <button onClick={getOTP} className="btn btn-primary">
-                  Reset Password
-                </button>
-              </div>
-            </div>
-          </div>
+      <div className={"bg-base-200 flex flex-col"}>
+        <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
+          <li
+            onClick={() => {
+              if (data >= 1 || isLastStep) {
+                setData(1);
+              }
+            }}
+            className={`step ${data >= 1 ? "step-primary" : ""}`}
+          >
+            Verify
+          </li>
+          <li
+            onClick={() => {
+              if (data >= 2 || isLastStep) {
+                setData(2);
+              }
+            }}
+            className={`step ${data >= 2 ? "step-primary" : ""}`}
+          >
+            One Time Password
+          </li>
+          <li
+            onClick={() => {
+              if (data >= 3 || isLastStep) {
+                setData(3);
+              }
+            }}
+            className={`step ${data >= 3 ? "step-primary" : ""}`}
+          >
+            Reset Password
+          </li>
+        </ul>
+        <div className={`h-full w-full ${data == 1 ? "block" : "hidden"}`}>
+          <Layout1
+            setText={data}
+            setData={setData}
+            setOTP={otp}
+            setOTPData={setOtp}
+          ></Layout1>
+        </div>
+        <div className={`w-full h-full ${data == 2 ? "block" : "hidden"}`}>
+          <Layout2 setText={data} setState={setData} setOTP={otp}></Layout2>
+        </div>
+
+        <div className={`w-full h-full ${data == 1 ? "hidden" : "hidden"}`}>
+          <Layout3 setText={data} setState={setData}></Layout3>
         </div>
       </div>
     </>
