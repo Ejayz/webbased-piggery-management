@@ -5,7 +5,12 @@ dotenv.config();
 const secret: any = process.env.HASURA_KEY;
 
 async function send_sms(phone: any, username: any) {
+  console.log("sending otp-" + new Date());
   let sms = {};
+  if (phone.includes("+63")) {
+    phone = phone.replace("+63", "0");
+  }
+  console.log(phone);
   const device_api: any = process.env.DEVICE_API;
   const sms_api: any = process.env.API_KEY_SMS;
   let bodyContent = new FormData();
@@ -27,14 +32,18 @@ async function send_sms(phone: any, username: any) {
   });
 
   if (!responses.ok) {
+    console.log(
+      "request sent but something went wront-" + responses + new Date()
+    );
     return responses.text;
   }
   let data = await responses.text();
-
+  console.log("opt sent-" + new Date());
   return JSON.parse(data);
 }
 
 async function VerifySms(username: string, phone: string) {
+  console.log("Validating username and email-" + new Date());
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -54,11 +63,14 @@ async function VerifySms(username: string, phone: string) {
   });
 
   let data = await response.text();
-  console.log(data);
+  console.log("Username and Phone number validated -" + new Date());
   return JSON.parse(data);
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { phone, username } = req.body;
 
   VerifySms(username, phone)
@@ -68,14 +80,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         if (data[0].is_exist) {
           send_sms(phone, username)
             .then((data) => {
-              console.log(data);
               if (data.status == 200) {
                 res.status(200).json({
                   code: 200,
                   message: "OTP sent successfully",
                   OTP: data.data.otp,
                 });
+                return 0;
               } else {
+                console.log(data);
                 res.status(500).json({ code: 500, message: "Server error" });
                 return 0;
               }
@@ -84,6 +97,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
               res
                 .status(500)
                 .json({ code: 500, message: `Server Error:${e.code}` });
+              return 0;
             });
           return 0;
         } else {

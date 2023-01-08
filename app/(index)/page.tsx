@@ -8,8 +8,6 @@ import getCompany from "../(components)/getCompany";
 import Image from "next/image";
 
 export default function Page() {
-  //Prep Navigation Bar
-  const loading = getCompany();
   //Create states for username password and remember me
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -65,14 +63,8 @@ export default function Page() {
     }
   };
 
-  //Load company name in navigation bar
-  if (loading.loading) {
-    return loading.loads;
-  }
-
   return (
     <>
-      <Navbar loads={loading.data}></Navbar>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">

@@ -2,26 +2,44 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Navbar from "../../(components)/(Navbar)/navbar";
 import getCompany from "../../(components)/getCompany";
 
 export default function Page() {
-  const loading = getCompany();
-  const [username, setUsername] = useState<string>();
-  const [phone, setPhone] = useState<string>();
+  const [username, setUsername] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
 
   async function getOTP() {
-    
-  }
+    if (username == "" || phone == "") {
+      toast.error("Username/Phone number should not be empty");
+    }
+    if (!phone.includes("+63")) {
+      toast.error("Phone number is invalid. It should start at (+63)");
+    } else {
+      let headersList = {
+        Accept: "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        "Content-Type": "application/json",
+      };
 
-  //Load loading UI
-  if (loading.loading) {
-    return loading.loads;
+      let bodyContent = JSON.stringify({
+        username: username,
+        phone: phone,
+      });
+
+      let response = await fetch("http://localhost:3000/api/post/sms", {
+        method: "POST",
+        body: bodyContent,
+        headers: headersList,
+      });
+      let data = await response.text();
+      console.log(data);
+    }
   }
 
   return (
     <>
-      <Navbar loads={loading.data}></Navbar>
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
