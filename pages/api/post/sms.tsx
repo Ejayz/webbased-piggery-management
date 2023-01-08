@@ -2,9 +2,10 @@ import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
 dotenv.config();
+const secret: any = process.env.HASURA_KEY;
 
 async function send_sms(phone: any, username: any) {
-  let headersList = {};
+  let sms = {};
   const device_api: any = process.env.DEVICE_API;
   const sms_api: any = process.env.API_KEY_SMS;
   let bodyContent = new FormData();
@@ -19,36 +20,93 @@ async function send_sms(phone: any, username: any) {
     `Hi ${username} , You requested change password operation . Enter this otp to proceed OTP:{{otp}}`
   );
 
-  let response = await fetch("https://smsgatewaydevices.com/api/send/otp", {
+  let responses = await fetch("https://smsgatewaydevices.com/api/send/otp", {
+    method: "POST",
+    body: bodyContent,
+    headers: sms,
+  });
+
+  if (!responses.ok) {
+    return responses.text;
+  }
+  let data = await responses.text();
+
+  return JSON.parse(data);
+}
+
+async function VerifySms(username: string, phone: string) {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "x-hasura-admin-secret": secret,
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    username: username,
+    phone: phone,
+  });
+
+  let response = await fetch("http://localhost:8080/api/rest/forgotpassword", {
     method: "POST",
     body: bodyContent,
     headers: headersList,
   });
 
-  if (!response.ok) {
-    throw error;
-  }
   let data = await response.text();
-
+  console.log(data);
   return JSON.parse(data);
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req.body);
-  send_sms(req.body.phone, req.body.username)
-    .then((data) => {
-      console.log(data);
-      if (data.status == 200) {
-        res.status(200).json({
-          code: 200,
-          message: "OTP sent successfully",
-          OTP: data.data.otp,
-        });
-      } else {
-        res.status(500).json({ code: 500, message: "Server error" });
+  const { phone, username } = req.body;
+
+  VerifySms(username, phone)
+    .then((api_result) => {
+      const data = api_result.piggery_tbl_users;
+      try {
+        if (data[0].is_exist) {
+          send_sms(phone, username)
+            .then((data) => {
+              console.log(data);
+              if (data.status == 200) {
+                res.status(200).json({
+                  code: 200,
+                  message: "OTP sent successfully",
+                  OTP: data.data.otp,
+                });
+              } else {
+                res.status(500).json({ code: 500, message: "Server error" });
+                return 0;
+              }
+            })
+            .catch((e) => {
+              res
+                .status(500)
+                .json({ code: 500, message: `Server Error:${e.code}` });
+            });
+          return 0;
+        } else {
+          res.status(401).json({
+            conde: 401,
+            mesage: "Username/Number do not match from our system record.",
+          });
+          return 0;
+        }
+      } catch (err: any) {
+        if (err instanceof TypeError) {
+          res.status(401).json({
+            code: 401,
+            mesage: "Username/Number do not match from our system record.",
+          });
+          return 0;
+        }
+        res.status(500).json({ code: 401, message: err.message });
       }
     })
-    .catch((e) => {
-      res.status(500).json({ code: 500, message: `Server Error:${e.code}` });
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ code: 500, message: "500 Server error,Please try again" });
     });
 }

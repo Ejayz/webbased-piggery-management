@@ -18,16 +18,13 @@ export default function Page() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [base_url, setBaseUrl] = useState<string>();
- 
+
   useEffect(() => {
     async function getBaseURL() {
       setBaseUrl(location.origin);
     }
     getBaseURL();
   });
-
-
-
 
   const VerifyUser = async () => {
     if (username == "" || password == "") {
