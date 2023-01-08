@@ -33,7 +33,7 @@ export default function RootLayout({
   }
 
   return (
-    <html className="overflow-x-scroll lg:overflow-hidden">
+    <html className="overflow-x-scroll lg:overflow-hidden bg-base-200">
       <body>
         <Navbar loads={loading.data}></Navbar>
         {children}

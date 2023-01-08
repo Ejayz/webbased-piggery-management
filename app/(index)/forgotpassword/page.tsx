@@ -1,15 +1,15 @@
 "use client";
 "use client";
-import { useState } from "react";
+import { useRef, useState, MutableRefObject } from "react";
 import Layout2 from "../../(components)/(forgotpassword)/(otp_form)/otp_form";
 import Layout3 from "../../(components)/(forgotpassword)/(otp_form)/change_password";
 import Layout1 from "../../(components)/(forgotpassword)/(otp_form)/verify_number";
 export default function Page() {
-  const [data, setData] = useState<number>(1);
+  const [data, setData] = useState<number>(3);
   const [otp, setOtp] = useState<string>("");
-  const [isLastStep, setIsLastStep] = useState<boolean>(false);
+  const isLastStep: MutableRefObject<boolean> = useRef(false);
   if (data == 3) {
-    setIsLastStep(true);
+    isLastStep.current = true;
   }
   return (
     <>
@@ -35,6 +35,7 @@ export default function Page() {
           >
             One Time Password
           </li>
+
           <li
             onClick={() => {
               if (data >= 3 || isLastStep) {
@@ -46,7 +47,8 @@ export default function Page() {
             Reset Password
           </li>
         </ul>
-        <div className={`h-full w-full ${data == 1 ? "block" : "hidden"}`}>
+
+        <div className={`h-full flex w-full ${data == 1 ? "block" : "hidden"}`}>
           <Layout1
             setText={data}
             setData={setData}
@@ -54,11 +56,11 @@ export default function Page() {
             setOTPData={setOtp}
           ></Layout1>
         </div>
-        <div className={`w-full h-full ${data == 2 ? "block" : "hidden"}`}>
+        <div className={`w-full flex h-full ${data == 2 ? "block" : "hidden"}`}>
           <Layout2 setText={data} setState={setData} setOTP={otp}></Layout2>
         </div>
 
-        <div className={`w-full h-full ${data == 1 ? "hidden" : "hidden"}`}>
+        <div className={`w-full flex h-full ${data == 3 ? "block" : "hidden"}`}>
           <Layout3 setText={data} setState={setData}></Layout3>
         </div>
       </div>

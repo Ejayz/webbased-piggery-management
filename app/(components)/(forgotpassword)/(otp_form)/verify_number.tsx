@@ -36,6 +36,8 @@ export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
         toast.success(parsed.message);
         setOTPData(parsed.OTP);
         setData(2);
+        setUsername("");
+        setPhone("");
       } else {
         toast.error(parsed.message);
       }
@@ -46,21 +48,19 @@ export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-3xl font-bold">Forgot password</h1>
-          <p className="py-6 ml-4">
-            <ul className="list-disc">
-              <li> Enter your username and phone number to recieve OTP</li>
-              <li>
-                Do not refresh or reload this page after recieving the OTP
-              </li>
-              <li>
-                Phone number should start on <b>+63</b>.
-              </li>
-              <li>
-                Phone number linked in your account is not available? Contact
-                system administrator
-              </li>
-            </ul>
-          </p>
+
+          <ul className="list-disc ml-4">
+            <li> Enter your username and phone number to recieve OTP</li>
+            <li>Do not refresh or reload this page after recieving the OTP</li>
+            <li>
+              Phone number should start on <b>+63</b>.
+            </li>
+            <li>
+              Phone number linked in your account is not available? Contact
+              system administrator
+            </li>
+            <li>Use the steps indicator to go back to previous steps</li>
+          </ul>
         </div>
         <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <div className="card-body">

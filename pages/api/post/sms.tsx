@@ -22,7 +22,7 @@ async function send_sms(phone: any, username: any) {
   bodyContent.append("sim", "1");
   bodyContent.append(
     "message",
-    `Hi ${username} , You requested change password operation . Enter this otp to proceed OTP:{{otp}}`
+    `Hi ${username} , You requested change password operation . This OTP is only valid on this session do not refresh or reload the page . Enter this otp to proceed OTP:{{otp}}`
   );
 
   let responses = await fetch("https://smsgatewaydevices.com/api/send/otp", {
@@ -38,7 +38,7 @@ async function send_sms(phone: any, username: any) {
     return responses.text;
   }
   let data = await responses.text();
-  console.log("opt sent-" + new Date());
+  console.log("opt sent-" + responses.text + new Date());
   return JSON.parse(data);
 }
 
@@ -81,11 +81,13 @@ export default async function handler(
           send_sms(phone, username)
             .then((data) => {
               if (data.status == 200) {
+                console.log(data);
                 res.status(200).json({
                   code: 200,
                   message: "OTP sent successfully",
                   OTP: data.data.otp,
                 });
+
                 return 0;
               } else {
                 console.log(data);

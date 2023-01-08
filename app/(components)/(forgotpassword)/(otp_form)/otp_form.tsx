@@ -1,5 +1,24 @@
 "use client";
-export default function Layout({ setText, setState }: any) {
+
+import { optimizeImage } from "next/dist/server/image-optimizer";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "react-toastify";
+
+export default function Layout({ setText, setState, setOTP }: any) {
+  const [otp, setOtp] = useState<string>("");
+  const OTP = setOTP;
+  async function checkOtp() {
+    if (otp == OTP) {
+      setState(3);
+      toast.success("OTP Verificaton verfied . Change your password now!");
+    } else {
+      toast.error(
+        "OTP do not match.Please enter the correct OTP you recieved."
+      );
+    }
+  }
+
   return (
     <>
       <div className="hero min-h-screen bg-base-200">
@@ -24,18 +43,26 @@ export default function Layout({ setText, setState }: any) {
                   <span className="label-text">One Time Password</span>
                 </label>
                 <input
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
                   type="text"
                   placeholder="One Time Password"
                   className="input input-bordered"
                 />
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
-                    Forgot password?
-                  </a>
+                  <Link
+                    href="#"
+                    as="/"
+                    className="label-text-alt link link-hover"
+                  >
+                    Remembered your password? Login
+                  </Link>
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary">Login</button>
+                <button onClick={checkOtp} className="btn btn-primary">
+                  Verify OTP
+                </button>
               </div>
             </div>
           </div>
