@@ -5,7 +5,7 @@ import Layout2 from "../../(components)/(forgotpassword)/(otp_form)/otp_form";
 import Layout3 from "../../(components)/(forgotpassword)/(otp_form)/change_password";
 import Layout1 from "../../(components)/(forgotpassword)/(otp_form)/verify_number";
 export default function Page() {
-  const [data, setData] = useState<number>(3);
+  const [data, setData] = useState<number>(1);
   const [otp, setOtp] = useState<string>("");
   const isLastStep: MutableRefObject<boolean> = useRef(false);
   if (data == 3) {

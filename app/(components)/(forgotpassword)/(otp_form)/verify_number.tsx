@@ -2,11 +2,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
-
+import getBaseURL from "../../getBaseUrl";
 export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
   const [username, setUsername] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
-
+  const base_url = getBaseURL();
   async function getOTP() {
     if (username == "" || phone == "") {
       toast.error("Username/Phone number should not be empty");
@@ -25,7 +25,7 @@ export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
         phone: phone,
       });
 
-      let response = await fetch(`/api/post/sms`, {
+      let response = await fetch(`${base_url}/api/post/sms`, {
         method: "POST",
         body: bodyContent,
         headers: headersList,

@@ -3,9 +3,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Navbar from "../(components)/(Navbar)/navbar";
-import getCompany from "../(components)/getCompany";
-import Image from "next/image";
+import getBaseURL from "../(components)/getBaseUrl";
 
 export default function Page() {
   //Create states for username password and remember me
@@ -15,14 +13,7 @@ export default function Page() {
   const [requesting, isRequesting] = useState<boolean>(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [base_url, setBaseUrl] = useState<string>();
-
-  useEffect(() => {
-    async function getBaseURL() {
-      setBaseUrl(location.origin);
-    }
-    getBaseURL();
-  });
+  const base_url = getBaseURL();
 
   const VerifyUser = async () => {
     if (username == "" || password == "") {
