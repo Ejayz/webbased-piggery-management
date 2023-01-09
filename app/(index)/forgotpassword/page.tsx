@@ -15,35 +15,12 @@ export default function Page() {
     <>
       <div className={"bg-base-200 flex flex-col"}>
         <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
-          <li
-            onClick={() => {
-              if (data >= 1 || isLastStep) {
-                setData(1);
-              }
-            }}
-            className={`step ${data >= 1 ? "step-primary" : ""}`}
-          >
-            Verify
-          </li>
-          <li
-            onClick={() => {
-              if (data >= 2 || isLastStep) {
-                setData(2);
-              }
-            }}
-            className={`step ${data >= 2 ? "step-primary" : ""}`}
-          >
+          <li className={`step ${data >= 1 ? "step-primary" : ""}`}>Verify</li>
+          <li className={`step ${data >= 2 ? "step-primary" : ""}`}>
             One Time Password
           </li>
 
-          <li
-            onClick={() => {
-              if (data >= 3 || isLastStep) {
-                setData(3);
-              }
-            }}
-            className={`step ${data >= 3 ? "step-primary" : ""}`}
-          >
+          <li className={`step ${data >= 3 ? "step-primary" : ""}`}>
             Reset Password
           </li>
         </ul>

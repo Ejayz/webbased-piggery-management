@@ -25,7 +25,7 @@ export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
         phone: phone,
       });
 
-      let response = await fetch("http://localhost:3000/api/post/sms", {
+      let response = await fetch(`/api/post/sms`, {
         method: "POST",
         body: bodyContent,
         headers: headersList,

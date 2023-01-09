@@ -57,7 +57,6 @@ export default function ResetPassword({ setText, setState }: any) {
     setIsMatch(await hasMatch());
     setIsLong(await hasLong());
     setisContainsNum(await hasNumber(newpass));
-    console.log(isUpperLower && isMatch && isLong && isContainsNum);
     if (isUpperLower && isMatch && isLong && isContainsNum) {
       setAllowed(true);
     } else {
@@ -116,17 +115,17 @@ export default function ResetPassword({ setText, setState }: any) {
                       <div className={`${isMatch ? "hidden" : "block"}`}>
                         {/* //Red X */}
                         <svg
-                          width="24"
-                          height="24"
+                          width={24}
+                          height={24}
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="red"
-                          strokeWidth="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                          <line x1={18} y1={6} x2={6} y2={18} />
+                          <line x1={6} y1={6} x2={18} y2={18} />
                         </svg>
                       </div>
 
@@ -142,7 +141,7 @@ export default function ResetPassword({ setText, setState }: any) {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <polyline points="20 6 9 17 4 12"></polyline>
+                          <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <span className="label-text rtl ">
@@ -156,17 +155,17 @@ export default function ResetPassword({ setText, setState }: any) {
                       <div className={`${isLong ? "hidden" : "block"}`}>
                         {/* //Red X */}
                         <svg
-                          width="24"
-                          height="24"
+                          width={24}
+                          height={24}
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="red"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                          <line x1={18} y1={6} x2={6} y2={18} />
+                          <line x1={6} y1={6} x2={18} y2={18} />
                         </svg>
                       </div>
 
@@ -182,7 +181,7 @@ export default function ResetPassword({ setText, setState }: any) {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <polyline points="20 6 9 17 4 12"></polyline>
+                          <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <span className="label-text ">
@@ -196,17 +195,17 @@ export default function ResetPassword({ setText, setState }: any) {
                       <div className={`${isUpperLower ? "hidden" : "block"}`}>
                         {/* //Red X */}
                         <svg
-                          width="24"
-                          height="24"
+                          width={24}
+                          height={24}
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="red"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                          <line x1={18} y1={6} x2={6} y2={18} />
+                          <line x1={6} y1={6} x2={18} y2={18} />
                         </svg>
                       </div>
 
@@ -222,7 +221,7 @@ export default function ResetPassword({ setText, setState }: any) {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <polyline points="20 6 9 17 4 12"></polyline>
+                          <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <span className="label-text ">
@@ -236,17 +235,17 @@ export default function ResetPassword({ setText, setState }: any) {
                       <div className={`${isContainsNum ? "hidden" : "block"}`}>
                         {/* //Red X */}
                         <svg
-                          width="24"
-                          height="24"
+                          width={24}
+                          height={24}
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="red"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                          <line x1={18} y1={6} x2={6} y2={18} />
+                          <line x1={6} y1={6} x2={18} y2={18} />
                         </svg>
                       </div>
 
@@ -262,7 +261,7 @@ export default function ResetPassword({ setText, setState }: any) {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         >
-                          <polyline points="20 6 9 17 4 12"></polyline>
+                          <polyline points="20 6 9 17 4 12" />
                         </svg>
                       </div>
                       <span className="label-text ">Contains Numbers</span>
@@ -280,7 +279,9 @@ export default function ResetPassword({ setText, setState }: any) {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button disabled={allowed} className="btn btn-primary">CHANGE PASSWORD</button>
+                <button disabled={allowed} className="btn btn-primary">
+                  CHANGE PASSWORD
+                </button>
               </div>
             </div>
           </div>
