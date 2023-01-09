@@ -2,12 +2,72 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 export default function ResetPassword({ setText, setState }: any) {
-  const [newpass, setNewPass] = useState<string>();
-  const [repeatPass, setRepeatPass] = useState<string>();
-  const [isContainsNum, setisContainsNum] = useState<boolean>();
-  
+  const [newpass, setNewPass] = useState<string>("");
+  const [repeatPass, setRepeatPass] = useState<string>("");
+  const [isContainsNum, setisContainsNum] = useState<boolean>(false);
+  const [isMatch, setIsMatch] = useState<boolean>(false);
+  const [isLong, setIsLong] = useState<boolean>(false);
+  const [isUpperLower, setIsUpperLower] = useState<boolean>(false);
+  const [allowed, setAllowed] = useState<boolean>(false);
+
+  function hasUpperLower(str: string): boolean {
+    let hasUpper = false;
+    let hasLower = false;
+
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] >= "A" && str[i] <= "Z") {
+        hasUpper = true;
+      } else if (str[i] >= "a" && str[i] <= "z") {
+        hasLower = true;
+      }
+    }
+
+    return hasUpper && hasLower;
+  }
+  function hasMatch() {
+    if ((newpass == repeatPass && newpass !== "") || repeatPass !== "") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function hasNumber(str: string): boolean {
+    for (let i = 0; i < str.length; i++) {
+      if (str[i] >= "0" && str[i] <= "9") {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function hasLong() {
+    if (newpass.length >= 8) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function checkAllowed() {
+    setIsUpperLower(hasUpperLower(newpass));
+    setIsMatch(hasMatch());
+    setIsLong(hasLong());
+    setisContainsNum(hasNumber(newpass));
+    if (isUpperLower && isMatch && isLong && isContainsNum) {
+      setAllowed(true);
+    } else {
+      setAllowed(false);
+    }
+  }
+  useEffect(() => {
+    checkAllowed();
+  }, [newpass]);
+  useEffect(() => {
+    checkAllowed();
+  }, [repeatPass]);
   return (
     <>
       <div className="hero h-auto my-auto bg-base-200">
@@ -26,7 +86,11 @@ export default function ResetPassword({ setText, setState }: any) {
                   <span className="label-text">New Password</span>
                 </label>
                 <input
-                  type="password"
+                  value={newpass}
+                  onChange={(e) => {
+                    setNewPass(e.target.value);
+                  }}
+                  type="text"
                   placeholder="new password"
                   className="input input-bordered"
                 />
@@ -36,20 +100,49 @@ export default function ResetPassword({ setText, setState }: any) {
                   <span className="label-text">Repeat Password</span>
                 </label>
                 <input
-                  type="password"
+                  value={repeatPass}
+                  onChange={(e) => {
+                    setRepeatPass(e.target.value);
+                  }}
+                  type="text"
                   placeholder="repeat password"
                   className="input input-bordered"
                 />
                 <div className="flex flex-col ">
                   <div className="form-control">
                     <label className="cursor-pointer flex flex-row label justify-start">
-                      <Image
-                        src={"/assets/icons/x-solid.svg"}
-                        width={15}
-                        height={15}
-                        alt={""}
-                        className={"mx-2"}
-                      ></Image>
+                      <div className={`${isMatch ? "hidden" : "block"}`}>
+                        {/* //Red X */}
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="red"
+                          strokeWidth="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </div>
+
+                      <div className={`${isMatch ? "block" : "hidden"}`}>
+                        {/* //Green Check */}
+                        <svg
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="green"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
                       <span className="label-text rtl ">
                         New Password Match
                       </span>
@@ -58,13 +151,38 @@ export default function ResetPassword({ setText, setState }: any) {
 
                   <div className="form-control">
                     <label className="cursor-pointer label justify-start">
-                      <Image
-                        src={"/assets/icons/x-solid.svg"}
-                        width={15}
-                        height={15}
-                        alt={""}
-                        className={"mx-2"}
-                      ></Image>
+                      <div className={`${isLong ? "hidden" : "block"}`}>
+                        {/* //Red X */}
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="red"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </div>
+
+                      <div className={`${isLong ? "block" : "hidden"}`}>
+                        {/* //Green Check */}
+                        <svg
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="green"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
                       <span className="label-text ">
                         Contains 8 Character long password
                       </span>
@@ -73,13 +191,38 @@ export default function ResetPassword({ setText, setState }: any) {
 
                   <div className="form-control">
                     <label className="cursor-pointer justify-start label">
-                      <Image
-                        src={"/assets/icons/x-solid.svg"}
-                        width={15}
-                        height={15}
-                        alt={""}
-                        className={"mx-2"}
-                      ></Image>
+                      <div className={`${isUpperLower ? "hidden" : "block"}`}>
+                        {/* //Red X */}
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="red"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </div>
+
+                      <div className={`${isUpperLower ? "block" : "hidden"}`}>
+                        {/* //Green Check */}
+                        <svg
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="green"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
                       <span className="label-text ">
                         Contains UpperCase and LowerCase characters
                       </span>
@@ -88,13 +231,38 @@ export default function ResetPassword({ setText, setState }: any) {
 
                   <div className="form-control">
                     <label className="cursor-pointer label justify-start">
-                      <Image
-                        src={"/assets/icons/x-solid.svg"}
-                        width={15}
-                        height={15}
-                        alt={""}
-                        className={"mx-2"}
-                      ></Image>
+                      <div className={`${isContainsNum ? "hidden" : "block"}`}>
+                        {/* //Red X */}
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="red"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </div>
+
+                      <div className={`${isContainsNum ? "block" : "hidden"}`}>
+                        {/* //Green Check */}
+                        <svg
+                          width={24}
+                          height={24}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="green"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
                       <span className="label-text ">Contains Numbers</span>
                     </label>
                   </div>
