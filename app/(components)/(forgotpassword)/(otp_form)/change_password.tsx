@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { isatty } from "tty";
 export default function ResetPassword({ setText, setState }: any) {
   const [newpass, setNewPass] = useState<string>("");
   const [repeatPass, setRepeatPass] = useState<string>("");
@@ -12,7 +13,7 @@ export default function ResetPassword({ setText, setState }: any) {
   const [isUpperLower, setIsUpperLower] = useState<boolean>(false);
   const [allowed, setAllowed] = useState<boolean>(false);
 
-  function hasUpperLower(str: string): boolean {
+  async function hasUpperLower(str: string) {
     let hasUpper = false;
     let hasLower = false;
 
@@ -26,14 +27,14 @@ export default function ResetPassword({ setText, setState }: any) {
 
     return hasUpper && hasLower;
   }
-  function hasMatch() {
-    if ((newpass == repeatPass && newpass !== "") || repeatPass !== "") {
+  async function hasMatch() {
+    if (newpass == repeatPass && (newpass !== "" || repeatPass !== "")) {
       return true;
     } else {
       return false;
     }
   }
-  function hasNumber(str: string): boolean {
+  async function hasNumber(str: string) {
     for (let i = 0; i < str.length; i++) {
       if (str[i] >= "0" && str[i] <= "9") {
         return true;
@@ -43,7 +44,7 @@ export default function ResetPassword({ setText, setState }: any) {
     return false;
   }
 
-  function hasLong() {
+  async function hasLong() {
     if (newpass.length >= 8) {
       return true;
     } else {
@@ -51,11 +52,12 @@ export default function ResetPassword({ setText, setState }: any) {
     }
   }
 
-  function checkAllowed() {
-    setIsUpperLower(hasUpperLower(newpass));
-    setIsMatch(hasMatch());
-    setIsLong(hasLong());
-    setisContainsNum(hasNumber(newpass));
+  async function checkAllowed() {
+    setIsUpperLower(await hasUpperLower(newpass));
+    setIsMatch(await hasMatch());
+    setIsLong(await hasLong());
+    setisContainsNum(await hasNumber(newpass));
+    console.log(isUpperLower && isMatch && isLong && isContainsNum);
     if (isUpperLower && isMatch && isLong && isContainsNum) {
       setAllowed(true);
     } else {
@@ -278,7 +280,7 @@ export default function ResetPassword({ setText, setState }: any) {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary">CHANGE PASSWORD</button>
+                <button disabled={allowed} className="btn btn-primary">CHANGE PASSWORD</button>
               </div>
             </div>
           </div>
