@@ -3,16 +3,28 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import getBaseURL from "../../getBaseUrl";
-export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
+export default function Layout({
+  setText,
+  setData,
+  setOTP,
+  setOTPData,
+  setUser,
+  setNumber,
+}: any) {
   const [username, setUsername] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const base_url = getBaseURL();
+  const [requesting, isRequesting] = useState(false);
+
   async function getOTP() {
+    isRequesting(true);
     if (username == "" || phone == "") {
       toast.error("Username/Phone number should not be empty");
+      isRequesting(true);
     }
     if (!phone.includes("+63")) {
       toast.error("Phone number is invalid. It should start at (+63)");
+      isRequesting(true);
     } else {
       let headersList = {
         Accept: "*/*",
@@ -38,8 +50,12 @@ export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
         setData(2);
         setUsername("");
         setPhone("");
+        isRequesting(true);
+        setUser(username);
+        setNumber(phone);
       } else {
         toast.error(parsed.message);
+        isRequesting(true);
       }
     }
   }
@@ -98,7 +114,11 @@ export default function Layout({ setText, setData, setOTP, setOTPData }: any) {
               </label>
             </div>
             <div className="form-control mt-6">
-              <button onClick={getOTP} className="btn btn-primary">
+              <button
+                disabled={requesting}
+                onClick={getOTP}
+                className={`btn btn-primary   ${requesting ? "loading" : ""}`}
+              >
                 GET OTP
               </button>
             </div>

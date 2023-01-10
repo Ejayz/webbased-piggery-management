@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 dotenv.config();
 
-const secret:any = process.env.HASURA_KEY;
+const secret: any = process.env.HASURA_KEY;
 const jwt_key: any = process.env.JWT_KEY;
 const hasura_base: any = process.env.HASURA_BASE_API;
 //API Function that only accepts post request

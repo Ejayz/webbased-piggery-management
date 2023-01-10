@@ -5,8 +5,11 @@ import Layout2 from "../../(components)/(forgotpassword)/(otp_form)/otp_form";
 import Layout3 from "../../(components)/(forgotpassword)/(otp_form)/change_password";
 import Layout1 from "../../(components)/(forgotpassword)/(otp_form)/verify_number";
 export default function Page() {
-  const [data, setData] = useState<number>(1);
+  const [data, setData] = useState<number>(3);
   const [otp, setOtp] = useState<string>("");
+  const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+
   const isLastStep: MutableRefObject<boolean> = useRef(false);
   if (data == 3) {
     isLastStep.current = true;
@@ -15,12 +18,35 @@ export default function Page() {
     <>
       <div className={"bg-base-200 flex flex-col"}>
         <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
-          <li className={`step ${data >= 1 ? "step-primary" : ""}`}>Verify</li>
-          <li className={`step ${data >= 2 ? "step-primary" : ""}`}>
+          <li
+            onClick={(e) => {
+              if (data >= 1) {
+                setData(1);
+              }
+            }}
+            className={`step ${data >= 1 ? "step-primary" : ""}`}
+          >
+            Verify
+          </li>
+          <li
+            onClick={(e) => {
+              if (data >= 2) {
+                setData(2);
+              }
+            }}
+            className={`step ${data >= 2 ? "step-primary" : ""}`}
+          >
             One Time Password
           </li>
 
-          <li className={`step ${data >= 3 ? "step-primary" : ""}`}>
+          <li
+            onClick={(e) => {
+              if (data >= 3) {
+                setData(3);
+              }
+            }}
+            className={`step ${data >= 3 ? "step-primary" : ""}`}
+          >
             Reset Password
           </li>
         </ul>
@@ -31,6 +57,8 @@ export default function Page() {
             setData={setData}
             setOTP={otp}
             setOTPData={setOtp}
+            setUser={setUsername}
+            setNumber={setPhone}
           ></Layout1>
         </div>
         <div className={`w-full flex h-full ${data == 2 ? "block" : "hidden"}`}>
@@ -38,7 +66,12 @@ export default function Page() {
         </div>
 
         <div className={`w-full flex h-full ${data == 3 ? "block" : "hidden"}`}>
-          <Layout3 setText={data} setState={setData}></Layout3>
+          <Layout3
+            setText={data}
+            getUsername={username}
+            getPhone={phone}
+            setState={setData}
+          ></Layout3>
         </div>
       </div>
     </>
