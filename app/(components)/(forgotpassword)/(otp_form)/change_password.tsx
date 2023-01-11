@@ -20,55 +20,44 @@ export default function ResetPassword({
   const [isUpperLower, setIsUpperLower] = useState<boolean>(false);
   const [allowed, setAllowed] = useState<boolean>(true);
   const [requesting, setIsRequesting] = useState(false);
-  async function hasUpperLower(str: string) {
-    let hasUpper = false;
-    let hasLower = false;
+  const rout = useRouter();
 
-    for (let i = 0; i < str.length; i++) {
-      if (str[i] >= "A" && str[i] <= "Z") {
-        hasUpper = true;
-      } else if (str[i] >= "a" && str[i] <= "z") {
-        hasLower = true;
-      }
-    }
-
-    return hasUpper && hasLower;
-  }
   async function hasMatch() {
     if (newpass == repeatPass && (newpass !== "" || repeatPass !== "")) {
-      return true;
+      setIsMatch(true);
     } else {
-      return false;
-    }
-  }
-  async function hasNumber(str: string) {
-    for (let i = 0; i < str.length; i++) {
-      if (str[i] >= "0" && str[i] <= "9") {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  async function hasLong() {
-    if (newpass.length >= 8) {
-      return true;
-    } else {
-      return false;
+      setIsMatch(false);
     }
   }
 
-  async function checkAllowed() {
-    setIsUpperLower(await hasUpperLower(newpass));
-    setIsMatch(await hasMatch());
-    setIsLong(await hasLong());
-    setisContainsNum(await hasNumber(newpass));
-    setAllowed(!(isUpperLower && isMatch && isLong && isContainsNum));
-  }
-
-  async function resetPass() {
+  async function resetPass(password: string) {
     setIsRequesting(true);
+    if (newpass !== repeatPass) {
+      toast.error("Password and Repeat password should be the same.");
+      setIsRequesting(false);
+      return false;
+    }
+    console.log(password.length);
+    if (!(password.length >= 8)) {
+      toast.error("atleast 8 Character long password is required");
+      setIsRequesting(false);
+      return false;
+    }
+    if (!/\d/.test(password)) {
+      toast.error("Password should contain atleast 1 number");
+      setIsRequesting(false);
+      return false;
+    }
+    if (!/[A-Z]/.test(password)) {
+      toast.error("Password should contain atleast 1 UpperCase letter");
+      setIsRequesting(false);
+      return false;
+    }
+    if (!/[a-z]/.test(password)) {
+      toast.error("Password should contain atleast 1 LowerCase letter");
+      setIsRequesting(false);
+      return false;
+    }
     let headersList = {
       Accept: "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -91,12 +80,16 @@ export default function ResetPassword({
     if (data.code == 200) {
       toast.success(data.message);
       setIsRequesting(false);
-      useRouter().push("/");
+      rout.push("/")
     } else {
       toast.error(data.message);
       setIsRequesting(false);
     }
   }
+
+  useEffect(() => {
+    hasMatch();
+  }, [newpass, repeatPass]);
 
   return (
     <>
@@ -120,7 +113,7 @@ export default function ResetPassword({
                   onChange={(e) => {
                     setNewPass(e.target.value);
                   }}
-                  type="text"
+                  type="password"
                   placeholder="new password"
                   className="input input-bordered"
                 />
@@ -134,7 +127,7 @@ export default function ResetPassword({
                   onChange={(e) => {
                     setRepeatPass(e.target.value);
                   }}
-                  type="text"
+                  type="password"
                   placeholder="repeat password"
                   className="input input-bordered"
                 />
@@ -150,8 +143,10 @@ export default function ResetPassword({
               </div>
               <div className="form-control mt-6">
                 <button
-                  disabled={allowed}
-                  onClick={resetPass}
+                  disabled={!isMatch}
+                  onClick={() => {
+                    resetPass(newpass);
+                  }}
                   className={`btn btn-primary ${requesting ? "loading" : ""}`}
                 >
                   CHANGE PASSWORD
