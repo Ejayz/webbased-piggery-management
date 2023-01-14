@@ -1,12 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
+import connection from "../mysql";
+import { rejects } from "assert";
 dotenv.config();
 
-const secret: any = process.env.HASURA_KEY;
-const jwt_key: any = process.env.JWT_KEY;
-const hasura_base: any = process.env.HASURA_BASE_API;
+const jwt_key: any = process.env.JWT_KEY
+
+
 //API Function that only accepts post request
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -19,9 +21,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username, password, rememberme } = req.body;
   VerifyUser(username)
     .then((result: any) => {
-      console.log(result.piggery_tbl_users.length);
-      if (result.piggery_tbl_users.length !== 0) {
-        const data = result.piggery_tbl_users[0];
+      console.log(result)
+      console.log(result.length);
+      if (result.length !== 0) {
+        const data = result[0];
         bcrypt.compare(password, data.password, (err, result) => {
           if (result) {
             const userInfo = {
@@ -75,24 +78,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function VerifyUser(username: string) {
-  //API function to request in hasura
-  console.log(secret);
-  let headersList: Record<string, string> = {
-    Accept: "*/*",
-    "x-hasura-admin-secret": secret,
-    "Content-Type": "application/json",
-  };
-
-  let bodyContent = JSON.stringify({
-    username: username,
-  });
-
-  let response = await fetch(`${hasura_base}login`, {
-    method: "POST",
-    body: bodyContent,
-    headers: headersList,
-  });
-
-  let data = await response.text();
-  return JSON.parse(data);
+  return new Promise((resolve, rejects) => {
+    connection.getConnection((err, conn) => {
+      conn.query("select * from tbl_users where username=? and is_exist='true'", [username], (err, result, fields) => {
+        if (err) rejects(err);
+        resolve(result);
+      })
+    })
+  })
 }
