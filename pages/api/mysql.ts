@@ -8,4 +8,5 @@ var connection = mysql.createPool({
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
 });
+
 export default connection;
