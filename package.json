@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "logged-dev": "next dev > ./public/log/log.txt",
     "build": "next build",
     "start": "next start",
+    "logged-start": "next start > log.txt",
     "lint": "next lint"
   },
   "dependencies": {

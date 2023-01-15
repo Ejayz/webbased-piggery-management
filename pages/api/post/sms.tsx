@@ -1,8 +1,11 @@
 import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
+import connection from "../mysql";
+import * as jwt from 'jsonwebtoken'
 dotenv.config();
-const secret: any = process.env.HASURA_KEY;
+
+const jwt_secret: any = process.env.JWT_KEY
 
 async function send_sms(phone: any, username: any) {
   console.log("sending otp-" + new Date());
@@ -43,28 +46,16 @@ async function send_sms(phone: any, username: any) {
 }
 
 async function VerifySms(username: string, phone: string) {
-  console.log("Validating username and email-" + new Date());
-  let headersList = {
-    Accept: "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-    "x-hasura-admin-secret": secret,
-    "Content-Type": "application/json",
-  };
-
-  let bodyContent = JSON.stringify({
-    username: username,
-    phone: phone,
-  });
-
-  let response = await fetch("http://localhost:8080/api/rest/forgotpassword", {
-    method: "POST",
-    body: bodyContent,
-    headers: headersList,
-  });
-
-  let data = await response.text();
-  console.log("Username and Phone number validated -" + new Date());
-  return JSON.parse(data);
+  return new Promise((resolve, rejects) => {
+    const query = "select * from tbl_users where username=? and phone=? and is_exist='true'"
+    connection.getConnection((err, conn) => {
+      conn.query(query, [username, phone], (err, result, fields) => {
+        if (err) rejects(err)
+        resolve(result)
+        console.log(result)
+      })
+    })
+  })
 }
 
 export default async function handler(
@@ -72,16 +63,19 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { phone, username } = req.body;
-
   VerifySms(username, phone)
-    .then((api_result) => {
-      const data = api_result.piggery_tbl_users;
+    .then((result: any) => {
+      const data = result.length;
+      console.log(data)
       try {
-        if (data[0].is_exist) {
+        if (data == 1) {
           send_sms(phone, username)
             .then((data) => {
               if (data.status == 200) {
-                console.log(data);
+                const token = jwt.sign(req.body, jwt_secret)
+                res.setHeader('Set-Cookie', `reset_auth=${token}; Max-Age=3600; HttpOnly; Path=/;`)
+
+                console.log(data)
                 res.status(200).json({
                   code: 200,
                   message: "OTP sent successfully",
@@ -90,7 +84,6 @@ export default async function handler(
 
                 return 0;
               } else {
-                console.log(data);
                 res.status(500).json({ code: 500, message: "Server error" });
                 return 0;
               }

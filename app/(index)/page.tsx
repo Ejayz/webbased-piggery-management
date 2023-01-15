@@ -30,7 +30,7 @@ export default function Page() {
     let bodyContent = JSON.stringify({
       username: username,
       password: password,
-      remember_me: remember_me,
+      rememberme: remember_me,
     });
 
     let response = await fetch(`${base_url}/api/post/login`, {
@@ -96,7 +96,7 @@ export default function Page() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="input input-bordered w-full"
                   />
-                  <button
+                  <button name="showpassword"
                     data-tip={showPassword ? "Hide password" : "Show password"}
                     className={`btn tooltip btn-square flex  ${
                       showPassword ? "eyes-slash" : "eyes"

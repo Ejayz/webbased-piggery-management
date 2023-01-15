@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import getCompany from "../(components)/getCompany";
 import Navbar from "../(components)/(Navbar)/navbar";
 import { useEffect, useState } from "react";
+import { getCookieParser } from "next/dist/server/api-utils";
+import getUserInfo from "../(components)/getUserInfo";
 
 export default function RootLayout({
   children,
@@ -16,13 +18,23 @@ export default function RootLayout({
   //Load company name in navigation bar
   //Prep Navigation Bar
   const loading = getCompany();
-
   async function getError() {
     if (error == "401" && !loading.loading) {
       toast.error("Login first to access dashboard.");
     }
   }
   getError();
+
+  useEffect(() => {
+    async function getSession() {
+      if (document.cookie.includes("auth")) {
+        open("/dashboard", "_self")
+      }
+    }
+    getSession()
+  }, [])
+
+
 
   if (loading.loading) {
     return (

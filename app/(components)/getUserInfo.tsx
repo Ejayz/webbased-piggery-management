@@ -5,7 +5,7 @@ import searchCookie from "./cookieParser";
 import jwt from "jsonwebtoken";
 export default function getUserInfo() {
   const [loading, isLoading] = useState<boolean>(true);
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<any>(null);
   useEffect(() => {
     async function getTokens() {
       isLoading(true);

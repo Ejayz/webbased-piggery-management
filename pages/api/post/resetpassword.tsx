@@ -1,12 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as bcrypt from "bcrypt";
+import connection from "../mysql";
+import { resolve } from "path";
+import { rejects } from "assert";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { phone, username, password }: any = req.body;
-  console.log({ phone, username, password });
+  const { phone, username, password, token }: any = req.body;
   generateHased(password).then((hashedPass) => {
-    resetPassword(phone, username, hashedPass).then((result: any) => {
-      const affectedRow = result.update_piggery_tbl_users.affected_rows;
+    resetPassword(phone, username, hashedPass).then((OKPackets: any) => {
+      console.log(OKPackets.affectedRows)
+      const affectedRow = OKPackets.affectedRows;
       if (affectedRow == 1) {
         return res.status(200).json({
           code: 200,
@@ -26,27 +29,31 @@ async function resetPassword(
   username: string,
   password: string
 ) {
-  let headersList = {
-    Accept: "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-    "x-hasura-admin-secret": "randomDdos1.com",
-    "Content-Type": "application/json",
-  };
+  return new Promise((resolve, rejects) => {
+    const query = "UPDATE `piggery_management`.`tbl_users` SET `password`=? WHERE  `username`=? and phone=? and is_exist='true';";
+    connection.getConnection((err, conn) => {
+      conn.beginTransaction((err) => {
+        console.log(err)
+      })
+      conn.query(query, [password, username, phone], (err, result, feilds) => {
+        if (err) {
+          conn.rollback(console.log)
+          rejects(err)
+        }
+        conn.commit((err) => {
+          if (err) {
+            conn.rollback(console.log)
+            rejects(err)
+          }
 
-  let bodyContent = JSON.stringify({
-    username: username,
-    phone: phone,
-    password: password,
-  });
+        })
 
-  let response = await fetch("http://localhost:8080/api/rest/resetpassword", {
-    method: "POST",
-    body: bodyContent,
-    headers: headersList,
-  });
+        resolve(result)
+        console.log(result)
 
-  let data = await response.text();
-  return JSON.parse(data);
+      })
+    })
+  })
 }
 
 async function generateHased(password: string) {

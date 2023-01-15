@@ -21,8 +21,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { username, password, rememberme } = req.body;
   VerifyUser(username)
     .then((result: any) => {
-      console.log(result)
-      console.log(result.length);
       if (result.length !== 0) {
         const data = result[0];
         bcrypt.compare(password, data.password, (err, result) => {

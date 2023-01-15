@@ -1,0 +1,15 @@
+ready - started server on 0.0.0.0:3000, url: http://localhost:3000
+info  - Loaded env from C:\Users\Ejayz\Documents\project\webbased-piggery-management\.env
+info  - Thank you for testing `appDir` please leave your feedback at https://nextjs.link/app-feedback
+
+[35m🌼 daisyUI components 2.46.1[0m [0m https://daisyui.com
+  [32m✔︎ Including:[0m [0m base, components, 29 themes, utilities
+  [32m❤︎ Support daisyUI: [0m https://opencollective.com/daisyui [0m
+  
+event - compiled client and server successfully in 3.8s (262 modules)
+wait  - compiling...
+event - compiled successfully in 552 ms (229 modules)
+wait  - compiling /_error (client and server)...
+event - compiled client and server successfully in 173 ms (249 modules)
+info  - Loaded env from C:\Users\Ejayz\Documents\project\webbased-piggery-management\.env
+info  - Thank you for testing `appDir` please leave your feedback at https://nextjs.link/app-feedback
