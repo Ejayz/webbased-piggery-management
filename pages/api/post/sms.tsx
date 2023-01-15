@@ -74,7 +74,6 @@ export default async function handler(
               if (data.status == 200) {
                 const token = jwt.sign(req.body, jwt_secret)
                 res.setHeader('Set-Cookie', `reset_auth=${token}; Max-Age=3600; HttpOnly; Path=/;`)
-
                 console.log(data)
                 res.status(200).json({
                   code: 200,
@@ -97,8 +96,8 @@ export default async function handler(
           return 0;
         } else {
           res.status(401).json({
-            conde: 401,
-            mesage: "Username/Number do not match from our system record.",
+            code: 401,
+            message: "Username/Number do not match from our system record.",
           });
           return 0;
         }
@@ -106,7 +105,7 @@ export default async function handler(
         if (err instanceof TypeError) {
           res.status(401).json({
             code: 401,
-            mesage: "Username/Number do not match from our system record.",
+            message: "Username/Number do not match from our system record.",
           });
           return 0;
         }

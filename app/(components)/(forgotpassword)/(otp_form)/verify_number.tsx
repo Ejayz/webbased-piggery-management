@@ -44,6 +44,7 @@ export default function Layout({
       });
       let data = await response.text();
       const parsed = JSON.parse(data);
+      console.log(parsed)
       if (parsed.code == 200) {
         toast.success(parsed.message);
         setOTPData(parsed.OTP);
@@ -55,7 +56,7 @@ export default function Layout({
         setNumber(phone);
       } else {
         toast.error(parsed.message);
-        isRequesting(true);
+        isRequesting(false);
       }
     }
   }

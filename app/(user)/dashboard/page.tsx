@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <>
       <div className="w-full grid h-full">
-        <div className="w-5/6  mt-4 h-auto lg:grid-cols-1 grid gap-2 grid-rows-3 mx-auto">
+        <div className="w-5/6  mt-4 h-auto lg:grid-cols-3 grid gap-2 grid-cols-1 mx-auto">
           <div className="stats w-full bg-primary text-primary-content shadow">
             <div className="stat">
               <div className="stat-title">Total Pig</div>
@@ -38,8 +38,8 @@ export default function Page() {
               <div className="stat-desc">Jan 1st - Feb 1st</div>
             </div>
           </div>
-          <canvas id="goodCanvas1" className="w-3/4 h-auto" aria-label="Hello ARIA World" role="img"></canvas>
         </div>
+        <canvas id="goodCanvas1" className="w-3/4 h-auto" aria-label="Hello ARIA World" role="img"></canvas>
       </div>
     </>
   );
