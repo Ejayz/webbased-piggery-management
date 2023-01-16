@@ -20,7 +20,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (jwt.verify(cookies, jwt_key)) {
     generateHased(password).then((hashedPass) => {
       resetPassword(phone, username, hashedPass).then((OKPackets: any) => {
-        console.log(OKPackets.affectedRows)
         const affectedRow = OKPackets.affectedRows;
         if (affectedRow == 1) {
           return res.status(200).json({

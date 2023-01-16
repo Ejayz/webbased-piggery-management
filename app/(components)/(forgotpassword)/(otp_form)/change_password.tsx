@@ -39,7 +39,6 @@ export default function ResetPassword({
       setIsRequesting(false);
       return false;
     }
-    console.log(password.length);
     if (!(password.length >= 8)) {
       toast.error("atleast 8 Character long password is required");
       setIsRequesting(false);
