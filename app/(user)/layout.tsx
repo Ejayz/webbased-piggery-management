@@ -1,8 +1,8 @@
 "use client";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "../../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import getUserInfo from "../(components)/getUserInfo";
 import getCompany from "../(components)/getCompany";
@@ -13,6 +13,23 @@ export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
   const getComp = getCompany();
   const [toggleMenu, setToggleMenu] = useState<boolean>(true);
+  const [Logout, setLogout] = useState<boolean>(false)
+
+  useEffect(() => {
+    async function removeAuth() {
+      if (Logout) {
+        document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;maxAge=-1";
+        if (!document.cookie.includes("auth")) {
+          toast.success("Successfully logged out. Bye...")
+          window.open("/", "_self")
+        } else {
+          toast.error("Something went wrong while removing this session.")
+        }
+      }
+    }
+    removeAuth()
+  }, [Logout])
+
   if (loading.loading || getComp.loading) {
     return (
       <>
@@ -99,6 +116,18 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <Link href="/manage_pig">
                           <Image src={"/assets/icons/pig.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
                           Manage Pig
+                        </Link>
+
+
+                      </li>
+                    </div>
+                    <div>
+                      <li>
+                        <Link href="#" onClick={() => {
+                          setLogout(!Logout)
+                        }}>
+                          <Image src={"/assets/icons/pig.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
+                          Logout
                         </Link>
 
 
