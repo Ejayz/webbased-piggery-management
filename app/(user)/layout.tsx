@@ -102,7 +102,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                     </div>
-
                     <div className="">
                       <li>
                         <Link href="/user_management">
@@ -117,8 +116,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                           <Image src={"/assets/icons/pig.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
                           Manage Pig
                         </Link>
-
-
                       </li>
                     </div>
                     <div>
@@ -129,8 +126,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                           <Image src={"/assets/icons/pig.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
                           Logout
                         </Link>
-
-
                       </li>
                     </div>
                   </ul>
