@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { isatty } from "tty";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import getBaseUrl from "../../getBaseUrl";
 export default function ResetPassword({
   setText,
   setState,
@@ -21,6 +22,7 @@ export default function ResetPassword({
   const [allowed, setAllowed] = useState<boolean>(true);
   const [requesting, setIsRequesting] = useState(false);
   const rout = useRouter();
+  const base_url = getBaseUrl()
 
   async function hasMatch() {
     if (newpass == repeatPass && (newpass !== "" || repeatPass !== "")) {
@@ -70,7 +72,7 @@ export default function ResetPassword({
       password: newpass,
     });
 
-    let response = await fetch("http://localhost:3000/api/post/resetpassword", {
+    let response = await fetch(`${base_url}/api/post/resetpassword`, {
       method: "POST",
       body: bodyContent,
       headers: headersList,
