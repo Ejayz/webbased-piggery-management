@@ -136,6 +136,7 @@ export default function User({ children }: { children: React.ReactNode }) {
           {/* Contents  */}
           <div className="h-full overflow-x-auto w-full">{children} </div>
         </div>
+        {/* Toast */}
         <ToastContainer
           position="top-right"
           autoClose={5000}
