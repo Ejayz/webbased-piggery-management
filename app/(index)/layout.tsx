@@ -6,7 +6,8 @@ import { useSearchParams } from "next/navigation";
 import getCompany from "../../components/getCompany";
 import Navbar from "../../components/Navbar/navbar";
 import { useEffect, useState } from "react";
-
+import ScrollStack from '../../components/TechStack/ScollStack'
+import Footer from "../../components/Footer/footer";
 
 export default function RootLayout({
   children,
@@ -44,11 +45,9 @@ export default function RootLayout({
   }
 
   return (
-    <html className="overflow-x-scroll lg:overflow-hidden bg-base-200">
+    <html className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base-200">
       <body>
-        <Navbar loads={loading.data}></Navbar>
-        {children}
-        <ToastContainer
+      <ToastContainer
           position="top-right"
           autoClose={5000}
           hideProgressBar={false}
@@ -60,6 +59,10 @@ export default function RootLayout({
           pauseOnHover
           theme="light"
         />
+        <Navbar loads={loading.data}></Navbar>
+        {children}
+        <ScrollStack ></ScrollStack>
+        <Footer></Footer>
       </body>
     </html>
   );

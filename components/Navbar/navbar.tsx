@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Loading from "../(Loading)/loading";
+import Loading from "../Loading/loading";
 
 export default function Navbar({ loads }: any) {
   return (
