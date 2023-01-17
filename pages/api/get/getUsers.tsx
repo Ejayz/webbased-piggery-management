@@ -3,14 +3,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import connection from "../mysql";
 import jwt from 'jsonwebtoken'
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method == "POST") {
         res.status(405).json({ code: 405, message: "Post Method not allowed" })
         return 0
     }
-    if (jwt.verify()) {
-
-    }
+    const data = await getUsers(1)
 }
 
 async function getUsers(USER_ID: any) {
@@ -25,3 +23,4 @@ async function getUsers(USER_ID: any) {
         })
     })
 }
+
