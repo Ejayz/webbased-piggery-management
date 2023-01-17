@@ -1,6 +1,5 @@
 "use client";
 
-import { optimizeImage } from "next/dist/server/image-optimizer";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
