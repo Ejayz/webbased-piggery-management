@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import getBaseURL from "../(components)/getBaseUrl";
+import getBaseURL from "../../components/getBaseUrl";
 
 export default function Page() {
   //Create states for username password and remember me

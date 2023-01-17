@@ -4,8 +4,8 @@ import "../../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import React from "react";
-import getUserInfo from "../(components)/getUserInfo";
-import getCompany from "../(components)/getCompany";
+import getUserInfo from "../../components/getUserInfo";
+import getCompany from "../../components/getCompany";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   const getComp = getCompany();
   const [toggleMenu, setToggleMenu] = useState<boolean>(true);
   const [Logout, setLogout] = useState<boolean>(false)
-
+  const [owner, isOwner] = useState<boolean>(false)
   useEffect(() => {
     async function removeAuth() {
       if (Logout) {
@@ -65,7 +65,7 @@ export default function User({ children }: { children: React.ReactNode }) {
               </svg>
             </label>
           </div>
-          <div className="flex mx-auto ">
+          <div className="flex lg:ml-4 mx-auto   ">
             <a className="btn btn-ghost normal-case text-xl">
               {getComp.data}
             </a>
@@ -74,7 +74,7 @@ export default function User({ children }: { children: React.ReactNode }) {
 
           </div>
         </div>
-        <div className="flex flex-row h-full">
+        <div className="flex flex-row h-screen">
           {/* Menu */}
           <div
             className={`drawer-side  ${toggleMenu ? "hidden" : "block "
@@ -102,7 +102,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                     </div>
-                    <div className="">
+                    <div className={`${loading.data.job == "owner" ? "block" : "hidden"}`}>
                       <li>
                         <Link href="/user_management">
                           <Image src={"/assets/icons/user_management.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
@@ -134,7 +134,7 @@ export default function User({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           {/* Contents  */}
-          <div className="h-full overflow-x-auto w-full">{children} </div>
+          <div className="h-screen overflow-x-auto w-full">{children} </div>
         </div>
         {/* Toast */}
         <ToastContainer
@@ -150,6 +150,8 @@ export default function User({ children }: { children: React.ReactNode }) {
           theme="light"
         />
       </body>
-    </html >
-  );
+    </html >);
+
 }
+
+

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Loading from "./(Loading)/loading";
+import Loading from "./Loading/loading";
 import searchCookie from "./cookieParser";
 import jwt from "jsonwebtoken";
 export default function getUserInfo() {

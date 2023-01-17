@@ -3,11 +3,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "../../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation";
-import getCompany from "../(components)/getCompany";
-import Navbar from "../(components)/(Navbar)/navbar";
+import getCompany from "../../components/getCompany";
+import Navbar from "../../components/Navbar/navbar";
 import { useEffect, useState } from "react";
-import { getCookieParser } from "next/dist/server/api-utils";
-import getUserInfo from "../(components)/getUserInfo";
+
 
 export default function RootLayout({
   children,

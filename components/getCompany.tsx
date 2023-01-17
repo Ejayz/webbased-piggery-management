@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Loading from "./(Loading)/loading";
+import Loading from "./Loading/loading";
 
 export default function getCompany() {
   const [data, setData] = useState<string>("");

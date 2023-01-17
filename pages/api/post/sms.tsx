@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
 import connection from "../mysql";
 import * as jwt from 'jsonwebtoken'
+import { signJWT } from "../jwtProcessor";
 dotenv.config();
 
 const jwt_secret: any = process.env.JWT_KEY
@@ -72,9 +73,8 @@ export default async function handler(
           send_sms(phone, username)
             .then((data) => {
               if (data.status == 200) {
-                const token = jwt.sign(req.body, jwt_secret)
+                const token = signJWT(req.body)
                 res.setHeader('Set-Cookie', `reset_auth=${token}; Max-Age=3600; HttpOnly; Path=/;`)
-                console.log(data)
                 res.status(200).json({
                   code: 200,
                   message: "OTP sent successfully",
