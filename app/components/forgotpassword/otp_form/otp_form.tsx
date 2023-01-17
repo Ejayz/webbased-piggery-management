@@ -20,7 +20,7 @@ export default function Layout({ setText, setState, setOTP }: any) {
 
   return (
     <>
-      <div className="hero min-h-screen bg-base-200">
+      <div className="hero h-full  bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center ml-4 lg:text-left">
             <h1 className="text-5xl font-bold">One Time Password</h1>

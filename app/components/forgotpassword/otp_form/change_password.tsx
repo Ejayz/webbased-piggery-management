@@ -92,7 +92,7 @@ export default function ResetPassword({
 
   return (
     <>
-      <div className="hero h-auto my-auto bg-base-200">
+      <div className="hero h-full  bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
             <h1 className="text-3xl font-bold">Change Password</h1>

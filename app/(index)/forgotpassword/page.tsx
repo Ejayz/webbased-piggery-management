@@ -16,42 +16,43 @@ export default function Page() {
   }
   return (
     <>
-      <div className={"bg-base-200 flex flex-col"}>
-        <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
-          <li
-            onClick={(e) => {
-              if (data >= 1) {
-                setData(1);
-              }
-            }}
-            className={`step ${data >= 1 ? "step-primary" : ""}`}
-          >
-            Verify
-          </li>
-          <li
-            onClick={(e) => {
-              if (data >= 2) {
-                setData(2);
-              }
-            }}
-            className={`step ${data >= 2 ? "step-primary" : ""}`}
-          >
-            One Time Password
-          </li>
+      <div className={"bg-base-200 flex h-full flex-col"}>
+        <div className="w-full">
+          <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
+            <li
+              onClick={(e) => {
+                if (data >= 1) {
+                  setData(1);
+                }
+              }}
+              className={`step ${data >= 1 ? "step-primary" : ""}`}
+            >
+              Verify
+            </li>
+            <li
+              onClick={(e) => {
+                if (data >= 2) {
+                  setData(2);
+                }
+              }}
+              className={`step ${data >= 2 ? "step-primary" : ""}`}
+            >
+              One Time Password
+            </li>
 
-          <li
-            onClick={(e) => {
-              if (data >= 3) {
-                setData(3);
-              }
-            }}
-            className={`step ${data >= 3 ? "step-primary" : ""}`}
-          >
-            Reset Password
-          </li>
-        </ul>
-
-        <div className={`h-full flex w-full ${data == 1 ? "block" : "hidden"}`}>
+            <li
+              onClick={(e) => {
+                if (data >= 3) {
+                  setData(3);
+                }
+              }}
+              className={`step ${data >= 3 ? "step-primary" : ""}`}
+            >
+              Reset Password
+            </li>
+          </ul>
+        </div>
+        <div className={`h-auto flex w-full ${data == 1 ? "block" : "hidden"}`}>
           <Layout1
             setText={data}
             setData={setData}

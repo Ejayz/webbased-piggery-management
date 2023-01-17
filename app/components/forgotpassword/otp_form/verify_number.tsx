@@ -60,7 +60,7 @@ export default function Layout({
     }
   }
   return (
-    <div className="hero min-h-screen bg-base-200">
+    <div className="hero h-full bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-3xl font-bold">Forgot password</h1>
