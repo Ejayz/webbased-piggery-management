@@ -8,12 +8,15 @@ import Navbar from "../components/Navbar/navbar";
 import { useEffect, useState } from "react";
 import ScrollStack from '../components/TechStack/ScollStack'
 import Footer from "../components/Footer/footer";
-
+import Head from './head'
+import Script from 'next/script'
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+
   const error = useSearchParams().get("error");
   //Load company name in navigation bar
   //Prep Navigation Bar
@@ -46,8 +49,9 @@ export default function RootLayout({
 
   return (
     <html className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base-200">
+      <Head title={"Login"}></Head>
       <body>
-      <ToastContainer
+        <ToastContainer
           position="top-right"
           autoClose={5000}
           hideProgressBar={false}
@@ -64,6 +68,7 @@ export default function RootLayout({
         <ScrollStack ></ScrollStack>
         <Footer></Footer>
       </body>
+      <Script src="/sw.js"></Script>
     </html>
   );
 }

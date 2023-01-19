@@ -1,0 +1,22 @@
+{
+  "name": "Next.JS Progressive Web App",
+  "short_name": "Next PWA",
+  "theme_color": "#ffffff",
+  "background_color": "#004740",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/assets/icons/clickup.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },{
+      "src": "/assets/icons/clickup.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
+  "splash_pages": null
+}

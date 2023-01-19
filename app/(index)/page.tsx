@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import getBaseURL from "../components/getBaseUrl";
-
+import Script from 'next/script'
 export default function Page() {
   //Create states for username password and remember me
   const [username, setUsername] = useState<string>("");
@@ -102,6 +102,7 @@ export default function Page() {
                       showPassword ? "eyes-slash" : "eyes"
                     }`}
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={"show/hide password"}
                   ></button>
                 </div>
                 <div
@@ -133,6 +134,7 @@ export default function Page() {
                   disabled={requesting}
                   className={`btn btn-primary  ${requesting ? "loading" : ""}`}
                   onClick={VerifyUser}
+                  aria-label="submit"
                 >
                   Login
                 </button>
