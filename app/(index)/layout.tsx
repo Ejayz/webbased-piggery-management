@@ -10,6 +10,7 @@ import ScrollStack from '../components/TechStack/ScollStack'
 import Footer from "../components/Footer/footer";
 import Head from './head'
 import Script from 'next/script'
+import SkeletonLoader from "../components/Loading/skeletonLoader";
 export default function RootLayout({
   children,
 }: {

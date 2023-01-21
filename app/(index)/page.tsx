@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import getBaseURL from "../components/getBaseUrl";
-import Script from 'next/script'
+
 export default function Page() {
   //Create states for username password and remember me
   const [username, setUsername] = useState<string>("");
