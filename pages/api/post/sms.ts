@@ -2,11 +2,11 @@ import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
 import connection from "../mysql";
-import * as jwt from 'jsonwebtoken'
+import * as jwt from "jsonwebtoken";
 import { signJWT } from "../jwtProcessor";
 dotenv.config();
 
-const jwt_secret: any = process.env.JWT_KEY
+const jwt_secret: any = process.env.JWT_KEY;
 
 async function send_sms(phone: any, username: any) {
   console.log("sending otp-" + new Date());
@@ -48,15 +48,16 @@ async function send_sms(phone: any, username: any) {
 
 async function VerifySms(username: string, phone: string) {
   return new Promise((resolve, rejects) => {
-    const query = "select * from tbl_users where username=? and phone=? and is_exist='true'"
+    const query =
+      "select * from tbl_users where username=? and phone=? and is_exist='true'";
     connection.getConnection((err, conn) => {
       conn.query(query, [username, phone], (err, result, fields) => {
-        if (err) rejects(err)
-        resolve(result)
-        console.log(result)
-      })
-    })
-  })
+        if (err) rejects(err);
+        resolve(result);
+        console.log(result);
+      });
+    });
+  });
 }
 
 export default async function handler(
@@ -64,17 +65,21 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { phone, username } = req.body;
+  const token = signJWT(req.body);
+
   VerifySms(username, phone)
     .then((result: any) => {
       const data = result.length;
-      console.log(data)
+      console.log(data);
       try {
         if (data == 1) {
           send_sms(phone, username)
             .then((data) => {
               if (data.status == 200) {
-                const token = signJWT(req.body)
-                res.setHeader('Set-Cookie', `reset_auth=${token}; Max-Age=3600; HttpOnly; Path=/;`)
+                res.setHeader(
+                  "Set-Cookie",
+                  `reset_auth=${token}; Max-Age=3600; HttpOnly; Path=/;`
+                );
                 res.status(200).json({
                   code: 200,
                   message: "OTP sent successfully",
