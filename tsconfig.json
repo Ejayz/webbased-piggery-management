@@ -23,11 +23,12 @@
         "name": "next"
       }
     ],
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "@/components/*":["components/*"],
-      "@global-style":["styles/globals.css"],
-      "@/public/*":["public/*"]
+      "@/components/*":["app/components/*"],
+      "@/style/*":["styles/*"],
+      "@/public/*":["public/*"],
+      "@/app/*":["app/*"]
     }
   },
   "include": [

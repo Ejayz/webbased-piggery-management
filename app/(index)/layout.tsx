@@ -1,12 +1,12 @@
 "use client";
 import { toast, ToastContainer } from "react-toastify";
-import "@global-style"
+import "@/style/globals.css"
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation";
-import getCompany from "../../components/getCompany";
-import Navbar from "../../components/Navbar/navbar";
+import getCompany from "@/app/components/getCompany";
+import Navbar from "@/app/components/Navbar/navbar";
 import { useEffect, useState } from "react";
-import Footer from "../../components/Footer/footer";
+import Footer from "@/app/components/Footer/footer";
 import Head from './head'
 export default function RootLayout({
   children,
