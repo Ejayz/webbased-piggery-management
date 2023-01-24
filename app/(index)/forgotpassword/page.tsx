@@ -1,9 +1,9 @@
 "use client";
 "use client";
 import { useRef, useState, MutableRefObject } from "react";
-import Layout2 from "../../components/forgotpassword/otp_form/otp_form";
-import Layout3 from "../../components/forgotpassword/otp_form/change_password";
-import Layout1 from "../../components/forgotpassword/otp_form/verify_number";
+import Layout2 from "@/app/components/forgotpassword/otp_form/otp_form";
+import Layout3 from "@/app/components/forgotpassword/otp_form/change_password";
+import Layout1 from "@/app/components/forgotpassword/otp_form/verify_number";
 export default function Page() {
   const [data, setData] = useState<number>(1);
   const [otp, setOtp] = useState<string>("");

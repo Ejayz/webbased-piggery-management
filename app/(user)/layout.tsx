@@ -1,11 +1,11 @@
 "use client";
 import { toast, ToastContainer } from "react-toastify";
-import "../../styles/globals.css";
+import "@/style/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import React from "react";
-import getUserInfo from "../components/getUserInfo";
-import getCompany from "../components/getCompany";
+import getUserInfo from "@/app/components/getUserInfo";
+import getCompany from "@/app/components/getCompany";
 import Image from "next/image";
 import Link from "next/link";
 
