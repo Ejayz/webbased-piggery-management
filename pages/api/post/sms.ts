@@ -42,7 +42,7 @@ async function send_sms(phone: any, username: any) {
     return responses.text;
   }
   let data = await responses.text();
-  console.log("opt sent-" + responses.text + new Date());
+  console.log("opt sent-" + data + new Date());
   return JSON.parse(data);
 }
 
@@ -65,7 +65,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { phone, username } = req.body;
-  const token = signJWT(req.body);
+
+  const token = await signJWT(req.body);
 
   VerifySms(username, phone)
     .then((result: any) => {
