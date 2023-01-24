@@ -4,8 +4,8 @@ import "../../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import React from "react";
-import getUserInfo from "../components/getUserInfo";
-import getCompany from "../components/getCompany";
+import getUserInfo from "../../components/getUserInfo";
+import getCompany from "../../components/getCompany";
 import Image from "next/image";
 import Link from "next/link";
 

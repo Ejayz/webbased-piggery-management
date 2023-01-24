@@ -3,14 +3,14 @@ import { toast, ToastContainer } from "react-toastify";
 import "../../styles/globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { useSearchParams } from "next/navigation";
-import getCompany from "../components/getCompany";
-import Navbar from "../components/Navbar/navbar";
+import getCompany from "../../components/getCompany";
+import Navbar from "../../components/Navbar/navbar";
 import { useEffect, useState } from "react";
-import ScrollStack from '../components/TechStack/ScollStack'
-import Footer from "../components/Footer/footer";
+import ScrollStack from '../../components/TechStack/ScollStack'
+import Footer from "../../components/Footer/footer";
 import Head from './head'
 import Script from 'next/script'
-import SkeletonLoader from "../components/Loading/skeletonLoader";
+import SkeletonLoader from "../../components/Loading/skeletonLoader";
 export default function RootLayout({
   children,
 }: {
