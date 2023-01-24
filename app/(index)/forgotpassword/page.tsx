@@ -16,7 +16,7 @@ export default function Page() {
   }
   return (
     <>
-      <div className={"bg-base-200 flex h-full flex-col"}>
+      <div className={"bg-base-200 flex h-screen flex-col"}>
         <div className="w-full">
           <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
             <li

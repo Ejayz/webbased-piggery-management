@@ -56,7 +56,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="hero h-auto">
+      <div className="hero h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
             <h1 className="text-5xl font-bold">Login Now!</h1>
@@ -96,7 +96,8 @@ export default function Page() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="input input-bordered w-full"
                   />
-                  <button name="showpassword"
+                  <button
+                    name="showpassword"
                     data-tip={showPassword ? "Hide password" : "Show password"}
                     className={`btn tooltip btn-square flex  ${
                       showPassword ? "eyes-slash" : "eyes"
