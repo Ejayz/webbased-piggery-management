@@ -69,7 +69,7 @@ export default function RootLayout({
         <ScrollStack ></ScrollStack>
         <Footer></Footer>
       </body>
-      <Script src="/sw.js"></Script>
+      {/* <Script src="/sw.js"></Script> */}
     </html>
   );
 }
