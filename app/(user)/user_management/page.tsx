@@ -24,7 +24,7 @@ export default function Page() {
             <ViewForm></ViewForm>
           </div>
         </div>
-        <div className="h-1/2 w-full flex flex-col text-center overflow-x-hidden">
+        <div className="h-1/2 w-full flex flex-col text-center overflow-x-hiddens">
           <p className="text-2xl p-4 mx-auto">Users Data</p>
           <table className="w-11/12 mx-auto h-12 text-left text-fixed lg:text-center mb-24  rounded-md">
             <thead className="lg:table-header-group  hidden bg-slate-400">

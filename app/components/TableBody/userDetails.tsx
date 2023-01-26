@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import SkeletonLoader from "../Loading/skeletonLoader";
-import Image from "next/image";
 import Link from "next/link";
 interface User {
   user_id: number;
@@ -19,12 +17,10 @@ interface ApiData {
   code: number;
   data: User[];
 }
-
 export default function Page() {
   const [userData, setUserData] = useState<ApiData>();
   const [parsed, setParsed] = useState<User[]>([]);
   const [message, setMessage] = useState<string>("");
-  console.log(parsed);
   useEffect(() => {
     const getUserInfo = async () => {
       let headersList = {
@@ -32,7 +28,7 @@ export default function Page() {
         "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       };
 
-      let response = await fetch("http://localhost:3000/api/get/getUsers", {
+      let response = await fetch(`${location.origin}/api/get/getUsers`, {
         method: "GET",
         headers: headersList,
       });

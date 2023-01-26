@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
@@ -13,7 +12,6 @@ export default function ViewUser({ id }: any) {
   const [last_name, setLast_name] = useState(null);
   const [phone, setPhone] = useState(null);
   const [job, setJob] = useState(null);
-
   useEffect(() => {
     async function ViewUser() {
       let headersList = {
@@ -21,7 +19,7 @@ export default function ViewUser({ id }: any) {
         "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       };
 
-      let response = await fetch("http://localhost:3000/api/get/view_user/2", {
+      let response = await fetch(`${location.origin}/api/get/view_user/2`, {
         method: "GET",
         headers: headersList,
       });

@@ -6,7 +6,6 @@ export default function SelectBox({
   options,
   setter,
 }: any) {
-  console.log(options);
   return (
     <>
       <div className="input-control  w-auto">
