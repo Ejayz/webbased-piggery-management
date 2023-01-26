@@ -17,10 +17,15 @@ export default async function handler(
   const cookie = await searchCookie(cookies, "auth");
   const isAllowed = await verifyJWT(cookie);
   if (isAllowed) {
-    const data = await getUsers(1);
-    res.status(200).json({ code: 200, data: data });
+    const data: any = await getUsers(1);
+    if (data.length == 0) {
+      return res
+        .status(200)
+        .json({ code: 404, message: "No data fetched from database." });
+    }
+    return res.status(200).json({ code: 200, data: data });
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       code: "401",
       message: "Invalid authentication. Make sure you are logged in.",
     });

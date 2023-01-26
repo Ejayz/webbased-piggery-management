@@ -23,6 +23,7 @@ interface ApiData {
 export default function Page() {
   const [userData, setUserData] = useState<ApiData>();
   const [parsed, setParsed] = useState<User[]>([]);
+  const [message, setMessage] = useState<string>("");
   console.log(parsed);
   useEffect(() => {
     const getUserInfo = async () => {
@@ -38,23 +39,39 @@ export default function Page() {
       const data = await response.json();
       if (response.ok) {
         setTimeout(() => {
-          setUserData(data);
-          setParsed(data.data);
+          if (data.code == 200) {
+            setUserData(data);
+            setParsed(data.data);
+          }
+          if (data.code == 404) {
+            setMessage(data.message);
+          }
         }, 5000);
       }
     };
 
     getUserInfo();
   }, []);
-
-  if (parsed.length == 0) {
+  if (message != "") {
+    return (
+      <>
+        <tr>
+          <td colSpan={6} className="text-base font-bold">
+            <div className="flex flex-row w-full text-center">
+              <span className="text-center mx-auto">{message}</span>
+            </div>
+          </td>
+        </tr>
+      </>
+    );
+  } else if (parsed.length == 0) {
     return (
       <>
         <tr>
           <td colSpan={6} className="text-base font-bold">
             <div className="flex flex-row w-full text-center">
               <span className="ml-auto mr-0">
-                Please wait while we get user data
+                Please wait while we get user data...
               </span>
               <div className="h-6 ml-2 mr-auto animate-spin w-6 rounded-full border-b-4 border-l-4 border-slate-400"></div>
             </div>
@@ -93,30 +110,6 @@ export default function Page() {
             <td className="block lg:table-cell flex lg:flex-none flex-row">
               <p className="lg:hidden ml-4 w-1/4 font-bold">Actions</p>
               <div className="btn-group">
-                {/* <button className="btn">
-                  <Image
-                    src={`/assets/icons/edit.png`}
-                    height={24}
-                    width={24}
-                    alt={""}
-                  ></Image>
-                </button>
-                <button className="btn">
-                  <Image
-                    src={`/assets/icons/view.png`}
-                    height={24}
-                    width={24}
-                    alt={""}
-                  ></Image>
-                </button>
-                <button className="btn">
-                  <Image
-                    src={`/assets/icons/delete.png`}
-                    height={24}
-                    width={24}
-                    alt={""}
-                  ></Image>
-                </button> */}
                 <Link className="px-2 hover:text-blue-500 link" href="#">
                   {" "}
                   Edit{" "}
