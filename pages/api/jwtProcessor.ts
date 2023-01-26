@@ -1,30 +1,31 @@
-import jwt from 'jsonwebtoken'
-import * as dotenv from 'dotenv'
-dotenv.config()
+import jwt, { JwtPayload } from "jsonwebtoken";
+import * as dotenv from "dotenv";
+import { resolve } from "path";
+import { rejects } from "assert";
+dotenv.config();
 
-const secret: any = process.env.JWT_KEY
+const secret: any = process.env.JWT_KEY;
 
 async function verifyJWT(token: any) {
-    if (jwt.verify(token, secret)) {
-        return true
-    } else {
-        return false
-    }
+  const isVerified = jwt.verify(token, secret);
+
+  if (isVerified) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 async function decodeJWT(token: any) {
-    if (jwt.verify(token, secret)) {
-        return jwt.decode(token)
-    } else {
-        return null
-    }
+  return new Promise((resolve, rejects) => {
+    jwt.verify(token, secret, (err: any, decoded: any) => {
+      if (err) rejects(err);
+      resolve(decoded);
+    });
+  });
 }
 async function signJWT(signables: Object) {
-    return jwt.sign(signables, secret)
+  return jwt.sign(signables, secret);
 }
 
-export {
-    verifyJWT,
-    decodeJWT,
-    signJWT
-}
+export { verifyJWT, decodeJWT, signJWT };

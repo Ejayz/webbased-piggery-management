@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import getBaseUrl from "../../getBaseUrl";
+import getBaseUrl from "@/hooks/getBaseUrl";
 export default function ResetPassword({
   setText,
   setState,
