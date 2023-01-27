@@ -9,7 +9,6 @@ export default function Page() {
   const [userid, setUserid] = useState();
   const [compos, setComps] = useState(<></>);
   const action = useSearchParams().get("action");
-  const focusable = useRef();
 
   useEffect(() => {
     async function getView() {
@@ -28,7 +27,7 @@ export default function Page() {
   return (
     <>
       <div className="w-full h-auto oveflow-y-auto flex flex-col overflow-x-hidden">
-        <div ref={focusable} className="w-11/12  mx-auto flex flex-row">
+        <div className="w-11/12  mx-auto flex flex-row">
           <Image
             src={"/assets/icons/manage_user.png"}
             alt={""}
