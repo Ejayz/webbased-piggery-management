@@ -17,7 +17,7 @@ interface ApiData {
   code: number;
   data: User[];
 }
-export default function Page() {
+export default function Page({ setUserId }: any) {
   const [userData, setUserData] = useState<ApiData>();
   const [parsed, setParsed] = useState<User[]>([]);
   const [message, setMessage] = useState<string>("");
@@ -25,7 +25,6 @@ export default function Page() {
     const getUserInfo = async () => {
       let headersList = {
         Accept: "*/*",
-        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       };
 
       let response = await fetch(`${location.origin}/api/get/getUsers`, {
@@ -106,19 +105,25 @@ export default function Page() {
             <td className="block lg:table-cell flex lg:flex-none flex-row">
               <p className="lg:hidden ml-4 w-1/4 font-bold">Actions</p>
               <div className="btn-group">
-                <Link className="px-2 hover:text-blue-500 link" href="#">
-                  {" "}
-                  Edit{" "}
-                </Link>{" "}
+                <Link
+                  className="px-2 hover:text-blue-500 link"
+                  href={`/user_management/?action=e&&id=${user.user_id}`}
+                >
+                  Edit
+                </Link>
                 |
-                <Link className="px-2 hover:text-blue-500 link" href="#">
-                  {" "}
-                  View{" "}
-                </Link>{" "}
+                <Link
+                  className="px-2 hover:text-blue-500 link"
+                  href={`/user_management/?action=v&&id=${user.user_id}`}
+                >
+                  View
+                </Link>
                 |
-                <Link className="px-2 hover:text-blue-500 link" href="#">
-                  {" "}
-                  Delete{" "}
+                <Link
+                  className="px-2 hover:text-blue-500 link"
+                  href={`/user_management/?action=d&&id=${user.user_id}`}
+                >
+                  Delete
                 </Link>
               </div>
             </td>

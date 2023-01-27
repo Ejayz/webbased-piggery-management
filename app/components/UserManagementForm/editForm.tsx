@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
-export default function ViewUser({ id }: any) {
+export default function EditUser({ id }: any) {
   const [user_id, setUserid] = useState(null);
   const [username, setUsername] = useState(null);
   const [first_name, setFirst_name] = useState(null);
@@ -68,7 +68,7 @@ export default function ViewUser({ id }: any) {
 
               <li>View</li>
 
-              <li className="font-bold">View</li>
+              <li className="font-bold">Modify</li>
             </ul>
           </div>
           <form
@@ -92,7 +92,7 @@ export default function ViewUser({ id }: any) {
                 label={"Username"}
                 placeholder={"Username"}
                 name={"username"}
-                disabled={true}
+                disabled={false}
                 className={"input input-bordered h-10"}
                 value={username}
                 setter={setUsername}
@@ -107,7 +107,6 @@ export default function ViewUser({ id }: any) {
                 className={"input input-bordered h-10"}
                 value={first_name}
                 setter={setFirst_name}
-                disabled={true}
               />
               <InputBox
                 type={"text"}
@@ -116,7 +115,6 @@ export default function ViewUser({ id }: any) {
                 name={"first_name"}
                 className={"input input-bordered h-10"}
                 value={middle_name}
-                disabled={true}
                 setter={setMiddle_name}
               />
               <InputBox
@@ -127,7 +125,6 @@ export default function ViewUser({ id }: any) {
                 className={"input input-bordered h-10"}
                 value={last_name}
                 setter={setLast_name}
-                disabled={true}
               />
             </div>
             <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
@@ -139,7 +136,6 @@ export default function ViewUser({ id }: any) {
                 className={"input input-bordered h-10"}
                 value={phone}
                 setter={setPhone}
-                disabled={true}
               />
               <SelectBox
                 label={"Job"}
@@ -159,10 +155,16 @@ export default function ViewUser({ id }: any) {
                     display: "Veterinarian",
                   },
                 ]}
-                disabled={true}
+                disabled={false}
                 default_option={"Job"}
                 setter={setJob}
               />
+            </div>
+            <div className="w-full mt-2 mb-2 ml-2">
+              <button className="btn btn-active btn-primary">
+                Update Information
+              </button>
+              <button className="btn btn-active btn-primary">Cancel</button>
             </div>
           </form>
         </div>

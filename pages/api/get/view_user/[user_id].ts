@@ -38,7 +38,7 @@ export default async function handler(
 
     const json: any = await decodeJWT(cookie);
     if (json.user_id == uid) {
-      return res.status(403).json({
+      return res.status(409).json({
         code: 403,
         message: "403 Forbidden. Selecting logged in ID",
       });

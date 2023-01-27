@@ -2,13 +2,33 @@
 import UserDetails from "@/components/TableBody/userDetails";
 import ViewForm from "@/components/UserManagementForm/ViewForm";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import EditUser from "@/components/UserManagementForm/editForm";
 export default function Page() {
   const [userid, setUserid] = useState();
+  const [compos, setComps] = useState(<></>);
+  const action = useSearchParams().get("action");
+  const focusable = useRef();
+
+  useEffect(() => {
+    async function getView() {
+      if (action == null) {
+        setComps(<></>);
+      } else if (action == "v") {
+        setComps(<ViewForm></ViewForm>);
+      } else if (action == "e") {
+        setComps(<EditUser></EditUser>);
+      } else if (action == "d") {
+        setComps(<ViewForm></ViewForm>);
+      }
+    }
+    getView();
+  }, [action]);
   return (
     <>
       <div className="w-full h-auto oveflow-y-auto flex flex-col overflow-x-hidden">
-        <div className="w-11/12  mx-auto flex flex-row">
+        <div ref={focusable} className="w-11/12  mx-auto flex flex-row">
           <Image
             src={"/assets/icons/manage_user.png"}
             alt={""}
@@ -20,9 +40,7 @@ export default function Page() {
         </div>
 
         <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col">
-          <div className="w-full h-auto mx-auto flex ">
-            <ViewForm></ViewForm>
-          </div>
+          <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
         </div>
         <div className="h-1/2 w-full flex flex-col text-center overflow-x-hiddens">
           <p className="text-2xl p-4 mx-auto">Users Data</p>
@@ -37,7 +55,7 @@ export default function Page() {
               </tr>
             </thead>
             <tbody className="overflow-y-scroll overflow-x-hidden overscroll-contain h-12">
-              <UserDetails></UserDetails>
+              <UserDetails setUserId={setUserid}></UserDetails>
             </tbody>
           </table>
         </div>

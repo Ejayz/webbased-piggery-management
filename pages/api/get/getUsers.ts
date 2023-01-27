@@ -40,8 +40,8 @@ async function getUsers(USER_ID: any) {
       conn.query(sql, [USER_ID], (err, result, feilds) => {
         if (err) rejects(err);
         resolve(result);
-        conn.release();
       });
+      conn.release();
     });
   });
 }
