@@ -2,7 +2,7 @@ import { rejects } from "assert";
 import { NextApiRequest, NextApiResponse } from "next";
 import connection from "../mysql";
 import jwt from "jsonwebtoken";
-import { verifyJWT } from "../jwtProcessor";
+import { decodeJWT, verifyJWT } from "../jwtProcessor";
 import searchCookie from "../cookieParser";
 
 export default async function handler(
@@ -16,8 +16,9 @@ export default async function handler(
   const cookies: any = req.headers.cookie;
   const cookie = await searchCookie(cookies, "auth");
   const isAllowed = await verifyJWT(cookie);
+  const decode: any = await decodeJWT(cookie);
   if (isAllowed) {
-    const data: any = await getUsers(1);
+    const data: any = await getUsers(decode.user_id);
     if (data.length == 0) {
       return res
         .status(200)
