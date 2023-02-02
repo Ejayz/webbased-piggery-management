@@ -2,18 +2,20 @@
 import UserDetails from "@/components/TableBody/userDetails";
 import ViewForm from "@/components/UserManagementForm/ViewForm";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import EditUser from "@/components/UserManagementForm/editForm";
+import AddUser from "@/components/UserManagementForm/addForm";
 export default function Page() {
   const [userid, setUserid] = useState();
-  const [compos, setComps] = useState(<></>);
+  const [compos, setComps] = useState(<AddUser></AddUser>);
   const action = useSearchParams().get("action");
 
   useEffect(() => {
     async function getView() {
-      if (action == null) {
-        setComps(<></>);
+      console.log(action == null);
+      if (action == null || action == "a") {
+        setComps(<AddUser></AddUser>);
       } else if (action == "v") {
         setComps(<ViewForm></ViewForm>);
       } else if (action == "e") {
@@ -41,7 +43,7 @@ export default function Page() {
         <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col">
           <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
         </div>
-        <div className="h-1/2 w-full flex flex-col text-center overflow-x-hiddens">
+        <div className="h-1/2 w-full flex flex-col text-center overflow-x-hidden">
           <p className="text-2xl p-4 mx-auto">Users Data</p>
           <table className="w-11/12 mx-auto h-12 text-left text-fixed lg:text-center mb-24  rounded-md">
             <thead className="lg:table-header-group  hidden bg-slate-400">

@@ -1,5 +1,4 @@
 import { getCookie } from "cookies-next";
-import { OkPacket, RowDataPacket } from "mysql2";
 import { NextApiRequest, NextApiResponse } from "next";
 import { decodeJWT, verifyJWT } from "pages/api/jwtProcessor";
 import connection from "pages/api/mysql";
@@ -14,7 +13,7 @@ export default async function handler(
       .status(405)
       .json({ code: 405, message: "405 Method not allowed" });
   }
-  const uid = req.query.user_id;
+  const uid: any = req.query.user_id;
   if (uid == undefined) {
     return res
       .status(404)
@@ -60,7 +59,7 @@ export default async function handler(
   }
 }
 
-async function viewUser(user_id: any) {
+async function viewUser(user_id: string) {
   return new Promise((resolve, reject) => {
     const sql =
       "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where user_id=? and is_exist='true'";

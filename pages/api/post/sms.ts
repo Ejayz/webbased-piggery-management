@@ -22,7 +22,7 @@ async function send_sms(phone: any, username: any) {
   bodyContent.append("type", "sms");
   bodyContent.append("phone", `+63${phone}`);
   bodyContent.append("mode", "devices");
-  bodyContent.append("device", device_api);
+  bodyContent.append("device", `${device_api}`);
   bodyContent.append("sim", "1");
   bodyContent.append(
     "message",

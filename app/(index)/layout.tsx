@@ -1,10 +1,9 @@
 "use client";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "@/style/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import { useSearchParams } from "next/navigation";
 import Navbar from "@/app/components/Navbar/navbar";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Footer from "@/app/components/Footer/footer";
 import Head from "./head";
 import { Suspense } from "react";

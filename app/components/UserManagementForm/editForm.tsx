@@ -1,25 +1,33 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
-export default function EditUser({ id }: any) {
-  const [user_id, setUserid] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [first_name, setFirst_name] = useState(null);
-  const [middle_name, setMiddle_name] = useState(null);
-  const [last_name, setLast_name] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [job, setJob] = useState(null);
+import Link from "next/link";
+
+export default function EditUser({ setAction }: any) {
+  const [user_id, setUserid] = useState("");
+  const [username, setUsername] = useState("");
+  const [first_name, setFirst_name] = useState("");
+  const [middle_name, setMiddle_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  const [phone, setPhone] = useState("");
+  const [job, setJob] = useState("");
+  const router = useRouter();
   const Queryid = useSearchParams().get("id");
   if (Queryid == undefined) {
-    return <></>;
+    toast.error("Query ID is invalid");
   }
+
+  function callCancel(e: any) {
+    router.push("/user_management/?action=a");
+  }
+
   useEffect(() => {
     async function ViewUser() {
-      setUserid(null);
+      setUserid("");
       let headersList = {
         Accept: "*/*",
       };
@@ -50,7 +58,7 @@ export default function EditUser({ id }: any) {
     ViewUser();
   }, [Queryid !== null]);
 
-  if (user_id == null) {
+  if (user_id == "") {
     return (
       <>
         <div className="w-full h-1/2 flex">
@@ -64,11 +72,11 @@ export default function EditUser({ id }: any) {
         <div className="w-full bg-slate-500 h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
-              <li>Dashboard</li>
+              <li>User Management</li>
 
               <li>View</li>
 
-              <li className="font-bold">Modify</li>
+              <li className="font-bold">Edit</li>
             </ul>
           </div>
           <form
@@ -161,10 +169,18 @@ export default function EditUser({ id }: any) {
               />
             </div>
             <div className="w-full mt-2 mb-2 ml-2">
-              <button className="btn btn-active btn-primary">
-                Update Information
+              <button className="btn btn-active btn-primary mx-4">
+                Update
               </button>
-              <button className="btn btn-active btn-primary">Cancel</button>
+              <Link
+                onClick={(e) => {
+                  callCancel(e);
+                }}
+                className="btn btn-active btn-primary mx-4"
+                href={"/user_management/?action=a&id=null"}
+              >
+                Cancel
+              </Link>
             </div>
           </form>
         </div>

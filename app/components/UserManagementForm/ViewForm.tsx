@@ -64,10 +64,7 @@ export default function ViewUser({ id }: any) {
         <div className="w-full bg-slate-500 h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
-              <li>Dashboard</li>
-
-              <li>View</li>
-
+              <li>User Management</li>
               <li className="font-bold">View</li>
             </ul>
           </div>

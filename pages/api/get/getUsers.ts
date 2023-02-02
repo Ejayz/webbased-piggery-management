@@ -1,7 +1,5 @@
-import { rejects } from "assert";
 import { NextApiRequest, NextApiResponse } from "next";
 import connection from "../mysql";
-import jwt from "jsonwebtoken";
 import { decodeJWT, verifyJWT } from "../jwtProcessor";
 import searchCookie from "../cookieParser";
 

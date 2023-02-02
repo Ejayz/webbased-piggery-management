@@ -5,11 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Suspense, useEffect, useState } from "react";
 import React from "react";
 import getUserInfo from "@/app/components/getUserInfo";
-import getCompany from "@/app/components/getCompany";
 import Image from "next/image";
 import Link from "next/link";
 import Loading from "@/app/components/Loading/loading";
-import getBaseUrl from "@/hooks/getBaseUrl";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
