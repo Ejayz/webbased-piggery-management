@@ -4,30 +4,50 @@ import connection from "../mysql";
 import bcrypt, { genSalt } from "bcrypt";
 import { ResultSetHeader } from "mysql2";
 import { getCookie } from "cookies-next";
+import { verifyJWT } from "../jwtProcessor";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const cookie = getCookie("auth");
-  console.log(cookie);
+  const cookie = getCookie("auth", { req, res });
 
   if (req.method !== "POST") {
     res
       .status(405)
       .json({ code: 405, message: "This API Endpoint expects POST method." });
   }
-
+  if (cookie == null || cookie == undefined) {
+    return res
+      .status(401)
+      .json({ code: 401, message: " Invalid access .Please login first" });
+  }
+  const verified = await verifyJWT(cookie);
+  if (!verified) {
+    return res.status(401).json({
+      code: 401,
+      message: "Invalid access token. Please relogin.",
+    });
+  }
   const { username, first_name, middle_name, last_name, password, phone, job } =
     req.body;
   const hashedPassword = await generateHased(password);
   const checkDup: any = await checkDups({ username });
+
   if (checkDup.length >= 1) {
     return res
       .status(409)
       .json({ code: 409, message: "Username already exist." });
   }
-
+  console.log({
+    username,
+    first_name,
+    middle_name,
+    last_name,
+    hashedPassword,
+    phone,
+    job,
+  });
   const create: any = await createUser({
     username,
     first_name,
@@ -38,15 +58,14 @@ export default async function handler(
     job,
   });
   if (create.affectedRows == 1) {
-    res
+    return res
       .status(200)
       .json({ code: 200, message: `User account created for ${username}` });
   } else {
-    res
+    return res
       .status(500)
       .json({ code: 500, message: "Server error ! Something went wrong" });
   }
-  console.log(create);
 }
 
 async function generateHased(password: string) {
@@ -59,7 +78,7 @@ async function createUser({
   first_name,
   middle_name,
   last_name,
-  password,
+  hashedPassword,
   phone,
   job,
 }: any) {
@@ -70,7 +89,15 @@ async function createUser({
       if (err) rejects(err);
       conn.query(
         sql,
-        [username, password, first_name, middle_name, last_name, phone, job],
+        [
+          username,
+          hashedPassword,
+          first_name,
+          middle_name,
+          last_name,
+          phone,
+          job,
+        ],
         (error, result, feilds) => {
           if (error?.errno == 1062)
             rejects({ code: 1062, message: "Username already used" });

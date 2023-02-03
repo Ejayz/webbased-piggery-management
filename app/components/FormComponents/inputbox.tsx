@@ -7,6 +7,7 @@ export default function InputBox({
   className = "input input-bordered",
   value = "",
   setter,
+  required = false,
 }: any) {
   return (
     <>
@@ -22,6 +23,7 @@ export default function InputBox({
           name={name}
           disabled={disabled}
           onChange={(e) => setter(e.target.value)}
+          required={required}
         />
       </div>
     </>

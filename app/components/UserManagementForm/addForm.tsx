@@ -6,7 +6,6 @@ import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
 export default function AddUser({ id }: any) {
-  const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
   const [middle_name, setMiddle_name] = useState("");
@@ -17,7 +16,6 @@ export default function AddUser({ id }: any) {
   const [repeatPassword, setrepeatPass] = useState("");
 
   function resetState() {
-    setUserid("");
     setUsername("");
     setFirst_name("");
     setMiddle_name("");
@@ -30,6 +28,17 @@ export default function AddUser({ id }: any) {
 
   async function createUser(e: any) {
     e.preventDefault();
+    if (
+      username == "" ||
+      first_name == "" ||
+      middle_name == "" ||
+      last_name == "" ||
+      phone == "" ||
+      job == "default"
+    ) {
+      toast.error("All feilds are required.");
+      return false;
+    }
     if (password != repeatPassword) {
       toast.error("Password and Repeat Password do not match.");
       return false;
@@ -70,14 +79,30 @@ export default function AddUser({ id }: any) {
       job: job,
     });
 
-    let response = await fetch("http://localhost:3000/api/post/addUser", {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    });
-
-    let data = await response.text();
-    console.log(data);
+    let response = await toast.promise(
+      fetch("http://localhost:3000/api/post/addUser", {
+        method: "POST",
+        body: bodyContent,
+        headers: headersList,
+      }),
+      {
+        pending: "Adding user information in database.",
+        success: "Process completed... Gathering Result",
+        error: "Process failed.Gathering Result",
+      },
+      { toastId: "Promised" }
+    );
+    console.log(response);
+    let data = await response.json();
+    if (data.code == 200) {
+      setTimeout(() => {
+        toast.dismiss("Promised");
+      }, 1000);
+      toast.success(data.message, { delay: 2000 });
+      resetState();
+    } else {
+      toast.error(data.message);
+    }
   }
 
   return (
@@ -104,6 +129,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={username}
               setter={setUsername}
+              required={true}
             />
             <InputBox
               type={"password"}
@@ -114,6 +140,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={password}
               setter={setPassword}
+              required={true}
             />
             <InputBox
               type={"password"}
@@ -124,6 +151,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={repeatPassword}
               setter={setrepeatPass}
+              required={true}
             />{" "}
           </div>
           <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
@@ -135,6 +163,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={first_name}
               setter={setFirst_name}
+              required={true}
             />
             <InputBox
               type={"text"}
@@ -144,6 +173,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={middle_name}
               setter={setMiddle_name}
+              required={true}
             />
             <InputBox
               type={"text"}
@@ -153,6 +183,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={last_name}
               setter={setLast_name}
+              required={true}
             />
           </div>
           <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
@@ -164,6 +195,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={phone}
               setter={setPhone}
+              required={true}
             />
             <SelectBox
               label={"Job"}
@@ -186,6 +218,7 @@ export default function AddUser({ id }: any) {
               disabled={false}
               default_option={"Job"}
               setter={setJob}
+              required={true}
             />
           </div>
           <div className="w-full mt-2 mb-2 ml-2">

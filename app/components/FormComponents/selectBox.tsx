@@ -5,6 +5,7 @@ export default function SelectBox({
   default_option = "Options",
   options,
   setter,
+  required = false,
 }: any) {
   return (
     <>
@@ -17,6 +18,7 @@ export default function SelectBox({
           name={name}
           className="select select-bordered"
           onChange={(e) => setter(e.target.value)}
+          required={required}
         >
           <option value={"default"}>{default_option}</option>
           {options.map((item: any, index: number) => {
