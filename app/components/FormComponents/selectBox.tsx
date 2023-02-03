@@ -23,7 +23,7 @@ export default function SelectBox({
           <option value={"default"}>{default_option}</option>
           {options.map((item: any, index: number) => {
             return (
-              <option key={index} defaultValue={item.value}>
+              <option key={index} value={item.value}>
                 {item.display}
               </option>
             );
