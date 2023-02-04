@@ -62,7 +62,7 @@ export default function EditUser({ setAction }: any) {
     return (
       <>
         <div className="w-full h-1/2 flex">
-          <Loading height={"h-1/2"}></Loading>
+          <Loading height={"h-full"}></Loading>
         </div>
       </>
     );
