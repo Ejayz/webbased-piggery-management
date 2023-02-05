@@ -2,6 +2,8 @@
 import Link from "next/link";
 
 export default function Components({ parsed, message, isSorting }: any) {
+  console.log(parsed);
+
   if (message != "") {
     return (
       <>
@@ -30,7 +32,9 @@ export default function Components({ parsed, message, isSorting }: any) {
       <>
         <div className="w-full h-10">
           <div className="flex flex-row mx-auto text-center">
-            <span className="ml-auto mr-0">Please wait while we</span>
+            <span className="ml-auto mr-0">
+              Please wait while we retrieve and sort user data 
+            </span>
             <div className="h-6 ml-2 mr-auto animate-spin w-6 rounded-full border-b-4 border-l-4 border-slate-400"></div>
           </div>
         </div>
@@ -79,21 +83,39 @@ export default function Components({ parsed, message, isSorting }: any) {
                 <div className="btn-group">
                   <Link
                     className="px-2 hover:text-blue-500 link"
-                    href={`/user_management/?action=e&&id=${user.user_id}#Form`}
+                    href={{
+                      pathname: `/user_management/`,
+                      query: {
+                        action: "e",
+                        id: user.user_id,
+                      },
+                    }}
                   >
                     Edit
                   </Link>
                   |
                   <Link
                     className="px-2 hover:text-blue-500 link"
-                    href={`/user_management/?action=v&&id=${user.user_id}`}
+                    href={{
+                      pathname: `/user_management/`,
+                      query: {
+                        action: "v",
+                        id: user.user_id,
+                      },
+                    }}
                   >
                     View
                   </Link>
                   |
                   <Link
                     className="px-2 hover:text-blue-500 link"
-                    href={`/user_management/?action=d&&id=${user.user_id}`}
+                    href={{
+                      pathname: `/user_management/`,
+                      query: {
+                        action: "d",
+                        id: user.user_id,
+                      },
+                    }}
                   >
                     Delete
                   </Link>

@@ -15,6 +15,8 @@ export default function EditUser({ setAction }: any) {
   const [last_name, setLast_name] = useState("");
   const [phone, setPhone] = useState("");
   const [job, setJob] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setrepeatPass] = useState("");
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
   if (Queryid == undefined) {
@@ -56,7 +58,7 @@ export default function EditUser({ setAction }: any) {
       }
     }
     ViewUser();
-  }, [Queryid !== null]);
+  }, [Queryid]);
 
   if (user_id == "") {
     return (
@@ -81,10 +83,10 @@ export default function EditUser({ setAction }: any) {
           </div>
           <form
             action="/user_management/"
-            method="get"
+            method="post"
             className="flex w-full h-auto py-2 flex-col"
           >
-            <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
+            <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
               <InputBox
                 type={"text"}
                 label={"User Id"}
@@ -104,9 +106,32 @@ export default function EditUser({ setAction }: any) {
                 className={"input input-bordered h-10"}
                 value={username}
                 setter={setUsername}
+                autofocus={true}
               />
+              <InputBox
+                type={"password"}
+                label={"Password"}
+                placeholder={"Password"}
+                name={"password"}
+                disabled={false}
+                className={"input input-bordered h-10"}
+                value={password}
+                setter={setPassword}
+                required={true}
+              />
+              <InputBox
+                type={"password"}
+                label={"Repeat Password"}
+                placeholder={"Repeat Password"}
+                name={"repeatPass"}
+                disabled={false}
+                className={"input input-bordered h-10"}
+                value={repeatPassword}
+                setter={setrepeatPass}
+                required={true}
+              />{" "}
             </div>
-            <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
+            <div className="w-full grid grid-rows-4 grid-cols-none lg:grid-cols-4 lg:grid-rows-none ml-2">
               <InputBox
                 type={"text"}
                 label={"First Name"}
@@ -135,7 +160,7 @@ export default function EditUser({ setAction }: any) {
                 setter={setLast_name}
               />
             </div>
-            <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
+            <div className="w-full ml-2 grid grid-rows-4 lg:grid-cols-4 lg:grid-rows-none grid-cols-none">
               <InputBox
                 type={"text"}
                 label={"Phone"}

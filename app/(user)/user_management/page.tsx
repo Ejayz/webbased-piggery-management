@@ -31,6 +31,46 @@ export default function Page() {
   const [parsed, setParsed] = useState<User[]>([]);
   const [message, setMessage] = useState<string>("");
   const [isSorting, setisSorting] = useState(false);
+  const [sorts, setSort] = useState("ASC");
+  const [sortby, setSortBy] = useState("username");
+
+  const sortData = async () => {
+    setisSorting(true);
+    let headersList = {
+      Accept: "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json",
+    };
+
+    let bodyContent = JSON.stringify({
+      sortby: sortby,
+      sortorder: sorts,
+    });
+
+    let response = await fetch(
+      "http://localhost:3000/api/post/getSortedUsers",
+      {
+        method: "POST",
+        body: bodyContent,
+        headers: headersList,
+      }
+    );
+
+    let data = await response.json();
+    if (response.ok) {
+      setTimeout(() => {
+        if (data.code == 200) {
+          setUserData(data);
+          setParsed(data.data);
+          setisSorting(false);
+        }
+        if (data.code == 404) {
+          setMessage(data.message);
+        }
+      }, 5000);
+    }
+  };
+
   useEffect(() => {
     const getUserInfo = async () => {
       let headersList = {
@@ -78,7 +118,7 @@ export default function Page() {
   return (
     <>
       <div className="w-full h-auto oveflow-y-auto flex flex-col overflow-x-hidden">
-        <div id="Form" className="w-11/12  mx-auto flex flex-row">
+        <div className="w-11/12  mx-auto flex flex-row">
           <Image
             src={"/assets/icons/manage_user.png"}
             alt={""}
@@ -101,7 +141,9 @@ export default function Page() {
               </label>
               <div
                 tabIndex={0}
-                className="dropdown-content card card-compact w-64 p-2 shadow bg-base-200"
+                className={`${
+                  isSorting ? "hidden" : "block"
+                } dropdown-content card card-compact w-64 p-2 shadow bg-base-200`}
               >
                 <div className="card-body">
                   <div className="divider">Sort Order</div>
@@ -110,9 +152,13 @@ export default function Page() {
                       <span className="label-text">Ascending</span>
                       <input
                         type="radio"
-                        name="radio-10"
-                        className="radio checked:bg-red-500"
-                        checked
+                        name="sorts"
+                        value={"ASC"}
+                        defaultChecked={true}
+                        className="radio checked:bg-blue-500"
+                        onChange={(e) => {
+                          setSort(e.target.value);
+                        }}
                       />
                     </label>
                   </div>
@@ -121,9 +167,12 @@ export default function Page() {
                       <span className="label-text">Descending</span>
                       <input
                         type="radio"
-                        name="radio-10"
+                        name="sorts"
                         className="radio checked:bg-blue-500"
-                        checked
+                        value={"DESC"}
+                        onChange={(e) => {
+                          setSort(e.target.value);
+                        }}
                       />
                     </label>
                   </div>
@@ -131,14 +180,102 @@ export default function Page() {
                   <div className="form-control">
                     <label className="label cursor-pointer">
                       <span className="label-text">Username</span>
+
                       <input
                         type="radio"
-                        name="radio-10"
+                        name="keys"
+                        value="username"
                         className="radio checked:bg-red-500"
-                        checked
+                        defaultChecked={true}
+                        checked={sortby == "username"}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                        }}
                       />
                     </label>
                   </div>
+                  {/*  */}
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">First Name</span>
+                      <input
+                        type="radio"
+                        name="keys"
+                        className="radio checked:bg-red-500"
+                        value="first_name"
+                        checked={sortby == "first_name"}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  {/*  */}
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">Middle Name</span>
+                      <input
+                        type="radio"
+                        name="keys"
+                        className="radio checked:bg-red-500"
+                        value="middle_name"
+                        checked={sortby == "middle_name"}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  {/*  */}
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">Last Name</span>
+                      <input
+                        type="radio"
+                        name="keys"
+                        className="radio checked:bg-red-500"
+                        value="last_name"
+                        checked={sortby == "last_name"}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  {/*  */}
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">Job</span>
+                      <input
+                        type="radio"
+                        name="keys"
+                        className="radio checked:bg-red-500"
+                        value="job"
+                        checked={sortby == "job"}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <div className="form-control">
+                    <label className="label cursor-pointer">
+                      <span className="label-text">Phone</span>
+                      <input
+                        type="radio"
+                        name="keys"
+                        className="radio checked:bg-red-500"
+                        checked={sortby == "phone"}
+                        value="phone"
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <button onClick={sortData} className="btn btn-primary m-1">
+                    Apply
+                  </button>
                 </div>
               </div>
             </div>

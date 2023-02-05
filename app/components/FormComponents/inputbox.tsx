@@ -8,6 +8,7 @@ export default function InputBox({
   value = "",
   setter,
   required = false,
+  autofocus = false,
 }: any) {
   return (
     <>
@@ -24,6 +25,7 @@ export default function InputBox({
           disabled={disabled}
           onChange={(e) => setter(e.target.value)}
           required={required}
+          autoFocus={autofocus}
         />
       </div>
     </>
