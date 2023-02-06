@@ -1,13 +1,34 @@
 "use client";
 import Link from "next/link";
 
-export default function Components({ parsed, message, isSorting }: any) {
-  if (message != "") {
+export default function Components({
+  parsed,
+  message,
+  isSorting,
+  isSearch,
+  keyword,
+}: any) {
+  console.log(parsed);
+  if (isSearch) {
     return (
       <>
         <div className="w-full h-10s">
           <div className="flex flex-row mx-auto text-center">
-            <span className="text-center mx-auto">{message}</span>
+            <span className="text-center mx-auto">
+              Finding something related to <b>{keyword}</b>
+            </span>
+          </div>
+        </div>
+      </>
+    );
+  } else if (message != "" && parsed.lenght !== 0) {
+    return (
+      <>
+        <div className="w-full h-10s">
+          <div className="flex flex-row mx-auto text-center">
+            <span className="text-center mx-auto">
+              {message} <b>{keyword}</b>
+            </span>
           </div>
         </div>
       </>
@@ -18,7 +39,7 @@ export default function Components({ parsed, message, isSorting }: any) {
         <div className="w-full h-10">
           <div className="flex flex-row mx-auto text-center">
             <span className="ml-auto mr-0">
-              Please wait while we get user data...
+              Please wait while we get user data
             </span>
             <div className="h-6 ml-2 mr-auto animate-spin w-6 rounded-full border-b-4 border-l-4 border-slate-400"></div>
           </div>

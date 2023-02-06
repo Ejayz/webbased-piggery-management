@@ -25,9 +25,9 @@ export default function ViewUser({ id }: any) {
       };
 
       let response = await fetch(
-        `${location.origin}/api/get/view_user/${Queryid}`,
+        `${location.origin}/api/post/UserManagement/view_user/${Queryid}`,
         {
-          method: "GET",
+          method: "POST",
           headers: headersList,
         }
       );

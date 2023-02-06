@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const cookie = getCookie("auth", { req, res });
-  if (req.method == "POST") {
+  if (req.method == "GET") {
     return res
       .status(405)
       .json({ code: 405, message: "405 Method not allowed" });
@@ -51,7 +51,6 @@ export default async function handler(
 
     return res.status(200).json({ code: 200, data: userData });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       code: 500,
       message: "500 Server error .Please try again later.",

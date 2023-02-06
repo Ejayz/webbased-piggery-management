@@ -50,6 +50,7 @@ export default async function handler(
   const decode: any = await decodeJWT(cookie);
   const user_id = decode.user_id;
   const data = await getSortedData({ sortby, sorter, user_id });
+  console.log(data);
   return res.status(200).json({ code: 200, data: data });
 }
 

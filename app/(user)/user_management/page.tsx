@@ -1,7 +1,7 @@
 "use client";
 import ViewForm from "@/components/UserManagementForm/ViewForm";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import EditUser from "@/components/UserManagementForm/editForm";
 import AddUser from "@/components/UserManagementForm/addForm";
@@ -35,10 +35,13 @@ export default function Page() {
   const [isSorting, setisSorting] = useState(false);
   const [sorts, setSort] = useState("ASC");
   const [sortby, setSortBy] = useState("username");
-  const [api_link, setApiLink] = useState("");
   const base_url = getBaseUrl();
-
+  const [keyword, setKeyword] = useState("");
+  const [isSearch, setSearch] = useState(false);
   const sortData = async () => {
+    if (base_url == null) {
+      return;
+    }
     setisSorting(true);
     let headersList = {
       Accept: "*/*",
@@ -58,17 +61,14 @@ export default function Page() {
     });
 
     let data = await response.json();
-    if (response.ok) {
-      setTimeout(() => {
-        if (data.code == 200) {
-          setUserData(data);
-          setParsed(data.data);
-          setisSorting(false);
-        }
-        if (data.code == 404) {
-          setMessage(data.message);
-        }
-      }, 5000);
+
+    if (data.code == 200) {
+      setUserData(data);
+      setParsed(data.data);
+      setisSorting(false);
+    }
+    if (data.code == 404) {
+      setMessage(data.message);
     }
   };
 
@@ -77,27 +77,62 @@ export default function Page() {
       let headersList = {
         Accept: "*/*",
       };
-
       let response = await fetch(`${location.origin}/api/get/getUsers`, {
         method: "GET",
         headers: headersList,
       });
       const data = await response.json();
       if (response.ok) {
-        setTimeout(() => {
-          if (data.code == 200) {
+        if (data.code == 200) {
+          if ((!isSearch || !isSorting) && parsed.length == 0) {
             setUserData(data);
             setParsed(data.data);
           }
-          if (data.code == 404) {
-            setMessage(data.message);
-          }
-        }, 5000);
+        }
+        if (data.code == 404) {
+          setMessage(data.message);
+        }
       }
     };
 
     getUserInfo();
   }, []);
+
+  /**Search for user with related keyword */
+  const SearchUser = async (e: any) => {
+    e.preventDefault();
+    setSearch(true);
+    setMessage("");
+    let headersList = {
+      Accept: "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    };
+    let response = await fetch(
+      `${base_url}/api/post/UserManagement/SearchUser/${keyword}`,
+      {
+        method: "POST",
+        headers: headersList,
+      }
+    );
+
+    let data = await response.json();
+    if (data.code === 200) {
+      setSearch(false);
+      setUserData(data);
+      setParsed(data.data);
+    }
+    if (data.code === 404) {
+      setSearch(false);
+      setMessage(data.message);
+    }
+  };
+
+  useEffect(() => {
+    if (keyword == "") {
+      sortData();
+    }
+  }, [keyword]);
+
   useEffect(() => {
     async function getView() {
       if (action == null || action == "a") {
@@ -277,11 +312,15 @@ export default function Page() {
                 </div>
               </div>
             </div>
-            <div className="form-control mr-0 ml-auto">
+            <form onSubmit={SearchUser} className="form-control mr-0 ml-auto">
               <div className="input-group">
                 <input
                   type="text"
                   placeholder="Search…"
+                  value={keyword}
+                  onChange={(e) => {
+                    setKeyword(e.target.value);
+                  }}
                   className="input input-bordered"
                 />
                 <button className="btn btn-square">
@@ -301,12 +340,14 @@ export default function Page() {
                   </svg>
                 </button>
               </div>
-            </div>
+            </form>
           </div>
           <UserDetails
             parsed={parsed}
             message={message}
             isSorting={isSorting}
+            isSearch={isSearch}
+            keyword={keyword}
           ></UserDetails>
         </div>
       </div>

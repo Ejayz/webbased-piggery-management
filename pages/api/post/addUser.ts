@@ -20,7 +20,7 @@ export default async function handler(
   if (cookie == null || cookie == undefined) {
     return res
       .status(401)
-      .json({ code: 401, message: " Invalid access .Please login first" });
+      .json({ code: 401, message: "Invalid access .Please login first" });
   }
   const verified = await verifyJWT(cookie);
   if (!verified) {
