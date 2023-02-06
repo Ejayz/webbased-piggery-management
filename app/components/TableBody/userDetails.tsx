@@ -2,8 +2,6 @@
 import Link from "next/link";
 
 export default function Components({ parsed, message, isSorting }: any) {
-  console.log(parsed);
-
   if (message != "") {
     return (
       <>
@@ -33,7 +31,7 @@ export default function Components({ parsed, message, isSorting }: any) {
         <div className="w-full h-10">
           <div className="flex flex-row mx-auto text-center">
             <span className="ml-auto mr-0">
-              Please wait while we retrieve and sort user data 
+              Please wait while we retrieve and sort user data
             </span>
             <div className="h-6 ml-2 mr-auto animate-spin w-6 rounded-full border-b-4 border-l-4 border-slate-400"></div>
           </div>

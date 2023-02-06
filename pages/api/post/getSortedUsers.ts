@@ -36,7 +36,6 @@ export default async function handler(
     });
   }
   const { sortby, sortorder }: any = req.body;
-  console.log(req.body);
   var sorter = "ASC";
   if (sortorder == "ASC") {
     sorter = "ASC";
@@ -66,7 +65,6 @@ async function getSortedData({ sortby, sorter, user_id }: any) {
         resolve(result);
         conn.release();
       });
-      console.log(details);
     });
   });
 }

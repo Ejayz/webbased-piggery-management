@@ -6,6 +6,8 @@ import { useSearchParams } from "next/navigation";
 import EditUser from "@/components/UserManagementForm/editForm";
 import AddUser from "@/components/UserManagementForm/addForm";
 import UserDetails from "@/components/TableBody/userDetails";
+import ApiUrlGenerator from "@/hooks/getApiUrls";
+import getBaseUrl from "@/hooks/getBaseUrl";
 interface User {
   user_id: number;
   username: string;
@@ -33,6 +35,8 @@ export default function Page() {
   const [isSorting, setisSorting] = useState(false);
   const [sorts, setSort] = useState("ASC");
   const [sortby, setSortBy] = useState("username");
+  const [api_link, setApiLink] = useState("");
+  const base_url = getBaseUrl();
 
   const sortData = async () => {
     setisSorting(true);
@@ -47,14 +51,11 @@ export default function Page() {
       sortorder: sorts,
     });
 
-    let response = await fetch(
-      "http://localhost:3000/api/post/getSortedUsers",
-      {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      }
-    );
+    let response = await fetch(`${base_url}/api/post/getSortedUsers`, {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    });
 
     let data = await response.json();
     if (response.ok) {
@@ -92,16 +93,13 @@ export default function Page() {
             setMessage(data.message);
           }
         }, 5000);
-        console.log(userData);
       }
     };
 
     getUserInfo();
   }, []);
-
   useEffect(() => {
     async function getView() {
-      console.log(action == null);
       if (action == null || action == "a") {
         setComps(<AddUser></AddUser>);
       } else if (action == "v") {
@@ -154,8 +152,8 @@ export default function Page() {
                         type="radio"
                         name="sorts"
                         value={"ASC"}
-                        defaultChecked={true}
                         className="radio checked:bg-blue-500"
+                        checked={sorts == "ASC"}
                         onChange={(e) => {
                           setSort(e.target.value);
                         }}
@@ -170,6 +168,7 @@ export default function Page() {
                         name="sorts"
                         className="radio checked:bg-blue-500"
                         value={"DESC"}
+                        checked={sorts == "DESC"}
                         onChange={(e) => {
                           setSort(e.target.value);
                         }}
@@ -186,7 +185,6 @@ export default function Page() {
                         name="keys"
                         value="username"
                         className="radio checked:bg-red-500"
-                        defaultChecked={true}
                         checked={sortby == "username"}
                         onChange={(e) => {
                           setSortBy(e.target.value);
