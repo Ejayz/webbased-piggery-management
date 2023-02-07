@@ -105,11 +105,18 @@ export default function Page() {
     let headersList = {
       Accept: "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json",
     };
+    let bodyContent = JSON.stringify({
+      keyword: keyword,
+      sortby: sortby,
+      sortorder: sorts,
+    });
     let response = await fetch(
-      `${base_url}/api/post/UserManagement/SearchUser/${keyword}`,
+      `${base_url}/api/post/UserManagement/SearchUser/`,
       {
         method: "POST",
+        body: bodyContent,
         headers: headersList,
       }
     );

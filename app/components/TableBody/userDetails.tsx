@@ -8,7 +8,6 @@ export default function Components({
   isSearch,
   keyword,
 }: any) {
-  console.log(parsed);
   if (isSearch) {
     return (
       <>
@@ -103,7 +102,7 @@ export default function Components({
                   <Link
                     className="px-2 hover:text-blue-500 link"
                     href={{
-                      pathname: `/user_management/`,
+                      pathname: `/user_management/owner/`,
                       query: {
                         action: "e",
                         id: user.user_id,
@@ -116,7 +115,7 @@ export default function Components({
                   <Link
                     className="px-2 hover:text-blue-500 link"
                     href={{
-                      pathname: `/user_management/`,
+                      pathname: `/user_management/owner/`,
                       query: {
                         action: "v",
                         id: user.user_id,
@@ -129,7 +128,7 @@ export default function Components({
                   <Link
                     className="px-2 hover:text-blue-500 link"
                     href={{
-                      pathname: `/user_management/`,
+                      pathname: `/user_management/owner/`,
                       query: {
                         action: "d",
                         id: user.user_id,

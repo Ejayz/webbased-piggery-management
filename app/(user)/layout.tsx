@@ -8,12 +8,23 @@ import getUserInfo from "@/app/components/getUserInfo";
 import Image from "next/image";
 import Link from "next/link";
 import Loading from "@/app/components/Loading/loading";
+import Head from "../(index)/head";
+import { usePathname } from "next/navigation";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
   const [toggleMenu, setToggleMenu] = useState<boolean>(true);
   const [Logout, setLogout] = useState<boolean>(false);
   const [owner, isOwner] = useState<boolean>(false);
+  const [title, setTitle] = useState("RVM Hog Farm");
+  const path = usePathname();
+  useEffect(() => {
+    if (path?.includes("user_management")) {
+      setTitle("RVM Hog Farm-User Management");
+    } else if (path?.includes("dashboard")) {
+      setTitle("RVM Hog Farm-Dashboard");
+    }
+  }, [path]);
   useEffect(() => {
     async function removeAuth() {
       if (Logout) {
@@ -34,6 +45,7 @@ export default function User({ children }: { children: React.ReactNode }) {
     return (
       <>
         <html>
+          <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
       </>
@@ -42,6 +54,7 @@ export default function User({ children }: { children: React.ReactNode }) {
 
   return (
     <html className="overflow-hidden">
+      <Head title={title}></Head>
       <body>
         <div className="navbar bg-base-100">
           <div className="flex-none">
@@ -111,7 +124,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                       }`}
                     >
                       <li>
-                        <Link href="/user_management">
+                        <Link href="/user_management/owner/">
                           <Image
                             src={"/assets/icons/user_management.png"}
                             className="h-5 w-5"

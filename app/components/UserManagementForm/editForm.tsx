@@ -19,9 +19,11 @@ export default function EditUser({ setAction }: any) {
   const [repeatPassword, setrepeatPass] = useState("");
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
+
   if (Queryid == undefined) {
     toast.error("Query ID is invalid");
   }
+  console.log(Queryid);
 
   function callCancel(e: any) {
     router.push("/user_management/?action=a");
@@ -57,7 +59,9 @@ export default function EditUser({ setAction }: any) {
         toast.error(data.message);
       }
     }
-    ViewUser();
+    if (Queryid != "null") {
+      ViewUser();
+    }
   }, [Queryid]);
 
   if (user_id == "") {
@@ -202,7 +206,7 @@ export default function EditUser({ setAction }: any) {
                   callCancel(e);
                 }}
                 className="btn btn-active btn-primary mx-4"
-                href={"/user_management/?action=a&id=null"}
+                href={"/user_management/owner/?action=a&id=null"}
               >
                 Cancel
               </Link>
