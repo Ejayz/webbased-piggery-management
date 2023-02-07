@@ -1,21 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as bcrypt from "bcrypt";
 import connection from "../mysql";
-import jwt from 'jsonwebtoken'
-import * as dotenv from 'dotenv'
-import * as cookie from 'cookie'
-dotenv.config()
-const jwt_key: any = process.env.JWT_KEY
-
+import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+import * as cookie from "cookie";
+dotenv.config();
+const jwt_key: any = process.env.JWT_KEY;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { phone, username, password }: any = req.body;
-  const cookies: any = req.cookies.reset_auth
-  const data = cookie.parse(cookies)
+  const cookies: any = req.cookies.reset_auth;
+  const data = cookie.parse(cookies);
 
   if (cookies == undefined) {
-    return res.status(401).json({ code: 500, "message": "Session is invalid.Please reload and try again" })
-
+    return res.status(401).json({
+      code: 500,
+      message: "Session is invalid.Please reload and try again",
+    });
   }
   if (jwt.verify(cookies, jwt_key)) {
     generateHased(password).then((hashedPass) => {
@@ -42,30 +43,32 @@ async function resetPassword(
   password: string
 ) {
   return new Promise((resolve, rejects) => {
-    const query = "UPDATE `piggery_management`.`tbl_users` SET `password`=? WHERE  `username`=? and phone=? and is_exist='true';";
+    const query =
+      "UPDATE `piggery_management`.`tbl_users` SET `password`=? WHERE  `username`=? and phone=? and is_exist='true';";
     connection.getConnection((err, conn) => {
       conn.beginTransaction((err) => {
-        console.log(err)
-      })
+        rejects(err);
+      });
       conn.query(query, [password, username, phone], (err, result, feilds) => {
         if (err) {
-          conn.rollback(console.log)
-          rejects(err)
+          conn.rollback((err) => {
+            rejects(err);
+          });
+          rejects(err);
         }
         conn.commit((err) => {
           if (err) {
-            conn.rollback(console.log)
-            rejects(err)
+            conn.rollback((err) => {
+              rejects(err);
+            });
+            rejects(err);
           }
+        });
 
-        })
-
-        resolve(result)
-        console.log(result)
-
-      })
-    })
-  })
+        resolve(result);
+      });
+    });
+  });
 }
 
 async function generateHased(password: string) {

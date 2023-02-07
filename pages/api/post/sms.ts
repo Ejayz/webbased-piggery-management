@@ -9,12 +9,12 @@ dotenv.config();
 const jwt_secret: any = process.env.JWT_KEY;
 
 async function send_sms(phone: any, username: any) {
-  console.log("sending otp-" + new Date());
+
   let sms = {};
   if (phone.includes("+63")) {
     phone = phone.replace("+63", "0");
   }
-  console.log(phone);
+
   const device_api: any = process.env.DEVICE_API;
   const sms_api: any = process.env.API_KEY_SMS;
   let bodyContent = new FormData();
@@ -36,13 +36,10 @@ async function send_sms(phone: any, username: any) {
   });
 
   if (!responses.ok) {
-    console.log(
-      "request sent but something went wront-" + responses + new Date()
-    );
+   
     return responses.text;
   }
   let data = await responses.text();
-  console.log("opt sent-" + data + new Date());
   return JSON.parse(data);
 }
 
@@ -54,7 +51,6 @@ async function VerifySms(username: string, phone: string) {
       conn.query(query, [username, phone], (err, result, fields) => {
         if (err) rejects(err);
         resolve(result);
-        console.log(result);
       });
     });
   });
@@ -71,7 +67,6 @@ export default async function handler(
   VerifySms(username, phone)
     .then((result: any) => {
       const data = result.length;
-      console.log(data);
       try {
         if (data == 1) {
           send_sms(phone, username)

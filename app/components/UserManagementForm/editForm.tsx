@@ -24,7 +24,6 @@ export default function EditUser({ setAction }: any) {
   if (Queryid == undefined) {
     toast.error("Query ID is invalid");
   }
-  console.log(Queryid);
 
   function callCancel(e: any) {
     router.push("/user_management/?action=a");

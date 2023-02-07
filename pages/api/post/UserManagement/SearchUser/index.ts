@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const authorized: any = await authorizationHandler("POST", req, res);
+  const authorized: any = await authorizationHandler(req, res, "POST");
 
   if (!authorized) {
     return false;

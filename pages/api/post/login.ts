@@ -76,7 +76,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 async function VerifyUser(username: string) {
   return new Promise((resolve, rejects) => {
     connection.getConnection((err, conn) => {
-      console.log(err);
       if (err) {
         rejects(err);
       }

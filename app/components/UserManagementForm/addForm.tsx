@@ -92,7 +92,6 @@ export default function AddUser({ id }: any) {
       },
       { toastId: "Promised" }
     );
-    console.log(response);
     let data = await response.json();
     if (data.code == 200) {
       setTimeout(() => {

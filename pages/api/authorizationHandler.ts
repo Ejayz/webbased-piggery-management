@@ -2,11 +2,17 @@ import { getCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJWT } from "./jwtProcessor";
 
+/** This method will authorize api POST api endpoints it will accept parameter req,res,ApiMethod .ApiMethod is what the api method is intended to be */
 export default async function handler(
-  ApiMethod: String,
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
+  ApiMethod: String
 ) {
+  if (req?.url == "'/api/authorizationHandler'") {
+    return res
+      .status(401)
+      .json({ code: 401, message: "Invalid access to this api endpoint" });
+  }
   if (req?.method != ApiMethod) {
     res?.status(405).json({
       code: 405,
@@ -30,11 +36,18 @@ export default async function handler(
     });
     return false;
   }
-  if (req.body == null || req.body == undefined) {
+  if (req.query == null || req.query == undefined) {
+    //This is for body
+    res
+      .status(400)
+      .json({ code: 400, message: "400 Bad Request . Invalid Data passed." });
+    return false;
+  } else if (req.body == null || req.body == undefined) {
     res
       .status(400)
       .json({ code: 400, message: "400 Bad Request . Invalid Data passed." });
     return false;
   }
+
   return { cookie: cookie };
 }

@@ -39,15 +39,7 @@ export default async function handler(
       .status(409)
       .json({ code: 409, message: "Username already exist." });
   }
-  console.log({
-    username,
-    first_name,
-    middle_name,
-    last_name,
-    hashedPassword,
-    phone,
-    job,
-  });
+
   const create: any = await createUser({
     username,
     first_name,
