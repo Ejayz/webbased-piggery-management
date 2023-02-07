@@ -17,6 +17,7 @@ export default function EditUser({ setAction }: any) {
   const [job, setJob] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
+
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
 

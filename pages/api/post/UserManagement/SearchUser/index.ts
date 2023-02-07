@@ -1,37 +1,20 @@
-import { getCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
-import { decodeJWT, verifyJWT } from "pages/api/jwtProcessor";
+import authorizationHandler from "pages/api/authorizationHandler";
+import { decodeJWT } from "pages/api/jwtProcessor";
 import connection from "../../../mysql";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method != "POST") {
-    return res.status(504).json({
-      code: 504,
-      message: "504 Method Used is Invalid. API Endpoint Expects POST method",
-    });
-  }
-  const { keyword, sortby, sortorder }: any = req.body;
-  const cookie = getCookie("auth", { req, res });
-  if (cookie == null) {
-    return res.status(401).json({
-      code: 401,
-      message: "401 Authorization Error. Please login first.",
-    });
-  }
-  const verify = await verifyJWT(cookie);
-  if (!verify) {
-    return res.status(401).json({
-      code: 401,
-      message: "401 Invalid Session. Please relogin.",
-    });
-  }
-  const decode: any = await decodeJWT(cookie);
+  const authorized: any = await authorizationHandler("POST", req, res);
 
+  if (!authorized) {
+    return false;
+  }
+
+  const decode: any = await decodeJWT(authorized.cookie);
   const user_id = decode.user_id;
-
-  console.log({ keyword, sortby, sortorder });
+  const { keyword, sortby, sortorder }: any = req.body;
   var SortOrder = "ASC";
   if (sortorder == "DESC") {
     SortOrder = "DESC";
