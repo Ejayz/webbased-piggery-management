@@ -2,38 +2,50 @@
 import { toast, ToastContainer } from "react-toastify";
 import "@/style/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import React from "react";
 import getUserInfo from "@/app/components/getUserInfo";
-import getCompany from "@/app/components/getCompany";
 import Image from "next/image";
 import Link from "next/link";
+import Loading from "@/app/components/Loading/loading";
+import Head from "../(index)/head";
+import { usePathname } from "next/navigation";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
-  const getComp = getCompany();
   const [toggleMenu, setToggleMenu] = useState<boolean>(true);
-  const [Logout, setLogout] = useState<boolean>(false)
-  const [owner, isOwner] = useState<boolean>(false)
+  const [Logout, setLogout] = useState<boolean>(false);
+  const [owner, isOwner] = useState<boolean>(false);
+  const [title, setTitle] = useState("RVM Hog Farm");
+  const path = usePathname();
+  useEffect(() => {
+    if (path?.includes("user_management")) {
+      setTitle("RVM Hog Farm-User Management");
+    } else if (path?.includes("dashboard")) {
+      setTitle("RVM Hog Farm-Dashboard");
+    }
+  }, [path]);
   useEffect(() => {
     async function removeAuth() {
       if (Logout) {
-        document.cookie = "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;maxAge=-1";
+        document.cookie =
+          "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;maxAge=-1";
         if (!document.cookie.includes("auth")) {
-          toast.success("Successfully logged out. Bye...")
-          window.open("/", "_self")
+          toast.success("Successfully logged out. Bye...");
+          window.open("/", "_self");
         } else {
-          toast.error("Something went wrong while removing this session.")
+          toast.error("Something went wrong while removing this session.");
         }
       }
     }
-    removeAuth()
-  }, [Logout])
+    removeAuth();
+  }, [Logout]);
 
-  if (loading.loading || getComp.loading) {
+  if (loading.loading) {
     return (
       <>
         <html>
+          <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
       </>
@@ -42,6 +54,7 @@ export default function User({ children }: { children: React.ReactNode }) {
 
   return (
     <html className="overflow-hidden">
+      <Head title={title}></Head>
       <body>
         <div className="navbar bg-base-100">
           <div className="flex-none">
@@ -66,19 +79,16 @@ export default function User({ children }: { children: React.ReactNode }) {
             </label>
           </div>
           <div className="flex lg:ml-4 mx-auto   ">
-            <a className="btn btn-ghost normal-case text-xl">
-              {getComp.data}
-            </a>
+            <a className="btn btn-ghost normal-case text-xl">RVM Hog Farm</a>
           </div>
-          <div className="flex-none">
-
-          </div>
+          <div className="flex-none"></div>
         </div>
-        <div className="flex flex-row h-screen">
+        <div className="flex flex-row w-screen h-screen">
           {/* Menu */}
           <div
-            className={`drawer-side  ${toggleMenu ? "hidden" : "block "
-              } h-full`}
+            className={`drawer-side  ${
+              toggleMenu ? "hidden" : "block "
+            } h-full`}
           >
             <div className={`drawer-mobile   h-full`}>
               <div className="drawer">
@@ -97,15 +107,31 @@ export default function User({ children }: { children: React.ReactNode }) {
                     <div>
                       <li>
                         <Link href="/dashboard">
-                          <Image src={"/assets/icons/dashboard.png"} className="h-5 w-5" alt={""} width={512} height={512}></Image>
+                          <Image
+                            src={"/assets/icons/dashboard.png"}
+                            className="h-5 w-5"
+                            alt={""}
+                            width={512}
+                            height={512}
+                          ></Image>
                           Dashboard
                         </Link>
                       </li>
                     </div>
-                    <div className={`${loading.data.job == "owner" ? "block" : "hidden"}`}>
+                    <div
+                      className={`${
+                        loading.data.job == "owner" ? "block" : "hidden"
+                      }`}
+                    >
                       <li>
-                        <Link href="/user_management">
-                          <Image src={"/assets/icons/user_management.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
+                        <Link href="/user_management/owner/">
+                          <Image
+                            src={"/assets/icons/user_management.png"}
+                            className="h-5 w-5"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
                           Manage User
                         </Link>
                       </li>
@@ -113,17 +139,32 @@ export default function User({ children }: { children: React.ReactNode }) {
                     <div>
                       <li>
                         <Link href="/manage_pig">
-                          <Image src={"/assets/icons/pig.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
+                          <Image
+                            src={"/assets/icons/pig.png"}
+                            className="h-5 w-5"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
                           Manage Pig
                         </Link>
                       </li>
                     </div>
                     <div>
                       <li>
-                        <Link href="#" onClick={() => {
-                          setLogout(!Logout)
-                        }}>
-                          <Image src={"/assets/icons/pig.png"} className="h-5 w-5" alt={""} height={512} width={512}></Image>
+                        <Link
+                          href="#"
+                          onClick={() => {
+                            setLogout(!Logout);
+                          }}
+                        >
+                          <Image
+                            src={"/assets/icons/pig.png"}
+                            className="h-5 w-5"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
                           Logout
                         </Link>
                       </li>
@@ -134,7 +175,11 @@ export default function User({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           {/* Contents  */}
-          <div className="h-screen overflow-x-auto w-full">{children} </div>
+          <Suspense fallback={<Loading></Loading>}>
+            <div className="h-screen  overflow-y-scroll overflow-x-hidden w-full">
+              {children}
+            </div>
+          </Suspense>
         </div>
         {/* Toast */}
         <ToastContainer
@@ -150,8 +195,6 @@ export default function User({ children }: { children: React.ReactNode }) {
           theme="light"
         />
       </body>
-    </html >);
-
+    </html>
+  );
 }
-
-

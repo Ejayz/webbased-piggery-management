@@ -1,13 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import connection from "../mysql";
 import { rejects } from "assert";
 dotenv.config();
 
-const jwt_key: any = process.env.JWT_KEY
-
+const jwt_key: any = process.env.JWT_KEY;
 
 //API Function that only accepts post request
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -77,10 +76,18 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 async function VerifyUser(username: string) {
   return new Promise((resolve, rejects) => {
     connection.getConnection((err, conn) => {
-      conn.query("select * from tbl_users where username=? and is_exist='true'", [username], (err, result, fields) => {
-        if (err) rejects(err);
-        resolve(result);
-      })
-    })
-  })
+      if (err) {
+        rejects(err);
+      }
+
+      conn.query(
+        "select * from tbl_users where username=? and is_exist='true'",
+        [username],
+        (err, result, fields) => {
+          if (err) rejects(err);
+          resolve(result);
+        }
+      );
+    });
+  });
 }

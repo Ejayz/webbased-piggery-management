@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import getBaseUrl from "../../getBaseUrl";
+import getBaseUrl from "@/hooks/getBaseUrl";
 export default function ResetPassword({
   setText,
   setState,
@@ -20,7 +20,7 @@ export default function ResetPassword({
   const [allowed, setAllowed] = useState<boolean>(true);
   const [requesting, setIsRequesting] = useState(false);
   const rout = useRouter();
-  const base_url = getBaseUrl()
+  const base_url = getBaseUrl();
 
   async function hasMatch() {
     if (newpass == repeatPass && (newpass !== "" || repeatPass !== "")) {
@@ -79,7 +79,7 @@ export default function ResetPassword({
     if (data.code == 200) {
       toast.success(data.message);
       setIsRequesting(false);
-      rout.push("/")
+      rout.push("/");
     } else {
       toast.error(data.message);
       setIsRequesting(false);

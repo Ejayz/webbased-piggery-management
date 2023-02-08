@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import getBaseURL from "@/app/components/getBaseUrl";
+import getBaseURL from "@/hooks/getBaseUrl";
 
 export default function Page() {
   //Create states for username password and remember me

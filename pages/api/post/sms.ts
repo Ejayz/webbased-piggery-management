@@ -9,41 +9,14 @@ dotenv.config();
 const jwt_secret: any = process.env.JWT_KEY;
 
 async function send_sms(phone: any, username: any) {
-  console.log("sending otp-" + new Date());
   let sms = {};
   if (phone.includes("+63")) {
     phone = phone.replace("+63", "0");
   }
-  console.log(phone);
+
   const device_api: any = process.env.DEVICE_API;
   const sms_api: any = process.env.API_KEY_SMS;
-  let bodyContent = new FormData();
-  bodyContent.append("secret", sms_api);
-  bodyContent.append("type", "sms");
-  bodyContent.append("phone", `+63${phone}`);
-  bodyContent.append("mode", "devices");
-  bodyContent.append("device", device_api);
-  bodyContent.append("sim", "1");
-  bodyContent.append(
-    "message",
-    `Hi ${username} , You requested change password operation . This OTP is only valid on this session do not refresh or reload the page . Enter this otp to proceed OTP:{{otp}}`
-  );
-
-  let responses = await fetch("https://smsgatewaydevices.com/api/send/otp", {
-    method: "POST",
-    body: bodyContent,
-    headers: sms,
-  });
-
-  if (!responses.ok) {
-    console.log(
-      "request sent but something went wront-" + responses + new Date()
-    );
-    return responses.text;
-  }
-  let data = await responses.text();
-  console.log("opt sent-" + data + new Date());
-  return JSON.parse(data);
+  
 }
 
 async function VerifySms(username: string, phone: string) {
@@ -54,7 +27,6 @@ async function VerifySms(username: string, phone: string) {
       conn.query(query, [username, phone], (err, result, fields) => {
         if (err) rejects(err);
         resolve(result);
-        console.log(result);
       });
     });
   });
@@ -71,7 +43,6 @@ export default async function handler(
   VerifySms(username, phone)
     .then((result: any) => {
       const data = result.length;
-      console.log(data);
       try {
         if (data == 1) {
           send_sms(phone, username)
@@ -89,6 +60,7 @@ export default async function handler(
 
                 return 0;
               } else {
+                console.log(data);
                 res.status(500).json({ code: 500, message: "Server error" });
                 return 0;
               }

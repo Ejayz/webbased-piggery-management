@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import getBaseURL from "../../getBaseUrl";
+import getBaseURL from "@/hooks/getBaseUrl";
 export default function Layout({
   setText,
   setData,

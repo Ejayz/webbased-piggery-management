@@ -1,30 +1,20 @@
 "use client";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "@/style/globals.css";
 import "react-toastify/dist/ReactToastify.css";
-import { useSearchParams } from "next/navigation";
-import getCompany from "@/app/components/getCompany";
 import Navbar from "@/app/components/Navbar/navbar";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Footer from "@/app/components/Footer/footer";
 import Head from "./head";
 import { Suspense } from "react";
-import Loading from "@/components/Loading/loading";
+import Loading from "@/app/components/Loading/loading";
+import getErrorCode from "@/hooks/getErrorCode";
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const error = useSearchParams().get("error");
-  //Load company name in navigation bar
-  //Prep Navigation Bar
-  const loading = getCompany();
-  async function getError() {
-    if (error == "401" && !loading.loading) {
-      toast.error("Login first to access dashboard.");
-    }
-  }
-  getError();
+  getErrorCode();
 
   useEffect(() => {
     async function getSession() {
@@ -34,14 +24,6 @@ export default function RootLayout({
     }
     getSession();
   }, []);
-
-  if (loading.loading) {
-    return (
-      <html className="overflow-x-scroll lg:overflow-hidden">
-        <body>{loading.loads}</body>
-      </html>
-    );
-  }
 
   return (
     <html className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base-200">
@@ -60,7 +42,7 @@ export default function RootLayout({
             pauseOnHover
             theme="light"
           />
-          <Navbar loads={loading.data}></Navbar>
+          <Navbar></Navbar>
           {children}
           <Footer></Footer>
         </Suspense>
