@@ -20,11 +20,11 @@ export default function Layout({
     isRequesting(true);
     if (username == "" || phone == "") {
       toast.error("Username/Phone number should not be empty");
-      isRequesting(true);
+      isRequesting(false);
     }
     if (!phone.includes("+63")) {
       toast.error("Phone number is invalid. It should start at (+63)");
-      isRequesting(true);
+      isRequesting(false);
     } else {
       let headersList = {
         Accept: "*/*",
