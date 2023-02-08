@@ -64,12 +64,11 @@ async function getSortedData({ sortby, sorter, user_id }: any) {
       },phone,job FROM tbl_users WHERE is_exist='true' AND user_id!=? ORDER BY ${conn.escapeId(
         sortby
       )} ${sorter}`;
-      const details = conn.query(sql, [user_id], (error, result) => {
+      conn.query(sql, [user_id], (error, result, feilds) => {
         if (error) reject(error);
         resolve(result);
         conn.release();
       });
-      console.log(details.sql);
     });
   });
 }

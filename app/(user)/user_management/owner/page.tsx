@@ -39,12 +39,21 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
   const [isSearch, setSearch] = useState(false);
   const [rowSort, setRowSort] = useState("username");
-
+  const [colsData, setColsData] = useState([
+    "username",
+    "name",
+    "job",
+    "phone",
+    "action",
+  ]);
+  const [isTyping, setisTyping] = useState(false);
   const sortData = async () => {
     if (base_url == null) {
       return;
     }
+
     setisSorting(true);
+    setisTyping(false);
     let headersList = {
       Accept: "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -102,6 +111,7 @@ export default function Page() {
   /**Search for user with related keyword */
   const SearchUser = async (e: any) => {
     e.preventDefault();
+    setisTyping(false);
     setSearch(true);
     setMessage("");
     let headersList = {
@@ -126,6 +136,7 @@ export default function Page() {
     let data = await response.json();
     if (data.code === 200) {
       setSearch(false);
+
       setUserData(data);
       setParsed(data.data);
     }
@@ -138,6 +149,9 @@ export default function Page() {
   useEffect(() => {
     if (keyword == "") {
       sortData();
+    }
+    if (parsed.length != 0 && keyword !== "") {
+      setisTyping(true);
     }
   }, [keyword]);
 
@@ -363,6 +377,8 @@ export default function Page() {
             setSortby={setSortBy}
             setSort={setSort}
             sortData={sortData}
+            colsData={colsData}
+            isTyping={isTyping}
           ></UserDetails>
         </div>
       </div>

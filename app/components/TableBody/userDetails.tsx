@@ -13,6 +13,8 @@ export default function Components({
   setSortby,
   setSort,
   sortData,
+  colsData,
+  isTyping,
 }: any) {
   const [prev, setPrev] = useState({ sortorder: sortorder, sortby: sortby });
 
@@ -56,8 +58,19 @@ export default function Components({
     }
     return false;
   }
-
-  if (isSearch) {
+  if (isTyping) {
+    return (
+      <>
+        <div className="w-full h-10s">
+          <div className="flex flex-row mx-auto text-center">
+            <span className="text-center mx-auto">
+              Press enter/search button to find <b>{keyword}</b>.
+            </span>
+          </div>
+        </div>
+      </>
+    );
+  } else if (isSearch) {
     return (
       <>
         <div className="w-full h-10s">
@@ -109,97 +122,39 @@ export default function Components({
     );
   } else {
     return (
-      <table className="w-11/12 mx-auto h-12 text-left text-fixed lg:text-center mb-24  rounded-md">
+      <table className="w-11/12 mt-2 text-black mx-auto h-12 text-left text-fixed lg:text-center mb-24  rounded-md">
         <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th
-              onClick={() => {
-                SortUsingHeader(sortorder, "username", prev);
-              }}
-            >
-              <div className="flex justify-center flex-row">
-                Username
-                <Image
-                  className={`${sortby == "username" ? "visible" : "hidden"}`}
-                  src={
-                    sortorder == "ASC"
-                      ? "/assets/table/ascending.svg"
-                      : "/assets/table/descending.svg"
-                  }
-                  width={24}
-                  height={24}
-                  alt={""}
-                ></Image>
-              </div>
-            </th>
-            <th
-              onClick={() => {
-                SortUsingHeader(sortorder, "name", prev);
-              }}
-            >
-              <div className="flex justify-center flex-row">
-                Name
-                <Image
-                  className={`${sortby == "name" ? "visible" : "hidden"}`}
-                  src={
-                    sortorder == "ASC"
-                      ? "/assets/table/ascending.svg"
-                      : "/assets/table/descending.svg"
-                  }
-                  width={24}
-                  height={24}
-                  alt={""}
-                ></Image>
-              </div>
-            </th>
-            <th
-              onClick={() => {
-                SortUsingHeader(sortorder, "job", prev);
-              }}
-            >
-              <div className="flex justify-center flex-row">
-                Job
-                <Image
-                  className={`${sortby == "job" ? "visible" : "hidden"}`}
-                  src={
-                    sortorder == "ASC"
-                      ? "/assets/table/ascending.svg"
-                      : "/assets/table/descending.svg"
-                  }
-                  width={24}
-                  height={24}
-                  alt={""}
-                ></Image>
-              </div>
-            </th>
-            <th
-              onClick={() => {
-                SortUsingHeader(sortorder, "phone", prev);
-              }}
-            >
-              <div className="flex justify-center flex-row">
-                Phone
-                <Image
-                  className={`${sortby == "phone" ? "visible" : "hidden"}`}
-                  src={
-                    sortorder == "ASC"
-                      ? "/assets/table/ascending.svg"
-                      : "/assets/table/descending.svg"
-                  }
-                  width={24}
-                  height={24}
-                  alt={""}
-                ></Image>
-              </div>
-            </th>
-            <th>Action</th>
+            {colsData.map((col: any, key: any) => (
+              <th
+                key={key}
+                onClick={() => {
+                  SortUsingHeader(sortorder, col, prev);
+                }}
+              >
+                <div className="flex justify-center flex-row">
+                  {col}
+                  <Image
+                    className={`${sortby == col ? "visible" : "hidden"}`}
+                    src={
+                      sortorder == "ASC"
+                        ? "/assets/table/ascending.svg"
+                        : "/assets/table/descending.svg"
+                    }
+                    width={24}
+                    height={24}
+                    alt={""}
+                  ></Image>
+                </div>
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody className="overflow-y-scroll overflow-x-hidden overscroll-contain h-12">
           {parsed.map((user: any, index: number) => (
             <tr
               className={`h-auto lg:table-row block bg-slate-300 rounded-md my-2 py-4 ${
-                index % 2 == 0 ? "bg-slate-200" : "bg-slate-400"
+                index % 2 == 0 ? "bg-slate-500" : "bg-slate-700"
               }`}
               key={index}
             >
