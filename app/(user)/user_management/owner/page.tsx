@@ -142,7 +142,7 @@ export default function Page() {
   useEffect(() => {
     async function getView() {
       if (action == null || action == "a") {
-        setComps(<AddUser></AddUser>);
+        setComps(<AddUser sortData={sortData}></AddUser>);
       } else if (action == "v") {
         setComps(<ViewForm></ViewForm>);
       } else if (action == "e") {
@@ -156,7 +156,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="w-full h-auto oveflow-y-auto flex flex-col overflow-x-hidden">
+      <div className="w-full h-auto oveflow-y-hidden flex flex-col overflow-x-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <Image
             src={"/assets/icons/manage_user.png"}
@@ -171,7 +171,7 @@ export default function Page() {
         <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col">
           <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
         </div>
-        <div className="h-screen w-full flex flex-col text-center overflow-x-hidden">
+        <div className="h-auto w-full flex flex-col text-center overflow-hidden">
           <p className="text-2xl p-4 mx-auto">Users Data</p>
           <div className="w-11/12 mx-auto h-auto flex flex-row">
             <div className="dropdown my-auto ">

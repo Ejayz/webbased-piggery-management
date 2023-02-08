@@ -13,7 +13,7 @@ export default async function handler(
   const cookie = getCookie("auth", { req, res });
 
   if (req.method !== "POST") {
-    res
+    return res
       .status(405)
       .json({ code: 405, message: "This API Endpoint expects POST method." });
   }

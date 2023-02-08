@@ -176,7 +176,7 @@ export default function User({ children }: { children: React.ReactNode }) {
           </div>
           {/* Contents  */}
           <Suspense fallback={<Loading></Loading>}>
-            <div className="h-screen  overflow-y-scroll overflow-x-hidden w-full">
+            <div className="h-screen  overflow-y-scroll overflow-x-hidden w-screen">
               {children}
             </div>
           </Suspense>
