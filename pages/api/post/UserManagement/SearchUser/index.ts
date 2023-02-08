@@ -41,7 +41,11 @@ async function SearchUser({ keyword, user_id, sortby, SortOrder }: any) {
     keyword = `%${keyword}%`;
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone, job FROM tbl_users WHERE ( username LIKE ? OR first_name LIKE ? OR middle_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
+      const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone${
+        sortby == "name"
+          ? ",concat(first_name,' ',middle_name,' ',last_name) as name"
+          : ""
+      }, job FROM tbl_users WHERE ( username LIKE ? OR first_name LIKE ? OR middle_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
         sortby
       )} ${SortOrder};`;
       conn.query(
