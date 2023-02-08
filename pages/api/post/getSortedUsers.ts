@@ -57,7 +57,11 @@ async function getSortedData({ sortby, sorter, user_id }: any) {
   return new Promise((resolve, reject) => {
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      const sql = `SELECT * FROM tbl_users WHERE is_exist='true' AND user_id!=? ORDER BY ${conn.escapeId(
+      const sql = `SELECT user_id,username, first_name,middle_name,last_name${
+        sortby == "name"
+          ? ",concat(first_name,' ',middle_name,' ',last_name) as name"
+          : ""
+      },phone,job FROM tbl_users WHERE is_exist='true' AND user_id!=? ORDER BY ${conn.escapeId(
         sortby
       )} ${sorter}`;
       const details = conn.query(sql, [user_id], (error, result) => {
@@ -65,6 +69,7 @@ async function getSortedData({ sortby, sorter, user_id }: any) {
         resolve(result);
         conn.release();
       });
+      console.log(details);
     });
   });
 }

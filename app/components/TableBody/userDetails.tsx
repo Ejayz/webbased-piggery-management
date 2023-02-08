@@ -1,13 +1,58 @@
 "use client";
 import Link from "next/link";
-
+import Image from "next/image";
+import { useState } from "react";
 export default function Components({
   parsed,
   message,
   isSorting,
   isSearch,
   keyword,
+  sortorder,
+  sortby,
+  setSortby,
+  setSort,
+  sortData,
 }: any) {
+  const [prev, setPrev] = useState({ sortorder: sortorder, sortby: sortby });
+
+  const SortUsingHeader = async (
+    sortorder: any,
+    columnName: any,
+    prev: any
+  ) => {
+    if (isChangeCol(columnName, prev.sortby)) {
+      if (isAscending(sortorder, prev.sortorder)) {
+        setSort("DESC");
+        setPrev({ sortorder: sortorder, sortby: columnName });
+        await sortData();
+      } else {
+        setSort("ASC");
+        setPrev({ sortorder: sortorder, sortby: columnName });
+        await sortData();
+      }
+    } else {
+      setSort("ASC");
+      setSortby(columnName);
+      setPrev({ sortorder: sortorder, sortby: columnName });
+      await sortData();
+    }
+  };
+
+  function isAscending(sortorder: any, prevOrder: any) {
+    if (sortorder == "ASC") {
+      return true;
+    }
+    return false;
+  }
+
+  function isChangeCol(sortby: any, prevSortBy: any) {
+    if (sortby == prevSortBy) {
+      return true;
+    }
+    return false;
+  }
+
   if (isSearch) {
     return (
       <>
@@ -61,12 +106,88 @@ export default function Components({
   } else {
     return (
       <table className="w-11/12 mx-auto h-12 text-left text-fixed lg:text-center mb-24  rounded-md">
-        <thead className="lg:table-header-group  hidden  text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Job</th>
-            <th>Phone</th>
+            <th
+              onClick={() => {
+                SortUsingHeader(sortorder, "username", prev);
+              }}
+            >
+              <div className="flex justify-center flex-row">
+                Username
+                <Image
+                  className={`${sortby == "username" ? "visible" : "hidden"}`}
+                  src={
+                    sortorder == "ASC"
+                      ? "/assets/table/ascending.svg"
+                      : "/assets/table/descending.svg"
+                  }
+                  width={24}
+                  height={24}
+                  alt={""}
+                ></Image>
+              </div>
+            </th>
+            <th
+              onClick={() => {
+                SortUsingHeader(sortorder, "name", prev);
+              }}
+            >
+              <div className="flex justify-center flex-row">
+                Name
+                <Image
+                  className={`${sortby == "name" ? "visible" : "hidden"}`}
+                  src={
+                    sortorder == "ASC"
+                      ? "/assets/table/ascending.svg"
+                      : "/assets/table/descending.svg"
+                  }
+                  width={24}
+                  height={24}
+                  alt={""}
+                ></Image>
+              </div>
+            </th>
+            <th
+              onClick={() => {
+                SortUsingHeader(sortorder, "job", prev);
+              }}
+            >
+              <div className="flex justify-center flex-row">
+                Job
+                <Image
+                  className={`${sortby == "job" ? "visible" : "hidden"}`}
+                  src={
+                    sortorder == "ASC"
+                      ? "/assets/table/ascending.svg"
+                      : "/assets/table/descending.svg"
+                  }
+                  width={24}
+                  height={24}
+                  alt={""}
+                ></Image>
+              </div>
+            </th>
+            <th
+              onClick={() => {
+                SortUsingHeader(sortorder, "phone", prev);
+              }}
+            >
+              <div className="flex justify-center flex-row">
+                Phone
+                <Image
+                  className={`${sortby == "phone" ? "visible" : "hidden"}`}
+                  src={
+                    sortorder == "ASC"
+                      ? "/assets/table/ascending.svg"
+                      : "/assets/table/descending.svg"
+                  }
+                  width={24}
+                  height={24}
+                  alt={""}
+                ></Image>
+              </div>
+            </th>
             <th>Action</th>
           </tr>
         </thead>

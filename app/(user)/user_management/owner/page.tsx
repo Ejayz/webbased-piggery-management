@@ -38,6 +38,8 @@ export default function Page() {
   const base_url = getBaseUrl();
   const [keyword, setKeyword] = useState("");
   const [isSearch, setSearch] = useState(false);
+  const [rowSort, setRowSort] = useState("username");
+
   const sortData = async () => {
     if (base_url == null) {
       return;
@@ -156,25 +158,27 @@ export default function Page() {
 
   return (
     <>
-      <div className="w-full h-auto oveflow-y-hidden flex flex-col overflow-x-hidden">
-        <div className="w-11/12  mx-auto flex flex-row">
-          <Image
-            src={"/assets/icons/manage_user.png"}
-            alt={""}
-            className="h-16 w-16"
-            height={512}
-            width={512}
-          ></Image>
-          <p className="text-2xl  my-auto p-4">User Management</p>
-        </div>
+      <div className="w-full h-auto oveflow-y-scroll flex flex-col overflow-x-hidden">
+        <div className="lg:h-1/2 h-auto">
+          <div className="w-11/12  mx-auto flex flex-row">
+            <Image
+              src={"/assets/icons/manage_user.png"}
+              alt={""}
+              className="h-16 w-16"
+              height={512}
+              width={512}
+            ></Image>
+            <p className="text-2xl  my-auto p-4">User Management</p>
+          </div>
 
-        <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col">
-          <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
+          <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col">
+            <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
+          </div>
         </div>
-        <div className="h-auto w-full flex flex-col text-center overflow-hidden">
+        <div className="lg:h-1/2 h-auto w-full flex flex-col text-center overflow-hidden">
           <p className="text-2xl p-4 mx-auto">Users Data</p>
           <div className="w-11/12 mx-auto h-auto flex flex-row">
-            <div className="dropdown my-auto ">
+            <div className="dropdown lg:hidden my-auto ">
               <label tabIndex={0} className="btn m-1">
                 Sort
               </label>
@@ -184,7 +188,7 @@ export default function Page() {
                   isSorting ? "hidden" : "block"
                 } dropdown-content card card-compact w-64 p-2 shadow bg-base-200`}
               >
-                <div className="card-body">
+                <div className="card-body h-36 overflow-y-auto">
                   <div className="divider">Sort Order</div>
                   <div className="form-control">
                     <label className="label cursor-pointer">
@@ -354,6 +358,11 @@ export default function Page() {
             isSorting={isSorting}
             isSearch={isSearch}
             keyword={keyword}
+            sortorder={sorts}
+            sortby={sortby}
+            setSortby={setSortBy}
+            setSort={setSort}
+            sortData={sortData}
           ></UserDetails>
         </div>
       </div>

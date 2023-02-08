@@ -126,7 +126,7 @@ export default function AddUser({ id, sortData }: any) {
               placeholder={"Username"}
               name={"username"}
               disabled={false}
-              className={"input input-bordered h-10"}
+              className={"input input-bordered h-8"}
               value={username}
               setter={setUsername}
               required={true}
