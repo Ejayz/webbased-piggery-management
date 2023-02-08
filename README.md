@@ -35,6 +35,24 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+
+## Sample .env file
+
+USERS=
+PASSWORD=
+HOST=
+PORT=
+DATABASE=
+JWT_KEY=
+REQUEST_KEY=
+API_KEY_SMS=
+DEVICE_API=
+HASURA_KEY=
+HASURA_BASE_API=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+
+
 * [![Next][Next.js]][Next-url]
 * [![React][React.js]][React-url]
 * [![Tailwind][Tailwind]][Tailwind-url]

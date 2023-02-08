@@ -1,10 +1,10 @@
 import { rejects } from "assert";
 import { NextApiRequest, NextApiResponse } from "next";
-import connection from "../mysql";
+import connection from "../../../mysql";
 import bcrypt, { genSalt } from "bcrypt";
 import { ResultSetHeader } from "mysql2";
 import { getCookie } from "cookies-next";
-import { verifyJWT } from "../jwtProcessor";
+import { verifyJWT } from "../../../jwtProcessor";
 
 export default async function handler(
   req: NextApiRequest,

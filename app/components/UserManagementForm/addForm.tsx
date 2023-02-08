@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
+import getBaseUrl from "@/hooks/getBaseUrl";
 export default function AddUser({ id }: any) {
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -14,8 +15,36 @@ export default function AddUser({ id }: any) {
   const [job, setJob] = useState("default");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
-
+  const base_url = getBaseUrl();
   function resetState() {
+    const rows = [
+      {
+        key: "1",
+        name: "Tony Reichert",
+        role: "CEO",
+        status: "Active",
+      },
+      {
+        key: "2",
+        name: "Zoey Lang",
+        role: "Technical Lead",
+        status: "Paused",
+      },
+      {
+        key: "3",
+        name: "Jane Fisher",
+        role: "Senior Developer",
+        status: "Active",
+      },
+      {
+        key: "4",
+        name: "William Howard",
+        role: "Community Manager",
+        status: "Vacation",
+      },
+    ];
+    console.log(rows);
+
     setUsername("");
     setFirst_name("");
     setMiddle_name("");
@@ -80,7 +109,7 @@ export default function AddUser({ id }: any) {
     });
 
     let response = await toast.promise(
-      fetch("http://localhost:3000/api/post/addUser", {
+      fetch(`${base_url}/api/post/addUser/`, {
         method: "POST",
         body: bodyContent,
         headers: headersList,

@@ -9,7 +9,6 @@ dotenv.config();
 const jwt_secret: any = process.env.JWT_KEY;
 
 async function send_sms(phone: any, username: any) {
-
   let sms = {};
   if (phone.includes("+63")) {
     phone = phone.replace("+63", "0");
@@ -36,7 +35,6 @@ async function send_sms(phone: any, username: any) {
   });
 
   if (!responses.ok) {
-   
     return responses.text;
   }
   let data = await responses.text();
@@ -84,6 +82,7 @@ export default async function handler(
 
                 return 0;
               } else {
+                console.log(data);
                 res.status(500).json({ code: 500, message: "Server error" });
                 return 0;
               }
