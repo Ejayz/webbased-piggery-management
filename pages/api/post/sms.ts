@@ -16,29 +16,7 @@ async function send_sms(phone: any, username: any) {
 
   const device_api: any = process.env.DEVICE_API;
   const sms_api: any = process.env.API_KEY_SMS;
-  let bodyContent = new FormData();
-  bodyContent.append("secret", sms_api);
-  bodyContent.append("type", "sms");
-  bodyContent.append("phone", `+63${phone}`);
-  bodyContent.append("mode", "devices");
-  bodyContent.append("device", `${device_api}`);
-  bodyContent.append("sim", "1");
-  bodyContent.append(
-    "message",
-    `Hi ${username} , You requested change password operation . This OTP is only valid on this session do not refresh or reload the page . Enter this otp to proceed OTP:{{otp}}`
-  );
-
-  let responses = await fetch("https://smsgatewaydevices.com/api/send/otp", {
-    method: "POST",
-    body: bodyContent,
-    headers: sms,
-  });
-
-  if (!responses.ok) {
-    return responses.text;
-  }
-  let data = await responses.text();
-  return JSON.parse(data);
+  
 }
 
 async function VerifySms(username: string, phone: string) {
