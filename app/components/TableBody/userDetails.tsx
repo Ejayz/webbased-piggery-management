@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function Components({
   parsed,
   message,
@@ -21,30 +21,34 @@ export default function Components({
     columnName: any,
     prev: any
   ) => {
+    console.log(isChangeCol(columnName, prev.sortby));
     if (isChangeCol(columnName, prev.sortby)) {
+      console.log(isAscending(sortorder, prev.sortorder));
       if (isAscending(sortorder, prev.sortorder)) {
         setSort("DESC");
         setPrev({ sortorder: sortorder, sortby: columnName });
-        await sortData();
       } else {
         setSort("ASC");
         setPrev({ sortorder: sortorder, sortby: columnName });
-        await sortData();
       }
     } else {
       setSort("ASC");
       setSortby(columnName);
       setPrev({ sortorder: sortorder, sortby: columnName });
-      await sortData();
     }
   };
 
   function isAscending(sortorder: any, prevOrder: any) {
     if (sortorder == "ASC") {
       return true;
+    } else {
+      return false;
     }
-    return false;
   }
+
+  useEffect(() => {
+    sortData();
+  }, [prev]);
 
   function isChangeCol(sortby: any, prevSortBy: any) {
     if (sortby == prevSortBy) {
