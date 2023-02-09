@@ -8,6 +8,8 @@ import AddUser from "@/components/UserManagementForm/addForm";
 import UserDetails from "@/components/TableBody/userDetails";
 import ApiUrlGenerator from "@/hooks/getApiUrls";
 import getBaseUrl from "@/hooks/getBaseUrl";
+import ConfirmControl from "@/components/FormComponents/confirm";
+import RemoveForm from "@/components/UserManagementForm/RemoveForm";
 interface User {
   user_id: number;
   username: string;
@@ -44,7 +46,6 @@ export default function Page() {
     "name",
     "job",
     "phone",
-    "action",
   ]);
   const [isTyping, setisTyping] = useState(false);
   const sortData = async () => {
@@ -164,7 +165,7 @@ export default function Page() {
       } else if (action == "e") {
         setComps(<EditUser sortData={sortData}></EditUser>);
       } else if (action == "d") {
-        setComps(<ViewForm></ViewForm>);
+        setComps(<RemoveForm></RemoveForm>);
       }
     }
     getView();

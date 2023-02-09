@@ -103,7 +103,7 @@ async function createUser({
 
 async function checkDups({ username }: any) {
   return new Promise((resolve, reject) => {
-    const sql = "select * from tbl_users where username=? and is_exist='true'";
+    const sql = "select * from tbl_users where BINARY username=? and is_exist='true'";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
       conn.query(sql, [username], (error, result, fields) => {

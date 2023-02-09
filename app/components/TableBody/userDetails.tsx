@@ -146,6 +146,7 @@ export default function Components({
                 </div>
               </th>
             ))}
+            <th>ACTION</th>
           </tr>
         </thead>
         <tbody className="overflow-y-scroll overflow-x-hidden overscroll-contain h-12">
@@ -213,7 +214,7 @@ export default function Components({
                       },
                     }}
                   >
-                    Delete
+                    Remove
                   </Link>
                 </div>
               </td>

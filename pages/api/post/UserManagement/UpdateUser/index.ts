@@ -111,11 +111,12 @@ async function generateHased(password: string) {
 async function checkDups({ username, user_id }: any) {
   return new Promise((resolve, reject) => {
     const sql =
-      "select * from tbl_users where username=? and user_id!=? and is_exist='true'";
+      "select * from tbl_users where BINARY username=? and user_id!=? and is_exist='true'";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
       conn.query(sql, [username, user_id], (error, result, fields) => {
         if (error) reject(error);
+
         resolve(result);
         conn.release();
       });

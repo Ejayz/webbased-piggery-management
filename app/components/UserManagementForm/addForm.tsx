@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import getBaseUrl from "@/hooks/getBaseUrl";
-export default function AddUser({ id, sortData }: any) {
+import ConfirmControl from "../FormComponents/confirm";
+export default function AddUser({ sortData }: any) {
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
   const [middle_name, setMiddle_name] = useState("");
@@ -14,6 +15,10 @@ export default function AddUser({ id, sortData }: any) {
   const [job, setJob] = useState("default");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
+  const [notifMessage, setnotifMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [choice, setChoice] = useState(false);
+  const [DisplayConfirmation, setDisplayConfirmation] = useState(false);
   const base_url = getBaseUrl();
   function resetState() {
     setUsername("");
@@ -26,7 +31,7 @@ export default function AddUser({ id, sortData }: any) {
     setrepeatPass("");
   }
 
-  async function createUser(e: any) {
+  const validate = async (e: any) => {
     e.preventDefault();
     if (
       username == "" ||
@@ -62,13 +67,20 @@ export default function AddUser({ id, sortData }: any) {
 
       return false;
     }
+    const isOk = confirm("Are you sure you want to create?");
+    if (isOk) {
+      createUser();
+    } else {
+      return false;
+    }
+  };
 
+  async function createUser() {
     let headersList = {
       Accept: "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       "Content-Type": "application/json",
     };
-
     let bodyContent = JSON.stringify({
       username: username,
       first_name: first_name,
@@ -113,9 +125,9 @@ export default function AddUser({ id, sortData }: any) {
             <li>User Management</li>
             <li className="font-bold">Add</li>
           </ul>
-        </div>
+        </div>{" "}
         <form
-          onSubmit={createUser}
+          onSubmit={validate}
           method="post"
           className="flex w-full h-auto py-2 flex-col"
         >
