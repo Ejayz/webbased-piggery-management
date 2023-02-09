@@ -106,10 +106,7 @@ export default function AddUser({ sortData }: any) {
     );
     let data = await response.json();
     if (data.code == 200) {
-      setTimeout(() => {
-        toast.dismiss("Promised");
-      }, 1000);
-      toast.success(data.message, { delay: 2000 });
+      toast.success(data.message);
       resetState();
       sortData();
     } else {

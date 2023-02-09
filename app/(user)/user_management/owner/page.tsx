@@ -48,6 +48,9 @@ export default function Page() {
     "phone",
   ]);
   const [isTyping, setisTyping] = useState(false);
+
+  const RemoveUser = async () => {};
+
   const sortData = async () => {
     if (base_url == null) {
       return;
