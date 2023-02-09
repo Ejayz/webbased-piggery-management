@@ -6,6 +6,7 @@ import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
 import Link from "next/link";
+import getBaseUrl from "@/hooks/getBaseUrl";
 
 export default function EditUser({ setAction }: any) {
   const [user_id, setUserid] = useState("");
@@ -14,12 +15,85 @@ export default function EditUser({ setAction }: any) {
   const [middle_name, setMiddle_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [phone, setPhone] = useState("");
-  const [job, setJob] = useState("");
+  const [job, setJob] = useState("default");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
-
+  const base_url = getBaseUrl();
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
+
+  console.log(job);
+  const updateUser = async (e: any) => {
+    e.preventDefault();
+    console.log("");
+    if (
+      username == "" ||
+      first_name == "" ||
+      middle_name == "" ||
+      last_name == "" ||
+      phone == ""
+    ) {
+      toast.error("All feilds are required.");
+      return false;
+    }
+    if (job == "default") {
+      toast.error("Please select a job.");
+    }
+
+    if (password != "" || repeatPassword != "") {
+      if (password != repeatPassword) {
+        toast.error("Password and Repeat Password do not match.");
+        return false;
+      }
+      if (!(password.length >= 8)) {
+        toast.error("atleast 8 Character long password is required");
+        return false;
+      }
+      if (!/\d/.test(password)) {
+        toast.error("Password should contain atleast 1 number");
+        return false;
+      }
+      if (!/[A-Z]/.test(password)) {
+        toast.error("Password should contain atleast 1 UpperCase letter");
+
+        return false;
+      }
+      if (!/[a-z]/.test(password)) {
+        toast.error("Password should contain atleast 1 LowerCase letter");
+
+        return false;
+      }
+    }
+
+    let headersList = {
+      Accept: "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json",
+    };
+
+    let bodyContent = JSON.stringify({
+      username: username,
+      password: password,
+      first_name: first_name,
+      middle_name: middle_name,
+      last_name: last_name,
+      phone: phone,
+      job: job,
+      user_id: user_id,
+    });
+
+    let response = await fetch(
+      `${base_url}/api/post/UserManagement/UpdateUser`,
+      {
+        method: "POST",
+        body: bodyContent,
+        headers: headersList,
+      }
+    );
+
+    let data = await response.text();
+    console.log(data);
+  };
 
   if (Queryid == undefined) {
     toast.error("Query ID is invalid");
@@ -53,7 +127,7 @@ export default function EditUser({ setAction }: any) {
           setMiddle_name(userData.middle_name);
           setLast_name(userData.last_name);
           setPhone(userData.phone);
-          setJob(userData.phone);
+          setJob(userData.job);
         }, 5000);
       } else {
         toast.error(data.message);
@@ -86,7 +160,7 @@ export default function EditUser({ setAction }: any) {
             </ul>
           </div>
           <form
-            action="/user_management/"
+            onSubmit={updateUser}
             method="post"
             className="flex w-full h-auto py-2 flex-col"
           >
@@ -121,7 +195,7 @@ export default function EditUser({ setAction }: any) {
                 className={"input input-bordered h-10"}
                 value={password}
                 setter={setPassword}
-                required={true}
+                required={false}
               />
               <InputBox
                 type={"password"}
@@ -132,7 +206,7 @@ export default function EditUser({ setAction }: any) {
                 className={"input input-bordered h-10"}
                 value={repeatPassword}
                 setter={setrepeatPass}
-                required={true}
+                required={false}
               />{" "}
             </div>
             <div className="w-full grid grid-rows-4 grid-cols-none lg:grid-cols-4 lg:grid-rows-none ml-2">

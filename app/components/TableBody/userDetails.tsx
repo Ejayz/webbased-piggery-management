@@ -23,9 +23,7 @@ export default function Components({
     columnName: any,
     prev: any
   ) => {
-    console.log(isChangeCol(columnName, prev.sortby));
     if (isChangeCol(columnName, prev.sortby)) {
-      console.log(isAscending(sortorder, prev.sortorder));
       if (isAscending(sortorder, prev.sortorder)) {
         setSort("DESC");
         setPrev({ sortorder: sortorder, sortby: columnName });
@@ -61,7 +59,7 @@ export default function Components({
   if (isTyping) {
     return (
       <>
-        <div className="w-full h-10s">
+        <div className="w-full h-12 mb-12">
           <div className="flex flex-row mx-auto text-center">
             <span className="text-center mx-auto">
               Press enter/search button to find <b>{keyword}</b>.
@@ -73,7 +71,7 @@ export default function Components({
   } else if (isSearch) {
     return (
       <>
-        <div className="w-full h-10s">
+        <div className="w-full h-12 mb-12">
           <div className="flex flex-row mx-auto text-center">
             <span className="text-center mx-auto">
               Finding something related to <b>{keyword}</b>
@@ -85,7 +83,7 @@ export default function Components({
   } else if (message != "" && parsed.lenght !== 0) {
     return (
       <>
-        <div className="w-full h-10s">
+        <div className="w-full h-12 mb-12">
           <div className="flex flex-row mx-auto text-center">
             <span className="text-center mx-auto">
               {message} <b>{keyword}</b>
@@ -97,7 +95,7 @@ export default function Components({
   } else if (parsed.length == 0) {
     return (
       <>
-        <div className="w-full h-10">
+        <div className="w-full h-12 mb-12">
           <div className="flex flex-row mx-auto text-center">
             <span className="ml-auto mr-0">
               Please wait while we get user data
@@ -110,7 +108,7 @@ export default function Components({
   } else if (isSorting) {
     return (
       <>
-        <div className="w-full h-10">
+        <div className="w-full h-12 mb-12">
           <div className="flex flex-row mx-auto text-center">
             <span className="ml-auto mr-0">
               Please wait while we retrieve and sort user data
@@ -154,7 +152,7 @@ export default function Components({
           {parsed.map((user: any, index: number) => (
             <tr
               className={`h-auto lg:table-row block bg-slate-300 rounded-md my-2 py-4 ${
-                index % 2 == 0 ? "bg-slate-500" : "bg-slate-700"
+                index % 2 == 0 ? "bg-slate-500" : "bg-slate-600"
               }`}
               key={index}
             >

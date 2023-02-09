@@ -173,7 +173,7 @@ export default function AddUser({ id, sortData }: any) {
               className={"input input-bordered h-10"}
               value={middle_name}
               setter={setMiddle_name}
-              required={true}
+              required={false}
             />
             <InputBox
               type={"text"}

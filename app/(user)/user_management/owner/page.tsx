@@ -202,7 +202,7 @@ export default function Page() {
                   isSorting ? "hidden" : "block"
                 } dropdown-content card card-compact w-64 p-2 shadow bg-base-200`}
               >
-                <div className="card-body h-36 overflow-y-auto">
+                <div className="card-body  overflow-y-auto">
                   <div className="divider">Sort Order</div>
                   <div className="form-control">
                     <label className="label cursor-pointer">

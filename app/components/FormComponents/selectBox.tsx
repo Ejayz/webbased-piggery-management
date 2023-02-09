@@ -1,6 +1,7 @@
 export default function SelectBox({
   label,
   name,
+  selected,
   disabled = false,
   default_option = "Options",
   options,
@@ -20,10 +21,20 @@ export default function SelectBox({
           onChange={(e) => setter(e.target.value)}
           required={required}
         >
-          <option value={"default"}>{default_option}</option>
+          <option
+            selected={selected == "default" ? true : false}
+            value={"default"}
+          >
+            {" "}
+            {default_option}
+          </option>
           {options.map((item: any, index: number) => {
             return (
-              <option key={index} value={item.value}>
+              <option
+                key={index}
+                selected={selected == item.value ? true : false}
+                value={item.value}
+              >
                 {item.display}
               </option>
             );
