@@ -140,15 +140,14 @@ export default function EditUser({ setAction, sortData }: any) {
       let data = await response.json();
       if (data.code == 200) {
         const userData = data.data[0];
-        setTimeout(() => {
-          setUserid(userData.user_id);
-          setUsername(userData.username);
-          setFirst_name(userData.first_name);
-          setMiddle_name(userData.middle_name);
-          setLast_name(userData.last_name);
-          setPhone(userData.phone);
-          setJob(userData.job);
-        }, 5000);
+
+        setUserid(userData.user_id);
+        setUsername(userData.username);
+        setFirst_name(userData.first_name);
+        setMiddle_name(userData.middle_name);
+        setLast_name(userData.last_name);
+        setPhone(userData.phone);
+        setJob(userData.job);
       } else {
         toast.error(data.message);
       }

@@ -56,7 +56,7 @@ export default async function handler(
   } else {
     return res
       .status(500)
-      .json({ code: 500, message: "Server error ! Something went wrong" });
+      .json({ code: 500, message: "Server error ! Something went wrong." });
   }
 }
 
@@ -103,7 +103,8 @@ async function createUser({
 
 async function checkDups({ username }: any) {
   return new Promise((resolve, reject) => {
-    const sql = "select * from tbl_users where BINARY username=? and is_exist='true'";
+    const sql =
+      "select * from tbl_users where BINARY username=? and is_exist='true'";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
       conn.query(sql, [username], (error, result, fields) => {

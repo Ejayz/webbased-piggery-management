@@ -168,7 +168,7 @@ export default function Page() {
       } else if (action == "e") {
         setComps(<EditUser sortData={sortData}></EditUser>);
       } else if (action == "d") {
-        setComps(<RemoveForm></RemoveForm>);
+        setComps(<RemoveForm sortData={sortData}></RemoveForm>);
       }
     }
     getView();
