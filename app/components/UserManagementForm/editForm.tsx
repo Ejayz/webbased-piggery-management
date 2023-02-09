@@ -8,7 +8,7 @@ import Loading from "@/components/Loading/loading";
 import Link from "next/link";
 import getBaseUrl from "@/hooks/getBaseUrl";
 
-export default function EditUser({ setAction }: any) {
+export default function EditUser({ setAction, sortData }: any) {
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -22,17 +22,21 @@ export default function EditUser({ setAction }: any) {
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
 
-  console.log(job);
+  function resetState() {
+    setUsername("");
+    setFirst_name("");
+    setMiddle_name("");
+    setLast_name("");
+    setPhone("");
+    setJob("default");
+    setPassword("");
+    setrepeatPass("");
+  }
+
   const updateUser = async (e: any) => {
     e.preventDefault();
     console.log("");
-    if (
-      username == "" ||
-      first_name == "" ||
-      middle_name == "" ||
-      last_name == "" ||
-      phone == ""
-    ) {
+    if (username == "" || first_name == "" || last_name == "" || phone == "") {
       toast.error("All feilds are required.");
       return false;
     }
@@ -60,7 +64,6 @@ export default function EditUser({ setAction }: any) {
       }
       if (!/[a-z]/.test(password)) {
         toast.error("Password should contain atleast 1 LowerCase letter");
-
         return false;
       }
     }
@@ -82,17 +85,27 @@ export default function EditUser({ setAction }: any) {
       user_id: user_id,
     });
 
-    let response = await fetch(
-      `${base_url}/api/post/UserManagement/UpdateUser`,
-      {
+    let response = await toast.promise(
+      fetch(`${base_url}/api/post/UserManagement/UpdateUser`, {
         method: "POST",
         body: bodyContent,
         headers: headersList,
-      }
+      }),
+      {
+        pending: "Adding user information in database.",
+        success: "Process completed... Gathering Result",
+        error: "Process failed.Gathering Result",
+      },
+      { toastId: "Promised" }
     );
-
-    let data = await response.text();
-    console.log(data);
+    let data = await response.json();
+    if (data.code == 200) {
+      toast.success(data.message);
+      router.push("user_management/owner?action=a&id=null");
+      sortData();
+    } else {
+      toast.error(data.message);
+    }
   };
 
   if (Queryid == undefined) {
@@ -227,6 +240,7 @@ export default function EditUser({ setAction }: any) {
                 className={"input input-bordered h-10"}
                 value={middle_name}
                 setter={setMiddle_name}
+                required={false}
               />
               <InputBox
                 type={"text"}

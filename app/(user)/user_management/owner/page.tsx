@@ -162,7 +162,7 @@ export default function Page() {
       } else if (action == "v") {
         setComps(<ViewForm></ViewForm>);
       } else if (action == "e") {
-        setComps(<EditUser></EditUser>);
+        setComps(<EditUser sortData={sortData}></EditUser>);
       } else if (action == "d") {
         setComps(<ViewForm></ViewForm>);
       }

@@ -19,22 +19,13 @@ export default function SelectBox({
           name={name}
           className="select select-bordered"
           onChange={(e) => setter(e.target.value)}
+          value={selected}
           required={required}
         >
-          <option
-            selected={selected == "default" ? true : false}
-            value={"default"}
-          >
-            {" "}
-            {default_option}
-          </option>
+          <option value={"default"}>{default_option}</option>
           {options.map((item: any, index: number) => {
             return (
-              <option
-                key={index}
-                selected={selected == item.value ? true : false}
-                value={item.value}
-              >
+              <option key={index} value={item.value}>
                 {item.display}
               </option>
             );
