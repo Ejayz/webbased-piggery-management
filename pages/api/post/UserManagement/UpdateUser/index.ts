@@ -44,7 +44,7 @@ export default async function handler(
   });
 
   if (data.affectedRows == 1) {
-    return res.status(200).json({ code: 200, message: "Updated succesfully" });
+    return res.status(200).json({ code: 200, message: "Succesfully Updated" });
   } else {
     return res.status(500).json({
       code: 500,
