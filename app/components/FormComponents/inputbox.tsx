@@ -1,3 +1,21 @@
+/**
+ * type={"text"}
+
+ *label={"label"}
+
+ *placeholder={"placeholder"}
+
+ *name={"inputname"}
+
+ *disabled={false}
+
+ *className={"input input-bordered h-8"}
+
+ *value={state}
+
+ *setter={setState}
+ 
+ *required={false} */
 export default function InputBox({
   type,
   label,

@@ -32,7 +32,9 @@ export default function User({ children }: { children: React.ReactNode }) {
           "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;maxAge=-1";
         if (!document.cookie.includes("auth")) {
           toast.success("Successfully logged out. Bye...");
-          window.open("/", "_self");
+          setTimeout(() => {
+            window.open("/", "_self");
+          }, 4000);
         } else {
           toast.error("Something went wrong while removing this session.");
         }
@@ -136,7 +138,29 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                     </div>
-                    <div>
+                    <div
+                      className={`${
+                        loading.data.job == "worker" ? "block" : "hidden"
+                      }`}
+                    >
+                      <li>
+                        <Link href="/manage_cage/worker">
+                          <Image
+                            src={"/assets/icons/cage.png"}
+                            className="h-5 w-5"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Manage Cage
+                        </Link>
+                      </li>
+                    </div>
+                    <div
+                      className={`${
+                        loading.data.job == "worker" ? "block" : "hidden"
+                      }`}
+                    >
                       <li>
                         <Link href="/manage_pig">
                           <Image

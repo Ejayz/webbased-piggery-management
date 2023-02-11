@@ -1,3 +1,28 @@
+/**
+ * 
+            label={"Cage Type"}
+
+              name={"selectName"}
+
+              selected={state}
+
+              disabled={false}
+
+              default_option={"Default"}
+
+              options={[
+                {
+                  value: "option1",
+                  display: "Option 1",
+                },
+                
+              ]}
+
+              setter={set}
+
+              required={true}
+ */
+
 export default function SelectBox({
   label,
   name,

@@ -11,7 +11,6 @@ export default function ConfirmControl({
     setChoice(choice);
   }
   useEffect(() => {
-    // console.log("This is from state" + choice);
   }, [choice]);
   return (
     <div

@@ -85,7 +85,7 @@ export default function ViewUser({ sortData }: any) {
         setMiddle_name(userData.middle_name);
         setLast_name(userData.last_name);
         setPhone(userData.phone);
-        setJob(userData.phone);
+        setJob(userData.job);
       } else {
         toast.error(data.message);
       }

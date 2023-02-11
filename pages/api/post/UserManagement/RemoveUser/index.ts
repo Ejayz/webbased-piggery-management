@@ -20,7 +20,6 @@ export default async function handler(
       .status(500)
       .json({ code: 500, message: "Server error! Something went wrong." });
   }
-  console.log(data);
 }
 
 async function RemoveUser({ user_id }: any) {

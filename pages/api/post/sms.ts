@@ -65,7 +65,6 @@ export default async function handler(
         if (data == 1) {
           send_sms(phone, username)
             .then((data) => {
-              console.log(data);
               if (data.status == 200) {
                 res.setHeader(
                   "Set-Cookie",
@@ -83,7 +82,6 @@ export default async function handler(
               }
             })
             .catch((e) => {
-              console.log(e);
               return res
                 .status(500)
                 .json({ code: 500, message: `Server Error:${e.code}` });
