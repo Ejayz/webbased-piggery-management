@@ -7,6 +7,7 @@ import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import getBaseUrl from "@/hooks/getBaseUrl";
 export default function ViewUser({ sortData }: any) {
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
@@ -17,6 +18,7 @@ export default function ViewUser({ sortData }: any) {
   const [job, setJob] = useState("");
   const Queryid = useSearchParams().get("id");
   const router = useRouter();
+  const base_url = getBaseUrl();
   if (Queryid == undefined) {
     return <></>;
   }
@@ -37,7 +39,7 @@ export default function ViewUser({ sortData }: any) {
     });
 
     let response = await toast.promise(
-      fetch("http://localhost:3000/api/post/UserManagement/RemoveUser", {
+      fetch(`${base_url}/api/post/UserManagement/RemoveUser`, {
         method: "POST",
         body: bodyContent,
         headers: headersList,

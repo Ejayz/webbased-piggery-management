@@ -93,49 +93,51 @@ export default function TableGenerator({
   }
   return (
     <>
-      <table className="w-11/12 mt-2 text-black mx-auto h-12 text-left text-fixed lg:text-center mb-6  rounded-md">
-        <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            {colsName.map((col: any, key: any) => (
-              <th
-                key={key}
-                onClick={() => {
-                  SortUsingHeader(sortorder, col, prev);
-                }}
-              >
-                <div className="flex justify-center flex-row">
-                  {col}
-                  <Image
-                    className={`${sortby == col ? "visible" : "hidden"}`}
-                    src={
-                      sortorder == "ASC"
-                        ? "/assets/table/ascending.svg"
-                        : "/assets/table/descending.svg"
-                    }
-                    width={24}
-                    height={24}
-                    alt={""}
-                  ></Image>
-                </div>
-              </th>
-            ))}
-            <th>ACTION</th>
-          </tr>
-        </thead>
-        <TableGeneratorBody
-          parsed={parsed}
-          message={message}
-          isSorting={isSorting}
-          isSearch={isSearch}
-          keyword={keyword}
-          isTyping={isTyping}
-          colsData={colsData}
-          colsName={colsName}
-          pathname={pathname}
-          isShowOption={isShowOption}
-          notF={notF}
-        ></TableGeneratorBody>
-      </table>
+      <div className="w-full h-[130px] mb-6">
+        <table className="w-11/12 mt-2  text-black mx-auto h-38 table-fixed text-left  lg:text-center   rounded-md">
+          <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              {colsName.map((col: any, key: any) => (
+                <th
+                  key={key}
+                  onClick={() => {
+                    SortUsingHeader(sortorder, col, prev);
+                  }}
+                >
+                  <div className="flex justify-center flex-row">
+                    {col}
+                    <Image
+                      className={`${sortby == col ? "visible" : "hidden"}`}
+                      src={
+                        sortorder == "ASC"
+                          ? "/assets/table/ascending.svg"
+                          : "/assets/table/descending.svg"
+                      }
+                      width={24}
+                      height={24}
+                      alt={""}
+                    ></Image>
+                  </div>
+                </th>
+              ))}
+              <th>ACTION</th>
+            </tr>
+          </thead>
+          <TableGeneratorBody
+            parsed={parsed}
+            message={message}
+            isSorting={isSorting}
+            isSearch={isSearch}
+            keyword={keyword}
+            isTyping={isTyping}
+            colsData={colsData}
+            colsName={colsName}
+            pathname={pathname}
+            isShowOption={isShowOption}
+            notF={notF}
+          ></TableGeneratorBody>
+        </table>
+      </div>
       <div className="w-full  flex">
         <div className="btn-group mx-auto">
           <button

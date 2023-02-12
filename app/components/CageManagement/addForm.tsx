@@ -30,6 +30,9 @@ export default function AddUser({
       toast.error("All feilds are required");
       return false;
     }
+    if (!confirm("Create new cage?")) {
+      return false;
+    }
     exec_add();
   };
 
@@ -113,7 +116,7 @@ export default function AddUser({
             ></SelectBox>
           </div>
           <div className="w-full mt-2 mb-2 ml-2">
-            <button className="btn btn-active btn-primary mx-4">Add</button>
+            <button className="btn btn-active btn-primary mx-4">Create</button>
             <button
               type="reset"
               onClick={resetState}

@@ -43,7 +43,6 @@ export default function Page() {
             sorts={sorts}
             setParsed={setParsed}
             setisSorting={setisSorting}
-            isSorting={isSorting}
           ></AddUser>
         );
       } else if (action == "v") {
