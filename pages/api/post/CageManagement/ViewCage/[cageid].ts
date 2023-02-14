@@ -28,7 +28,7 @@ export default async function handler(
 }
 
 async function ViewCage(cage_id: any) {
-  const data = await prisma.tbl_cage.findFirst({
+  const data = await prisma.Cage.findFirst({
     where: {
       cage_id: cage_id,
       is_exist: "true",
@@ -36,12 +36,3 @@ async function ViewCage(cage_id: any) {
   });
   return data;
 }
-// connection.getConnection((err, conn) => {
-//   if (err) reject(err);
-//   const sql = "select * from tbl_cage where cage_id=? and is_exist='true' ";
-//   conn.query(sql, [cage_id], (err, result, feild) => {
-//     if (err) reject(err);
-//     resolve(result);
-//     conn.release();
-//   });
-// });

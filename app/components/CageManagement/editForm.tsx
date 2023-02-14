@@ -59,6 +59,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
 
   useEffect(() => {
     async function start() {
+      setCageName("");
       const returned = await ViewCage(QueryId);
       if (returned.code == 200) {
         setCageName(returned.data.cage_name);
@@ -90,7 +91,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
             <ul>
               <li>Cage Management</li>
               <li>View</li>
-              <li className="font-bold">Add</li>
+              <li className="font-bold">Edit</li>
             </ul>
           </div>
           <form

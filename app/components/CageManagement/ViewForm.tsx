@@ -1,63 +1,48 @@
 "use client";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
-import Loading from "@/components/Loading/loading";
-import { useRouter } from "next/navigation";
+import { getData, UpdateCage, ViewCage } from "@/hooks/useCageManagement";
+import Loading from "../Loading/loading";
 import Link from "next/link";
-export default function ViewUser({ id }: any) {
-  const [user_id, setUserid] = useState("");
-  const [username, setUsername] = useState("");
-  const [first_name, setFirst_name] = useState("");
-  const [middle_name, setMiddle_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [phone, setPhone] = useState("");
-  const [job, setJob] = useState("");
-  const Queryid = useSearchParams().get("id");
+import { useRouter, useSearchParams } from "next/navigation";
+export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
+  const [cage_name, setCageName] = useState("");
+  const [cage_type, setCageType] = useState("default");
+  const [cage_capacity, setCageCapacity] = useState<number | string>("");
+  const [cage_id, setCageId] = useState();
   const router = useRouter();
-  if (Queryid == undefined) {
-    return <></>;
+  const QueryId = useSearchParams().get("id");
+  function resetState() {
+    setCageName("");
+    setCageCapacity("");
+    setCageType("default");
   }
-  const BackAdd = async () => {
-    router.push("user_management/owner?action=a&id=null");
-  };
+
+  function callCancel(e?: any) {
+    router.push("/manage_cage/worker?action=a&id=null");
+  }
+
   useEffect(() => {
-    async function ViewUser() {
-      setUserid("");
-      let headersList = {
-        Accept: "*/*",
-      };
-
-      let response = await fetch(
-        `${location.origin}/api/post/UserManagement/view_user/${Queryid}`,
-        {
-          method: "POST",
-          headers: headersList,
-        }
-      );
-      let data = await response.json();
-      if (data.code == 200) {
-        const userData = data.data[0];
-
-        setUserid(userData.user_id);
-        setUsername(userData.username);
-        setFirst_name(userData.first_name);
-        setMiddle_name(userData.middle_name);
-        setLast_name(userData.last_name);
-        setPhone(userData.phone);
-        setJob(userData.job);
+    async function start() {
+      setCageName("");
+      const returned = await ViewCage(QueryId);
+      if (returned.code == 200) {
+        setCageName(returned.data.cage_name);
+        setCageCapacity(returned.data.cage_capacity);
+        setCageType(returned.data.cage_type);
+        setCageId(returned.data.cage_id);
       } else {
-        toast.error(data.message);
+        toast.error(returned.message);
       }
     }
-    if (Queryid !== "null") {
-      ViewUser();
+    if (QueryId != "null") {
+      start();
     }
-  }, [Queryid]);
+  }, [QueryId]);
 
-  if (user_id == "") {
+  if (cage_name == "") {
     return (
       <>
         <div className="w-full h-1/2 flex">
@@ -71,115 +56,85 @@ export default function ViewUser({ id }: any) {
         <div className="w-full bg-slate-500 h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
-              <li>User Management</li>
+              <li>Cage Management</li>
               <li className="font-bold">View</li>
             </ul>
           </div>
-          <form
-            action="/user_management/"
-            method="get"
-            className="flex w-full h-auto py-2 flex-col"
-          >
-            <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
+          <form method="post" className="flex w-full h-auto py-2 flex-col">
+            <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
               <InputBox
                 type={"text"}
-                label={"User Id"}
-                placeholder={"User Id"}
-                name={"user_id"}
+                label={"Cage Name"}
+                placeholder={"Cage Name"}
+                name={"cagename"}
+                disabled={true}
+                className={"input input-bordered h-8"}
+                value={cage_name}
+                setter={setCageName}
+                required={false}
+              />
+              <InputBox
+                type={"number"}
+                label={"Cage Capacity"}
+                placeholder={"Cage Capacity"}
+                name={"cagecapacity"}
                 disabled={true}
                 className={"input input-bordered h-10"}
-                value={user_id}
-                setter={setUserid}
+                value={cage_capacity}
+                setter={setCageCapacity}
+                required={true}
               />{" "}
-              <InputBox
-                type={"text"}
-                label={"Username"}
-                placeholder={"Username"}
-                name={"username"}
-                disabled={true}
-                className={"input input-bordered h-10"}
-                value={username}
-                setter={setUsername}
-              />
             </div>
-            <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
-              <InputBox
-                type={"text"}
-                label={"First Name"}
-                placeholder={"first name"}
-                name={"first_name"}
-                className={"input input-bordered h-10"}
-                value={first_name}
-                setter={setFirst_name}
-                disabled={true}
-              />
-              <InputBox
-                type={"text"}
-                label={"Middle Name"}
-                placeholder={"Middle Name"}
-                name={"first_name"}
-                className={"input input-bordered h-10"}
-                value={middle_name}
-                disabled={true}
-                setter={setMiddle_name}
-              />
-              <InputBox
-                type={"text"}
-                label={"Last Name"}
-                placeholder={"Last Name"}
-                name={"last_name"}
-                className={"input input-bordered h-10"}
-                value={last_name}
-                setter={setLast_name}
-                disabled={true}
-              />
-            </div>
-            <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
-              <InputBox
-                type={"text"}
-                label={"Phone"}
-                placeholder={"Phone"}
-                name={"phone"}
-                className={"input input-bordered h-10"}
-                value={phone}
-                setter={setPhone}
-                disabled={true}
-              />
+            <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
               <SelectBox
-                label={"Job"}
-                name={"Job"}
-                selected={job}
+                label={"Cage Type"}
+                name={"cage_type"}
+                selected={cage_type}
+                disabled={true}
+                default_option={"Cage Type"}
                 options={[
                   {
-                    value: "worker",
-                    display: "Worker",
+                    value: "Individual Stall",
+                    display: "Individual Stall",
                   },
                   {
-                    value: "owner",
-                    display: "Owner",
+                    value: "Group Housing",
+                    display: "Group Housing",
                   },
                   {
-                    value: "veterinarian",
-                    display: "Veterinarian",
+                    value: "Forrowing Crates",
+                    display: "Forrowing Crates",
+                  },
+                  {
+                    value: "Sow Stall",
+                    display: "Sow Stall",
+                  },
+                  {
+                    value: "Grow Finishing Housing",
+                    display: "Grow Finishing Housing",
+                  },
+                  {
+                    value: "Nursery Pen",
+                    display: "Nursery Pen",
+                  },
+                  {
+                    value: "Quarantine Cage",
+                    display: "Quarantine Cage",
                   },
                 ]}
-                disabled={true}
-                default_option={"Job"}
-                setter={setJob}
-              />
+                setter={setCageType}
+                required={true}
+              ></SelectBox>
             </div>
-            <div>
+            <div className="w-full mt-2 mb-2 ml-2">
               <Link
-                className="btn btn-active btn-primary mx-4"
-                href={{
-                  pathname: "/user_management/owner/",
-                  query: {
-                    action: "a",
-                    id: "null",
-                  },
+                onClick={(e) => {
+                  callCancel(e);
                 }}
+                className="btn btn-active btn-primary mx-4"
+                href={"/manage_cage/worker?action=a&id=null"}
               >
-                BACK
+                Cancel
               </Link>
             </div>
           </form>
