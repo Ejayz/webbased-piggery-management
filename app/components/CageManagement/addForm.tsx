@@ -99,16 +99,32 @@ export default function AddUser({
               default_option={"Cage Type"}
               options={[
                 {
-                  value: "worker",
-                  display: "Worker",
+                  value: "Individual Stall",
+                  display: "Individual Stall",
                 },
                 {
-                  value: "owner",
-                  display: "Owner",
+                  value: "Group Housing",
+                  display: "Group Housing",
                 },
                 {
-                  value: "veterinarian",
-                  display: "Veterinarian",
+                  value: "Forrowing Crates",
+                  display: "Forrowing Crates",
+                },
+                {
+                  value: "Sow Stall",
+                  display: "Sow Stall",
+                },
+                {
+                  value: "Grow Finishing Housing",
+                  display: "Grow Finishing Housing",
+                },
+                {
+                  value: "Nursery Pen",
+                  display: "Nursery Pen",
+                },
+                {
+                  value: "Quarantine Cage",
+                  display: "Quarantine Cage",
                 },
               ]}
               setter={setCageType}

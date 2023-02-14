@@ -1,3 +1,4 @@
+"use client"
 import SearchComponent from "./SearchComponent";
 import SorterMobile from "./SorterComponent";
 

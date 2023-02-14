@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, FormEventHandler, FormHTMLAttributes } from "react";
+"use client";
 
 export default function SearchComponent({
   Search,
