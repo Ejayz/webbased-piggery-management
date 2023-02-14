@@ -11,6 +11,23 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+  const cage_id: number = req.body.cage_id;
+  try {
+    const data = await UpdateCage(cage_id);
+    if (data.count != 1) {
+      return res.status(404).json({
+        code: 404,
+        message:
+          "Data update unsuccessful. Record not found or no changes made.",
+      });
+    }
+    return res.status(200).json({ code: 200, message: "Removed successfully" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ code: 500, message: "500 Server Error,Something went wrong." });
+  }
 }
 
 async function UpdateCage(cage_id: number) {
@@ -23,4 +40,5 @@ async function UpdateCage(cage_id: number) {
       is_exist: "false",
     },
   });
+  return data;
 }
