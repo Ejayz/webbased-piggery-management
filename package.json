@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "logged-dev": "next dev > ./public/log/log.txt",
-    "build": "next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "logged-start": "next start > log.txt",
     "lint": "next lint"
