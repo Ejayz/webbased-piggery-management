@@ -31,13 +31,17 @@ export default function TableGenerator({
 
   useEffect(() => {
     async function start() {
+      setisSorting(true);
       const data = await getData(page, sortby, sortorder);
       if (data.code == 200) {
         setNotF(false);
+        setisSorting(false);
         setParsed(data.data);
       } else if (data.code == 404) {
+        setisSorting(false);
         setNotF(true);
       } else {
+        setisSorting(false);
         toast.error(data.message);
       }
     }
@@ -84,6 +88,7 @@ export default function TableGenerator({
     }
     start();
   }, [prev]);
+
   useEffect(() => {}, [parsed]);
   function isChangeCol(sortby: any, prevSortBy: any) {
     if (sortby == prevSortBy) {
