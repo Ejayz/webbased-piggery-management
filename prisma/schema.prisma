@@ -7,186 +7,166 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Batch {
-  batch_id   Int       @id @default(autoincrement())
-  batch_name String?   @db.VarChar(50)
-  is_exist   String?   @default("true") @db.VarChar(50)
-  tbl_pig    Pig[]
-
-  @@map("tbl_batch")
-}
-
-model Breed {
-  breed_id   Int       @id @default(autoincrement())
-  breed_name String?   @db.VarChar(50)
-  is_exist   String?   @default("true") @db.VarChar(50)
-  tbl_pig    Pig[]
-
-  @@map("tbl_breed")
-}
-
-model Cage {
-  cage_id                Int                 @id @default(autoincrement())
-  cage_name              String?             @db.VarChar(50)
-  cage_type              String?             @db.VarChar(50)
-  cage_capacity          Int?
-  is_exist               String?             @default("true") @db.VarChar(50)
-  tbl_pig                Pig[]
-  tbl_quarantine_details QuarantineDetails[]
-
-  @@map("tbl_cage")
-}
-
-model Category {
-  catergory_id         Int               @id @default(autoincrement())
-  category_name        String?           @db.VarChar(50)
-  is_exist             String?           @default("true") @db.VarChar(50)
-  tbl_inventory        tbl_inventory[]
-  tbl_purchase_request PurchaseRequest[]
-
-  @@map("tbl_category")
-}
-
-model Operation {
-  operation_id               Int                    @id @default(autoincrement())
-  operation_type_id          Int?
-  operation_date             DateTime?              @db.Date
-  status                     String?                @db.VarChar(50)
-  is_exist                   String?                @default("true") @db.VarChar(50)
-  tbl_operation_item_details OperationItemDetails[]
-  tbl_operation_pig_details  OperationPigDetails[]
-
-  @@map("tbl_operation")
-}
-
-model OperationItemDetails {
-  operation_item_details_id Int            @id @default(autoincrement())
-  operation_id              Int?
-  item_id                   Int?
-  is_exist                  String?        @default("true") @db.VarChar(50)
-  tbl_inventory             tbl_inventory? @relation(fields: [item_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__ tbl_inventory_item")
-  tbl_operation             Operation?     @relation(fields: [operation_id], references: [operation_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_operation_item")
-
-  @@index([item_id], map: "FK__ tbl_inventory_item")
-  @@index([operation_id], map: "FK__tbl_operation_item")
-  @@map("tbl_operation_item_details")
-}
-
-model OperationPigDetails {
-  operation_details_id Int        @id @default(autoincrement())
-  operation_id         Int?
-  pig_id               Int?
-  is_exist             String?    @default("true") @db.VarChar(50)
-  tbl_operation        Operation? @relation(fields: [operation_id], references: [operation_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_operation")
-  tbl_pig              Pig?   @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig")
-
-  @@index([operation_id], map: "FK__tbl_operation")
-  @@index([pig_id], map: "FK__tbl_pig")
-  @@map("tbl_operation_pig_details")
-}
-
-model OperationType {
-  operation_type_id Int     @id @default(autoincrement())
-  operation_name    String? @db.VarChar(50)
-  is_exist          String? @default("true") @db.VarChar(50)
-
-  @@map("tbl_operation_type")
-}
-
-model PurchaseRequest {
-  purchase_request_id          Int                      @id @default(autoincrement())
-  purchase_request_no          String?                  @db.VarChar(225)
-  category_id                  Int?
-  total_price                  Float?                   @db.Float
-  purchase_request_date        DateTime?                @db.Date
-  is_exist                     String?                  @db.VarChar(50)
-  tbl_category                 Category?                @relation(fields: [category_id], references: [catergory_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tbl_purchase_request_tbl_category")
-  tbl_purchase_request_details PurchaseRequestDetails[]
-
-  @@index([category_id], map: "FK_tbl_purchase_request_tbl_category")
-  @@map("tbl_purchase_request")
-}
-
-model PurchaseRequestDetails {
-  purchase_request_details_id Int              @id @default(autoincrement())
-  purchase_request_id         Int?
-  item_id                     Int?
-  is_exist                    String?          @default("true") @db.VarChar(50)
-  tbl_inventory               tbl_inventory?   @relation(fields: [item_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tbl_purchase_request_details_ tbl_inventory")
-  tbl_purchase_request        PurchaseRequest? @relation(fields: [purchase_request_id], references: [purchase_request_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tbl_purchase_request_details_tbl_purchase_request")
-
-  @@index([item_id], map: "FK_tbl_purchase_request_details_ tbl_inventory")
-  @@index([purchase_request_id], map: "FK_tbl_purchase_request_details_tbl_purchase_request")
-  @@map("tbl_purchase_request_details")
-}
-
-model QuarantineDetails {
-  quarantine_details_id Int         @id @default(autoincrement())
-  quarantine_id         Int?
-  cage_id               Int?
-  pig_id                Int?
-  is_exist              String?     @default("true") @db.VarChar(50)
-  tbl_cage              Cage?       @relation(fields: [cage_id], references: [cage_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_cage_q")
-  tbl_pig               Pig?    @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig_q")
-  tbl_quarantine        Quarantine? @relation(fields: [quarantine_id], references: [quarantine_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_quarantine")
-
-  @@index([cage_id], map: "FK__tbl_cage_q")
-  @@index([pig_id], map: "FK__tbl_pig_q")
-  @@index([quarantine_id], map: "FK__tbl_quarantine")
-  @@map("tbl_quarantine_details")
-}
-
-model Quarantine {
-  quarantine_id          Int                 @id @default(autoincrement())
-  remarks                String?             @db.LongText
-  quarantine_date        DateTime?           @db.Date
-  is_exist               String?             @default("true") @db.VarChar(50)
-  tbl_quarantine_details QuarantineDetails[]
-
-  @@map("tbl_quarantine")
-}
-
 model tbl_inventory {
-  item_id                      Int                      @id @default(autoincrement())
-  item_name                    String?                  @db.VarChar(50)
+  item_id                      Int                            @id @default(autoincrement())
+  item_name                    String?                        @db.VarChar(50)
   category_id                  Int?
-  item_description             String?                  @db.VarChar(250)
-  item_quantity                Float?                   @db.Float
-  item_unit                    String?                  @db.VarChar(50)
-  is_exist                     String?                  @default("true") @db.VarChar(50)
-  tbl_category                 Category?                @relation(fields: [category_id], references: [catergory_id], onDelete: NoAction, onUpdate: NoAction, map: "FK1")
-  tbl_operation_item_details   OperationItemDetails[]
-  tbl_purchase_request_details PurchaseRequestDetails[]
+  item_description             String?                        @db.VarChar(250)
+  item_quantity                Float?                         @db.Float
+  item_unit                    String?                        @db.VarChar(50)
+  is_exist                     String?                        @default("true") @db.VarChar(50)
+  tbl_category                 tbl_category?                  @relation(fields: [category_id], references: [catergory_id], onDelete: NoAction, onUpdate: NoAction, map: "FK1")
+  tbl_operation_item_details   tbl_operation_item_details[]
+  tbl_purchase_request_details tbl_purchase_request_details[]
 
   @@index([category_id], map: "FK1")
   @@map(" tbl_inventory")
 }
 
-model  Pig{
-  pig_id                    Int                   @id
+model tbl_batch {
+  batch_id   Int       @id @default(autoincrement())
+  batch_name String?   @db.VarChar(50)
+  is_exist   String?   @default("true") @db.VarChar(50)
+  tbl_pig    tbl_pig[]
+}
+
+model tbl_breed {
+  breed_id   Int       @id @default(autoincrement())
+  breed_name String?   @db.VarChar(50)
+  is_exist   String?   @default("true") @db.VarChar(50)
+  tbl_pig    tbl_pig[]
+}
+
+model tbl_cage {
+  cage_id                Int                      @id @default(autoincrement())
+  cage_name              String?                  @db.VarChar(50)
+  cage_type              String?                  @db.VarChar(50)
+  cage_capacity          Int?
+  is_exist               String?                  @default("true") @db.VarChar(50)
+  tbl_pig                tbl_pig[]
+  tbl_quarantine_details tbl_quarantine_details[]
+}
+
+model tbl_category {
+  catergory_id         Int                    @id @default(autoincrement())
+  category_name        String?                @db.VarChar(50)
+  is_exist             String?                @default("true") @db.VarChar(50)
+  tbl_inventory        tbl_inventory[]
+  tbl_purchase_request tbl_purchase_request[]
+}
+
+model tbl_operation {
+  operation_id               Int                          @id @default(autoincrement())
+  operation_type_id          Int?
+  operation_date             DateTime?                    @db.Date
+  status                     String?                      @db.VarChar(50)
+  is_exist                   String?                      @default("true") @db.VarChar(50)
+  tbl_operation_item_details tbl_operation_item_details[]
+  tbl_operation_pig_details  tbl_operation_pig_details[]
+}
+
+model tbl_operation_item_details {
+  operation_item_details_id Int            @id @default(autoincrement())
+  operation_id              Int?
+  item_id                   Int?
+  is_exist                  String?        @default("true") @db.VarChar(50)
+  tbl_inventory             tbl_inventory? @relation(fields: [item_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__ tbl_inventory_item")
+  tbl_operation             tbl_operation? @relation(fields: [operation_id], references: [operation_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_operation_item")
+
+  @@index([item_id], map: "FK__ tbl_inventory_item")
+  @@index([operation_id], map: "FK__tbl_operation_item")
+}
+
+model tbl_operation_pig_details {
+  operation_details_id Int            @id @default(autoincrement())
+  operation_id         Int?
+  pig_id               Int?
+  is_exist             String?        @default("true") @db.VarChar(50)
+  tbl_operation        tbl_operation? @relation(fields: [operation_id], references: [operation_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_operation")
+  tbl_pig              tbl_pig?       @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig")
+
+  @@index([operation_id], map: "FK__tbl_operation")
+  @@index([pig_id], map: "FK__tbl_pig")
+}
+
+model tbl_operation_type {
+  operation_type_id Int     @id @default(autoincrement())
+  operation_name    String? @db.VarChar(50)
+  is_exist          String? @default("true") @db.VarChar(50)
+}
+
+model tbl_pig {
+  pig_id                    Int                         @id
   cage_id                   Int?
   batch_id                  Int?
   breed_id                  Int?
   pig_tag                   Int?
-  pig_type                  String?               @db.VarChar(50)
-  birthdate                 DateTime?             @db.Date
+  pig_type                  String?                     @db.VarChar(50)
+  birthdate                 DateTime?                   @db.Date
   weight                    Int?
-  unit                      String?               @db.VarChar(50)
-  status                    String?               @db.VarChar(50)
-  is_exist                  String?               @db.VarChar(50)
-  tbl_operation_pig_details OperationPigDetails[]
-  tbl_batch                 Batch?                @relation(fields: [batch_id], references: [batch_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_batch")
-  tbl_breed                 Breed?                @relation(fields: [breed_id], references: [breed_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_breed")
-  tbl_cage                  Cage?                 @relation(fields: [cage_id], references: [cage_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_cage")
-  tbl_quarantine_details    QuarantineDetails[]
+  unit                      String?                     @db.VarChar(50)
+  status                    String?                     @db.VarChar(50)
+  is_exist                  String?                     @db.VarChar(50)
+  tbl_operation_pig_details tbl_operation_pig_details[]
+  tbl_batch                 tbl_batch?                  @relation(fields: [batch_id], references: [batch_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_batch")
+  tbl_breed                 tbl_breed?                  @relation(fields: [breed_id], references: [breed_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_breed")
+  tbl_cage                  tbl_cage?                   @relation(fields: [cage_id], references: [cage_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_cage")
+  tbl_quarantine_details    tbl_quarantine_details[]
 
   @@index([batch_id], map: "FK__tbl_batch")
   @@index([breed_id], map: "FK__tbl_breed")
   @@index([cage_id], map: "FK__tbl_cage")
-  @@map("tbl_pig")
 }
 
-model Users {
+model tbl_purchase_request {
+  purchase_request_id          Int                            @id @default(autoincrement())
+  purchase_request_no          String?                        @db.VarChar(225)
+  category_id                  Int?
+  total_price                  Float?                         @db.Float
+  purchase_request_date        DateTime?                      @db.Date
+  is_exist                     String?                        @db.VarChar(50)
+  tbl_category                 tbl_category?                  @relation(fields: [category_id], references: [catergory_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tbl_purchase_request_tbl_category")
+  tbl_purchase_request_details tbl_purchase_request_details[]
+
+  @@index([category_id], map: "FK_tbl_purchase_request_tbl_category")
+}
+
+model tbl_purchase_request_details {
+  purchase_request_details_id Int                   @id @default(autoincrement())
+  purchase_request_id         Int?
+  item_id                     Int?
+  is_exist                    String?               @default("true") @db.VarChar(50)
+  tbl_inventory               tbl_inventory?        @relation(fields: [item_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tbl_purchase_request_details_ tbl_inventory")
+  tbl_purchase_request        tbl_purchase_request? @relation(fields: [purchase_request_id], references: [purchase_request_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_tbl_purchase_request_details_tbl_purchase_request")
+
+  @@index([item_id], map: "FK_tbl_purchase_request_details_ tbl_inventory")
+  @@index([purchase_request_id], map: "FK_tbl_purchase_request_details_tbl_purchase_request")
+}
+
+model tbl_quarantine {
+  quarantine_id          Int                      @id @default(autoincrement())
+  remarks                String?                  @db.LongText
+  quarantine_date        DateTime?                @db.Date
+  is_exist               String?                  @default("true") @db.VarChar(50)
+  tbl_quarantine_details tbl_quarantine_details[]
+}
+
+model tbl_quarantine_details {
+  quarantine_details_id Int             @id @default(autoincrement())
+  quarantine_id         Int?
+  cage_id               Int?
+  pig_id                Int?
+  is_exist              String?         @default("true") @db.VarChar(50)
+  tbl_cage              tbl_cage?       @relation(fields: [cage_id], references: [cage_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_cage_q")
+  tbl_pig               tbl_pig?        @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig_q")
+  tbl_quarantine        tbl_quarantine? @relation(fields: [quarantine_id], references: [quarantine_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_quarantine")
+
+  @@index([cage_id], map: "FK__tbl_cage_q")
+  @@index([pig_id], map: "FK__tbl_pig_q")
+  @@index([quarantine_id], map: "FK__tbl_quarantine")
+}
+
+model tbl_users {
   user_id     Int     @id @default(autoincrement())
   username    String? @db.Text
   password    String? @db.Text
@@ -196,5 +176,4 @@ model Users {
   phone       String? @db.Text
   job         String? @db.Text
   is_exist    String? @default("true") @db.Text
-  @@map("tbl_users")
 }

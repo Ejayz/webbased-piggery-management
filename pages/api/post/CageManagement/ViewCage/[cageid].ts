@@ -28,7 +28,7 @@ export default async function handler(
 }
 
 async function ViewCage(cage_id: any) {
-  const data = await prisma.cage.findFirst({
+  const data = await prisma.tbl_cage.findFirst({
     where: {
       cage_id: cage_id,
       is_exist: "true",

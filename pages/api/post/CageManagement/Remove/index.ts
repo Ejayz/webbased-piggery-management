@@ -31,7 +31,7 @@ export default async function handler(
 }
 
 async function UpdateCage(cage_id: number) {
-  const data = await prisma.cage.updateMany({
+  const data = await prisma.tbl_cage.updateMany({
     where: {
       cage_id: cage_id,
       is_exist: "true",
