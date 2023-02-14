@@ -11,9 +11,10 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const cage_id: number = req.body.cage_id;
+  const cage_id: number = Number(req.body.cage_id);
   try {
     const data = await UpdateCage(cage_id);
+    console.log(data);
     if (data.count != 1) {
       return res.status(404).json({
         code: 404,
@@ -31,6 +32,7 @@ export default async function handler(
 }
 
 async function UpdateCage(cage_id: number) {
+  console.log(cage_id)
   const data = await prisma.tbl_cage.updateMany({
     where: {
       cage_id: cage_id,

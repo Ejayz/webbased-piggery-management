@@ -3,15 +3,20 @@ import { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
-import { getData, UpdateCage, ViewCage } from "@/hooks/useCageManagement";
+import {
+  getData,
+  RemoveCage,
+  UpdateCage,
+  ViewCage,
+} from "@/hooks/useCageManagement";
 import Loading from "../Loading/loading";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
+export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) {
   const [cage_name, setCageName] = useState("");
   const [cage_type, setCageType] = useState("default");
   const [cage_capacity, setCageCapacity] = useState<number | string>("");
-  const [cage_id, setCageId] = useState();
+  const [cage_id, setCageId] = useState(1);
   const router = useRouter();
   const QueryId = useSearchParams().get("id");
   function resetState() {
@@ -36,12 +41,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
   };
 
   const exec_remove = async () => {
-    const returned = await UpdateCage({
-      cage_name,
-      cage_id,
-      cage_type,
-      cage_capacity,
-    });
+    const returned = await RemoveCage(cage_id);
     if (returned.code == 200) {
       toast.success(returned.message);
       setisSorting(true);

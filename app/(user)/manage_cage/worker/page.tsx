@@ -58,7 +58,15 @@ export default function Page() {
           ></EditUser>
         );
       } else if (action == "d") {
-        setComps(<RemoveForm sortData={sortData}></RemoveForm>);
+        setComps(
+          <RemoveForm
+            sortData={sortData}
+            sortby={sortby}
+            sorts={sorts}
+            setParsed={setParsed}
+            setisSorting={setisSorting}
+          ></RemoveForm>
+        );
       }
     }
     getView();

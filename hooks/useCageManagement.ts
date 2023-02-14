@@ -160,3 +160,27 @@ export const UpdateCage = async ({
   let data = await response.json();
   return data;
 };
+
+export const RemoveCage = async (cage_id: number) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    cage_id: cage_id,
+  });
+
+  let response = await fetch(
+    `${location.origin}/api/post/CageManagement/Remove/`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
