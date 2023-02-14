@@ -48,7 +48,15 @@ export default function Page() {
       } else if (action == "v") {
         setComps(<ViewForm></ViewForm>);
       } else if (action == "e") {
-        setComps(<EditUser sortData={sortData}></EditUser>);
+        setComps(
+          <EditUser
+            sortData={sortData}
+            sortby={sortby}
+            sorts={sorts}
+            setParsed={setParsed}
+            setisSorting={setisSorting}
+          ></EditUser>
+        );
       } else if (action == "d") {
         setComps(<RemoveForm sortData={sortData}></RemoveForm>);
       }

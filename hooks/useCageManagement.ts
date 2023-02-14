@@ -107,3 +107,56 @@ export const AddCage = async (
   let data = await response.json();
   return data;
 };
+
+export const ViewCage = async (cage_id: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({});
+
+  let response = await fetch(
+    `${location.origin}/api/post/CageManagement/ViewCage/${cage_id}`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
+
+export const UpdateCage = async ({
+  cage_name,
+  cage_id,
+  cage_type,
+  cage_capacity,
+}: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+  let bodyContent = JSON.stringify({
+    cage_name: cage_name,
+    cage_id: cage_id,
+    cage_type: cage_type,
+    cage_capacity: cage_capacity,
+  });
+
+  let response = await fetch(
+    `${location.origin}/api/post/CageManagement/Update/`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};

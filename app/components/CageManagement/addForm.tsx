@@ -57,7 +57,7 @@ export default function AddUser({
       <div className="w-full bg-slate-500 h-11/12 flex flex-col">
         <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
           <ul>
-            <li>User Management</li>
+            <li>Cage Management</li>
             <li className="font-bold">Add</li>
           </ul>
         </div>{" "}
