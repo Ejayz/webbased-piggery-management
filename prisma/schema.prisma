@@ -11,7 +11,7 @@ model Batch {
   batch_id   Int       @id @default(autoincrement())
   batch_name String?   @db.VarChar(50)
   is_exist   String?   @default("true") @db.VarChar(50)
-  tbl_pig    tbl_pig[]
+  tbl_pig    Pig[]
 
   @@map("tbl_batch")
 }
@@ -20,7 +20,7 @@ model Breed {
   breed_id   Int       @id @default(autoincrement())
   breed_name String?   @db.VarChar(50)
   is_exist   String?   @default("true") @db.VarChar(50)
-  tbl_pig    tbl_pig[]
+  tbl_pig    Pig[]
 
   @@map("tbl_breed")
 }
@@ -31,7 +31,7 @@ model Cage {
   cage_type              String?             @db.VarChar(50)
   cage_capacity          Int?
   is_exist               String?             @default("true") @db.VarChar(50)
-  tbl_pig                tbl_pig[]
+  tbl_pig                Pig[]
   tbl_quarantine_details QuarantineDetails[]
 
   @@map("tbl_cage")
@@ -78,7 +78,7 @@ model OperationPigDetails {
   pig_id               Int?
   is_exist             String?    @default("true") @db.VarChar(50)
   tbl_operation        Operation? @relation(fields: [operation_id], references: [operation_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_operation")
-  tbl_pig              tbl_pig?   @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig")
+  tbl_pig              Pig?   @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig")
 
   @@index([operation_id], map: "FK__tbl_operation")
   @@index([pig_id], map: "FK__tbl_pig")
@@ -127,7 +127,7 @@ model QuarantineDetails {
   pig_id                Int?
   is_exist              String?     @default("true") @db.VarChar(50)
   tbl_cage              Cage?       @relation(fields: [cage_id], references: [cage_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_cage_q")
-  tbl_pig               tbl_pig?    @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig_q")
+  tbl_pig               Pig?    @relation(fields: [pig_id], references: [pig_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_pig_q")
   tbl_quarantine        Quarantine? @relation(fields: [quarantine_id], references: [quarantine_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__tbl_quarantine")
 
   @@index([cage_id], map: "FK__tbl_cage_q")
@@ -162,7 +162,7 @@ model tbl_inventory {
   @@map(" tbl_inventory")
 }
 
-model tbl_pig {
+model  Pig{
   pig_id                    Int                   @id
   cage_id                   Int?
   batch_id                  Int?
@@ -183,9 +183,10 @@ model tbl_pig {
   @@index([batch_id], map: "FK__tbl_batch")
   @@index([breed_id], map: "FK__tbl_breed")
   @@index([cage_id], map: "FK__tbl_cage")
+  @@map("tbl_pig")
 }
 
-model tbl_users {
+model Users {
   user_id     Int     @id @default(autoincrement())
   username    String? @db.Text
   password    String? @db.Text
@@ -195,4 +196,5 @@ model tbl_users {
   phone       String? @db.Text
   job         String? @db.Text
   is_exist    String? @default("true") @db.Text
+  @@map("tbl_users")
 }
