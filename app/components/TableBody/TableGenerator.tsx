@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import TableGeneratorBody from "./TableGeneratorBody";
 import { toast } from "react-toastify";
-import { getData } from "@/hooks/useCageManagement";
 export default function TableGenerator({
   setParsed,
   parsed,
@@ -25,6 +24,7 @@ export default function TableGenerator({
   setNotF,
   base_url,
   setisSorting,
+  getData,
 }: any) {
   const [prev, setPrev] = useState({ sortorder: sortorder, sortby: sortby });
   const [page, setPage] = useState(1);
@@ -33,6 +33,7 @@ export default function TableGenerator({
     async function start() {
       setisSorting(true);
       const data = await getData(page, sortby, sortorder);
+      console.log(data);
       if (data.code == 200) {
         setNotF(false);
         setisSorting(false);

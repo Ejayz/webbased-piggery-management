@@ -23,6 +23,10 @@ export default function User({ children }: { children: React.ReactNode }) {
       setTitle("RVM Hog Farm-User Management");
     } else if (path?.includes("dashboard")) {
       setTitle("RVM Hog Farm-Dashboard");
+    } else if (path?.includes("manage_cage")) {
+      setTitle("RVM Hog Farm-Cage Management");
+    } else if (path?.includes("manage_pig")) {
+      setTitle("RVM Hog Farm-Manage Pig");
     }
   }, [path]);
   useEffect(() => {
@@ -162,7 +166,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                       }`}
                     >
                       <li>
-                        <Link href="/manage_pig">
+                        <Link href="/manage_pig/worker">
                           <Image
                             src={"/assets/icons/pig.png"}
                             className="h-5 w-5"

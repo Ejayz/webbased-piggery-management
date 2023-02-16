@@ -1,41 +1,46 @@
 "use client";
-
-import AddUser from "@/components/CageManagement/addForm";
-import EditUser from "@/components/CageManagement/editForm";
-import RemoveForm from "@/components/CageManagement/RemoveForm";
-import ViewForm from "@/components/CageManagement/ViewForm";
+import AddUser from "@/components/PigManagement/addForm";
+import EditUser from "@/components/PigManagement/editForm";
+import RemoveForm from "@/components/PigManagement/RemoveForm";
+import ViewForm from "@/components/PigManagement/ViewForm";
 import getUserInfo from "@/components/getUserInfo";
 import getBaseUrl from "@/hooks/getBaseUrl";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getData, sortData, Search } from "@/hooks/useCageManagement";
+import { getData, sortData, Search } from "@/hooks/usePigManagement";
 import Table from "@/components/TableBody/Table";
-interface Cage {
+interface Pig {
+  pig_id: number;
   cage_id: number;
-  cage_name: string;
-  cage_type: string;
-  cage_capacity: string;
+  batch_id: number;
+  breed_id: number;
+  pig_tag: number;
+  pig_type: string;
+  birthdate: Date;
+  weight: number;
+  unit: string;
+  status: string;
   is_exist: string;
 }
 
 interface ApiData {
   code: number;
-  data: Cage[];
+  data: Pig[];
 }
 
 export default function Page() {
   const [compos, setComps] = useState(<></>);
   const action = useSearchParams().get("action");
-  const [parsed, setParsed] = useState<Cage[]>([]);
-  const [sorts, setSort] = useState("ASC");
+  const [parsed, setParsed] = useState<Pig[]>([]);
+  const [sorts, setSort] = useState("asc");
   const base_url = getBaseUrl();
   const loading = getUserInfo();
-  const colsData = ["cage Name", "type", "capacity"];
-  const colsName = ["cage_name", "cage_type", "cage_capacity"];
-  const [sortby, setSortBy] = useState("cage_name");
+  const colsData = ["Pig ID", "Breed", "Batch", "Cage", "Weight", "Pig Tag"];
+  const colsName = ["pig_id", "breed", "batch", "cage", "Weight", "pig_tag"];
+  const [sortby, setSortBy] = useState("pig_id");
   const [isSorting, setisSorting] = useState(false);
-  const pathname = "/manage_cage/worker/";
+  const pathname = "/manage_pig/worker/";
   useEffect(() => {
     async function getView() {
       if (action == null || action == "a") {
@@ -59,7 +64,6 @@ export default function Page() {
             setisSorting={setisSorting}
           ></EditUser>
         );
-        
       } else if (action == "d") {
         setComps(
           <RemoveForm
@@ -87,7 +91,7 @@ export default function Page() {
               height={512}
               width={512}
             ></Image>
-            <p className="text-2xl  my-auto p-4">Cage Management</p>
+            <p className="text-2xl  my-auto p-4">Pig Management</p>
           </div>
           <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col mb-12">
             <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
@@ -96,7 +100,7 @@ export default function Page() {
         {/* Table */}
         <div className="w-full h-1/2 ">
           <p className="text-2xl p-4 mx-autolg:h-1/2 h-auto w-full flex flex-col text-center overflow-hidden">
-            Cage Data
+            Pig Data
           </p>
           <Table
             setParsed={setParsed}

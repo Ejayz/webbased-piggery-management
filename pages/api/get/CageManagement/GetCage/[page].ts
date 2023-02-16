@@ -30,6 +30,7 @@ export default async function handler(
         .json({ code: 404, message: "This is the last page." });
     }
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ code: 500, message: "500 Server Error.Something went wrong." });

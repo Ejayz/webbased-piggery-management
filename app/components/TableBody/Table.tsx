@@ -1,5 +1,5 @@
 "use client";
-import { getData, Search, sortData } from "@/hooks/useCageManagement";
+
 import { useEffect, useState } from "react";
 import SorterSearchLayout from "./SorterSearchLayout";
 import TableGenerator from "./TableGenerator";
@@ -16,6 +16,10 @@ export default function Table({
   setSort,
   isSorting,
   setisSorting,
+  getData,
+  Search,
+  sortData,
+  pathname,
 }: any) {
   const [notF, setNotF] = useState(false);
   const [message, setMessage] = useState<string>("");
@@ -27,12 +31,12 @@ export default function Table({
     delete: true,
   };
 
-  const pathname = "/manage_cage/worker/";
   const [isTyping, setisTyping] = useState(false);
   useEffect(() => {
     async function start() {
       if (keyword == "") {
         const returned = await getData(1, sortby, sorts);
+        console.log(returned);
         if (returned.code == 200) {
           setisSorting(false);
           setisTyping(false);
@@ -84,6 +88,7 @@ export default function Table({
         setNotF={setNotF}
         base_url={base_url}
         setisSorting={setisSorting}
+        getData={getData}
       ></TableGenerator>
     </>
   );
