@@ -46,7 +46,7 @@ async function GetCage(
   return new Promise((resolve, reject) => {
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      const sql = `select * from tbl_cage where is_exist='true'  ORDER BY ${conn.escapeId(
+      const sql = `select cage_id,cage_name,cage_capacity,cage_type from tbl_cage where is_exist='true' and is_full='false' ORDER BY ${conn.escapeId(
         sortby
       )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
       conn.query(sql, (err, result) => {

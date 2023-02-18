@@ -10,6 +10,7 @@ import Link from "next/link";
 import Loading from "@/app/components/Loading/loading";
 import Head from "../(index)/head";
 import { usePathname } from "next/navigation";
+import { themeChange } from "theme-change";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
@@ -29,6 +30,9 @@ export default function User({ children }: { children: React.ReactNode }) {
       setTitle("RVM Hog Farm-Manage Pig");
     }
   }, [path]);
+  useEffect(() => {
+    themeChange(false);
+  }, []);
   useEffect(() => {
     async function removeAuth() {
       if (Logout) {
@@ -50,7 +54,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   if (loading.loading) {
     return (
       <>
-        <html>
+        <html data-theme="dark">
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -62,6 +66,18 @@ export default function User({ children }: { children: React.ReactNode }) {
     <html className="overflow-hidden">
       <Head title={title}></Head>
       <body>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="navbar bg-base-100">
           <div className="flex-none">
             <label
@@ -89,139 +105,106 @@ export default function User({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex-none"></div>
         </div>
-        <div className="flex flex-row w-screen h-screen">
-          {/* Menu */}
-          <div
-            className={`drawer-side  ${
-              toggleMenu ? "hidden" : "block "
-            } h-full`}
-          >
-            <div className={`drawer-mobile   h-full`}>
-              <div className="drawer">
-                <input
-                  id="my-drawer"
-                  type="checkbox"
-                  className="drawer-toggle hidden"
-                />
-                <div className={`drawer-content  h-full`}></div>
-                <div className={`drawer-side  h-full`}>
-                  <label
-                    htmlFor="my-drawer"
-                    className="drawer-overlay "
-                  ></label>
-                  <ul className="menu bg-base-100 w-56 p-2 ">
-                    <div>
-                      <li>
-                        <Link href="/dashboard">
-                          <Image
-                            src={"/assets/icons/dashboard.png"}
-                            className="h-5 w-5"
-                            alt={""}
-                            width={512}
-                            height={512}
-                          ></Image>
-                          Dashboard
-                        </Link>
-                      </li>
-                    </div>
-                    <div
-                      className={`${
-                        loading.data.job == "owner" ? "block" : "hidden"
-                      }`}
-                    >
-                      <li>
-                        <Link href="/user_management/owner/">
-                          <Image
-                            src={"/assets/icons/user_management.png"}
-                            className="h-5 w-5"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Manage User
-                        </Link>
-                      </li>
-                    </div>
-                    <div
-                      className={`${
-                        loading.data.job == "worker" ? "block" : "hidden"
-                      }`}
-                    >
-                      <li>
-                        <Link href="/manage_cage/worker">
-                          <Image
-                            src={"/assets/icons/cage.png"}
-                            className="h-5 w-5"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Manage Cage
-                        </Link>
-                      </li>
-                    </div>
-                    <div
-                      className={`${
-                        loading.data.job == "worker" ? "block" : "hidden"
-                      }`}
-                    >
-                      <li>
-                        <Link href="/manage_pig/worker">
-                          <Image
-                            src={"/assets/icons/pig.png"}
-                            className="h-5 w-5"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Manage Pig
-                        </Link>
-                      </li>
-                    </div>
-                    <div>
-                      <li>
-                        <Link
-                          href="#"
-                          onClick={() => {
-                            setLogout(!Logout);
-                          }}
-                        >
-                          <Image
-                            src={"/assets/icons/pig.png"}
-                            className="h-5 w-5"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Logout
-                        </Link>
-                      </li>
-                    </div>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Contents  */}
-          <Suspense fallback={<Loading></Loading>}>
+        <div className="drawer">
+          <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+          <div className="drawer-content">
             <div className="h-screen overflow-y-auto lg:overflow-hidden w-screen">
               {children}
             </div>
-          </Suspense>
+          </div>
+          <div className="drawer-side">
+            <label htmlFor="my-drawer" className="drawer-overlay"></label>
+            <ul className="menu p-4 w-80 bg-base-100 text-base-content">
+              <div>
+                <li>
+                  <Link href="/dashboard">
+                    <Image
+                      src={"/assets/icons/dashboard.png"}
+                      className="h-5 w-5"
+                      alt={""}
+                      width={512}
+                      height={512}
+                    ></Image>
+                    Dashboard
+                  </Link>
+                </li>
+              </div>
+              <div
+                className={`${
+                  loading.data.job == "owner" ? "block" : "hidden"
+                }`}
+              >
+                <li>
+                  <Link href="/user_management/owner/">
+                    <Image
+                      src={"/assets/icons/user_management.png"}
+                      className="h-5 w-5"
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Manage User
+                  </Link>
+                </li>
+              </div>
+              <div
+                className={`${
+                  loading.data.job == "worker" ? "block" : "hidden"
+                }`}
+              >
+                <li>
+                  <Link href="/manage_cage/worker">
+                    <Image
+                      src={"/assets/icons/cage.png"}
+                      className="h-5 w-5"
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Manage Cage
+                  </Link>
+                </li>
+              </div>
+              <div
+                className={`${
+                  loading.data.job == "worker" ? "block" : "hidden"
+                }`}
+              >
+                <li>
+                  <Link href="/manage_pig/worker">
+                    <Image
+                      src={"/assets/icons/pig.png"}
+                      className="h-5 w-5"
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Manage Pig
+                  </Link>
+                </li>
+              </div>
+              <div>
+                <li>
+                  <Link
+                    href="#"
+                    onClick={() => {
+                      setLogout(!Logout);
+                    }}
+                  >
+                    <Image
+                      src={"/assets/icons/pig.png"}
+                      className="h-5 w-5"
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Logout
+                  </Link>
+                </li>
+              </div>
+            </ul>
+          </div>
         </div>
-        {/* Toast */}
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
       </body>
     </html>
   );

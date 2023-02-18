@@ -1,3 +1,4 @@
+"use client";
 import { useEffect } from "react";
 
 export default function ConfirmControl({
@@ -10,8 +11,7 @@ export default function ConfirmControl({
   function updateChoice(choice: boolean) {
     setChoice(choice);
   }
-  useEffect(() => {
-  }, [choice]);
+  useEffect(() => {}, [choice]);
   return (
     <div
       className={`${

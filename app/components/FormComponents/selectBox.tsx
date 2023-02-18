@@ -22,7 +22,7 @@
 
               required={true}
  */
-
+"use client";
 export default function SelectBox({
   label,
   name,

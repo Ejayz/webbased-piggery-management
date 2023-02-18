@@ -16,6 +16,7 @@
  *setter={setState}
  
  *required={false} */
+"use client";
 export default function InputBox({
   type,
   label,

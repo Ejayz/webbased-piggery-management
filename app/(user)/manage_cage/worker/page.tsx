@@ -59,7 +59,6 @@ export default function Page() {
             setisSorting={setisSorting}
           ></EditUser>
         );
-        
       } else if (action == "d") {
         setComps(
           <RemoveForm
@@ -76,7 +75,7 @@ export default function Page() {
   }, [action]);
   return (
     <>
-      <div className="w-full h-full flex flex-col overflow-hidden">
+      <div className="w-full h-full bg-base-300 flex flex-col overflow-hidden">
         {/* Form */}
         <div className="w-full h-1/2  overflow-y-auto">
           <div className="w-11/12  mx-auto flex flex-row">

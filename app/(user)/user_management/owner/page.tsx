@@ -196,7 +196,7 @@ export default function Page() {
   } else {
     return (
       <>
-        <div className="w-full h-auto oveflow-y-scroll flex flex-col overflow-x-hidden">
+        <div className="w-full bg-base-200 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className="lg:h-1/2 h-auto">
             <div className="w-11/12  mx-auto flex flex-row">
               <Image

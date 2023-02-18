@@ -1,32 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import { AddCage, getData } from "@/hooks/useCageManagement";
-export default function AddUser({
-  sortby,
-  sorts,
-  setParsed,
-  setisSorting,
-}: any) {
-  const [cage_name, setCageName] = useState("");
-  const [cage_type, setCageType] = useState("default");
-  const [cage_capacity, setCageCapacity] = useState<number | string>("");
-  function resetState() {
-    setCageName("");
-    setCageCapacity("");
-    setCageType("default");
-  }
+import NextDropDown from "../FormComponents/NextDropDown";
+import NextInput from "../FormComponents/NextInput";
+import Loading from "@/components/Loading/loading";
+export default function Add({ sortby, sorts, setParsed, setisSorting }: any) {
+  const [fetching, setFetching] = useState(false);
+  const [pig_id, setPigId] = useState("");
+  const [cage_id, setCageId] = useState("");
+  const [batch_id, setBatchId] = useState("");
+  const [breed_id, setBreedId] = useState("");
+  const [pig_tag, setPigTag] = useState("");
+  const [pig_type, setPigType] = useState("");
+  const [birthdate, setBirthDate] = useState("");
+  const [weight, setWeight] = useState("");
+  const [cage_list, setCageList] = useState([]);
+  const [batch_list, setBatchList] = useState([]);
+  const [breed_list, setBreedList] = useState([]);
+  function resetState() {}
 
   const cage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (
-      cage_name == "" ||
-      cage_type == "default" ||
-      cage_capacity == 0 ||
-      cage_capacity == ""
-    ) {
+    if (1 == 1) {
       toast.error("All feilds are required");
       return false;
     }
@@ -36,22 +34,14 @@ export default function AddUser({
     exec_add();
   };
 
-  const exec_add = async () => {
-    const returned = await AddCage(cage_name, cage_capacity, cage_type);
-    if (returned.code == 200) {
-      toast.success(returned.message);
-      setisSorting(true);
-      const getPage = await getData(1, sortby, sorts);
-      if (getPage.code == 200) {
-        setisSorting(false);
-        setParsed(getPage.data);
-      }
-      resetState();
-    } else {
-      toast.error(returned.message);
-    }
-  };
-
+  const exec_add = async () => {};
+  if (fetching) {
+    return (
+      <>
+        <Loading height="1/2"></Loading>
+      </>
+    );
+  }
   return (
     <>
       <div className="w-full bg-slate-500 h-11/12 flex flex-col">
@@ -66,71 +56,10 @@ export default function AddUser({
           onSubmit={cage}
           className="flex w-full h-auto py-2 flex-col"
         >
-          <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
-            <InputBox
-              type={"date"}
-              label={"Cage Name"}
-              placeholder={"Cage Name"}
-              name={"cagename"}
-              disabled={false}
-              className={"input input-bordered h-8"}
-              value={cage_name}
-              setter={setCageName}
-              required={false}
-            />
-            <InputBox
-              type={"number"}
-              label={"Cage Capacity"}
-              placeholder={"Cage Capacity"}
-              name={"cagecapacity"}
-              disabled={false}
-              className={"input input-bordered h-10"}
-              value={cage_capacity}
-              setter={setCageCapacity}
-              required={true}
-            />{" "}
+          <div className="w-full h-auto py-4 ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
+            <NextInput type="text" label="Pig Tag"></NextInput>
           </div>
-          <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
-            <SelectBox
-              label={"Cage Type"}
-              name={"cage_type"}
-              selected={cage_type}
-              disabled={false}
-              default_option={"Cage Type"}
-              options={[
-                {
-                  value: "Individual Stall",
-                  display: "Individual Stall",
-                },
-                {
-                  value: "Group Housing",
-                  display: "Group Housing",
-                },
-                {
-                  value: "Forrowing Crates",
-                  display: "Forrowing Crates",
-                },
-                {
-                  value: "Sow Stall",
-                  display: "Sow Stall",
-                },
-                {
-                  value: "Grow Finishing Housing",
-                  display: "Grow Finishing Housing",
-                },
-                {
-                  value: "Nursery Pen",
-                  display: "Nursery Pen",
-                },
-                {
-                  value: "Quarantine Cage",
-                  display: "Quarantine Cage",
-                },
-              ]}
-              setter={setCageType}
-              required={true}
-            ></SelectBox>
-          </div>
+          <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1"></div>
           <div className="w-full mt-2 mb-2 ml-2">
             <button className="btn btn-active btn-primary mx-4">Create</button>
             <button

@@ -43,6 +43,7 @@ model tbl_cage {
   cage_type              String?                  @db.VarChar(50)
   cage_capacity          Int?
   is_exist               String?                  @default("true") @db.VarChar(50)
+  is_full                String?                  @default("false") @db.VarChar(50)
   tbl_pig                tbl_pig[]
   tbl_quarantine_details tbl_quarantine_details[]
 }

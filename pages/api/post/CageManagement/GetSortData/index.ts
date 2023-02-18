@@ -57,7 +57,7 @@ async function getSortedData({ sortby, sorter, user_id }: any) {
   return new Promise((resolve, reject) => {
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      const sql = `SELECT * FROM tbl_cage WHERE is_exist='true'   ORDER BY ${conn.escapeId(
+      const sql = `SELECT cage_id,cage_name,cage_capacity FROM tbl_cage WHERE is_exist='true' and is_full='false'  ORDER BY ${conn.escapeId(
         sortby
       )} ${sorter}`;
       conn.query(sql, [user_id], (error, result, feilds) => {

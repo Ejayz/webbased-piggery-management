@@ -4,36 +4,41 @@ import connection from "../mysql";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import * as cookie from "cookie";
+import authorizationHandler from "../authorizationHandler";
+import { prisma } from "../PrismaInit";
 dotenv.config();
 const jwt_key: any = process.env.JWT_KEY;
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { phone, username, password }: any = req.body;
-  const cookies: any = req.cookies.reset_auth;
-  const data = cookie.parse(cookies);
-
-  if (cookies == undefined) {
-    return res.status(401).json({
-      code: 500,
-      message: "Session is invalid.Please reload and try again",
-    });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const authorized = await authorizationHandler(req, res, "POST", {
+    cookieName: "reset_auth",
+  });
+  if (!authorized) {
+    return false;
   }
-  if (jwt.verify(cookies, jwt_key)) {
-    generateHased(password).then((hashedPass) => {
-      resetPassword(phone, username, hashedPass).then((OKPackets: any) => {
-        const affectedRow = OKPackets.affectedRows;
-        if (affectedRow == 1) {
-          return res.status(200).json({
-            code: 200,
-            message: "Password was reset successfully .Login now!",
-          });
-        } else {
-          return res
-            .status(500)
-            .json({ code: 500, message: "Server error.Something went wrong." });
-        }
+  const { phone, username, password }: any = req.body;
+  try {
+    const hashedPass = await generateHased(password);
+    console.log(hashedPass);
+    const data = await resetPassword(phone, username, hashedPass);
+    if (data.count == 0) {
+      return res.status(404).json({
+        code: 404,
+        message:
+          "Data update unsuccessful. Record not found or no changes made.",
       });
-    });
+    }
+    return res
+      .status(200)
+      .json({ code: 200, message: "Password updated successfully" });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ code: 500, message: "500 Server Error.Something went wrong." });
   }
 }
 
@@ -42,33 +47,14 @@ async function resetPassword(
   username: string,
   password: string
 ) {
-  return new Promise((resolve, rejects) => {
-    const query =
-      "UPDATE `piggery_management`.`tbl_users` SET `password`=? WHERE  `username`=? and phone=? and is_exist='true';";
-    connection.getConnection((err, conn) => {
-      conn.beginTransaction((err) => {
-        rejects(err);
-      });
-      conn.query(query, [password, username, phone], (err, result, feilds) => {
-        if (err) {
-          conn.rollback((err) => {
-            rejects(err);
-          });
-          rejects(err);
-        }
-        conn.commit((err) => {
-          if (err) {
-            conn.rollback((err) => {
-              rejects(err);
-            });
-            rejects(err);
-          }
-        });
-
-        resolve(result);
-      });
-    });
+  const data = await prisma.tbl_users.updateMany({
+    where: {
+      username: username,
+      phone: phone,
+    },
+    data: { password: password },
   });
+  return data;
 }
 
 async function generateHased(password: string) {
