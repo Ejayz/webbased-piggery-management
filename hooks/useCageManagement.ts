@@ -66,7 +66,7 @@ export const Search = async (
     sortorder: sorts,
   });
   let response = await fetch(
-    `${base_url}/api/post/CageManagement/SearchCage/`,
+    `${location.origin}/api/post/CageManagement/SearchCage/`,
     {
       method: "POST",
       body: bodyContent,
