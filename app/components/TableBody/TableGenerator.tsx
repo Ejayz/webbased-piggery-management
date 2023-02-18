@@ -22,7 +22,6 @@ export default function TableGenerator({
   isShowOption,
   notF,
   setNotF,
-  base_url,
   setisSorting,
   getData,
 }: any) {
@@ -55,21 +54,21 @@ export default function TableGenerator({
   ) => {
     if (isChangeCol(columnName, prev.sortby)) {
       if (isAscending(sortorder, prev.sortorder)) {
-        setSort("DESC");
+        setSort("desc");
         setPrev({ sortorder: sortorder, sortby: columnName });
       } else {
-        setSort("ASC");
+        setSort("asc");
         setPrev({ sortorder: sortorder, sortby: columnName });
       }
     } else {
-      setSort("ASC");
+      setSort("asc");
       setSortby(columnName);
       setPrev({ sortorder: sortorder, sortby: columnName });
     }
   };
 
   function isAscending(sortorder: any, prevOrder: any) {
-    if (sortorder == "ASC") {
+    if (sortorder == "asc") {
       return true;
     } else {
       return false;
@@ -90,6 +89,7 @@ export default function TableGenerator({
     start();
   }, [prev]);
 
+  console.log(colsName.lenght);
   useEffect(() => {}, [parsed]);
   function isChangeCol(sortby: any, prevSortBy: any) {
     if (sortby == prevSortBy) {
@@ -103,29 +103,34 @@ export default function TableGenerator({
         <table className="w-11/12 mt-2  text-black mx-auto h-38 table-fixed text-left  lg:text-center   rounded-md">
           <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              {colsName.map((col: any, key: any) => (
-                <th
-                  key={key}
-                  onClick={() => {
-                    SortUsingHeader(sortorder, col, prev);
-                  }}
-                >
-                  <div className="flex justify-center flex-row">
-                    {col}
-                    <Image
-                      className={`${sortby == col ? "visible" : "hidden"}`}
-                      src={
-                        sortorder == "ASC"
-                          ? "/assets/table/ascending.svg"
-                          : "/assets/table/descending.svg"
-                      }
-                      width={24}
-                      height={24}
-                      alt={""}
-                    ></Image>
-                  </div>
-                </th>
-              ))}
+              {colsName.map((col: any, key: any) => {
+                const cols = col.replace("_", " ");
+                return (
+                  <>
+                    <th
+                      key={key}
+                      onClick={() => {
+                        SortUsingHeader(sortorder, col, prev);
+                      }}
+                    >
+                      <div className="flex justify-center flex-row">
+                        {cols}
+                        <Image
+                          className={`${sortby == col ? "visible" : "hidden"}`}
+                          src={
+                            sortorder == "ASC"
+                              ? "/assets/table/ascending.svg"
+                              : "/assets/table/descending.svg"
+                          }
+                          width={24}
+                          height={24}
+                          alt={""}
+                        ></Image>
+                      </div>
+                    </th>
+                  </>
+                );
+              })}
               <th>ACTION</th>
             </tr>
           </thead>

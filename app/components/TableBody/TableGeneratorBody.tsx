@@ -20,7 +20,7 @@ export default function TableGeneratorBody({
     return (
       <tbody>
         <tr className="w-full h-12 bg-slate-500 mb-12">
-          <td colSpan={colsData.length + 1}>
+          <td colSpan={colsName.length + 1}>
             <div className="flex flex-row mx-auto">
               <span className="text-center mx-auto">
                 This is the last page of data.
@@ -35,7 +35,7 @@ export default function TableGeneratorBody({
       <>
         <tbody>
           <tr className="w-full h-12 bg-slate-500 mb-12">
-            <td colSpan={colsData.length + 1}>
+            <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="text-center mx-auto">
                   Press enter/search button to find <b>{keyword}</b>.
@@ -51,7 +51,7 @@ export default function TableGeneratorBody({
       <>
         <tbody>
           <tr className="w-full h-12 bg-slate-500 mb-12">
-            <td colSpan={colsData.length + 1}>
+            <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="text-center text-gray mx-auto">
                   Finding something related to <b>{keyword}</b>
@@ -83,7 +83,7 @@ export default function TableGeneratorBody({
       <>
         <tbody>
           <tr className="w-full bg-slate-500 h-12 mb-12">
-            <td colSpan={colsData.length + 1}>
+            <td colSpan={colsData.Name + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="ml-auto  mr-0">
                   Please wait while we get user data
@@ -100,7 +100,7 @@ export default function TableGeneratorBody({
       <>
         <tbody>
           <tr className="w-full bg-slate-500 h-12 mb-12">
-            <td colSpan={colsData.length + 1}>
+            <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="ml-auto mr-0">
                   Please wait while we retrieve and sort user data
@@ -126,10 +126,10 @@ export default function TableGeneratorBody({
           >
             <TableGeneratorData
               tbl_data={tbl_data}
-              colsName={colsName}
               pathname={pathname}
               id={id}
               isShowOption={isShowOption}
+              colsName={colsName}
             ></TableGeneratorData>
           </tr>
         );

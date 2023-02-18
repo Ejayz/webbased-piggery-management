@@ -28,12 +28,11 @@ export default function Page() {
   const [compos, setComps] = useState(<></>);
   const action = useSearchParams().get("action");
   const [parsed, setParsed] = useState<Cage[]>([]);
-  const [sorts, setSort] = useState("ASC");
-  const base_url = getBaseUrl();
+  const [sorts, setSort] = useState("asc");
+  const [sortby, setSortBy] = useState("cage_name");
   const loading = getUserInfo();
   const colsData = ["cage Name", "type", "capacity"];
   const colsName = ["cage_name", "cage_type", "cage_capacity"];
-  const [sortby, setSortBy] = useState("cage_name");
   const [isSorting, setisSorting] = useState(false);
   const pathname = "/manage_cage/worker/";
   useEffect(() => {
@@ -77,7 +76,7 @@ export default function Page() {
     <>
       <div className="w-full h-full bg-base-300 flex flex-col overflow-hidden">
         {/* Form */}
-        <div className="w-full h-1/2  overflow-y-auto">
+        <div className="w-full h-auto  overflow-y-auto">
           <div className="w-11/12  mx-auto flex flex-row">
             <Image
               src={"/assets/icons/manage_cage.png"}
@@ -94,12 +93,8 @@ export default function Page() {
         </div>
         {/* Table */}
         <div className="w-full h-1/2 ">
-          <p className="text-2xl p-4 mx-autolg:h-1/2 h-auto w-full flex flex-col text-center overflow-hidden">
-            Cage Data
-          </p>
           <Table
             setParsed={setParsed}
-            base_url={base_url}
             parsed={parsed}
             colsData={colsData}
             colsName={colsName}

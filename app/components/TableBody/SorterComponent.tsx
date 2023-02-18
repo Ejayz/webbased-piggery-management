@@ -1,4 +1,4 @@
-"use client"
+"use client";
 export default function SorterMobile({
   sortby,
   isSorting,
@@ -8,11 +8,7 @@ export default function SorterMobile({
   sortData,
   colsData,
 }: any) {
-
-  const sortdata=async ()=>{
-
-  }
-
+  const sortdata = async () => {};
 
   return (
     <>
@@ -34,9 +30,9 @@ export default function SorterMobile({
                 <input
                   type="radio"
                   name="sorts"
-                  value={"ASC"}
+                  value={"asc"}
                   className="radio checked:bg-blue-500"
-                  checked={sorts == "ASC"}
+                  checked={sorts == "asc"}
                   onChange={(e) => {
                     setSort(e.target.value);
                   }}
@@ -50,8 +46,8 @@ export default function SorterMobile({
                   type="radio"
                   name="sorts"
                   className="radio checked:bg-blue-500"
-                  value={"DESC"}
-                  checked={sorts == "DESC"}
+                  value={"desc"}
+                  checked={sorts == "desc"}
                   onChange={(e) => {
                     setSort(e.target.value);
                   }}

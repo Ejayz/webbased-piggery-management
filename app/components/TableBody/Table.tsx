@@ -6,7 +6,6 @@ import TableGenerator from "./TableGenerator";
 
 export default function Table({
   setParsed,
-  base_url,
   parsed,
   colsData,
   colsName,
@@ -62,7 +61,6 @@ export default function Table({
         Search={Search}
         setKeyword={setKeyword}
         keyword={keyword}
-        base_url={base_url}
         setParsed={setParsed}
         setisTyping={setisTyping}
         setSearch={setSearch}
@@ -86,7 +84,6 @@ export default function Table({
         isShowOption={isShowOption}
         notF={notF}
         setNotF={setNotF}
-        base_url={base_url}
         setisSorting={setisSorting}
         getData={getData}
       ></TableGenerator>
