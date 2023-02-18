@@ -13,9 +13,7 @@ export default function Navbar() {
             data-choose-theme
             className="select select-bordered bg-neutral  max-w-xs ml-auto mr-4"
           >
-            <option disabled selected>
-              Theme
-            </option>
+            <option disabled>Theme</option>
             <option value="dark">Dark</option>
             <option value="light">Light</option>
           </select>
