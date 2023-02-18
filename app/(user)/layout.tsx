@@ -78,7 +78,7 @@ export default function User({ children }: { children: React.ReactNode }) {
           pauseOnHover
           theme="light"
         />
-        <div className="navbar bg-base-100">
+        <div className="navbar bg-neutral text-neutral-content">
           <div className="flex-none">
             <label
               onClick={() => setToggleMenu(!toggleMenu)}
@@ -100,10 +100,22 @@ export default function User({ children }: { children: React.ReactNode }) {
               </svg>
             </label>
           </div>
-          <div className="flex lg:ml-4 mx-auto   ">
+          <div className="flex-1">
             <a className="btn btn-ghost normal-case text-xl">RVM Hog Farm</a>
           </div>
-          <div className="flex-none"></div>
+          {/* Theme Changer */}
+          <div className=" w-full flex">
+            <select
+              data-choose-theme
+              className="select select-bordered bg-neutral  max-w-xs ml-auto mr-4"
+            >
+              <option disabled selected>
+                Theme
+              </option>
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </div>
         </div>
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
