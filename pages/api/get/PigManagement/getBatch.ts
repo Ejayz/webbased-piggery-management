@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import connection from "pages/api/mysql";
-import { prisma } from "pages/api/PrismaInit";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,16 +10,16 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const data = await UpdateCage();
+  // const data = await UpdateCage();
 }
 
-async function UpdateCage() {
-  const returned = await prisma.tbl_cage.findMany({
-    where: {
-      is_exist: "true",
-      is_full: "false",
-    },
-    select: {},
-  });
-  console.log(returned);
-}
+// async function UpdateCage() {
+//   const returned = await prisma.tbl_cage.findMany({
+//     where: {
+//       is_exist: "true",
+//       is_full: "false",
+//     },
+//     select: {},
+//   });
+//   console.log(returned);
+// }

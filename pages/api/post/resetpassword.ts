@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import * as cookie from "cookie";
 import authorizationHandler from "../authorizationHandler";
-import { prisma } from "../PrismaInit";
+
 dotenv.config();
 const jwt_key: any = process.env.JWT_KEY;
 
