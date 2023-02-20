@@ -55,7 +55,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   if (loading.loading) {
     return (
       <>
-        <html data-theme>
+        <html>
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -64,7 +64,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html data-theme className="overflow-hidden">
+    <html className="overflow-hidden">
       <Head title={title}></Head>
       <body>
         <ToastContainer
@@ -213,7 +213,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                     Logout
                   </Link>
                 </li>
-               
               </div>
             </ul>
           </div>
