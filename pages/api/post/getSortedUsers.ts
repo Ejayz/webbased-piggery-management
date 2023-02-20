@@ -4,7 +4,7 @@ import { resolve } from "path";
 import authorizationHandler from "../authorizationHandler";
 import { decodeJWT, verifyJWT } from "../jwtProcessor";
 import connection from "../mysql";
-import { prisma } from "../PrismaInit";
+import { prisma, prismaCustomTbl_Users } from "../PrismaInit";
 
 export default async function handler(
   req: NextApiRequest,
@@ -32,7 +32,7 @@ export default async function handler(
 }
 
 async function getSortedData({ sortby, sorter, user_id }: any) {
-  const data = await prisma.tbl_users.findMany({
+  const data = await prismaCustomTbl_Users.tbl_users.findMany({
     where: {
       NOT: { user_id: user_id },
       AND: {
@@ -42,17 +42,7 @@ async function getSortedData({ sortby, sorter, user_id }: any) {
     orderBy: {
       [sortby]: sorter,
     },
-    select: {
-      user_id: true,
-      username: true,
-      first_name: true,
-      middle_name: true,
-      last_name: true,
-      job: true,
-      phone: true,
-    },
   });
-  if (sortby == "name") {
-  }
+
   return data;
 }

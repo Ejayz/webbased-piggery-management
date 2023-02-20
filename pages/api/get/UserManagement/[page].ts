@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { decodeJWT } from "pages/api/jwtProcessor";
 import connection from "pages/api/mysql";
-import { prisma } from "pages/api/PrismaInit";
+import { prisma, prismaCustomTbl_Users } from "pages/api/PrismaInit";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,7 +12,7 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { page, sortby, sortorder }: any = req.query;
+  const { page, sortby, sortorder, keyword }: any = req.query;
   if (page == "0") {
     return res
       .status(404)
@@ -24,13 +24,24 @@ export default async function handler(
   const offset: number = limit * (parseInt(page) - 1);
 
   try {
-    const data = await GetUsers(limit, offset, user_id, sortby, sortorder);
+    let data: any;
+    if (keyword == "undefined") {
+      data = await GetUsers(limit, offset, user_id, sortby, sortorder);
+    } else {
+      data = await GetUsersWithSearch(
+        limit,
+        offset,
+        user_id,
+        sortby,
+        sortorder,
+        keyword
+      );
+    }
     if (data.length == 0) {
       return res.status(404).json({ code: 404, message: "No data found" });
     }
     return res.status(200).json({ code: 200, data: data });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ code: 500, message: "500 Server Error.Something went wrong." });
@@ -44,26 +55,46 @@ async function GetUsers(
   sortby: string,
   sortorder: string
 ) {
-  const data = await prisma.tbl_users.findMany({
-    where: {
-      NOT: { user_id: user_id },
-      AND: { is_exist: "true" },
-    },
-    orderBy: {
-      [sortby]: sortorder,
-    },
-    skip: offset,
-    take: limit,
-    select: {
-      user_id: true,
-      username: true,
-      first_name: true,
-      middle_name: true,
-      last_name: true,
-      job: true,
-      phone: true,
-    },
+  return new Promise((resolve, reject) => {
+    connection.getConnection((err, conn) => {
+      if (err) reject(err);
+      const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) as name, job FROM tbl_users WHERE  is_exist = 'true'  AND user_id != ? ORDER BY ${conn.escapeId(
+        sortby
+      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
+      conn.query(sql, [user_id], (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+        conn.release();
+      });
+    });
   });
+}
 
-  return data;
+async function GetUsersWithSearch(
+  limit: number,
+  offset: number,
+  user_id: number,
+  sortby: string,
+  sortorder: string,
+  keyword: string
+) {
+  return new Promise((resolve, reject) => {
+    connection.getConnection((err, conn) => {
+      if (err) reject(err);
+      keyword = `%${keyword}%`;
+      const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) AS name, job FROM tbl_users WHERE ( username LIKE ? OR CONCAT(first_name,' ',middle_name,' ',last_name) LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
+        sortby
+      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
+
+      conn.query(
+        sql,
+        [keyword, keyword, keyword, keyword, user_id],
+        (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+          conn.release();
+        }
+      );
+    });
+  });
 }

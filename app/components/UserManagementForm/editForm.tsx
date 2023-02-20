@@ -7,8 +7,9 @@ import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
 import Link from "next/link";
 import getBaseUrl from "@/hooks/getBaseUrl";
+import { getData, Update } from "@/hooks/useUserManagement";
 
-export default function EditUser({ setAction, sortData }: any) {
+export default function EditUser({ setParsed, sortby, sorts }: any) {
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -36,6 +37,10 @@ export default function EditUser({ setAction, sortData }: any) {
     e.preventDefault();
     if (username == "" || first_name == "" || last_name == "" || phone == "") {
       toast.error("All feilds are required.");
+      return false;
+    }
+    if (!phone.startsWith("+63")) {
+      toast.error("Phone number should start at +63");
       return false;
     }
     if (job == "default") {
@@ -75,43 +80,29 @@ export default function EditUser({ setAction, sortData }: any) {
   };
 
   const updateUser = async () => {
-    let headersList = {
-      Accept: "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Content-Type": "application/json",
-    };
-
-    let bodyContent = JSON.stringify({
-      username: username,
-      password: password,
-      first_name: first_name,
-      middle_name: middle_name,
-      last_name: last_name,
-      phone: phone,
-      job: job,
-      user_id: user_id,
-    });
-
-    let response = await toast.promise(
-      fetch(`${base_url}/api/post/UserManagement/UpdateUser`, {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      }),
-      {
-        pending: "Adding user information in database.",
-        success: "Process completed... Gathering Result",
-        error: "Process failed.Gathering Result",
-      },
-      { toastId: "Promised" }
+    const returned = await Update(
+      username,
+      password,
+      first_name,
+      middle_name,
+      last_name,
+      phone,
+      job,
+      user_id
     );
-    let data = await response.json();
-    if (data.code == 200) {
-      sortData();
-      toast.success(data.message);
-      router.push("user_management/owner?action=a&id=null");
+    if (returned.code == 200) {
+      toast.success(returned.message);
+      callCancel();
+      resetState();
+      setParsed([]);
+      const refresh = await getData(1, sortby, sorts, "");
+      if (refresh.code == 200) {
+        setParsed(refresh.data);
+      } else {
+        toast.error(refresh.message);
+      }
     } else {
-      toast.error(data.message);
+      toast.error(returned.message);
     }
   };
 
@@ -119,8 +110,8 @@ export default function EditUser({ setAction, sortData }: any) {
     toast.error("Query ID is invalid");
   }
 
-  function callCancel(e: any) {
-    router.push("/user_management/?action=a");
+  function callCancel() {
+    router.push("/user_management/owner/?action=a&id=null");
   }
 
   useEffect(() => {
@@ -140,7 +131,6 @@ export default function EditUser({ setAction, sortData }: any) {
       let data = await response.json();
       if (data.code == 200) {
         const userData = data.data[0];
-
         setUserid(userData.user_id);
         setUsername(userData.username);
         setFirst_name(userData.first_name);
@@ -150,6 +140,7 @@ export default function EditUser({ setAction, sortData }: any) {
         setJob(userData.job);
       } else {
         toast.error(data.message);
+        callCancel();
       }
     }
     if (Queryid != "null") {
@@ -297,7 +288,7 @@ export default function EditUser({ setAction, sortData }: any) {
               </button>
               <Link
                 onClick={(e) => {
-                  callCancel(e);
+                  callCancel();
                 }}
                 className="btn btn-active btn-primary mx-4"
                 href={"/user_management/owner/?action=a&id=null"}

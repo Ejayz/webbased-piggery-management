@@ -79,7 +79,6 @@ async function VerifyUser(username: string) {
       if (err) {
         rejects(err);
       }
-
       conn.query(
         "select * from tbl_users where username=? and is_exist='true'",
         [username],

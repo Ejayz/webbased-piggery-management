@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import { AddCage, getData } from "@/hooks/useCageManagement";
-import NextDropDown from "../FormComponents/NextDropDown";
-import NextInput from "../FormComponents/NextInput";
 import Loading from "@/components/Loading/loading";
 export default function Add({ sortby, sorts, setParsed, setisSorting }: any) {
   const [fetching, setFetching] = useState(false);
@@ -56,9 +54,7 @@ export default function Add({ sortby, sorts, setParsed, setisSorting }: any) {
           onSubmit={cage}
           className="flex w-full h-auto py-2 flex-col"
         >
-          <div className="w-full h-auto py-4 ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-            <NextInput type="text" label="Pig Tag"></NextInput>
-          </div>
+          <div className="w-full h-auto py-4 ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3"></div>
           <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1"></div>
           <div className="w-full mt-2 mb-2 ml-2">
             <button className="btn btn-active btn-primary mx-4">Create</button>

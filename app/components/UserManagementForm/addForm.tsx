@@ -5,8 +5,9 @@ import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import getBaseUrl from "@/hooks/getBaseUrl";
-import ConfirmControl from "../FormComponents/confirm";
-export default function AddUser({ sortData }: any) {
+import { Create, getData } from "@/hooks/useUserManagement";
+
+export default function AddUser({ setParsed, sortby, sorts }: any) {
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
   const [middle_name, setMiddle_name] = useState("");
@@ -44,6 +45,10 @@ export default function AddUser({ sortData }: any) {
       toast.error("All feilds are required.");
       return false;
     }
+    if (!phone.startsWith("+63")) {
+      toast.error("Phone number should start at +63");
+      return false;
+    }
     if (password != repeatPassword) {
       toast.error("Password and Repeat Password do not match.");
       return false;
@@ -68,49 +73,34 @@ export default function AddUser({ sortData }: any) {
       return false;
     }
     const isOk = confirm("Are you sure you want to create?");
-    if (isOk) {
-      createUser();
-    } else {
+    if (!isOk) {
       return false;
     }
+    createUser();
   };
 
   async function createUser() {
-    let headersList = {
-      Accept: "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Content-Type": "application/json",
-    };
-    let bodyContent = JSON.stringify({
-      username: username,
-      first_name: first_name,
-      middle_name: middle_name,
-      last_name: last_name,
-      password: password,
-      phone: phone,
-      job: job,
-    });
-
-    let response = await toast.promise(
-      fetch(`${base_url}/api/post/UserManagement/AddUser/`, {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      }),
-      {
-        pending: "Adding user information in database.",
-        success: "Process completed... Gathering Result",
-        error: "Process failed.Gathering Result",
-      },
-      { toastId: "Promised" }
+    const returned = await Create(
+      username,
+      first_name,
+      middle_name,
+      last_name,
+      password,
+      phone,
+      job
     );
-    let data = await response.json();
-    if (data.code == 200) {
-      toast.success(data.message);
-      resetState();
-      sortData();
+    if (returned.code == 200) {
+      toast.success(returned.message);
+      setParsed([]);
+      const refresh = await getData(1, sortby, sorts, "");
+      if (refresh.code == 200) {
+        resetState();
+        setParsed(refresh.data);
+      } else {
+        toast.error(refresh.message);
+      }
     } else {
-      toast.error(data.message);
+      toast.error(returned.message);
     }
   }
 

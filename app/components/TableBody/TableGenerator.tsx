@@ -24,14 +24,15 @@ export default function TableGenerator({
   setNotF,
   setisSorting,
   getData,
+  page,
+  setPage,
 }: any) {
   const [prev, setPrev] = useState({ sortorder: sortorder, sortby: sortby });
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     async function start() {
       setisSorting(true);
-      const data = await getData(page, sortby, sortorder);
+      const data = await getData(page, sortby, sortorder, keyword);
       console.log(data);
       if (data.code == 200) {
         setNotF(false);
@@ -78,7 +79,7 @@ export default function TableGenerator({
   useEffect(() => {
     async function start() {
       setisSorting(true);
-      const returned = await getData(page, sortby, sortorder);
+      const returned = await getData(page, sortby, sortorder, keyword);
       if (returned.code == 200) {
         setisSorting(false);
         setParsed(returned.data);
@@ -88,8 +89,6 @@ export default function TableGenerator({
     }
     start();
   }, [prev]);
-
-  console.log(colsName.lenght);
   useEffect(() => {}, [parsed]);
   function isChangeCol(sortby: any, prevSortBy: any) {
     if (sortby == prevSortBy) {
@@ -98,58 +97,54 @@ export default function TableGenerator({
     return false;
   }
   return (
-    <>
-      <div className="w-full h-[130px] mb-6">
-        <table className="w-11/12 mt-2  text-black mx-auto h-38 table-fixed text-left  lg:text-center   rounded-md">
-          <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              {colsName.map((col: any, key: any) => {
-                const cols = col.replace("_", " ");
-                return (
-                  <>
-                    <th
-                      key={key}
-                      onClick={() => {
-                        SortUsingHeader(sortorder, col, prev);
-                      }}
-                    >
-                      <div className="flex justify-center flex-row">
-                        {cols}
-                        <Image
-                          className={`${sortby == col ? "visible" : "hidden"}`}
-                          src={
-                            sortorder == "ASC"
-                              ? "/assets/table/ascending.svg"
-                              : "/assets/table/descending.svg"
-                          }
-                          width={24}
-                          height={24}
-                          alt={""}
-                        ></Image>
-                      </div>
-                    </th>
-                  </>
-                );
-              })}
-              <th>ACTION</th>
-            </tr>
-          </thead>
-          <TableGeneratorBody
-            parsed={parsed}
-            message={message}
-            isSorting={isSorting}
-            isSearch={isSearch}
-            keyword={keyword}
-            isTyping={isTyping}
-            colsData={colsData}
-            colsName={colsName}
-            pathname={pathname}
-            isShowOption={isShowOption}
-            notF={notF}
-          ></TableGeneratorBody>
-        </table>
-      </div>
-      <div className="w-full  flex">
+    <div className="w-full mb-12">
+      <table className="w-11/12 mt-2  text-black mx-auto h-38 table-fixed text-left  lg:text-center   rounded-md">
+        <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr key={"header"}>
+            {colsName.map((col: any, key: number) => {
+              const cols = col.replace("_", " ");
+              return (
+                <th
+                  key={key}
+                  onClick={() => {
+                    SortUsingHeader(sortorder, col, prev);
+                  }}
+                >
+                  <div className="flex justify-center flex-row">
+                    {cols}
+                    <Image
+                      className={`${sortby == cols ? "visible" : "hidden"}`}
+                      src={
+                        sortorder == "asc"
+                          ? "/assets/table/ascending.svg"
+                          : "/assets/table/descending.svg"
+                      }
+                      width={24}
+                      height={24}
+                      alt={""}
+                    ></Image>
+                  </div>
+                </th>
+              );
+            })}
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <TableGeneratorBody
+          parsed={parsed}
+          message={message}
+          isSorting={isSorting}
+          isSearch={isSearch}
+          keyword={keyword}
+          isTyping={isTyping}
+          colsData={colsData}
+          colsName={colsName}
+          pathname={pathname}
+          isShowOption={isShowOption}
+          notF={notF}
+        ></TableGeneratorBody>
+      </table>
+      <div className="w-full mt-4  flex">
         <div className="btn-group mx-auto">
           <button
             onClick={() => {
@@ -170,6 +165,6 @@ export default function TableGenerator({
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

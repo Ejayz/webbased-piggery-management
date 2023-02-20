@@ -5,7 +5,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { VerifyUser } from "@/hooks/useLogin";
 import { Input } from "@nextui-org/react";
-import NextInput from "@/components/FormComponents/NextInput";
 
 export default function Page() {
   //Create states for username password and remember me

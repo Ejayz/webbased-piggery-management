@@ -67,7 +67,7 @@ export default function TableGeneratorBody({
       <>
         <tbody>
           <tr className="w-full bg-slate-500 h-12 mb-12">
-            <td colSpan={colsData.length + 1}>
+            <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="text-center mx-auto">
                   {message} <b>{keyword}</b>
@@ -83,7 +83,7 @@ export default function TableGeneratorBody({
       <>
         <tbody>
           <tr className="w-full bg-slate-500 h-12 mb-12">
-            <td colSpan={colsData.Name + 1}>
+            <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="ml-auto  mr-0">
                   Please wait while we get user data
@@ -120,7 +120,7 @@ export default function TableGeneratorBody({
         return (
           <tr
             className={`h-auto  lg:table-row block bg-slate-300 rounded-md my-2 py-4 ${
-              index % 2 == 0 ? "bg-slate-500" : "bg-slate-600"
+              index % 2 == 0 ? "accent-content" : "accent-focus"
             }`}
             key={index}
           >

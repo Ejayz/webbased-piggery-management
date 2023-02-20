@@ -24,6 +24,7 @@ export default function Table({
   const [message, setMessage] = useState<string>("");
   const [keyword, setKeyword] = useState("");
   const [isSearch, setSearch] = useState(false);
+  const [page, setPage] = useState(1);
   const isShowOption = {
     edit: true,
     view: true,
@@ -34,7 +35,7 @@ export default function Table({
   useEffect(() => {
     async function start() {
       if (keyword == "") {
-        const returned = await getData(1, sortby, sorts);
+        const returned = await getData(1, sortby, sorts, keyword);
         console.log(returned);
         if (returned.code == 200) {
           setisSorting(false);
@@ -65,6 +66,8 @@ export default function Table({
         setisTyping={setisTyping}
         setSearch={setSearch}
         setMessage={setMessage}
+        page={page}
+        getData={getData}
       ></SorterSearchLayout>
       <TableGenerator
         setParsed={setParsed}
@@ -86,6 +89,8 @@ export default function Table({
         setNotF={setNotF}
         setisSorting={setisSorting}
         getData={getData}
+        page={page}
+        setPage={setPage}
       ></TableGenerator>
     </>
   );

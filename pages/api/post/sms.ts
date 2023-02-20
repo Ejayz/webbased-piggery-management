@@ -22,7 +22,7 @@ async function send_sms(phone: any, username: any) {
     from: twillioPhone,
     to: phone,
   });
-
+  // const data = { status: "sent" };
   if (data.status === "queued" || data.status === "sent") {
     return {
       status: 200,
@@ -65,6 +65,7 @@ export default async function handler(
         if (data == 1) {
           send_sms(phone, username)
             .then((data) => {
+              console.log(data);
               if (data.status == 200) {
                 res.setHeader(
                   "Set-Cookie",

@@ -50,9 +50,7 @@ export default async function handler(
     job,
   });
   if (create.affectedRows == 1) {
-    return res
-      .status(200)
-      .json({ code: 200, message: `User account created for ${username}` });
+    return res.status(200).json({ code: 200, message: `Account created.` });
   } else {
     return res
       .status(500)

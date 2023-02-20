@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import SearchComponent from "./SearchComponent";
 import SorterMobile from "./SorterComponent";
 
@@ -18,6 +18,7 @@ export default function SorterSearchLayout({
   setisTyping,
   setSearch,
   setMessage,
+  getData,
 }: any) {
   return (
     <>
@@ -42,6 +43,7 @@ export default function SorterSearchLayout({
           setisTyping={setisTyping}
           setSearch={setSearch}
           setMessage={setMessage}
+          getData={getData}
         ></SearchComponent>
       </div>
     </>

@@ -8,7 +8,8 @@ import Loading from "@/components/Loading/loading";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import getBaseUrl from "@/hooks/getBaseUrl";
-export default function ViewUser({ sortData }: any) {
+import { getData, Remove } from "@/hooks/useUserManagement";
+export default function ViewUser({ setParsed, sortby, sorts }: any) {
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -23,43 +24,28 @@ export default function ViewUser({ sortData }: any) {
     return <></>;
   }
 
-  const RemoveUser = async (e: any) => {
+  const validateAction = async (e: any) => {
     e.preventDefault();
     if (!confirm("Are you sure you want to remove?")) {
       return false;
     }
-    let headersList = {
-      Accept: "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Content-Type": "application/json",
-    };
-
-    let bodyContent = JSON.stringify({
-      user_id: user_id,
-    });
-
-    let response = await toast.promise(
-      fetch(`${base_url}/api/post/UserManagement/RemoveUser`, {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      }),
-      {
-        pending: "Adding user information in database.",
-        success: "Process completed... Gathering Result",
-        error: "Process failed.Gathering Result",
-      }
-    );
-    let data = await response.json();
-    if (data.code == 200) {
-      toast.success(data.message);
-      sortData();
-      router.push("/user_management/owner?action=a&id=null");
-    } else {
-      toast.error(data.message);
-    }
+    exec_remove();
   };
 
+  const exec_remove = async () => {
+    const returned = await Remove(user_id);
+    if (returned.code == 200) {
+      toast.success(returned.message);
+      const refresh = await getData(1, sortby, sorts, "");
+      if (refresh.code == 200) {
+        setParsed([]);
+        BackAdd();
+        setParsed(refresh.data);
+      }
+    } else {
+      toast.error(returned.message);
+    }
+  };
   const BackAdd = async () => {
     router.push("user_management/owner?action=a&id=null");
   };
@@ -80,7 +66,6 @@ export default function ViewUser({ sortData }: any) {
       let data = await response.json();
       if (data.code == 200) {
         const userData = data.data[0];
-
         setUserid(userData.user_id);
         setUsername(userData.username);
         setFirst_name(userData.first_name);
@@ -90,6 +75,7 @@ export default function ViewUser({ sortData }: any) {
         setJob(userData.job);
       } else {
         toast.error(data.message);
+        BackAdd();
       }
     }
     if (Queryid !== "null") {
@@ -117,7 +103,7 @@ export default function ViewUser({ sortData }: any) {
             </ul>
           </div>
           <form
-            onSubmit={RemoveUser}
+            onSubmit={validateAction}
             className="flex w-full h-auto py-2 flex-col"
           >
             <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">

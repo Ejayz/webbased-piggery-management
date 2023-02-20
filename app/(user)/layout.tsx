@@ -11,6 +11,7 @@ import Loading from "@/app/components/Loading/loading";
 import Head from "../(index)/head";
 import { usePathname } from "next/navigation";
 import { themeChange } from "theme-change";
+import Footer from "@/components/Footer/footer";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
@@ -54,7 +55,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   if (loading.loading) {
     return (
       <>
-        <html data-theme="dark">
+        <html data-theme>
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -63,7 +64,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html className="overflow-hidden">
+    <html data-theme className="overflow-hidden">
       <Head title={title}></Head>
       <body>
         <ToastContainer
@@ -118,7 +119,8 @@ export default function User({ children }: { children: React.ReactNode }) {
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">
-            <div className="h-screen overflow-y-auto lg:overflow-hidden w-screen">
+            {/* Content */}
+            <div className="h-auto overflow-y-auto lg:overflow-hidden w-screen">
               {children}
             </div>
           </div>
@@ -211,6 +213,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                     Logout
                   </Link>
                 </li>
+               
               </div>
             </ul>
           </div>

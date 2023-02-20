@@ -1,5 +1,4 @@
 "use client";
-
 export default function SearchComponent({
   Search,
   setKeyword,
@@ -11,12 +10,13 @@ export default function SearchComponent({
   setisTyping,
   setSearch,
   setMessage,
+  getData,
 }: any) {
   const search = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setisTyping(false);
     setSearch(true);
-    const returned = await Search(keyword, sortby, sorts, base_url);
+    const returned = await getData(1, sortby, sorts, keyword);
     if (returned.code == 200) {
       setisTyping(false);
       setSearch(false);
@@ -37,7 +37,7 @@ export default function SearchComponent({
           onChange={(e) => {
             setKeyword(e.target.value);
           }}
-          className="input input-bordered"
+          className="input text-base-content input-bordered"
         />
         <button className="btn btn-square">
           <svg

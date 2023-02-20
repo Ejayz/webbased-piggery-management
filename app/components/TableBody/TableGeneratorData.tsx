@@ -9,14 +9,12 @@ export default function TableGeneratorData({
   isShowOption,
   colsName,
 }: any) {
-  console.log(colsName);
   return (
     <>
       {colsName.map((col: any, keys: any) => {
         return Object.entries(tbl_data).map(([key, value]: any) => {
           const column_name = key.replace("_", " ");
           if (col == key) {
-            console.log(`${key}:${value}`);
             return (
               <td
                 key={key}

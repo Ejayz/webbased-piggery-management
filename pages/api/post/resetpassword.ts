@@ -23,8 +23,8 @@ export default async function handler(
   try {
     const hashedPass = await generateHased(password);
     console.log(hashedPass);
-    const data = await resetPassword(phone, username, hashedPass);
-    if (data.count == 0) {
+    const data: any = await resetPassword(phone, username, hashedPass);
+    if (data.affectedRows <= 0) {
       return res.status(404).json({
         code: 404,
         message:
@@ -47,14 +47,18 @@ async function resetPassword(
   username: string,
   password: string
 ) {
-  const data = await prisma.tbl_users.updateMany({
-    where: {
-      username: username,
-      phone: phone,
-    },
-    data: { password: password },
+  return new Promise((resolve, reject) => {
+    connection.getConnection((err, conn) => {
+      if (err) reject(err);
+      const sql =
+        "UPDATE `tbl_users` SET  `password`=? WHERE username=? and phone=? and is_exist='true';";
+      conn.query(sql, [password, username, phone], (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+        conn.release();
+      });
+    });
   });
-  return data;
 }
 
 async function generateHased(password: string) {

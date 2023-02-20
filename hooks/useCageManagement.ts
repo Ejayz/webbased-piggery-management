@@ -1,5 +1,9 @@
 //Get Data
-export const getData = async (page: any, sortby: any, sorts: any) => {
+export const getData = async (
+  page: any,
+  sortby: any,
+  sorts: any,
+) => {
   let headersList = {
     Accept: "*/*",
   };

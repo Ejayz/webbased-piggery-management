@@ -36,24 +36,10 @@ export default function Page() {
   const [sorts, setSort] = useState("asc");
   const [sortby, setSortBy] = useState("username");
   const loading = getUserInfo();
-  const [colsData, setColsData] = [
-    "username",
-    "first_name",
-    "middle_name",
-    "last_name",
-    "job",
-    "phone",
-  ];
-  const colsName = [
-    "username",
-    "first_name",
-    "middle_name",
-    "last_name",
-    "job",
-    "phone",
-  ];
+  const [colsData, setColsData] = ["username", "name", "job", "phone"];
+  const colsName = ["username", "name", "job", "phone"];
   const [isSorting, setisSorting] = useState(false);
-  const pathname = "/manage_user/owner";
+  const pathname = "/user_management/owner";
   const [allowed, setIsAllowed] = useState(false);
 
   useEffect(() => {
@@ -75,13 +61,31 @@ export default function Page() {
   useEffect(() => {
     async function getView() {
       if (action == null || action == "a") {
-        setComps(<AddUser sortData={sortData}></AddUser>);
+        setComps(
+          <AddUser
+            setParsed={setParsed}
+            sortby={sortby}
+            sorts={sorts}
+          ></AddUser>
+        );
       } else if (action == "v") {
         setComps(<ViewForm></ViewForm>);
       } else if (action == "e") {
-        setComps(<EditUser sortData={sortData}></EditUser>);
+        setComps(
+          <EditUser
+            setParsed={setParsed}
+            sortby={sortby}
+            sorts={sorts}
+          ></EditUser>
+        );
       } else if (action == "d") {
-        setComps(<RemoveForm sortData={sortData}></RemoveForm>);
+        setComps(
+          <RemoveForm
+            setParsed={setParsed}
+            sortby={sortby}
+            sorts={sorts}
+          ></RemoveForm>
+        );
       }
     }
     getView();
@@ -93,24 +97,26 @@ export default function Page() {
   } else {
     return (
       <>
-        <div className="w-full bg-base-200 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
-          <div className="lg:h-1/2 h-auto">
+        <div className="w-full base-content h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
+          <div className=" h-auto">
             <div className="w-11/12  mx-auto flex flex-row">
-              <Image
+              {/* <Image
                 src={"/assets/icons/manage_user.png"}
                 alt={""}
                 className="h-16 w-16"
                 height={512}
                 width={512}
-              ></Image>
-              <p className="text-2xl  my-auto p-4">User Management</p>
+              ></Image> */}
+              <p className="text-2xl accent-content my-auto p-4">
+                User Management
+              </p>
             </div>
 
             <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col">
               <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
             </div>
           </div>
-          <div className="w-full h-1/2 ">
+          <div className="w-full mb-24 mt-12">
             <Table
               setParsed={setParsed}
               parsed={parsed}

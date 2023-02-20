@@ -114,7 +114,7 @@ export default function ResetPassword({
                   }}
                   type="password"
                   placeholder="new password"
-                  className="input input-bordered"
+                  className="input text-base-content input-bordered"
                 />
               </div>
               <div className="form-control">
@@ -128,7 +128,7 @@ export default function ResetPassword({
                   }}
                   type="password"
                   placeholder="repeat password"
-                  className="input input-bordered"
+                  className="input text-base-content input-bordered"
                 />
                 <label className="label">
                   <Link

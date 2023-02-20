@@ -42,7 +42,7 @@ export default function SelectBox({
         <select
           disabled={disabled}
           name={name}
-          className="select select-bordered"
+          className="select select-bordered text-base-content"
           onChange={(e) => setter(e.target.value)}
           value={selected}
           required={required}
