@@ -14,18 +14,18 @@ export default async function handler(
 
   const decode: any = await decodeJWT(authorized.cookie);
   const user_id = decode.user_id;
-  const { keyword, sortby, sortorder }: any = req.body;
-  var SortOrder = "ASC";
-  if (sortorder == "DESC") {
-    SortOrder = "DESC";
-  } else if (sortorder == "ASC") {
-    SortOrder = "ASC";
-  } else {
-    return res
-      .status(400)
-      .json({ code: 400, message: "400 Bad Request . Invalid Data passed." });
-  }
-  const data: any = await SearchUser({ keyword, user_id, sortby, SortOrder });
+  const { keyword, sortby, sortorder, page }: any = req.body;
+  const limit: number = 5;
+  const offset: number = limit * (parseInt(page) - 1);
+
+  const data: any = await SearchUser({
+    keyword,
+    user_id,
+    sortby,
+    sortorder,
+    limit,
+    offset,
+  });
   if (data.length >= 1) {
     return res.status(200).json({ code: 200, data: data });
   } else {
@@ -36,21 +36,28 @@ export default async function handler(
   }
 }
 
-async function SearchUser({ keyword, user_id, sortby, SortOrder }: any) {
+async function SearchUser({
+  keyword,
+  user_id,
+  sortby,
+  sortorder,
+  limit,
+  offset,
+}: any) {
   return new Promise((resolve, reject) => {
-    keyword = `%${keyword}%`;
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone, job FROM tbl_users WHERE ( username LIKE ? OR first_name LIKE ? OR middle_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
+      keyword = `%${keyword}%`;
+      const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) AS name, job FROM tbl_users WHERE ( username LIKE ? OR CONCAT(first_name,' ',middle_name,' ',last_name) LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
         sortby
-      )} ${SortOrder};`;
+      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
+
       conn.query(
         sql,
-        [keyword, keyword, keyword, keyword, keyword, keyword, user_id],
-        (error, result, feilds) => {
-          if (error) reject(error);
+        [keyword, keyword, keyword, keyword, user_id],
+        (err, result) => {
+          if (err) reject(err);
           resolve(result);
-          conn.release();
         }
       );
     });

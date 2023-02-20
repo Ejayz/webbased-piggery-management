@@ -22,7 +22,7 @@ async function send_sms(phone: any, username: any) {
     from: twillioPhone,
     to: phone,
   });
-
+  // const data = { status: "sent" };
   if (data.status === "queued" || data.status === "sent") {
     return {
       status: 200,
@@ -71,6 +71,7 @@ export default async function handler(
                   "Set-Cookie",
                   `reset_auth=${token}; Max-Age=3600; HttpOnly; Path=/;`
                 );
+
                 return res.status(200).json({
                   code: 200,
                   message: "OTP sent successfully",
@@ -83,7 +84,6 @@ export default async function handler(
               }
             })
             .catch((e) => {
-              console.log(e);
               return res
                 .status(500)
                 .json({ code: 500, message: `Server Error:${e.code}` });

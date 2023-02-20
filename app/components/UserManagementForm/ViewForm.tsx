@@ -5,21 +5,27 @@ import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
 import Loading from "@/components/Loading/loading";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 export default function ViewUser({ id }: any) {
-  const [user_id, setUserid] = useState(null);
-  const [username, setUsername] = useState(null);
-  const [first_name, setFirst_name] = useState(null);
-  const [middle_name, setMiddle_name] = useState(null);
-  const [last_name, setLast_name] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [job, setJob] = useState(null);
+  const [user_id, setUserid] = useState("");
+  const [username, setUsername] = useState("");
+  const [first_name, setFirst_name] = useState("");
+  const [middle_name, setMiddle_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  const [phone, setPhone] = useState("");
+  const [job, setJob] = useState("");
   const Queryid = useSearchParams().get("id");
+  const router = useRouter();
   if (Queryid == undefined) {
     return <></>;
   }
+  const BackAdd = async () => {
+    router.push("user_management/owner?action=a&id=null");
+  };
   useEffect(() => {
     async function ViewUser() {
-      setUserid(null);
+      setUserid("");
       let headersList = {
         Accept: "*/*",
       };
@@ -34,23 +40,24 @@ export default function ViewUser({ id }: any) {
       let data = await response.json();
       if (data.code == 200) {
         const userData = data.data[0];
-        setTimeout(() => {
-          setUserid(userData.user_id);
-          setUsername(userData.username);
-          setFirst_name(userData.first_name);
-          setMiddle_name(userData.middle_name);
-          setLast_name(userData.last_name);
-          setPhone(userData.phone);
-          setJob(userData.phone);
-        }, 5000);
+
+        setUserid(userData.user_id);
+        setUsername(userData.username);
+        setFirst_name(userData.first_name);
+        setMiddle_name(userData.middle_name);
+        setLast_name(userData.last_name);
+        setPhone(userData.phone);
+        setJob(userData.job);
       } else {
         toast.error(data.message);
       }
     }
-    ViewUser();
-  }, [Queryid !== null]);
+    if (Queryid !== "null") {
+      ViewUser();
+    }
+  }, [Queryid]);
 
-  if (user_id == null) {
+  if (user_id == "") {
     return (
       <>
         <div className="w-full h-1/2 flex">
@@ -160,6 +167,20 @@ export default function ViewUser({ id }: any) {
                 default_option={"Job"}
                 setter={setJob}
               />
+            </div>
+            <div>
+              <Link
+                className="btn btn-active btn-primary mx-4"
+                href={{
+                  pathname: "/user_management/owner/",
+                  query: {
+                    action: "a",
+                    id: "null",
+                  },
+                }}
+              >
+                BACK
+              </Link>
             </div>
           </form>
         </div>

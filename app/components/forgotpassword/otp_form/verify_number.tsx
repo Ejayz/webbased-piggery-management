@@ -60,7 +60,7 @@ export default function Layout({
     }
   }
   return (
-    <div className="hero h-full bg-base-200">
+    <div className="hero h-full bg-base-content">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="text-3xl font-bold">Forgot password</h1>
@@ -89,7 +89,7 @@ export default function Layout({
                 onChange={(e) => setUsername(e.target.value)}
                 type="text"
                 placeholder="username"
-                className="input input-bordered"
+                className="input text-base-content input-bordered"
               />
             </div>
             <div className="form-control">
@@ -101,9 +101,9 @@ export default function Layout({
                 onChange={(e) => setPhone(e.target.value)}
                 type="text"
                 placeholder="(+63)9123456789"
-                className="input input-bordered"
+                className="input text-base-content input-bordered"
               />
-              <label className="label">
+              <label className="label label-text">
                 <Link
                   href="#"
                   as="/"

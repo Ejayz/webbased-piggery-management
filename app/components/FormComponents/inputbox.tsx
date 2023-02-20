@@ -1,10 +1,29 @@
+/**
+ * type={"text"}
+
+ *label={"label"}
+
+ *placeholder={"placeholder"}
+
+ *name={"inputname"}
+
+ *disabled={false}
+
+ *className={"input input-bordered h-8"}
+
+ *value={state}
+
+ *setter={setState}
+ 
+ *required={false} */
+"use client";
 export default function InputBox({
   type,
   label,
   placeholder,
   name,
   disabled = false,
-  className = "input input-bordered",
+  className = "input input-bordered text-base-content",
   value = "",
   setter,
   required = false,
@@ -20,7 +39,7 @@ export default function InputBox({
           type={type}
           value={value}
           placeholder={placeholder}
-          className={className}
+          className={className + " text-base-content"}
           name={name}
           disabled={disabled}
           onChange={(e) => setter(e.target.value)}

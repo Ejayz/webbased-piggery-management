@@ -1,4 +1,4 @@
-import { getCookie } from "cookies-next";
+import { CookieValueTypes, getCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJWT } from "./jwtProcessor";
 
@@ -6,7 +6,8 @@ import { verifyJWT } from "./jwtProcessor";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
-  ApiMethod: String
+  ApiMethod: String,
+  custom?: any
 ) {
   if (req?.url == "'/api/authorizationHandler'") {
     return res
@@ -20,7 +21,13 @@ export default async function handler(
     });
     return false;
   }
-  const cookie = getCookie("auth", { req, res });
+  let cookie: CookieValueTypes = "";
+  if (custom != null) {
+    cookie = getCookie(custom.cookieName, { req, res });
+  } else {
+    cookie = getCookie("auth", { req, res });
+  }
+
   if (cookie == null) {
     res.status(401).json({
       code: 401,

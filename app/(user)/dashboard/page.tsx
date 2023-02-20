@@ -1,12 +1,26 @@
 "use client";
+
+import Loading from "@/components/Loading/loading";
+import { useEffect, useState } from "react";
+
 export default function Page() {
-
-
-
-
+  const [rendered, isRendered] = useState(false);
+  useEffect(() => {
+    console.log(window);
+    if (typeof window !== "undefined") {
+      isRendered(true);
+    }
+  }, []);
+  if (!rendered) {
+    return (
+      <>
+        <Loading></Loading>
+      </>
+    );
+  }
   return (
     <>
-      <div className="w-full grid h-full">
+      <div className="w-full grid h-full bg-base-300">
         <div className="w-5/6  mt-4 h-auto lg:grid-cols-3 grid gap-2 grid-cols-1 mx-auto">
           <div className="stats w-full bg-primary text-primary-content shadow">
             <div className="stat">
@@ -37,7 +51,12 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <canvas id="goodCanvas1" className="w-3/4 h-auto" aria-label="Hello ARIA World" role="img"></canvas>
+        <canvas
+          id="goodCanvas1"
+          className="w-3/4 h-auto"
+          aria-label="Hello ARIA World"
+          role="img"
+        ></canvas>
       </div>
     </>
   );

@@ -13,7 +13,7 @@ export default async function handler(
   const cookie = getCookie("auth", { req, res });
 
   if (req.method !== "POST") {
-    res
+    return res
       .status(405)
       .json({ code: 405, message: "This API Endpoint expects POST method." });
   }
@@ -50,13 +50,11 @@ export default async function handler(
     job,
   });
   if (create.affectedRows == 1) {
-    return res
-      .status(200)
-      .json({ code: 200, message: `User account created for ${username}` });
+    return res.status(200).json({ code: 200, message: `Account created.` });
   } else {
     return res
       .status(500)
-      .json({ code: 500, message: "Server error ! Something went wrong" });
+      .json({ code: 500, message: "Server error ! Something went wrong." });
   }
 }
 
@@ -103,7 +101,8 @@ async function createUser({
 
 async function checkDups({ username }: any) {
   return new Promise((resolve, reject) => {
-    const sql = "select * from tbl_users where username=? and is_exist='true'";
+    const sql =
+      "select * from tbl_users where BINARY username=? and is_exist='true'";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
       conn.query(sql, [username], (error, result, fields) => {

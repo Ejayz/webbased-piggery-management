@@ -3,7 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import getBaseURL from "@/hooks/getBaseUrl";
+import { VerifyUser } from "@/hooks/useLogin";
+import { Input } from "@nextui-org/react";
 
 export default function Page() {
   //Create states for username password and remember me
@@ -13,50 +14,29 @@ export default function Page() {
   const [requesting, isRequesting] = useState<boolean>(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const base_url = getBaseURL();
 
-  const VerifyUser = async () => {
+  const ValidateLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (username == "" || password == "") {
-      toast.error("Username/Password is required");
-      return;
+      toast.error("All feilds are required");
+      return false;
     }
-    isRequesting(true);
-    let headersList = {
-      Accept: "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Content-Type": "application/json",
-    };
+    exec_login();
+  };
 
-    let bodyContent = JSON.stringify({
-      username: username,
-      password: password,
-      rememberme: remember_me,
-    });
-
-    let response = await fetch(`${base_url}/api/post/login`, {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    });
-
-    let data = await response.text();
-    if (response.ok) {
-      isRequesting(false);
-    }
-    const parsed = JSON.parse(data);
-
-    if (parsed.code == 200) {
-      toast.success(parsed.message);
+  const exec_login = async () => {
+    const returned = await VerifyUser(username, password, remember_me);
+    if (returned.code == 200) {
+      toast.success(returned.message);
       router.push("/dashboard");
     } else {
-      isRequesting(false);
-      toast.error(parsed.message);
+      toast.error(returned.message);
     }
   };
 
   return (
     <>
-      <div className="hero h-screen">
+      <div className="hero bg-base-content h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
             <h1 className="text-5xl font-bold">Login Now!</h1>
@@ -68,7 +48,11 @@ export default function Page() {
               Contact server administrator for your account!
             </p>
           </div>
-          <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+
+          <form
+            onSubmit={ValidateLogin}
+            className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
+          >
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
@@ -81,7 +65,7 @@ export default function Page() {
                   }}
                   type="text"
                   placeholder="username"
-                  className="input input-bordered"
+                  className="input input-bordered text-base-content"
                 />
               </div>
               <div className="form-control">
@@ -94,9 +78,10 @@ export default function Page() {
                     type={showPassword ? "text" : "password"}
                     placeholder="password"
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input input-bordered w-full"
+                    className="input text-base-content input-bordered w-full"
                   />
                   <button
+                    type="button"
                     name="showpassword"
                     data-tip={showPassword ? "Hide password" : "Show password"}
                     className={`btn tooltip btn-square flex  ${
@@ -123,7 +108,7 @@ export default function Page() {
                     />
                   </label>
                 </div>
-                <label className="label">
+                <label className="label label-text">
                   <Link href="#" as={"/forgotpassword"}>
                     Forgot password?
                   </Link>
@@ -134,14 +119,13 @@ export default function Page() {
                   type="submit"
                   disabled={requesting}
                   className={`btn btn-primary  ${requesting ? "loading" : ""}`}
-                  onClick={VerifyUser}
                   aria-label="submit"
                 >
                   Login
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

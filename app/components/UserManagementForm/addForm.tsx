@@ -4,9 +4,10 @@ import { FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import InputBox from "../FormComponents/inputbox";
 import SelectBox from "../FormComponents/selectBox";
-import Loading from "@/components/Loading/loading";
 import getBaseUrl from "@/hooks/getBaseUrl";
-export default function AddUser({ id }: any) {
+import { Create, getData } from "@/hooks/useUserManagement";
+
+export default function AddUser({ setParsed, sortby, sorts }: any) {
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
   const [middle_name, setMiddle_name] = useState("");
@@ -15,36 +16,12 @@ export default function AddUser({ id }: any) {
   const [job, setJob] = useState("default");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
+  const [notifMessage, setnotifMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [choice, setChoice] = useState(false);
+  const [DisplayConfirmation, setDisplayConfirmation] = useState(false);
   const base_url = getBaseUrl();
   function resetState() {
-    const rows = [
-      {
-        key: "1",
-        name: "Tony Reichert",
-        role: "CEO",
-        status: "Active",
-      },
-      {
-        key: "2",
-        name: "Zoey Lang",
-        role: "Technical Lead",
-        status: "Paused",
-      },
-      {
-        key: "3",
-        name: "Jane Fisher",
-        role: "Senior Developer",
-        status: "Active",
-      },
-      {
-        key: "4",
-        name: "William Howard",
-        role: "Community Manager",
-        status: "Vacation",
-      },
-    ];
-    console.log(rows);
-
     setUsername("");
     setFirst_name("");
     setMiddle_name("");
@@ -55,7 +32,7 @@ export default function AddUser({ id }: any) {
     setrepeatPass("");
   }
 
-  async function createUser(e: any) {
+  const validate = async (e: any) => {
     e.preventDefault();
     if (
       username == "" ||
@@ -66,6 +43,10 @@ export default function AddUser({ id }: any) {
       job == "default"
     ) {
       toast.error("All feilds are required.");
+      return false;
+    }
+    if (!phone.startsWith("+63")) {
+      toast.error("Phone number should start at +63");
       return false;
     }
     if (password != repeatPassword) {
@@ -91,45 +72,35 @@ export default function AddUser({ id }: any) {
 
       return false;
     }
+    const isOk = confirm("Are you sure you want to create?");
+    if (!isOk) {
+      return false;
+    }
+    createUser();
+  };
 
-    let headersList = {
-      Accept: "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Content-Type": "application/json",
-    };
-
-    let bodyContent = JSON.stringify({
-      username: username,
-      first_name: first_name,
-      middle_name: middle_name,
-      last_name: last_name,
-      password: password,
-      phone: phone,
-      job: job,
-    });
-
-    let response = await toast.promise(
-      fetch(`${base_url}/api/post/addUser/`, {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      }),
-      {
-        pending: "Adding user information in database.",
-        success: "Process completed... Gathering Result",
-        error: "Process failed.Gathering Result",
-      },
-      { toastId: "Promised" }
+  async function createUser() {
+    const returned = await Create(
+      username,
+      first_name,
+      middle_name,
+      last_name,
+      password,
+      phone,
+      job
     );
-    let data = await response.json();
-    if (data.code == 200) {
-      setTimeout(() => {
-        toast.dismiss("Promised");
-      }, 1000);
-      toast.success(data.message, { delay: 2000 });
-      resetState();
+    if (returned.code == 200) {
+      toast.success(returned.message);
+      setParsed([]);
+      const refresh = await getData(1, sortby, sorts, "");
+      if (refresh.code == 200) {
+        resetState();
+        setParsed(refresh.data);
+      } else {
+        toast.error(refresh.message);
+      }
     } else {
-      toast.error(data.message);
+      toast.error(returned.message);
     }
   }
 
@@ -141,9 +112,9 @@ export default function AddUser({ id }: any) {
             <li>User Management</li>
             <li className="font-bold">Add</li>
           </ul>
-        </div>
+        </div>{" "}
         <form
-          onSubmit={createUser}
+          onSubmit={validate}
           method="post"
           className="flex w-full h-auto py-2 flex-col"
         >
@@ -154,7 +125,7 @@ export default function AddUser({ id }: any) {
               placeholder={"Username"}
               name={"username"}
               disabled={false}
-              className={"input input-bordered h-10"}
+              className={"input input-bordered h-8"}
               value={username}
               setter={setUsername}
               required={true}
@@ -201,7 +172,7 @@ export default function AddUser({ id }: any) {
               className={"input input-bordered h-10"}
               value={middle_name}
               setter={setMiddle_name}
-              required={true}
+              required={false}
             />
             <InputBox
               type={"text"}

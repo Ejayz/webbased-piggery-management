@@ -92,7 +92,7 @@ export default function ResetPassword({
 
   return (
     <>
-      <div className="hero h-full  bg-base-200">
+      <div className="hero h-full  bg-base-content">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
             <h1 className="text-3xl font-bold">Change Password</h1>
@@ -114,7 +114,7 @@ export default function ResetPassword({
                   }}
                   type="password"
                   placeholder="new password"
-                  className="input input-bordered"
+                  className="input text-base-content input-bordered"
                 />
               </div>
               <div className="form-control">
@@ -128,7 +128,7 @@ export default function ResetPassword({
                   }}
                   type="password"
                   placeholder="repeat password"
-                  className="input input-bordered"
+                  className="input text-base-content input-bordered"
                 />
                 <label className="label">
                   <Link

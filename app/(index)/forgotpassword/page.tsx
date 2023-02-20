@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import { useRef, useState, MutableRefObject } from "react";
 import Layout2 from "@/app/components/forgotpassword/otp_form/otp_form";
 import Layout3 from "@/app/components/forgotpassword/otp_form/change_password";
@@ -16,9 +15,9 @@ export default function Page() {
   }
   return (
     <>
-      <div className={"bg-base-200 flex h-screen flex-col"}>
-        <div className="w-full">
-          <ul className="steps bg-base-200 steps-horizontal lg:steps-horizontal w-full mt-12">
+      <div className={"bg-base-content flex h-screen flex-col"}>
+        <div className="w-full bg-base-content">
+          <ul className="steps bg-base-content steps-horizontal lg:steps-horizontal w-full mt-12">
             <li
               onClick={(e) => {
                 if (data >= 1) {
@@ -52,7 +51,11 @@ export default function Page() {
             </li>
           </ul>
         </div>
-        <div className={`h-auto flex w-full ${data == 1 ? "block" : "hidden"}`}>
+        <div
+          className={`h-full bg-base-content flex w-full ${
+            data == 1 ? "block" : "hidden"
+          }`}
+        >
           <Layout1
             setText={data}
             setData={setData}

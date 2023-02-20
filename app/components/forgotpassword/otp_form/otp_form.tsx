@@ -20,7 +20,7 @@ export default function Layout({ setText, setState, setOTP }: any) {
 
   return (
     <>
-      <div className="hero h-full  bg-base-200">
+      <div className="hero h-full  bg-base-content">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center ml-4 lg:text-left">
             <h1 className="text-5xl font-bold">One Time Password</h1>
@@ -46,9 +46,9 @@ export default function Layout({ setText, setState, setOTP }: any) {
                   onChange={(e) => setOtp(e.target.value)}
                   type="text"
                   placeholder="One Time Password"
-                  className="input input-bordered"
+                  className="input text-base-content input-bordered"
                 />
-                <label className="label">
+                <label className="label label-text">
                   <Link
                     href="#"
                     as="/"

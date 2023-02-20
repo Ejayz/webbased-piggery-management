@@ -1,6 +1,32 @@
+/**
+ * 
+            label={"Cage Type"}
+
+              name={"selectName"}
+
+              selected={state}
+
+              disabled={false}
+
+              default_option={"Default"}
+
+              options={[
+                {
+                  value: "option1",
+                  display: "Option 1",
+                },
+                
+              ]}
+
+              setter={set}
+
+              required={true}
+ */
+"use client";
 export default function SelectBox({
   label,
   name,
+  selected,
   disabled = false,
   default_option = "Options",
   options,
@@ -16,8 +42,9 @@ export default function SelectBox({
         <select
           disabled={disabled}
           name={name}
-          className="select select-bordered"
+          className="select select-bordered text-base-content"
           onChange={(e) => setter(e.target.value)}
+          value={selected}
           required={required}
         >
           <option value={"default"}>{default_option}</option>
