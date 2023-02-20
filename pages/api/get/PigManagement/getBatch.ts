@@ -11,16 +11,16 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const data = await UpdateCage();
+  // const data = await UpdateCage();
 }
 
-async function UpdateCage() {
-  const returned = await prisma.tbl_cage.findMany({
-    where: {
-      is_exist: "true",
-      is_full: "false",
-    },
-    select: {},
-  });
-  console.log(returned);
-}
+// async function UpdateCage() {
+//   const returned = await prisma.tbl_cage.findMany({
+//     where: {
+//       is_exist: "true",
+//       is_full: "false",
+//     },
+//     select: {},
+//   });
+//   console.log(returned);
+// }
