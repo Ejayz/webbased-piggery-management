@@ -33,7 +33,10 @@ export default function RootLayout({
 
   return (
     <>
-      <html className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base-200">
+      <html
+        data-theme
+        className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base-200"
+      >
         <Head title={"Login"}></Head>
         <body>
           <ToastContainer

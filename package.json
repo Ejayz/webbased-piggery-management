@@ -39,7 +39,8 @@
     "theme-change": "^2.3.0",
     "three": "^0.148.0",
     "twilio": "^4.7.1",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "zustand": "^4.3.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

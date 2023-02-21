@@ -13,7 +13,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
   const [cage_capacity, setCageCapacity] = useState<number | string>("");
   const [cage_id, setCageId] = useState();
   const router = useRouter();
-  const QueryId = useSearchParams().get("id");
+  const Queryid = useSearchParams().get("id");
   function resetState() {
     setCageName("");
     setCageCapacity("");
@@ -27,20 +27,22 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
   useEffect(() => {
     async function start() {
       setCageName("");
-      const returned = await ViewCage(QueryId);
+      const returned = await ViewCage(Queryid);
+      console.log(returned);
       if (returned.code == 200) {
-        setCageName(returned.data.cage_name);
-        setCageCapacity(returned.data.cage_capacity);
-        setCageType(returned.data.cage_type);
-        setCageId(returned.data.cage_id);
+        setCageName(returned.data[0].cage_name);
+        setCageCapacity(returned.data[0].cage_capacity);
+        setCageType(returned.data[0].cage_type);
+        setCageId(returned.data[0].cage_id);
       } else {
         toast.error(returned.message);
       }
     }
-    if (QueryId != "null") {
+
+    if (Queryid !== null || Queryid !== undefined) {
       start();
     }
-  }, [QueryId]);
+  }, [Queryid]);
 
   if (cage_name == "") {
     return (
@@ -60,14 +62,17 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
               <li className="font-bold">View</li>
             </ul>
           </div>
-          <form method="post" className="flex w-full h-auto py-2 flex-col">
+          <form
+            method="post"
+            className="flex w-full rounded-lg h-auto py-2 flex-col"
+          >
             <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
               <InputBox
                 type={"text"}
                 label={"Cage Name"}
                 placeholder={"Cage Name"}
                 name={"cagename"}
-                disabled={true}
+                readonly={true}
                 className={"input input-bordered h-8"}
                 value={cage_name}
                 setter={setCageName}
@@ -78,11 +83,11 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
                 label={"Cage Capacity"}
                 placeholder={"Cage Capacity"}
                 name={"cagecapacity"}
-                disabled={true}
                 className={"input input-bordered h-10"}
                 value={cage_capacity}
                 setter={setCageCapacity}
                 required={true}
+                readonly={true}
               />{" "}
             </div>
             <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
@@ -96,30 +101,37 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
                   {
                     value: "Individual Stall",
                     display: "Individual Stall",
+                    disabled: true,
                   },
                   {
                     value: "Group Housing",
                     display: "Group Housing",
+                    disabled: true,
                   },
                   {
                     value: "Forrowing Crates",
                     display: "Forrowing Crates",
+                    disabled: true,
                   },
                   {
                     value: "Sow Stall",
                     display: "Sow Stall",
+                    disabled: true,
                   },
                   {
                     value: "Grow Finishing Housing",
                     display: "Grow Finishing Housing",
+                    disabled: true,
                   },
                   {
                     value: "Nursery Pen",
                     display: "Nursery Pen",
+                    disabled: true,
                   },
                   {
                     value: "Quarantine Cage",
                     display: "Quarantine Cage",
+                    disabled: true,
                   },
                 ]}
                 setter={setCageType}

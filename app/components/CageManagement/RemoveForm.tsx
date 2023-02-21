@@ -12,13 +12,19 @@ import {
 import Loading from "../Loading/loading";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) {
+export default function Remove({
+  sortby,
+  sorts,
+  setParsed,
+  setisSorting,
+  setPage,
+}: any) {
   const [cage_name, setCageName] = useState("");
   const [cage_type, setCageType] = useState("default");
   const [cage_capacity, setCageCapacity] = useState<number | string>("");
   const [cage_id, setCageId] = useState(1);
   const router = useRouter();
-  const QueryId = useSearchParams().get("id");
+  const Queryid = useSearchParams().get("id");
   function resetState() {
     setCageName("");
     setCageCapacity("");
@@ -45,9 +51,10 @@ export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) 
     if (returned.code == 200) {
       toast.success(returned.message);
       setisSorting(true);
-      const getPage = await getData(1, sortby, sorts);
+      const getPage = await getData(1, sortby, sorts, "");
       if (getPage.code == 200) {
         setisSorting(false);
+        setPage(1);
         setParsed(getPage.data);
         callCancel();
       }
@@ -60,20 +67,20 @@ export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) 
   useEffect(() => {
     async function start() {
       setCageName("");
-      const returned = await ViewCage(QueryId);
+      const returned = await ViewCage(Queryid);
       if (returned.code == 200) {
-        setCageName(returned.data.cage_name);
-        setCageCapacity(returned.data.cage_capacity);
-        setCageType(returned.data.cage_type);
-        setCageId(returned.data.cage_id);
+        setCageName(returned.data[0].cage_name);
+        setCageCapacity(returned.data[0].cage_capacity);
+        setCageType(returned.data[0].cage_type);
+        setCageId(returned.data[0].cage_id);
       } else {
         toast.error(returned.message);
       }
     }
-    if (QueryId != "null") {
+    if (Queryid !== null || Queryid !== undefined) {
       start();
     }
-  }, [QueryId]);
+  }, [Queryid]);
 
   if (cage_name == "") {
     return (
@@ -86,7 +93,7 @@ export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) 
   } else {
     return (
       <>
-        <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+        <div className="w-full bg-slate-500 rounded-lg h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
               <li>Cage Management</li>
@@ -134,30 +141,37 @@ export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) 
                   {
                     value: "Individual Stall",
                     display: "Individual Stall",
+                    disabled: false,
                   },
                   {
                     value: "Group Housing",
                     display: "Group Housing",
+                    disabled: false,
                   },
                   {
                     value: "Forrowing Crates",
                     display: "Forrowing Crates",
+                    disabled: false,
                   },
                   {
                     value: "Sow Stall",
                     display: "Sow Stall",
+                    disabled: false,
                   },
                   {
                     value: "Grow Finishing Housing",
                     display: "Grow Finishing Housing",
+                    disabled: false,
                   },
                   {
                     value: "Nursery Pen",
                     display: "Nursery Pen",
+                    disabled: false,
                   },
                   {
                     value: "Quarantine Cage",
                     display: "Quarantine Cage",
+                    disabled: false,
                   },
                 ]}
                 setter={setCageType}

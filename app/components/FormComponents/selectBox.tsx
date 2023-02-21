@@ -40,17 +40,18 @@ export default function SelectBox({
           <span className="label-text text-base">{label}</span>
         </label>
         <select
-          disabled={disabled}
           name={name}
           className="select select-bordered text-base-content"
           onChange={(e) => setter(e.target.value)}
           value={selected}
           required={required}
         >
-          <option value={"default"}>{default_option}</option>
+          <option value={"default"} disabled={disabled}>
+            {default_option}
+          </option>
           {options.map((item: any, index: number) => {
             return (
-              <option key={index} value={item.value}>
+              <option key={index} value={item.value} disabled={item.disabled}>
                 {item.display}
               </option>
             );

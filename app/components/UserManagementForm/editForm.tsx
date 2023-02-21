@@ -9,7 +9,7 @@ import Link from "next/link";
 import getBaseUrl from "@/hooks/getBaseUrl";
 import { getData, Update } from "@/hooks/useUserManagement";
 
-export default function EditUser({ setParsed, sortby, sorts }: any) {
+export default function EditUser({ setParsed, sortby, sorts, setPage }: any) {
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -97,6 +97,7 @@ export default function EditUser({ setParsed, sortby, sorts }: any) {
       setParsed([]);
       const refresh = await getData(1, sortby, sorts, "");
       if (refresh.code == 200) {
+        setPage(1);
         setParsed(refresh.data);
       } else {
         toast.error(refresh.message);
@@ -107,7 +108,6 @@ export default function EditUser({ setParsed, sortby, sorts }: any) {
   };
 
   if (Queryid == undefined) {
-    toast.error("Query ID is invalid");
   }
 
   function callCancel() {
@@ -143,7 +143,7 @@ export default function EditUser({ setParsed, sortby, sorts }: any) {
         callCancel();
       }
     }
-    if (Queryid != "null") {
+    if (Queryid !== null || Queryid !== undefined) {
       ViewUser();
     }
   }, [Queryid]);
@@ -159,7 +159,7 @@ export default function EditUser({ setParsed, sortby, sorts }: any) {
   } else {
     return (
       <>
-        <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+        <div className="w-full bg-slate-500 rounded-lg h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
               <li>User Management</li>
@@ -180,7 +180,7 @@ export default function EditUser({ setParsed, sortby, sorts }: any) {
                 label={"User Id"}
                 placeholder={"User Id"}
                 name={"user_id"}
-                disabled={true}
+                readonly={true}
                 className={"input input-bordered h-10"}
                 value={user_id}
                 setter={setUserid}
@@ -267,14 +267,17 @@ export default function EditUser({ setParsed, sortby, sorts }: any) {
                   {
                     value: "worker",
                     display: "Worker",
+                    disabled: false,
                   },
                   {
                     value: "owner",
                     display: "Owner",
+                    disabled: false,
                   },
                   {
                     value: "veterinarian",
                     display: "Veterinarian",
+                    disabled: false,
                   },
                 ]}
                 disabled={false}

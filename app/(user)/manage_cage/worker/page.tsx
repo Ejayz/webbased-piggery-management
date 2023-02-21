@@ -35,6 +35,7 @@ export default function Page() {
   const colsName = ["cage_name", "cage_type", "cage_capacity"];
   const [isSorting, setisSorting] = useState(false);
   const pathname = "/manage_cage/worker/";
+  const [page, setPage] = useState(1);
   useEffect(() => {
     async function getView() {
       if (action == null || action == "a") {
@@ -44,6 +45,7 @@ export default function Page() {
             sorts={sorts}
             setParsed={setParsed}
             setisSorting={setisSorting}
+            setPage={setPage}
           ></AddUser>
         );
       } else if (action == "v") {
@@ -51,11 +53,12 @@ export default function Page() {
       } else if (action == "e") {
         setComps(
           <EditUser
-            sortData={sortData}
+            getData={getData}
+            setParsed={setParsed}
+            page={page}
+            setPage={setPage}
             sortby={sortby}
             sorts={sorts}
-            setParsed={setParsed}
-            setisSorting={setisSorting}
           ></EditUser>
         );
       } else if (action == "d") {
@@ -66,6 +69,7 @@ export default function Page() {
             sorts={sorts}
             setParsed={setParsed}
             setisSorting={setisSorting}
+            setPage={setPage}
           ></RemoveForm>
         );
       }
@@ -74,17 +78,10 @@ export default function Page() {
   }, [action]);
   return (
     <>
-      <div className="w-full h-full bg-base-300 flex flex-col overflow-hidden">
+      <div className="w-full h-full base-content flex flex-col overflow-hidden">
         {/* Form */}
         <div className="w-full h-auto  overflow-y-auto">
           <div className="w-11/12  mx-auto flex flex-row">
-            <Image
-              src={"/assets/icons/manage_cage.png"}
-              alt={""}
-              className="h-16 w-16"
-              height={512}
-              width={512}
-            ></Image>
             <p className="text-2xl  my-auto p-4">Cage Management</p>
           </div>
           <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col mb-12">
@@ -108,6 +105,8 @@ export default function Page() {
             Search={Search}
             sortData={sortData}
             pathname={pathname}
+            page={page}
+            setPage={setPage}
           ></Table>
         </div>
       </div>

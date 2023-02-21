@@ -18,7 +18,10 @@ export default function SorterSearchLayout({
   setisTyping,
   setSearch,
   setMessage,
+  page,
   getData,
+  setPage,
+  setNotF,
 }: any) {
   return (
     <>
@@ -31,6 +34,11 @@ export default function SorterSearchLayout({
           setSortBy={setSortBy}
           sortData={sortData}
           colsData={colsName}
+          keyword={keyword}
+          setParsed={setParsed}
+          getData={getData}
+          page={page}
+          setPage={setPage}
         ></SorterMobile>
         <SearchComponent
           Search={Search}
@@ -44,6 +52,9 @@ export default function SorterSearchLayout({
           setSearch={setSearch}
           setMessage={setMessage}
           getData={getData}
+          page={page}
+          setPage={setPage}
+          setNotF={setNotF}
         ></SearchComponent>
       </div>
     </>
