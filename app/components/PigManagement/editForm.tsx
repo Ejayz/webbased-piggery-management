@@ -45,7 +45,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
     if (returned.code == 200) {
       toast.success(returned.message);
       setisSorting(true);
-      const getPage = await getData(1, sortby, sorts);
+      const getPage = await getData(1, sortby, sorts, "");
       if (getPage.code == 200) {
         setisSorting(false);
         setParsed(getPage.data);
