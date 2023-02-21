@@ -12,7 +12,12 @@ import {
 import Loading from "../Loading/loading";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) {
+export default function Remove({
+  sortby,
+  sorts,
+  setParsed,
+  setisSorting,
+}: any) {
   const [cage_name, setCageName] = useState("");
   const [cage_type, setCageType] = useState("default");
   const [cage_capacity, setCageCapacity] = useState<number | string>("");
@@ -45,7 +50,7 @@ export default function Remove({ sortby, sorts, setParsed, setisSorting }: any) 
     if (returned.code == 200) {
       toast.success(returned.message);
       setisSorting(true);
-      const getPage = await getData(1, sortby, sorts);
+      const getPage = await getData(1, sortby, sorts, "");
       if (getPage.code == 200) {
         setisSorting(false);
         setParsed(getPage.data);

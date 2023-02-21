@@ -7,20 +7,28 @@ import { getData, UpdateCage, ViewCage } from "@/hooks/useCageManagement";
 import Loading from "../Loading/loading";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
+export default function Edit({
+  getData,
+  setParsed,
+  page,
+  setPage,
+  sortby,
+  sorts,
+}: any) {
   const [cage_name, setCageName] = useState("");
   const [cage_type, setCageType] = useState("default");
   const [cage_capacity, setCageCapacity] = useState<number | string>("");
   const [cage_id, setCageId] = useState();
+  const [prevPage, setPrevPage] = useState(page);
   const router = useRouter();
-  const QueryId = useSearchParams().get("id");
+  const Queryid = useSearchParams().get("id");
   function resetState() {
     setCageName("");
     setCageCapacity("");
     setCageType("default");
   }
 
-  function callCancel(e?: any) {
+  function callCancel() {
     router.push("/manage_cage/worker?action=a&id=null");
   }
 
@@ -35,6 +43,13 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
     }
   };
 
+  useEffect(() => {
+    async function exec_page_check() {
+      setPrevPage(page);
+    }
+    exec_page_check();
+  }, [page]);
+
   const exec_update = async () => {
     const returned = await UpdateCage({
       cage_name,
@@ -42,16 +57,16 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
       cage_type,
       cage_capacity,
     });
+
     if (returned.code == 200) {
       toast.success(returned.message);
-      setisSorting(true);
-      const getPage = await getData(1, sortby, sorts);
-      if (getPage.code == 200) {
-        setisSorting(false);
-        setParsed(getPage.data);
+      setParsed([]);
+      const refresh = await getData(page, sortby, sorts, "");
+      if (refresh.code == 200) {
+        setPage(1);
+        setParsed(refresh.data);
         callCancel();
       }
-      resetState();
     } else {
       toast.error(returned.message);
     }
@@ -60,20 +75,21 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
   useEffect(() => {
     async function start() {
       setCageName("");
-      const returned = await ViewCage(QueryId);
+      const returned = await ViewCage(Queryid);
+      console.log(returned);
       if (returned.code == 200) {
-        setCageName(returned.data.cage_name);
-        setCageCapacity(returned.data.cage_capacity);
-        setCageType(returned.data.cage_type);
-        setCageId(returned.data.cage_id);
+        setCageName(returned.data[0].cage_name);
+        setCageCapacity(returned.data[0].cage_capacity);
+        setCageType(returned.data[0].cage_type);
+        setCageId(returned.data[0].cage_id);
       } else {
         toast.error(returned.message);
       }
     }
-    if (QueryId != "null") {
+    if (Queryid !== null || Queryid !== undefined) {
       start();
     }
-  }, [QueryId]);
+  }, [Queryid]);
 
   if (cage_name == "") {
     return (
@@ -86,7 +102,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
   } else {
     return (
       <>
-        <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+        <div className="w-full bg-slate-500 rounded-lg h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
               <li>Cage Management</li>
@@ -170,7 +186,7 @@ export default function Edit({ sortby, sorts, setParsed, setisSorting }: any) {
               </button>
               <Link
                 onClick={(e) => {
-                  callCancel(e);
+                  callCancel();
                 }}
                 className="btn btn-active btn-primary mx-4"
                 href={"/manage_cage/worker?action=a&id=null"}

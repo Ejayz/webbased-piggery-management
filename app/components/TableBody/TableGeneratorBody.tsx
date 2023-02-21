@@ -119,10 +119,10 @@ export default function TableGeneratorBody({
         const id = Object.values(tbl_data)[0];
         return (
           <tr
+            key={index}
             className={`h-auto  lg:table-row block bg-slate-300 rounded-md my-2 py-4 ${
               index % 2 == 0 ? "accent-content" : "accent-focus"
             }`}
-            key={index}
           >
             <TableGeneratorData
               tbl_data={tbl_data}

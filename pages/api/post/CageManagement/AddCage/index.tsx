@@ -34,7 +34,7 @@ async function AddCage(
       "INSERT INTO `tbl_cage` ( `cage_name`, `cage_type`, `cage_capacity`) VALUES ( ?, ?, ?);";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      const data = conn.query(
+      conn.query(
         sql,
         [cage_name, cage_type, cage_capacity],
         (err, result, feild) => {
@@ -43,7 +43,6 @@ async function AddCage(
           conn.release();
         }
       );
-      console.log(data);
     });
   });
 }

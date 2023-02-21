@@ -1,4 +1,7 @@
 "use client";
+
+import { useEffect } from "react";
+
 export default function SearchComponent({
   Search,
   setKeyword,
@@ -11,12 +14,24 @@ export default function SearchComponent({
   setSearch,
   setMessage,
   getData,
+  page,
+  setPage,
+  setNotF,
 }: any) {
   const search = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setisTyping(false);
     setSearch(true);
-    const returned = await getData(1, sortby, sorts, keyword);
+    if (page != 1) {
+      setPage(1);
+    } else {
+      exec_search();
+    }
+  };
+
+  const exec_search = async () => {
+    const returned = await getData(page, sortby, sorts, keyword);
     if (returned.code == 200) {
       setisTyping(false);
       setSearch(false);
@@ -27,6 +42,9 @@ export default function SearchComponent({
       setMessage(returned.message);
     }
   };
+  useEffect(() => {
+    exec_search();
+  }, [page]);
   return (
     <form onSubmit={search} className="form-control mr-0 ml-auto">
       <div className="input-group">

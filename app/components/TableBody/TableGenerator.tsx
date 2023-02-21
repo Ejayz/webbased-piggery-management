@@ -33,7 +33,6 @@ export default function TableGenerator({
     async function start() {
       setisSorting(true);
       const data = await getData(page, sortby, sortorder, keyword);
-      console.log(data);
       if (data.code == 200) {
         setNotF(false);
         setisSorting(false);
@@ -113,7 +112,7 @@ export default function TableGenerator({
                   <div className="flex justify-center flex-row">
                     {cols}
                     <Image
-                      className={`${sortby == cols ? "visible" : "hidden"}`}
+                      className={`${sortby == col ? "visible" : "hidden"}`}
                       src={
                         sortorder == "asc"
                           ? "/assets/table/ascending.svg"

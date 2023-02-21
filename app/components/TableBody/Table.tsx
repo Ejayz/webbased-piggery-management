@@ -19,12 +19,13 @@ export default function Table({
   Search,
   sortData,
   pathname,
+  page,
+  setPage,
 }: any) {
   const [notF, setNotF] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [keyword, setKeyword] = useState("");
   const [isSearch, setSearch] = useState(false);
-  const [page, setPage] = useState(1);
   const isShowOption = {
     edit: true,
     view: true,
@@ -36,7 +37,6 @@ export default function Table({
     async function start() {
       if (keyword == "") {
         const returned = await getData(1, sortby, sorts, keyword);
-        console.log(returned);
         if (returned.code == 200) {
           setisSorting(false);
           setisTyping(false);
@@ -68,6 +68,8 @@ export default function Table({
         setMessage={setMessage}
         page={page}
         getData={getData}
+        setPage={setPage}
+        setNotF={setNotF}
       ></SorterSearchLayout>
       <TableGenerator
         setParsed={setParsed}

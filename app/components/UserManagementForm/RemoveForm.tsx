@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import getBaseUrl from "@/hooks/getBaseUrl";
 import { getData, Remove } from "@/hooks/useUserManagement";
-export default function ViewUser({ setParsed, sortby, sorts }: any) {
+export default function ViewUser({ setParsed, sortby, sorts, setPage }: any) {
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -20,9 +20,6 @@ export default function ViewUser({ setParsed, sortby, sorts }: any) {
   const Queryid = useSearchParams().get("id");
   const router = useRouter();
   const base_url = getBaseUrl();
-  if (Queryid == undefined) {
-    return <></>;
-  }
 
   const validateAction = async (e: any) => {
     e.preventDefault();
@@ -40,6 +37,7 @@ export default function ViewUser({ setParsed, sortby, sorts }: any) {
       if (refresh.code == 200) {
         setParsed([]);
         BackAdd();
+        setPage(1);
         setParsed(refresh.data);
       }
     } else {
@@ -78,7 +76,7 @@ export default function ViewUser({ setParsed, sortby, sorts }: any) {
         BackAdd();
       }
     }
-    if (Queryid !== "null") {
+    if (Queryid !== null || Queryid !== undefined) {
       ViewUser();
     }
   }, [Queryid]);
@@ -94,7 +92,7 @@ export default function ViewUser({ setParsed, sortby, sorts }: any) {
   } else {
     return (
       <>
-        <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+        <div className="w-full rounded-lg bg-slate-500 h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
               <li>User Management</li>

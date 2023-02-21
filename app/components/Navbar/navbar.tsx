@@ -1,7 +1,13 @@
 "use client";
 import Image from "next/image";
+import { useEffect } from "react";
+import { themeChange } from "theme-change";
 
 export default function Navbar() {
+  useEffect(() => {
+    themeChange(false);
+  }, []);
+
   return (
     <>
       <div className="navbar bg-neutral text-neutral-content">
@@ -11,9 +17,10 @@ export default function Navbar() {
         <div className=" w-full flex">
           <select
             data-choose-theme
-            className="select select-bordered bg-neutral  max-w-xs ml-auto mr-4"
+            className="select select-bordered bg-neutral hidden max-w-xs ml-auto mr-4"
           >
             <option disabled>Theme</option>
+            <option value="">Default</option>
             <option value="dark">Dark</option>
             <option value="light">Light</option>
           </select>

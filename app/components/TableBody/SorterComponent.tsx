@@ -1,4 +1,8 @@
 "use client";
+
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+
 export default function SorterMobile({
   sortby,
   isSorting,
@@ -7,9 +11,32 @@ export default function SorterMobile({
   setSortBy,
   sortData,
   colsData,
+  keyword,
+  setParsed,
+  getData,
+  page,
+  setPage,
 }: any) {
-  const sortdata = async () => {};
+  const sortdata = async () => {
+    if (page != 1) {
+      setPage(1);
+    } else {
+      exec_search();
+    }
+  };
+  useEffect(() => {
+    exec_search();
+  }, [page]);
 
+  const exec_search = async () => {
+    const returned = await getData(page, sortby, sorts, keyword);
+    if (returned.code == 200) {
+      setParsed(returned.data);
+    } else if (returned.code == 404) {
+    } else {
+      toast.error(returned.message);
+    }
+  };
   return (
     <>
       <div className="dropdown lg:hidden my-auto ">
@@ -22,8 +49,8 @@ export default function SorterMobile({
             isSorting ? "hidden" : "block"
           } dropdown-content card card-compact w-64 p-2 shadow bg-base-200`}
         >
-          <div className="card-body h-36  overflow-y-auto">
-            <div className="divider">Sort Order</div>
+          <div className="card-body max-h-96  overflow-y-auto">
+            <div className="divider text-accent">Sort Order</div>
             <div className="form-control">
               <label className="label cursor-pointer">
                 <span className="label-text">Ascending</span>
@@ -54,7 +81,7 @@ export default function SorterMobile({
                 />
               </label>
             </div>
-            <div className="divider">Sort By</div>
+            <div className="divider text-accent">Sort By</div>
             {colsData.map((cols: any, key: number) => {
               const colsName = cols.replace("_", " ");
               return (

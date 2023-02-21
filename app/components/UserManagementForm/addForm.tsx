@@ -7,7 +7,7 @@ import SelectBox from "../FormComponents/selectBox";
 import getBaseUrl from "@/hooks/getBaseUrl";
 import { Create, getData } from "@/hooks/useUserManagement";
 
-export default function AddUser({ setParsed, sortby, sorts }: any) {
+export default function AddUser({ setParsed, sortby, sorts, setPage }: any) {
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
   const [middle_name, setMiddle_name] = useState("");
@@ -16,11 +16,7 @@ export default function AddUser({ setParsed, sortby, sorts }: any) {
   const [job, setJob] = useState("default");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
-  const [notifMessage, setnotifMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [choice, setChoice] = useState(false);
-  const [DisplayConfirmation, setDisplayConfirmation] = useState(false);
-  const base_url = getBaseUrl();
+
   function resetState() {
     setUsername("");
     setFirst_name("");
@@ -95,6 +91,7 @@ export default function AddUser({ setParsed, sortby, sorts }: any) {
       const refresh = await getData(1, sortby, sorts, "");
       if (refresh.code == 200) {
         resetState();
+        setPage(1);
         setParsed(refresh.data);
       } else {
         toast.error(refresh.message);
@@ -106,7 +103,7 @@ export default function AddUser({ setParsed, sortby, sorts }: any) {
 
   return (
     <>
-      <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+      <div className="w-full bg-slate-500 h-11/12  rounded-lg flex flex-col">
         <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
           <ul>
             <li>User Management</li>
@@ -204,14 +201,17 @@ export default function AddUser({ setParsed, sortby, sorts }: any) {
                 {
                   value: "worker",
                   display: "Worker",
+                  disabled: false,
                 },
                 {
                   value: "owner",
                   display: "Owner",
+                  disabled: false,
                 },
                 {
                   value: "veterinarian",
                   display: "Veterinarian",
+                  disabled: false,
                 },
               ]}
               disabled={false}

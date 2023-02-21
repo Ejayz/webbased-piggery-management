@@ -17,9 +17,7 @@ export default function ViewUser({ id }: any) {
   const [job, setJob] = useState("");
   const Queryid = useSearchParams().get("id");
   const router = useRouter();
-  if (Queryid == undefined) {
-    return <></>;
-  }
+
   const BackAdd = async () => {
     router.push("user_management/owner?action=a&id=null");
   };
@@ -40,7 +38,6 @@ export default function ViewUser({ id }: any) {
       let data = await response.json();
       if (data.code == 200) {
         const userData = data.data[0];
-
         setUserid(userData.user_id);
         setUsername(userData.username);
         setFirst_name(userData.first_name);
@@ -52,7 +49,8 @@ export default function ViewUser({ id }: any) {
         toast.error(data.message);
       }
     }
-    if (Queryid !== "null") {
+    console.log(Queryid);
+    if (Queryid !== null || Queryid !== undefined) {
       ViewUser();
     }
   }, [Queryid]);
@@ -68,7 +66,7 @@ export default function ViewUser({ id }: any) {
   } else {
     return (
       <>
-        <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+        <div className="w-full bg-slate-500 rounded-lg h-11/12 flex flex-col">
           <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
             <ul>
               <li>User Management</li>
@@ -86,7 +84,7 @@ export default function ViewUser({ id }: any) {
                 label={"User Id"}
                 placeholder={"User Id"}
                 name={"user_id"}
-                disabled={true}
+                readonly={true}
                 className={"input input-bordered h-10"}
                 value={user_id}
                 setter={setUserid}
@@ -96,7 +94,7 @@ export default function ViewUser({ id }: any) {
                 label={"Username"}
                 placeholder={"Username"}
                 name={"username"}
-                disabled={true}
+                readonly={true}
                 className={"input input-bordered h-10"}
                 value={username}
                 setter={setUsername}
@@ -111,7 +109,7 @@ export default function ViewUser({ id }: any) {
                 className={"input input-bordered h-10"}
                 value={first_name}
                 setter={setFirst_name}
-                disabled={true}
+                readonly={true}
               />
               <InputBox
                 type={"text"}
@@ -120,7 +118,7 @@ export default function ViewUser({ id }: any) {
                 name={"first_name"}
                 className={"input input-bordered h-10"}
                 value={middle_name}
-                disabled={true}
+                readonly={true}
                 setter={setMiddle_name}
               />
               <InputBox
@@ -131,7 +129,7 @@ export default function ViewUser({ id }: any) {
                 className={"input input-bordered h-10"}
                 value={last_name}
                 setter={setLast_name}
-                disabled={true}
+                readonly={true}
               />
             </div>
             <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
@@ -143,7 +141,7 @@ export default function ViewUser({ id }: any) {
                 className={"input input-bordered h-10"}
                 value={phone}
                 setter={setPhone}
-                disabled={true}
+                readonly={true}
               />
               <SelectBox
                 label={"Job"}
@@ -153,14 +151,17 @@ export default function ViewUser({ id }: any) {
                   {
                     value: "worker",
                     display: "Worker",
+                    disabled: true,
                   },
                   {
                     value: "owner",
                     display: "Owner",
+                    disabled: true,
                   },
                   {
                     value: "veterinarian",
                     display: "Veterinarian",
+                    disabled: true,
                   },
                 ]}
                 disabled={true}

@@ -1,7 +1,7 @@
 "use client";
 import ViewForm from "@/components/UserManagementForm/ViewForm";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import EditUser from "@/components/UserManagementForm/editForm";
 import AddUser from "@/components/UserManagementForm/addForm";
@@ -41,7 +41,7 @@ export default function Page() {
   const [isSorting, setisSorting] = useState(false);
   const pathname = "/user_management/owner";
   const [allowed, setIsAllowed] = useState(false);
-
+  const [page, setPage] = useState(1);
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -66,6 +66,7 @@ export default function Page() {
             setParsed={setParsed}
             sortby={sortby}
             sorts={sorts}
+            setPage={setPage}
           ></AddUser>
         );
       } else if (action == "v") {
@@ -76,6 +77,7 @@ export default function Page() {
             setParsed={setParsed}
             sortby={sortby}
             sorts={sorts}
+            setPage={setPage}
           ></EditUser>
         );
       } else if (action == "d") {
@@ -84,6 +86,7 @@ export default function Page() {
             setParsed={setParsed}
             sortby={sortby}
             sorts={sorts}
+            setPage={setPage}
           ></RemoveForm>
         );
       }
@@ -132,6 +135,8 @@ export default function Page() {
               Search={Search}
               sortData={sortData}
               pathname={pathname}
+              page={page}
+              setPage={setPage}
             ></Table>
           </div>
         </div>

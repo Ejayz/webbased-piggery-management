@@ -3,12 +3,13 @@ export const getData = async (
   page: any,
   sortby: any,
   sorts: any,
+  keyword: string
 ) => {
   let headersList = {
     Accept: "*/*",
   };
   let response = await fetch(
-    `${location.origin}/api/get/CageManagement/GetCage/${page}/?&sortby=${sortby}&sortorder=${sorts}`,
+    `${location.origin}/api/get/CageManagement/GetCage/${page}/?&sortby=${sortby}&sortorder=${sorts}&keyword=${keyword}`,
     {
       method: "GET",
       headers: headersList,

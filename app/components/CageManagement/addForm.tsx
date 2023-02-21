@@ -9,6 +9,7 @@ export default function AddUser({
   sorts,
   setParsed,
   setisSorting,
+  setPage,
 }: any) {
   const [cage_name, setCageName] = useState("");
   const [cage_type, setCageType] = useState("default");
@@ -41,9 +42,10 @@ export default function AddUser({
     if (returned.code == 200) {
       toast.success(returned.message);
       setisSorting(true);
-      const getPage = await getData(1, sortby, sorts);
+      const getPage = await getData(1, sortby, sorts, "");
       if (getPage.code == 200) {
         setisSorting(false);
+        setPage(1);
         setParsed(getPage.data);
       }
       resetState();
@@ -54,7 +56,7 @@ export default function AddUser({
 
   return (
     <>
-      <div className="w-full bg-slate-500 h-11/12 flex flex-col">
+      <div className="w-full bg-slate-500 rounded-lg h-11/12 flex flex-col">
         <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
           <ul>
             <li>Cage Management</li>

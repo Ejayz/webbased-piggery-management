@@ -12,6 +12,7 @@ import Head from "../(index)/head";
 import { usePathname } from "next/navigation";
 import { themeChange } from "theme-change";
 import Footer from "@/components/Footer/footer";
+import PageContextState from "@/components/ContextProv";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
@@ -31,9 +32,11 @@ export default function User({ children }: { children: React.ReactNode }) {
       setTitle("RVM Hog Farm-Manage Pig");
     }
   }, [path]);
+
   useEffect(() => {
     themeChange(false);
   }, []);
+
   useEffect(() => {
     async function removeAuth() {
       if (Logout) {
@@ -51,11 +54,10 @@ export default function User({ children }: { children: React.ReactNode }) {
     }
     removeAuth();
   }, [Logout]);
-
   if (loading.loading) {
     return (
       <>
-        <html>
+        <html data-theme="light">
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -64,7 +66,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html className="overflow-hidden">
+    <html data-theme="light" className="overflow-hidden">
       <Head title={title}></Head>
       <body>
         <ToastContainer
@@ -108,9 +110,10 @@ export default function User({ children }: { children: React.ReactNode }) {
           <div className=" w-full flex">
             <select
               data-choose-theme
-              className="select select-bordered bg-neutral  max-w-xs ml-auto mr-4"
+              className="select select-bordered bg-neutral hidden max-w-xs ml-auto mr-4"
             >
               <option disabled>Theme</option>
+              <option value="">Default</option>
               <option value="dark">Dark</option>
               <option value="light">Light</option>
             </select>
