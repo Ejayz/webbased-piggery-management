@@ -5,12 +5,16 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { VerifyUser } from "@/hooks/useLogin";
 import Image from "next/image";
+import SelectBox from "@/components/FormComponents/selectBox";
+import { validateSelect } from "@/hooks/useValidation";
 
 export default function Page() {
   //Create states for username password and remember me
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [remember_me, setRemember] = useState<boolean>(false);
+  const [job, setJob] = useState("default");
+  const [isJob, setIsJob] = useState(true);
   const [requesting, isRequesting] = useState<boolean>(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -21,12 +25,16 @@ export default function Page() {
       toast.error("All feilds are required");
       return false;
     }
+    if (job == "default") {
+      toast.error("Please select a job");
+      return false;
+    }
     isRequesting(true);
     exec_login();
   };
 
   const exec_login = async () => {
-    const returned = await VerifyUser(username, password, remember_me);
+    const returned = await VerifyUser(username, password, remember_me, job);
     if (returned.code == 200) {
       toast.success(returned.message);
       router.push("/dashboard");
@@ -111,8 +119,38 @@ export default function Page() {
                     )}
                   </button>
                 </div>
+                <SelectBox
+                  label={"Job"}
+                  name={"Job"}
+                  selected={job}
+                  options={[
+                    {
+                      value: "worker",
+                      display: "Worker",
+                      disabled: false,
+                    },
+                    {
+                      value: "owner",
+                      display: "Owner",
+                      disabled: false,
+                    },
+                    {
+                      value: "veterinarian",
+                      display: "Veterinarian",
+                      disabled: false,
+                    },
+                  ]}
+                  disabled={false}
+                  default_option={"Job"}
+                  setter={setJob}
+                  required={true}
+                  className={`input input-bordered h-10  `}
+                  validation={validateSelect}
+                  setIsValid={setIsJob}
+                />
+
                 <label className="label label-text">
-                  <Link href="#" as={"/forgotpassword"}>
+                  <Link href="#" as={"/forgotpassword/verifysms"}>
                     Forgot password?
                   </Link>
                 </label>

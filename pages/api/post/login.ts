@@ -28,8 +28,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     });
     return 0;
   }
-  const { username, password, rememberme } = req.body;
-  VerifyUser(username)
+  const { username, password, rememberme, job } = req.body;
+  VerifyUser(username, job)
     .then((result: any) => {
       if (result.length !== 0) {
         const data = result[0];
@@ -56,12 +56,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
                 `auth=${token};path=/; max-age=86400;`
               );
             }
-            res.status(200).json({
+            return res.status(200).json({
               code: "200",
               message: `Welcome back ${data.username} .`,
             });
           } else {
-            res.status(401).json({
+            return res.status(401).json({
               code: 401,
               message:
                 "Username/Password do not match from our system. Please try again!",
@@ -69,7 +69,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           }
         });
       } else {
-        res.status(401).json({
+        return res.status(401).json({
           code: 401,
           message:
             "Username/Password do not match from our system. Please try again!",
@@ -77,22 +77,22 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     })
     .catch((e) => {
-      res.status(500).json({
+      return res.status(500).json({
         code: 500,
         message: `Internal server error:${e.code}`,
       });
     });
 }
 
-async function VerifyUser(username: string) {
+async function VerifyUser(username: string, job: string) {
   return new Promise((resolve, rejects) => {
     connection.getConnection((err, conn) => {
       if (err) {
         rejects(err);
       }
       conn.query(
-        "select * from tbl_users where username=? and is_exist='true'",
-        [username],
+        "select * from tbl_users where username=? and job=? and is_exist='true'",
+        [username, job],
         (err, result, fields) => {
           if (err) rejects(err);
           resolve(result);

@@ -234,30 +234,107 @@ export default function User({ children }: { children: React.ReactNode }) {
                           height={512}
                           width={512}
                         ></Image>
-                        User List
+                        Cage List
                       </Link>
                     </li>
                   </div>
                 </div>
               </div>
+              {/* End of cage management menu */}
+              {/* Breed Management */}
               <div
-                className={`text-bold font-medium ${
+                className={`${
                   loading.data.job == "worker" ? "block" : "hidden"
                 }`}
               >
-                <li>
-                  <Link href="/manage_pig/worker">
+                <div className="collapse">
+                  <input type="checkbox" />
+                  <div className="collapse-title text-base flex flex-cols font-medium">
                     <Image
-                      src={"/assets/icons/pig.png"}
-                      className="h-5 w-5"
+                      src={"/assets/icons/user_management.png"}
+                      className="h-6 w-6 mr-2 my-auto "
                       alt={""}
                       height={512}
                       width={512}
                     ></Image>
                     Manage Pig
-                  </Link>
-                </li>
+                  </div>
+                  <div className="collapse-content">
+                    <li>
+                      <Link href="/breed_management/worker/Create">
+                        <Image
+                          src={"/assets/icons/create_user.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Create
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/breed_management/worker/List">
+                        <Image
+                          src={"/assets/icons/user_list.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Breed List
+                      </Link>
+                    </li>
+                  </div>
+                </div>
               </div>
+              {/* End of Breed management menu */}
+              {/* Breed Management */}
+              <div
+                className={`${
+                  loading.data.job == "worker" ? "block" : "hidden"
+                }`}
+              >
+                <div className="collapse">
+                  <input type="checkbox" />
+                  <div className="collapse-title text-base flex flex-cols font-medium">
+                    <Image
+                      src={"/assets/icons/user_management.png"}
+                      className="h-6 w-6 mr-2 my-auto "
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Manage Breed
+                  </div>
+                  <div className="collapse-content">
+                    <li>
+                      <Link href="/breed_management/worker/Create">
+                        <Image
+                          src={"/assets/icons/create_user.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Create
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/breed_management/worker/List">
+                        <Image
+                          src={"/assets/icons/user_list.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Breed List
+                      </Link>
+                    </li>
+                  </div>
+                </div>
+              </div>
+              {/* End of Breed management menu */}
               <div className="font-medium text-base">
                 <li>
                   <Link

@@ -2,7 +2,7 @@
 
 import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
-import { Remove, Update, View } from "@/hooks/useCageManagement";
+import { Remove, Update, View } from "@/hooks/useBreedManagement";
 import {
   validateNormal,
   validatePhone,
@@ -18,14 +18,10 @@ import { toast } from "react-toastify";
 import PageNotFound from "@/components/Errors/PageNotFound";
 
 export default function Page({ params }: any) {
-  const [cage_name, setCageName] = useState("");
-  const [cage_type, setCageType] = useState("default");
-  const [cage_capacity, setCageCapacity] = useState<number | string>("");
-  const [cage_id, setCageId] = useState();
+  const [breed_name, setBreedName] = useState("");
+  const [breed_id, setBreedId] = useState("");
 
-  const [isCageCapacity, setIsCageCapacity] = useState(true);
-  const [isCageName, setIsCageName] = useState(true);
-  const [isCageType, setIsCageType] = useState(true);
+  const [isBreedName, setIsBreedName] = useState(true);
 
   const Action = params.Action;
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,19 +30,20 @@ export default function Page({ params }: any) {
   const [startValidation, setStartValidation] = useState(false);
   let message: any = [];
   function resetState() {
-    setCageName("");
-    setCageCapacity("");
-    setCageType("default");
+    setBreedName("");
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
-    if (cage_type == "default" || cage_name == "" || cage_capacity == "") {
-      toast.error("All feilds are required.");
+    if (breed_name == "") {
+      toast.error("All fields are required.");
       return false;
     }
-
+    if (!isBreedName) {
+      toast.error("Please correct the inputs indicated in red.");
+      return false;
+    }
     if (params.Action == "Update") {
-      if (!(isCageCapacity && isCageType && isCageName)) {
+      if (!isBreedName) {
         toast.error("Please correct the inputs indicated in red.");
         return false;
       }
@@ -66,28 +63,8 @@ export default function Page({ params }: any) {
     }
   };
 
-  useEffect(() => {
-    if (cage_type == "default") {
-      setCageCapacity("");
-    } else if (cage_type == "Individual Stalls") {
-      setCageCapacity(1);
-    } else if (cage_type == "Group Housing") {
-      setCageCapacity(10);
-    } else if (cage_type == "Forrowing Crates") {
-      setCageCapacity(1);
-    } else if (cage_type == "Sow Stalls") {
-      setCageCapacity(1);
-    } else if (cage_type == "Grow Finishing Housing") {
-      setCageCapacity(10);
-    } else if (cage_type == "Nursery Pens") {
-      setCageCapacity(20);
-    } else if (cage_type == "Quarantine Cage") {
-      setCageCapacity(10);
-    }
-  }, [cage_type]);
-
   const exec_remove = async () => {
-    const returned = await Remove(cage_id);
+    const returned = await Remove(breed_id);
     if (returned.code == 200) {
       callCancel(returned.message, "success");
       setIsSubmitting(false);
@@ -98,7 +75,7 @@ export default function Page({ params }: any) {
   };
 
   const updateUser = async () => {
-    const returned = await Update(cage_name, cage_id, cage_type, cage_capacity);
+    const returned = await Update(breed_id, breed_name);
     if (returned.code == 200) {
       resetState();
       callCancel(returned.message, "success");
@@ -114,10 +91,10 @@ export default function Page({ params }: any) {
 
   function callCancel(message?: string, status?: string) {
     if (message == undefined) {
-      router.push("/cage_management/worker/List");
+      router.push("/breed_management/worker/List");
     } else {
       router.push(
-        `/cage_management/worker/List?msg=${message}&status=${status}`
+        `/breed_management/worker/List?msg=${message}&status=${status}`
       );
     }
   }
@@ -127,10 +104,8 @@ export default function Page({ params }: any) {
       const returned = await View(Queryid);
 
       if (returned.code == 200) {
-        setCageName(returned.data[0].cage_name);
-        setCageType(returned.data[0].cage_type);
-        setCageCapacity(returned.data[0].cage_capacity);
-        setCageId(returned.data[0].cage_id);
+        setBreedName(returned.data[0].breed_name);
+        setBreedId(returned.data[0].breed_id);
       } else {
         toast.error(returned.message);
         callCancel();
@@ -144,7 +119,7 @@ export default function Page({ params }: any) {
     }
   }, [Queryid]);
 
-  if (cage_id == "") {
+  if (breed_id == "") {
     return (
       <>
         <div className="w-full h-1/2 flex">
@@ -183,7 +158,7 @@ export default function Page({ params }: any) {
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
+              <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
                 <InputBox
                   type={"text"}
                   label={"Cage Name"}
@@ -191,84 +166,19 @@ export default function Page({ params }: any) {
                   name={"cagename"}
                   disabled={false}
                   className={`input text-base-content input-bordered h-10 ${
-                    isCageName ? "" : "input-error"
+                    isBreedName ? "" : "input-error"
                   }`}
-                  getter={cage_name}
-                  setter={setCageName}
+                  getter={breed_name}
+                  setter={setBreedName}
                   autofocus={true}
                   required={true}
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateNormal}
-                  setIsValid={setIsCageName}
-                  startValidation={startValidation}
-                />
-                <InputBox
-                  type={"number"}
-                  label={"Cage Capacity"}
-                  placeholder={"Cage Capacity"}
-                  name={"cagecapacity"}
-                  disabled={false}
-                  className={"input input-bordered h-10"}
-                  getter={cage_capacity}
-                  setter={setCageCapacity}
-                  required={true}
-                  readonly={true}
-                  validation={validateNormal}
-                  setIsValid={setIsCageCapacity}
+                  setIsValid={setIsBreedName}
                   startValidation={startValidation}
                 />
               </div>
-              <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
-                <SelectBox
-                  label={"Cage Type"}
-                  name={"cage_type"}
-                  selected={cage_type}
-                  disabled={false}
-                  default_option={"Cage Type"}
-                  options={[
-                    {
-                      value: "Individual Stalls",
-                      display: "Individual Stalls",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Group Housing",
-                      display: "Group Housing",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Forrowing Crates",
-                      display: "Forrowing Crates",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Sow Stalls",
-                      display: "Sow Stalls",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Grow Finishing Housing",
-                      display: "Grow Finishing Housing",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Nursery Pens",
-                      display: "Nursery Pens",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Quarantine Cage",
-                      display: "Quarantine Cage",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                  ]}
-                  setter={setCageType}
-                  required={true}
-                  validation={validateSelect}
-                  setIsValid={setIsCageType}
-                  startValidation={startValidation}
-                ></SelectBox>
-              </div>
+
               <div className="card-actions justify-end">
                 {params.Action == "View" ? (
                   <></>
@@ -294,7 +204,7 @@ export default function Page({ params }: any) {
                     callCancel();
                   }}
                   className="btn btn-active btn-primary mx-4"
-                  href={"/cage_management/worker/List"}
+                  href={"/breed_management/worker/List"}
                 >
                   Cancel
                 </Link>

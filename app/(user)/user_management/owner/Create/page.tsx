@@ -53,7 +53,7 @@ export default function Page() {
       }
     }
     checkUser();
-  }, []);
+  }, [loading]);
 
   function resetState() {
     setReset(!reset);
@@ -98,7 +98,10 @@ export default function Page() {
       );
       return false;
     }
-
+    if (password != repeatPassword) {
+      toast.error("Password and Repeat Password should be the same.");
+      return false;
+    }
     if (!confirm("Are you sure you want to create?")) {
       return false;
     }
@@ -163,7 +166,7 @@ export default function Page() {
                       placeholder={"Username"}
                       name={"username"}
                       disabled={false}
-                      className={`input input-bordered h-10  `}
+                      className={`input input-bordered  h-10  `}
                       getter={username}
                       setter={setUsername}
                       required={true}
@@ -189,7 +192,7 @@ export default function Page() {
                       placeholder={"Repeat Password"}
                       name={"repeatPass"}
                       disabled={false}
-                      className={`input input-bordered h-10  `}
+                      className={`input  input-bordered h-10  `}
                       getter={repeatPassword}
                       setter={setrepeatPass}
                       required={true}

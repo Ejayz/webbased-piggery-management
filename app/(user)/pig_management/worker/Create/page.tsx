@@ -91,7 +91,7 @@ export default function Page() {
       setCageCapacity(10);
     }
   }, [cage_type]);
-
+  
   async function createUser() {
     const returned = await Create(cage_name, cage_capacity, cage_type);
     if (returned.code == 200) {

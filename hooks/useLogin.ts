@@ -1,7 +1,8 @@
 export const VerifyUser = async (
   username: string,
   password: string,
-  remember_me: boolean
+  remember_me: boolean,
+  job: string
 ) => {
   let headersList = {
     Accept: "*/*",
@@ -13,6 +14,7 @@ export const VerifyUser = async (
     username: username,
     password: password,
     rememberme: remember_me,
+    job: job,
   });
 
   let response = await fetch(`${location.origin}/api/post/login`, {
