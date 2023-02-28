@@ -2,7 +2,8 @@
 import Table from "@/components/TableBody/Table";
 import { getData, Search, sortData } from "@/hooks/useUserManagement";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface User {
   user_id: number;
@@ -30,7 +31,19 @@ export default function Page() {
   const [isSorting, setisSorting] = useState(false);
   const pathname = "/user_management/owner";
   const [page, setPage] = useState(1);
-
+  const msg = useSearchParams().get("msg");
+  const status = useSearchParams().get("status");
+  useEffect(() => {
+    console.log(msg);
+    console.log(status);
+    if (msg != null) {
+      if (status == "success") {
+        toast.success(msg);
+      } else {
+        toast.error(msg);
+      }
+    }
+  }, []);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">

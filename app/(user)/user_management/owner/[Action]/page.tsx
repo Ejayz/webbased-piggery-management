@@ -101,8 +101,7 @@ export default function Page({ params }: any) {
   const exec_remove = async () => {
     const returned = await Remove(user_id);
     if (returned.code == 200) {
-      toast.success(returned.message);
-      callCancel();
+      callCancel(returned.message, "success");
     } else {
       toast.error(returned.message);
     }
@@ -120,9 +119,8 @@ export default function Page({ params }: any) {
       user_id
     );
     if (returned.code == 200) {
-      toast.success(returned.message);
-      callCancel();
       resetState();
+      callCancel(returned.message, "success");
     } else {
       toast.error(returned.message);
     }
@@ -131,8 +129,14 @@ export default function Page({ params }: any) {
   if (Queryid == undefined) {
   }
 
-  function callCancel() {
-    router.push("/user_management/owner/UserList");
+  function callCancel(message?: string, status?: string) {
+    if (message == undefined) {
+      router.push("/user_management/owner/UserList");
+    } else {
+      router.push(
+        `/user_management/owner/UserList?msg=${message}&status=${status}`
+      );
+    }
   }
 
   useEffect(() => {

@@ -24,7 +24,7 @@ export default async function handler(
   if (password != "") {
     hashedPass = await generateHased(password);
   }
-  const checkDup: any = await checkDups({ username, user_id });
+  const checkDup: any = await checkDups({ username, user_id, job });
 
   if (checkDup.length >= 1) {
     return res
@@ -108,13 +108,13 @@ async function generateHased(password: string) {
   return bcrypt.hashSync(password, salt);
 }
 
-async function checkDups({ username, user_id }: any) {
+async function checkDups({ username, user_id, job }: any) {
   return new Promise((resolve, reject) => {
     const sql =
-      "select * from tbl_users where BINARY username=? and user_id!=? and is_exist='true'";
+      "select * from tbl_users where BINARY username=? and user_id!=? and job=? and is_exist='true'";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      conn.query(sql, [username, user_id], (error, result, fields) => {
+      conn.query(sql, [username, user_id, job], (error, result, fields) => {
         if (error) reject(error);
 
         resolve(result);
