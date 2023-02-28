@@ -33,6 +33,7 @@ async function RemoveInventory(item_id: any) {
         resolve(result);
         conn.release();
       });
+      
     });
   });
 }
