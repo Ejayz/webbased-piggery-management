@@ -44,6 +44,7 @@ export default function Page({ params }: any) {
   const Queryid = useSearchParams().get("id");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [startValidation, setStartValidation] = useState(false);
+
   let message: any = [];
   function resetState() {
     setUsername("");

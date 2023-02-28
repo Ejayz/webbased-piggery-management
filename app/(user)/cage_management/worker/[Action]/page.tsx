@@ -1,8 +1,6 @@
 "use client";
 
 import InputBox from "@/components/FormComponents/inputbox";
-import InputBoxLeft from "@/components/FormComponents/inputboxLeftLabel";
-import PasswordBox from "@/components/FormComponents/passwordBox";
 import SelectBox from "@/components/FormComponents/selectBox";
 import { Remove, Update, View } from "@/hooks/useCageManagement";
 import {

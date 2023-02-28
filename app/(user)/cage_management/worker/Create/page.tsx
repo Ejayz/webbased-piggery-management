@@ -1,19 +1,12 @@
 "use client";
-import ViewForm from "@/components/UserManagementForm/ViewForm";
-import Image from "next/image";
-import { createContext, useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import EditUser from "@/components/UserManagementForm/editForm";
-import UserDetails from "@/components/TableBody/userDetails";
-import getBaseUrl from "@/hooks/getBaseUrl";
-import RemoveForm from "@/components/UserManagementForm/RemoveForm";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
-import { Create, getData, Search, sortData } from "@/hooks/useCageManagement";
-import Table from "@/components/TableBody/Table";
+import { Create } from "@/hooks/useCageManagement";
 import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
 import { toast } from "react-toastify";
-import InputBoxLeft from "@/components/FormComponents/inputboxLeftLabel";
 import {
   validateNormal,
   validatePassword,
