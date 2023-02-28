@@ -2,7 +2,7 @@
 import ViewForm from "@/components/UserManagementForm/ViewForm";
 import Image from "next/image";
 import { createContext, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import EditUser from "@/components/UserManagementForm/editForm";
 import UserDetails from "@/components/TableBody/userDetails";
 import getBaseUrl from "@/hooks/getBaseUrl";
@@ -43,7 +43,8 @@ export default function Page() {
   const [isJob, setIsJob] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
   const [isRepeatPassword, setIsRepeatPassword] = useState(false);
-
+  const [reset, setReset] = useState(false);
+  const router = useRouter();
   const loading = getUserInfo();
   useEffect(() => {
     async function checkUser() {
@@ -62,6 +63,8 @@ export default function Page() {
   }, [loading]);
 
   function resetState() {
+    setReset(!reset);
+
     setUsername("");
     setFirst_name("");
     setMiddle_name("");
@@ -106,7 +109,7 @@ export default function Page() {
     if (!confirm("Are you sure you want to create?")) {
       return false;
     }
-    
+
     createUser();
   };
 
@@ -173,6 +176,7 @@ export default function Page() {
                       required={true}
                       validation={validateNormal}
                       setIsValid={setIsUsername}
+                      reset={reset}
                     />
                     <PasswordBox
                       placeholder={"Password"}
@@ -184,6 +188,7 @@ export default function Page() {
                       required={true}
                       validation={validatePassword}
                       setIsValid={setIsPassword}
+                      reset={reset}
                     ></PasswordBox>
                     <InputBox
                       type={"password"}
@@ -197,6 +202,7 @@ export default function Page() {
                       required={true}
                       validation={validatePassword}
                       setIsValid={setIsRepeatPassword}
+                      reset={reset}
                     />
                   </div>
                   <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
@@ -211,6 +217,7 @@ export default function Page() {
                       required={true}
                       validation={validateNormal}
                       setIsValid={setIsFirstName}
+                      reset={reset}
                     />
                     <InputBox
                       type={"text"}
@@ -223,6 +230,7 @@ export default function Page() {
                       required={false}
                       validation={validateSkip}
                       setIsValid={setIsMiddleName}
+                      reset={reset}
                     />
                     <InputBox
                       type={"text"}
@@ -235,6 +243,7 @@ export default function Page() {
                       required={true}
                       validation={validateNormal}
                       setIsValid={setIsLastName}
+                      reset={reset}
                     />
                   </div>
                   <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
@@ -250,6 +259,7 @@ export default function Page() {
                       startingData={"+63"}
                       validation={validatePhone}
                       setIsValid={setIsPhone}
+                      reset={reset}
                     />
                     <SelectBox
                       label={"Job"}
@@ -279,6 +289,7 @@ export default function Page() {
                       className={`input input-bordered h-10  `}
                       validation={validateSelect}
                       setIsValid={setIsJob}
+                      reset={reset}
                     />
                   </div>
 

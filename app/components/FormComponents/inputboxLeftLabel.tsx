@@ -17,11 +17,11 @@ export default function InputBoxLeft({
   startingData,
   validation,
   setIsValid,
+  reset
 }: any) {
   const [errorMessage, setErrorMessage] = useState([]);
   const validate = async (value: string) => {
     let valid: any = await validation(value);
-    console.log(valid);
     if (valid.message.length !== 0) {
       setErrorMessage(valid.message);
       setter(value);
@@ -33,10 +33,16 @@ export default function InputBoxLeft({
     }
   };
   useEffect(() => {
+    setErrorMessage([]);
+  }, [reset]);
+  useEffect(() => {
     if (
-      !location.pathname.includes("Create") ||
-      location.pathname == "/" ||
-      location.pathname.includes("forgotpassword")
+      !(
+        location.pathname.includes("Create") ||
+        location.pathname.includes("Remove") ||
+        location.pathname == "/" ||
+        location.pathname.includes("forgotpassword")
+      )
     ) {
       validate(getter);
     }

@@ -32,12 +32,12 @@ export default function Page({ params }: any) {
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
 
-  const [isUsername, setIsUsername] = useState(false);
-  const [isFirstName, setIsFirstName] = useState(false);
-  const [isMiddleName, setIsMiddleName] = useState(false);
-  const [isLastName, setIsLastName] = useState(false);
-  const [isPhone, setIsPhone] = useState(false);
-  const [isJob, setIsJob] = useState(false);
+  const [isUsername, setIsUsername] = useState(true);
+  const [isFirstName, setIsFirstName] = useState(true);
+  const [isMiddleName, setIsMiddleName] = useState(true);
+  const [isLastName, setIsLastName] = useState(true);
+  const [isPhone, setIsPhone] = useState(true);
+  const [isJob, setIsJob] = useState(true);
   const [isPassword, setIsPassword] = useState(true);
   const [isRepeatPassword, setIsRepeatPassword] = useState(true);
   const Action = params.Action;
@@ -71,22 +71,23 @@ export default function Page({ params }: any) {
       toast.error("All feilds are required.");
       return false;
     }
-    if (
-      !(
-        isUsername &&
-        isFirstName &&
-        isMiddleName &&
-        isLastName &&
-        isPhone &&
-        isJob &&
-        isPassword &&
-        isRepeatPassword
-      )
-    ) {
-      toast.error("");
-      return false;
-    }
+
     if (params.Action == "Update") {
+      if (
+        !(
+          isUsername &&
+          isFirstName &&
+          isMiddleName &&
+          isLastName &&
+          isPhone &&
+          isJob &&
+          isPassword &&
+          isRepeatPassword
+        )
+      ) {
+        toast.error("Please correct the inputs indicated in red.");
+        return false;
+      }
       var isOk = confirm("are you sure you want to update?");
       setIsSubmitting(true);
       if (isOk) {
