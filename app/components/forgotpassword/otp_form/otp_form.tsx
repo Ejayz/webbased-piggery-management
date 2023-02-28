@@ -6,12 +6,17 @@ import { toast } from "react-toastify";
 
 export default function Layout({ setText, setState, setOTP }: any) {
   const [otp, setOtp] = useState<string>("");
+  const [isRequesting, setIsRequesting] = useState(false);
   const OTP = setOTP;
-  async function checkOtp() {
+  async function checkOtp(e: any) {
+    e.preventDefault();
+    setIsRequesting(true);
     if (otp == OTP) {
       setState(3);
       toast.success("OTP Verificaton verfied . Change your password now!");
+      setIsRequesting(false);
     } else {
+      setIsRequesting(false);
       toast.error(
         "OTP do not match.Please enter the correct OTP you recieved."
       );
@@ -20,10 +25,10 @@ export default function Layout({ setText, setState, setOTP }: any) {
 
   return (
     <>
-      <div className="hero h-full  bg-base-content">
+      <div className="hero h-full  bg-base-100">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="text-center ml-4 lg:text-left">
-            <h1 className="text-5xl font-bold">One Time Password</h1>
+          <div className="text-center text-base-content ml-4 lg:text-left">
+            <h1 className="text-5xl  font-bold">One Time Password</h1>
 
             <ul className="list-disc">
               <li>Wait for OTP to arrive from your phone.</li>
@@ -35,7 +40,10 @@ export default function Layout({ setText, setState, setOTP }: any) {
               <li>Click Verify</li>
             </ul>
           </div>
-          <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+          <form
+            onSubmit={checkOtp}
+            className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
+          >
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
@@ -59,12 +67,17 @@ export default function Layout({ setText, setState, setOTP }: any) {
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button onClick={checkOtp} className="btn btn-primary">
+                <button
+                  type={"submit"}
+                  className={`btn  ${
+                    isRequesting ? "loading btn-secondary" : "btn-primary"
+                  }`}
+                >
                   Verify OTP
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

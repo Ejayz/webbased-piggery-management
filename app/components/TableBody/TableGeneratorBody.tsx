@@ -19,7 +19,7 @@ export default function TableGeneratorBody({
   if (notF) {
     return (
       <tbody>
-        <tr className="w-full h-12 bg-slate-500 mb-12">
+        <tr className="w-full h-12 bg-neutral text-neutral-content mb-12">
           <td colSpan={colsName.length + 1}>
             <div className="flex flex-row mx-auto">
               <span className="text-center mx-auto">
@@ -34,7 +34,10 @@ export default function TableGeneratorBody({
     return (
       <>
         <tbody>
-          <tr className="w-full h-12 bg-slate-500 mb-12">
+          <tr
+            data-theme="light"
+            className="w-full h-12 bg-neutral text-neutral-content mb-12"
+          >
             <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="text-center mx-auto">
@@ -50,7 +53,10 @@ export default function TableGeneratorBody({
     return (
       <>
         <tbody>
-          <tr className="w-full h-12 bg-slate-500 mb-12">
+          <tr
+            data-theme="light"
+            className="w-full h-12 bg-neutral text-neutral-content mb-12"
+          >
             <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="text-center text-gray mx-auto">
@@ -66,7 +72,10 @@ export default function TableGeneratorBody({
     return (
       <>
         <tbody>
-          <tr className="w-full bg-slate-500 h-12 mb-12">
+          <tr
+            data-theme="light"
+            className="w-full bg-neutral text-neutral-content h-12 mb-12"
+          >
             <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="text-center mx-auto">
@@ -82,7 +91,10 @@ export default function TableGeneratorBody({
     return (
       <>
         <tbody>
-          <tr className="w-full bg-slate-500 h-12 mb-12">
+          <tr
+            data-theme="light"
+            className="w-full bg-neutral text-neutral-content h-12 mb-12"
+          >
             <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="ml-auto  mr-0">
@@ -99,7 +111,10 @@ export default function TableGeneratorBody({
     return (
       <>
         <tbody>
-          <tr className="w-full bg-slate-500 h-12 mb-12">
+          <tr
+            data-theme="light"
+            className="w-full bg-neutral text-neutral-content h-12 mb-12"
+          >
             <td colSpan={colsName.length + 1}>
               <div className="flex flex-row mx-auto">
                 <span className="ml-auto mr-0">
@@ -119,9 +134,12 @@ export default function TableGeneratorBody({
         const id = Object.values(tbl_data)[0];
         return (
           <tr
+            data-theme="light"
             key={index}
             className={`h-auto  lg:table-row block bg-slate-300 rounded-md my-2 py-4 ${
-              index % 2 == 0 ? "accent-content" : "accent-focus"
+              index % 2 == 0
+                ? "bg-neutral text-neutral-content"
+                : "bg-base-300 text-base-content"
             }`}
           >
             <TableGeneratorData

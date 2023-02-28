@@ -96,10 +96,10 @@ export default function TableGenerator({
     return false;
   }
   return (
-    <div className="w-full mb-12">
-      <table className="w-11/12 mt-2  text-black mx-auto h-38 table-fixed text-left  lg:text-center   rounded-md">
-        <thead className="cursor-pointer lg:table-header-group  hidden   text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr key={"header"}>
+    <div className="w-full text-base-content bg-base-100 mb-12">
+      <table className="w-11/12 mt-2   text-black mx-auto h-38  text-left  lg:text-center   rounded-md">
+        <thead className="cursor-pointer lg:table-header-group  hidden bg-neutral-focus  text-neutral-content uppercase bg-gray-50 ">
+          <tr data-theme="light" key={"header"}>
             {colsName.map((col: any, key: number) => {
               const cols = col.replace("_", " ");
               return (

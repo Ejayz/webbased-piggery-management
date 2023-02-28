@@ -16,7 +16,8 @@ export default function Layout({
   const base_url = getBaseURL();
   const [requesting, isRequesting] = useState(false);
 
-  async function getOTP() {
+  async function getOTP(e: any) {
+    e.preventDefault();
     isRequesting(true);
     if (username == "" || phone == "") {
       toast.error("Username/Phone number should not be empty");
@@ -53,6 +54,7 @@ export default function Layout({
         isRequesting(true);
         setUser(username);
         setNumber(phone);
+        isRequesting(false);
       } else {
         toast.error(parsed.message);
         isRequesting(false);
@@ -60,9 +62,9 @@ export default function Layout({
     }
   }
   return (
-    <div className="hero h-full bg-base-content">
+    <div className="hero h-full bg-base-100">
       <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="text-center lg:text-left">
+        <div className="text-center text-base-content lg:text-left">
           <h1 className="text-3xl font-bold">Forgot password</h1>
 
           <ul className="list-disc ml-4">
@@ -78,7 +80,10 @@ export default function Layout({
             <li>Use the steps indicator to go back to previous steps</li>
           </ul>
         </div>
-        <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+        <form
+          onSubmit={getOTP}
+          className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
+        >
           <div className="card-body">
             <div className="form-control">
               <label className="label">
@@ -116,14 +121,13 @@ export default function Layout({
             <div className="form-control mt-6">
               <button
                 disabled={requesting}
-                onClick={getOTP}
                 className={`btn btn-primary   ${requesting ? "loading" : ""}`}
               >
                 GET OTP
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

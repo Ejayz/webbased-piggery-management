@@ -12,7 +12,6 @@ import Head from "../(index)/head";
 import { usePathname } from "next/navigation";
 import { themeChange } from "theme-change";
 import Footer from "@/components/Footer/footer";
-import PageContextState from "@/components/ContextProv";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
@@ -57,7 +56,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   if (loading.loading) {
     return (
       <>
-        <html data-theme="light">
+        <html data-theme="dark">
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -66,7 +65,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html data-theme="light" className="overflow-hidden">
+    <html data-theme="dark" className="overflow-x-hidden overflow-y-auto">
       <Head title={title}></Head>
       <body>
         <ToastContainer
@@ -121,16 +120,16 @@ export default function User({ children }: { children: React.ReactNode }) {
         </div>
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content">
+          <div className="drawer-content h-full w-full overflow-x-hidden bg-base-100">
             {/* Content */}
-            <div className="h-auto overflow-y-auto lg:overflow-hidden w-screen">
+            <div className="h-auto overflow-y-auto overflow-x-hidden lg:overflow-hidden bg-base-100 w-screen">
               {children}
             </div>
           </div>
           <div className="drawer-side">
             <label htmlFor="my-drawer" className="drawer-overlay"></label>
             <ul className="menu p-4 w-80 bg-base-100 text-base-content">
-              <div>
+              <div className="text-base font-medium">
                 <li>
                   <Link href="/dashboard">
                     <Image
@@ -144,23 +143,56 @@ export default function User({ children }: { children: React.ReactNode }) {
                   </Link>
                 </li>
               </div>
+
               <div
                 className={`${
                   loading.data.job == "owner" ? "block" : "hidden"
                 }`}
               >
-                <li>
-                  <Link href="/user_management/owner/">
-                    <Image
-                      src={"/assets/icons/user_management.png"}
-                      className="h-5 w-5"
-                      alt={""}
-                      height={512}
-                      width={512}
-                    ></Image>
-                    Manage User
-                  </Link>
-                </li>
+                <div
+                  tabIndex={0}
+                  className="collapse collapse-plus rounded-md bg-base-100 hover:bg-secondary"
+                >
+                  <div className="collapse">
+                    <input type="checkbox" />
+                    <div className="collapse-title text-base flex flex-cols font-medium">
+                      <Image
+                        src={"/assets/icons/user_management.png"}
+                        className="h-6 w-6 mr-2 my-auto "
+                        alt={""}
+                        height={512}
+                        width={512}
+                      ></Image>
+                      Manage User
+                    </div>
+                    <div className="collapse-content">
+                      <li>
+                        <Link href="/user_management/owner/Create">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Create
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/user_management/owner/UserList">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          User List
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div
                 className={`${
@@ -181,7 +213,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                 </li>
               </div>
               <div
-                className={`${
+                className={`text-bold font-medium ${
                   loading.data.job == "worker" ? "block" : "hidden"
                 }`}
               >
@@ -198,7 +230,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                   </Link>
                 </li>
               </div>
-              <div>
+              <div className="font-medium text-base">
                 <li>
                   <Link
                     href="#"

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { VerifyUser } from "@/hooks/useLogin";
-import { Input } from "@nextui-org/react";
+import Image from "next/image";
 
 export default function Page() {
   //Create states for username password and remember me
@@ -21,6 +21,7 @@ export default function Page() {
       toast.error("All feilds are required");
       return false;
     }
+    isRequesting(true);
     exec_login();
   };
 
@@ -29,32 +30,36 @@ export default function Page() {
     if (returned.code == 200) {
       toast.success(returned.message);
       router.push("/dashboard");
+      isRequesting(false);
     } else {
+      isRequesting(false);
       toast.error(returned.message);
     }
   };
 
   return (
     <>
-      <div className="hero bg-base-content h-screen">
+      <div className="hero bg-base-100 h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl font-bold">Login Now!</h1>
-            <p className="py-6">
+            <h1 className="text-5xl text-base-content font-bold">Login Now!</h1>
+            <p className="py-6 text-base-content">
               Piggery Management System that is easy to use
             </p>
-            <h1 className="text-5xl font-bold">No account? </h1>
-            <p className="py-6">
+            <h1 className="text-5xl text-base-content font-bold">
+              No account?{" "}
+            </h1>
+            <p className="py-6 text-base-content">
               Contact server administrator for your account!
             </p>
           </div>
 
           <form
             onSubmit={ValidateLogin}
-            className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
+            className="card flex-shrink-0 w-full bg-primary-content max-w-sm shadow-2xl"
           >
             <div className="card-body">
-              <div className="form-control">
+              <div data-theme="light" className="form-control">
                 <label className="label">
                   <span className="label-text">Username</span>
                 </label>
@@ -68,7 +73,7 @@ export default function Page() {
                   className="input input-bordered text-base-content"
                 />
               </div>
-              <div className="form-control">
+              <div data-theme="light" className="form-control">
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
@@ -83,19 +88,39 @@ export default function Page() {
                   <button
                     type="button"
                     name="showpassword"
-                    data-tip={showPassword ? "Hide password" : "Show password"}
-                    className={`btn tooltip btn-square flex  ${
-                      showPassword ? "eyes-slash" : "eyes"
-                    }`}
+                    className={`btn tooltip btn-square bg-base-200 flex  `}
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={"show/hide password"}
-                  ></button>
+                  >
+                    {!showPassword ? (
+                      <Image
+                        src={`/assets/icons/eye-slash-solid.svg`}
+                        alt={"eyes"}
+                        className="w-6 h-6"
+                        width={576}
+                        height={512}
+                      ></Image>
+                    ) : (
+                      <Image
+                        src={`/assets/icons/eye-solid.svg`}
+                        alt={"eyes"}
+                        className="w-6 h-6"
+                        width={576}
+                        height={512}
+                      ></Image>
+                    )}
+                  </button>
                 </div>
+                <label className="label label-text">
+                  <Link href="#" as={"/forgotpassword"}>
+                    Forgot password?
+                  </Link>
+                </label>
                 <div
-                  className="form-control tooltip"
+                  className="form-control  tooltip"
                   data-tip="You will not be logged out for 30 days."
                 >
-                  <label className="label cursor-pointer">
+                  <label className="label justify-start flex cursor-pointer">
                     <span className="label-text">Remember me</span>
                     <input
                       checked={remember_me}
@@ -104,21 +129,18 @@ export default function Page() {
                       onChange={(e) => {
                         setRemember(e.target.checked);
                       }}
-                      className="checkbox checkbox-primary"
+                      className="checkbox ml-4 checkbox-primary"
                     />
                   </label>
                 </div>
-                <label className="label label-text">
-                  <Link href="#" as={"/forgotpassword"}>
-                    Forgot password?
-                  </Link>
-                </label>
               </div>
               <div className="form-control mt-6 ">
                 <button
                   type="submit"
                   disabled={requesting}
-                  className={`btn btn-primary  ${requesting ? "loading" : ""}`}
+                  className={`btn btn-primary  ${
+                    requesting ? "loading btn-seconday" : ""
+                  }`}
                   aria-label="submit"
                 >
                   Login

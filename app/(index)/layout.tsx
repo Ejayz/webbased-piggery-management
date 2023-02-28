@@ -34,8 +34,8 @@ export default function RootLayout({
   return (
     <>
       <html
-        data-theme
-        className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base-200"
+        data-theme="light"
+        className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base"
       >
         <Head title={"Login"}></Head>
         <body>

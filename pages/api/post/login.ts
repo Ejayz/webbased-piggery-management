@@ -10,6 +10,17 @@ const jwt_key: any = process.env.JWT_KEY;
 
 //API Function that only accepts post request
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, Content-Type"
+  );
+
   if (req.method !== "POST") {
     res.status(405).json({
       code: 405,

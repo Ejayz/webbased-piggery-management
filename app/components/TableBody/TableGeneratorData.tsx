@@ -37,23 +37,21 @@ export default function TableGeneratorData({
               isShowOption.edit ? "block" : "hidden"
             }`}
             href={{
-              pathname: pathname,
+              pathname: `${pathname}/Update`,
               query: {
-                action: "e",
                 id: id,
               },
             }}
           >
-            Edit
+            Update
           </Link>
           <Link
             className={`px-1 hover:text-blue-500 link ${
               isShowOption.view ? "block" : "hidden"
             }`}
             href={{
-              pathname: pathname,
+              pathname: `${pathname}/View`,
               query: {
-                action: "v",
                 id: id,
               },
             }}
@@ -66,9 +64,8 @@ export default function TableGeneratorData({
               isShowOption.delete ? "block" : "hidden"
             }`}
             href={{
-              pathname: pathname,
+              pathname: `${pathname}/Remove`,
               query: {
-                action: "d",
                 id: id,
               },
             }}

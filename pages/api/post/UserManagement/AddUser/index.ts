@@ -32,7 +32,7 @@ export default async function handler(
   const { username, first_name, middle_name, last_name, password, phone, job } =
     req.body;
   const hashedPassword = await generateHased(password);
-  const checkDup: any = await checkDups({ username });
+  const checkDup: any = await checkDups({ username, job });
 
   if (checkDup.length >= 1) {
     return res
@@ -99,13 +99,13 @@ async function createUser({
   });
 }
 
-async function checkDups({ username }: any) {
+async function checkDups({ username, job }: any) {
   return new Promise((resolve, reject) => {
     const sql =
-      "select * from tbl_users where BINARY username=? and is_exist='true'";
+      "select * from tbl_users where BINARY username=? and is_exist='true' and job=?";
     connection.getConnection((err, conn) => {
       if (err) reject(err);
-      conn.query(sql, [username], (error, result, fields) => {
+      conn.query(sql, [username, job], (error, result, fields) => {
         if (error) reject(error);
         resolve(result);
         conn.release();

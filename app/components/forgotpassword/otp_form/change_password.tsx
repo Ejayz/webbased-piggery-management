@@ -30,33 +30,37 @@ export default function ResetPassword({
     }
   }
 
-  async function resetPass(password: string) {
-    setIsRequesting(true);
+  const validateForm = async (e: any) => {
+    e.preventDefault();
     if (newpass !== repeatPass) {
       toast.error("Password and Repeat password should be the same.");
       setIsRequesting(false);
       return false;
     }
-    if (!(password.length >= 8)) {
+    if (!(newpass.length >= 8)) {
       toast.error("atleast 8 Character long password is required");
       setIsRequesting(false);
       return false;
     }
-    if (!/\d/.test(password)) {
+    if (!/\d/.test(newpass)) {
       toast.error("Password should contain atleast 1 number");
       setIsRequesting(false);
       return false;
     }
-    if (!/[A-Z]/.test(password)) {
+    if (!/[A-Z]/.test(newpass)) {
       toast.error("Password should contain atleast 1 UpperCase letter");
       setIsRequesting(false);
       return false;
     }
-    if (!/[a-z]/.test(password)) {
+    if (!/[a-z]/.test(newpass)) {
       toast.error("Password should contain atleast 1 LowerCase letter");
       setIsRequesting(false);
       return false;
     }
+  };
+  async function exec_reset(password: string) {
+    setIsRequesting(true);
+
     let headersList = {
       Accept: "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -92,16 +96,20 @@ export default function ResetPassword({
 
   return (
     <>
-      <div className="hero h-full  bg-base-content">
+      <div className="hero h-full  bg-base-100">
         <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="text-center lg:text-left">
+          <div className="text-center text-base-content  lg:text-left">
             <h1 className="text-3xl font-bold">Change Password</h1>
             <ul className="list-disc ml-6">
               <li>Use minimium of 8 character password</li>
               <li>Use a combination of number,lower and uppercase letter.</li>
             </ul>
           </div>
-          <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+          <form
+            onSubmit={validateForm}
+            data-theme="light"
+            className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
+          >
             <div className="card-body">
               <div className="form-control">
                 <label className="label">
@@ -143,16 +151,14 @@ export default function ResetPassword({
               <div className="form-control mt-6">
                 <button
                   disabled={!isMatch}
-                  onClick={() => {
-                    resetPass(newpass);
-                  }}
+                  onClick={() => {}}
                   className={`btn btn-primary ${requesting ? "loading" : ""}`}
                 >
                   CHANGE PASSWORD
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

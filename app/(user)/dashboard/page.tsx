@@ -20,7 +20,7 @@ export default function Page() {
   }
   return (
     <>
-      <div className="w-full grid h-full bg-base-300">
+      <div className="w-full grid h-auto bg-base-100">
         <div className="w-5/6  mt-4 h-auto lg:grid-cols-3 grid gap-2 grid-cols-1 mx-auto">
           <div className="stats w-full bg-primary text-primary-content shadow">
             <div className="stat">

@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getData, sortData, Search } from "@/hooks/useCageManagement";
 import Table from "@/components/TableBody/Table";
+import Loading from "@/components/Loading/loading";
 interface Cage {
   cage_id: number;
   cage_name: string;
@@ -36,6 +37,8 @@ export default function Page() {
   const [isSorting, setisSorting] = useState(false);
   const pathname = "/manage_cage/worker/";
   const [page, setPage] = useState(1);
+  const [ReRender, setReRender] = useState(false);
+  const [tab, setTab] = useState("form");
   useEffect(() => {
     async function getView() {
       if (action == null || action == "a") {
@@ -79,6 +82,24 @@ export default function Page() {
   return (
     <>
       <div className="w-full h-full base-content flex flex-col overflow-hidden">
+        <div className="tabs">
+          <a
+            onClick={() => {
+              setTab("form");
+            }}
+            className={`tab tab-lifted ${tab == "form" ? "tab-active" : ""}`}
+          >
+            Form
+          </a>
+          <a
+            onClick={() => {
+              setTab("data");
+            }}
+            className={`tab tab-lifted ${tab == "data" ? "tab-active" : ""}`}
+          >
+            DATA
+          </a>
+        </div>
         {/* Form */}
         <div className="w-full h-auto  overflow-y-auto">
           <div className="w-11/12  mx-auto flex flex-row">
@@ -86,6 +107,13 @@ export default function Page() {
           </div>
           <div className="h-auto w-11/12  mx-auto shadow-xl flex flex-col mb-12">
             <div className={` w-full  h-auto mx-auto flex`}>{compos}</div>
+            <button
+              onClick={() => {
+                setReRender(!ReRender);
+              }}
+            />
+            Rerender
+            <button />
           </div>
         </div>
         {/* Table */}

@@ -15,9 +15,9 @@ export default function Page() {
   }
   return (
     <>
-      <div className={"bg-base-content flex h-screen flex-col"}>
-        <div className="w-full bg-base-content">
-          <ul className="steps bg-base-content steps-horizontal lg:steps-horizontal w-full mt-12">
+      <div className={" flex h-screen flex-col"}>
+        <div className="w-full bg-base-100">
+          <ul className="steps bg-base-100 steps-horizontal text-base-content lg:steps-horizontal w-full mt-12">
             <li
               onClick={(e) => {
                 if (data >= 1) {
@@ -52,7 +52,7 @@ export default function Page() {
           </ul>
         </div>
         <div
-          className={`h-full bg-base-content flex w-full ${
+          className={`h-full bg-base-100 flex w-full ${
             data == 1 ? "block" : "hidden"
           }`}
         >
