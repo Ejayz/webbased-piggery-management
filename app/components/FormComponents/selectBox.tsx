@@ -39,6 +39,7 @@ export default function SelectBox({
   validation,
   setIsValid,
   reset,
+  startValidation,
 }: any) {
   const [errorMessage, setErrorMessage] = useState([]);
   const validate = async (value: string) => {
@@ -57,15 +58,17 @@ export default function SelectBox({
     setErrorMessage([]);
   }, [reset]);
   useEffect(() => {
-    if (
-      !(
-        location.pathname.includes("Create") ||
-        location.pathname == "/" ||
-        location.pathname.includes("forgotpassword") ||
-        location.search.includes("Remove")
-      )
-    ) {
-      validate(selected);
+    if (startValidation) {
+      if (
+        !(
+          location.pathname.includes("Create") ||
+          location.pathname == "/" ||
+          location.pathname.includes("forgotpassword") ||
+          location.search.includes("Remove")
+        )
+      ) {
+        validate(selected);
+      }
     }
   }, []);
   return (

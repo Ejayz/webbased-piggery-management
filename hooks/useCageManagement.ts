@@ -83,7 +83,7 @@ export const Search = async (
   return data;
 };
 
-export const AddCage = async (
+export const Create = async (
   cage_name: string,
   cage_capacity: number | string,
   cage_type: string
@@ -113,7 +113,7 @@ export const AddCage = async (
   return data;
 };
 
-export const ViewCage = async (cage_id: any) => {
+export const View = async (cage_id: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -135,12 +135,12 @@ export const ViewCage = async (cage_id: any) => {
   return data;
 };
 
-export const UpdateCage = async ({
-  cage_name,
-  cage_id,
-  cage_type,
-  cage_capacity,
-}: any) => {
+export const Update = async (
+  cage_name: any,
+  cage_id: any,
+  cage_type: any,
+  cage_capacity: any
+) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -166,7 +166,7 @@ export const UpdateCage = async ({
   return data;
 };
 
-export const RemoveCage = async (cage_id: number) => {
+export const Remove = async (cage_id: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",

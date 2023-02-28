@@ -65,7 +65,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html data-theme="light" className="overflow-x-hidden overflow-y-auto">
+    <html data-theme="dark" className="overflow-x-hidden overflow-y-auto">
       <Head title={title}></Head>
       <body>
         <ToastContainer
@@ -151,7 +151,7 @@ export default function User({ children }: { children: React.ReactNode }) {
               >
                 <div
                   tabIndex={0}
-                  className="collapse collapse-plus rounded-md bg-base-100 hover:bg-secondary"
+                  className="collapse collapse-plus rounded-md bg-base-100"
                 >
                   <div className="collapse">
                     <input type="checkbox" />
@@ -179,7 +179,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                       <li>
-                        <Link href="/user_management/owner/UserList">
+                        <Link href="/user_management/owner/List">
                           <Image
                             src={"/assets/icons/user_list.png"}
                             className="h-6 w-6"
@@ -194,23 +194,51 @@ export default function User({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
               </div>
+              {/* Cage Management */}
               <div
                 className={`${
                   loading.data.job == "worker" ? "block" : "hidden"
                 }`}
               >
-                <li>
-                  <Link href="/manage_cage/worker">
+                <div className="collapse">
+                  <input type="checkbox" />
+                  <div className="collapse-title text-base flex flex-cols font-medium">
                     <Image
-                      src={"/assets/icons/cage.png"}
-                      className="h-5 w-5"
+                      src={"/assets/icons/user_management.png"}
+                      className="h-6 w-6 mr-2 my-auto "
                       alt={""}
                       height={512}
                       width={512}
                     ></Image>
                     Manage Cage
-                  </Link>
-                </li>
+                  </div>
+                  <div className="collapse-content">
+                    <li>
+                      <Link href="/cage_management/worker/Create">
+                        <Image
+                          src={"/assets/icons/create_user.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Create
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/cage_management/worker/List">
+                        <Image
+                          src={"/assets/icons/user_list.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        User List
+                      </Link>
+                    </li>
+                  </div>
+                </div>
               </div>
               <div
                 className={`text-bold font-medium ${

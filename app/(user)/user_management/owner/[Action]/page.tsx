@@ -29,8 +29,6 @@ export default function Page({ params }: any) {
   const [job, setJob] = useState("default");
   const [password, setPassword] = useState("");
   const [repeatPassword, setrepeatPass] = useState("");
-  const router = useRouter();
-  const Queryid = useSearchParams().get("id");
 
   const [isUsername, setIsUsername] = useState(true);
   const [isFirstName, setIsFirstName] = useState(true);
@@ -40,10 +38,12 @@ export default function Page({ params }: any) {
   const [isJob, setIsJob] = useState(true);
   const [isPassword, setIsPassword] = useState(true);
   const [isRepeatPassword, setIsRepeatPassword] = useState(true);
+
   const Action = params.Action;
-
+  const router = useRouter();
+  const Queryid = useSearchParams().get("id");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [startValidation, setStartValidation] = useState(false);
   let message: any = [];
   function resetState() {
     setUsername("");
@@ -128,10 +128,10 @@ export default function Page({ params }: any) {
 
   function callCancel(message?: string, status?: string) {
     if (message == undefined) {
-      router.push("/user_management/owner/UserList");
+      router.push("/user_management/owner/List");
     } else {
       router.push(
-        `/user_management/owner/UserList?msg=${message}&status=${status}`
+        `/user_management/owner/List?msg=${message}&status=${status}`
       );
     }
   }
@@ -164,7 +164,7 @@ export default function Page({ params }: any) {
     return (
       <>
         <div className="w-full h-1/2 flex">
-          <Loading height={"h-full"}></Loading>
+          <Loading height={"h-1/2"}></Loading>
         </div>
       </>
     );
@@ -215,6 +215,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateNormal}
                   setIsValid={setIsUsername}
+                  startValidation={startValidation}
                 />
                 <PasswordBox
                   placeholder={"Password"}
@@ -229,6 +230,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateUpdatePassword}
                   setIsValid={setIsPassword}
+                  startValidation={startValidation}
                 />
                 <InputBox
                   type={"password"}
@@ -243,6 +245,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateUpdatePassword}
                   setIsValid={setIsRepeatPassword}
+                  startValidation={startValidation}
                 />
               </div>
               <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
@@ -257,6 +260,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateNormal}
                   setIsValid={setIsFirstName}
+                  startValidation={startValidation}
                 />
                 <InputBox
                   type={"text"}
@@ -270,6 +274,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateSkip}
                   setIsValid={setIsMiddleName}
+                  startValidation={startValidation}
                 />
                 <InputBox
                   type={"text"}
@@ -282,6 +287,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validateNormal}
                   setIsValid={setIsLastName}
+                  startValidation={startValidation}
                 />
               </div>
               <div className="w-full ml-2 grid grid-rows-2 lg:grid-cols-2 lg:grid-rows-none grid-cols-none">
@@ -300,6 +306,7 @@ export default function Page({ params }: any) {
                   readonly={Action == "View" || Action == "Remove"}
                   validation={validatePhone}
                   setIsValid={setIsPhone}
+                  startValidation={startValidation}
                 />
                 <SelectBox
                   label={"Job"}
@@ -327,6 +334,7 @@ export default function Page({ params }: any) {
                   setter={setJob}
                   validation={validateSelect}
                   setIsValid={setIsJob}
+                  startValidation={startValidation}
                 />
               </div>
               <div className="card-actions justify-end">

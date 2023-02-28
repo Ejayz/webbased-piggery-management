@@ -34,6 +34,7 @@ export default function InputBox({
   validation,
   setIsValid,
   reset,
+  startValidation,
 }: any) {
   const [errorMessage, setErrorMessage] = useState([]);
   const validate = async (value: string) => {
@@ -53,17 +54,19 @@ export default function InputBox({
   }, [reset]);
 
   useEffect(() => {
-    if (
-      !(
-        location.pathname.includes("Create") ||
-        location.pathname == "/" ||
-        location.pathname.includes("forgotpassword") ||
-        location.search.includes("Remove")
-      )
-    ) {
-      validate(getter);
+    if (startValidation) {
+      if (
+        !(
+          location.pathname.includes("Create") ||
+          location.pathname == "/" ||
+          location.pathname.includes("forgotpassword") ||
+          location.search.includes("Remove")
+        )
+      ) {
+        validate(getter);
+      }
     }
-  }, []);
+  }, [startValidation]);
 
   return (
     <>

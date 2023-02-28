@@ -17,6 +17,7 @@ export default function passwordBox({
   validation,
   setIsValid,
   reset,
+  startValidation,
 }: any) {
   const [showPassword, setShowPassword] = useState(false);
   let [errorMessage, setErrorMessage] = useState([]);
@@ -36,15 +37,17 @@ export default function passwordBox({
     setErrorMessage([]);
   }, [reset]);
   useEffect(() => {
-    if (
-      !(
-        location.pathname.includes("Create") ||
-        location.pathname == "/" ||
-        location.pathname.includes("forgotpassword") ||
-        location.search.includes("Remove")
-      )
-    ) {
-      validate(getter);
+    if (startValidation) {
+      if (
+        !(
+          location.pathname.includes("Create") ||
+          location.pathname == "/" ||
+          location.pathname.includes("forgotpassword") ||
+          location.search.includes("Remove")
+        )
+      ) {
+        validate(getter);
+      }
     }
   }, []);
   return (
