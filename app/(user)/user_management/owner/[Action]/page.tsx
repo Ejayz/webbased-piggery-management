@@ -57,16 +57,7 @@ export default function Page({ params }: any) {
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
-    console.log({
-      isUsername,
-      isFirstName,
-      isMiddleName,
-      isLastName,
-      isPhone,
-      isJob,
-      isPassword,
-      isRepeatPassword,
-    });
+
     if (username == "" || first_name == "" || last_name == "" || phone == "") {
       toast.error("All feilds are required.");
       return false;
@@ -148,7 +139,7 @@ export default function Page({ params }: any) {
   useEffect(() => {
     const exec = async () => {
       const returned = await ViewUser(Queryid);
-      console.log(returned);
+
       if (returned.code == 200) {
         setUserid(returned.data[0].user_id);
         setUsername(returned.data[0].username);
@@ -178,7 +169,6 @@ export default function Page({ params }: any) {
       </>
     );
   } else if (Action != "Update" && Action != "Remove" && Action != "View") {
-    console.log(Action);
     return <PageNotFound></PageNotFound>;
   } else {
     return (

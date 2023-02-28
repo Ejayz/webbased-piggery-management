@@ -56,7 +56,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   if (loading.loading) {
     return (
       <>
-        <html data-theme="dark">
+        <html data-theme="light">
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -65,7 +65,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html data-theme="dark" className="overflow-x-hidden overflow-y-auto">
+    <html data-theme="light" className="overflow-x-hidden overflow-y-auto">
       <Head title={title}></Head>
       <body>
         <ToastContainer
