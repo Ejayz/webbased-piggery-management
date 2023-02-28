@@ -335,6 +335,53 @@ export default function User({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               {/* End of Breed management menu */}
+              {/* Breed Management */}
+              <div
+                className={`${
+                  loading.data.job == "worker" ? "block" : "hidden"
+                }`}
+              >
+                <div className="collapse">
+                  <input type="checkbox" />
+                  <div className="collapse-title text-base flex flex-cols font-medium">
+                    <Image
+                      src={"/assets/icons/user_management.png"}
+                      className="h-6 w-6 mr-2 my-auto "
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Manage Inventory
+                  </div>
+                  <div className="collapse-content">
+                    <li>
+                      <Link href="/inventory_management/worker/Create">
+                        <Image
+                          src={"/assets/icons/create_user.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Create
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/inventory_management/worker/List">
+                        <Image
+                          src={"/assets/icons/user_list.png"}
+                          className="h-6 w-6"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Inventory List
+                      </Link>
+                    </li>
+                  </div>
+                </div>
+              </div>
+              {/* End of Breed management menu */}
               <div className="font-medium text-base">
                 <li>
                   <Link
