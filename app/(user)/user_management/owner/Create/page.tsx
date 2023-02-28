@@ -102,6 +102,11 @@ export default function Page() {
       );
       return false;
     }
+
+    if (!confirm("Are you sure you want to create?")) {
+      return false;
+    }
+    
     createUser();
   };
 
