@@ -175,7 +175,7 @@ export default function Page({ params }: any) {
 
                 <li>View</li>
 
-                <li className="font-bold">Edit</li>
+                <li className="font-bold">{Action}</li>
               </ul>
             </div>
             <form

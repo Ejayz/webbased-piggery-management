@@ -150,7 +150,7 @@ export default function Page() {
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage User</li>
-                    <li className="font-bold">Create</li>
+                    <li className="font-bold">Create User</li>
                   </ul>
                 </div>
 
@@ -217,7 +217,7 @@ export default function Page() {
                     />
                     <InputBox
                       type={"text"}
-                      label={"Middle Name"}
+                      label={"Middle Name (Optional)"}
                       placeholder={"Middle Name"}
                       name={"first_name"}
                       className={`input input-bordered h-10  `}

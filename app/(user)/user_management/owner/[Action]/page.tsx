@@ -192,7 +192,7 @@ export default function Page({ params }: any) {
 
                 <li>View</li>
 
-                <li className="font-bold">Edit</li>
+                <li className="font-bold">{Action}</li>
               </ul>
             </div>
             <form
@@ -266,7 +266,7 @@ export default function Page({ params }: any) {
                 <InputBox
                   type={"text"}
                   label={"Middle Name"}
-                  placeholder={"Middle Name"}
+                  placeholder={"Middle Name (Optional)"}
                   name={"first_name"}
                   className={"input text-base-content input-bordered h-10"}
                   getter={middle_name}
@@ -363,7 +363,7 @@ export default function Page({ params }: any) {
                     callCancel();
                   }}
                   className="btn btn-active btn-primary mx-4"
-                  href={"/user_management/owner/UserList"}
+                  href={"/user_management/owner/List"}
                 >
                   Cancel
                 </Link>

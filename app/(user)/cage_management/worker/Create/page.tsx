@@ -125,7 +125,7 @@ export default function Page() {
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Cage</li>
-                    <li className="font-bold">Create</li>
+                    <li className="font-bold">Create Cage</li>
                   </ul>
                 </div>
 
