@@ -41,6 +41,9 @@ export default function Page({ params }: any) {
   const [isPassword, setIsPassword] = useState(true);
   const [isRepeatPassword, setIsRepeatPassword] = useState(true);
   const Action = params.Action;
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   let message: any = [];
   function resetState() {
     setUsername("");
@@ -85,6 +88,7 @@ export default function Page({ params }: any) {
     }
     if (params.Action == "Update") {
       var isOk = confirm("are you sure you want to update?");
+      setIsSubmitting(true);
       if (isOk) {
         updateUser();
       } else {
@@ -94,6 +98,7 @@ export default function Page({ params }: any) {
       if (!confirm("Are you sure you want to remove?")) {
         return false;
       }
+
       exec_remove();
     }
   };
@@ -337,13 +342,18 @@ export default function Page({ params }: any) {
                 {params.Action == "View" ? (
                   <></>
                 ) : params.Action == "Update" ? (
-                  <button className="btn btn-active btn-primary mx-4">
+                  <button
+                    className={`btn btn-active btn-primary mx-4 ${
+                      isSubmitting ? "loading" : ""
+                    }`}
+                  >
                     Update
                   </button>
                 ) : (
                   <button
-                    type="submit"
-                    className="btn btn-active btn-primary mx-4"
+                    className={`btn btn-active btn-primary mx-4 ${
+                      isSubmitting ? "loading" : ""
+                    }`}
                   >
                     REMOVE
                   </button>

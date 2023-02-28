@@ -58,6 +58,7 @@ async function SearchUser({
         (err, result) => {
           if (err) reject(err);
           resolve(result);
+          conn.release();
         }
       );
     });

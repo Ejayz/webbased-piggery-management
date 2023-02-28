@@ -47,6 +47,7 @@ export default function TableGenerator({
     }
     start();
   }, [page]);
+
   const SortUsingHeader = async (
     sortorder: any,
     columnName: any,
@@ -88,7 +89,6 @@ export default function TableGenerator({
     }
     start();
   }, [prev]);
-  useEffect(() => {}, [parsed]);
   function isChangeCol(sortby: any, prevSortBy: any) {
     if (sortby == prevSortBy) {
       return true;
