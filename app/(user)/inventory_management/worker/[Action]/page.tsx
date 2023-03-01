@@ -89,7 +89,7 @@ export default function Page({ params }: any) {
           list.push({
             value: data.category_id,
             display: data.category_name,
-            disabled: false,
+            disabled: Action == "View" || Action == "Remove",
           });
         });
         setCategoryList(list);
