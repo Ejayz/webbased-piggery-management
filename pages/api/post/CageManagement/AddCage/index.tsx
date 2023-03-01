@@ -13,6 +13,13 @@ export default async function handler(
     return false;
   }
   const { cage_name, cage_capacity, cage_type } = req.body;
+  const dups: any = await checkDups(cage_name);
+  if (dups.length != 0) {
+    return res
+      .status(409)
+      .json({ code: 409, message: "Cage name already exist" });
+  }
+
   const data: any = await AddCage(cage_name, cage_capacity, cage_type);
   if (data.affectedRows != 0) {
     return res
@@ -43,6 +50,19 @@ async function AddCage(
           conn.release();
         }
       );
+    });
+  });
+}
+async function checkDups(cage_name: string) {
+  return new Promise((resolve, reject) => {
+    connection.getConnection((err, conn) => {
+      if (err) reject(err);
+      const sql =
+        "select * from tbl_cage where cage_name=? and is_exist='true' ";
+      conn.query(sql, [cage_name], (err, result, field) => {
+        if (err) reject(err);
+        resolve(result);
+      });
     });
   });
 }

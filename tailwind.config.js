@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   daisyui: {
-    themes: ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"],
+    themes: ["light", "dark"],
   },
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
@@ -9,24 +9,30 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    colors: {
+      primary: "#ffffff",
+      secondary: "#191645",
+      accent: "#43C6AC",
+      neutral: "#3D4451",
+    },
     extend: {
       keyframes: {
         marquee: {
-          '0%': { transform: 'translateX(0%)' },
-          '100%': { transform: 'translateX(-100%)' },
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-100%)" },
         },
         marquee2: {
-          '0%': { transform: 'translateX(100%)' },
-          '100%': { transform: 'translateX(0%)' },
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0%)" },
         },
       },
       animation: {
-        'spin-slow-30': 'spin 30s linear infinite',
-        'spin-slow-25': 'spin 25s linear infinite',
-        'spin-slow-10': 'spin 10s linear infinite',
-        'marquee-infinite': 'marquee 25s linear infinite',
+        "spin-slow-30": "spin 30s linear infinite",
+        "spin-slow-25": "spin 25s linear infinite",
+        "spin-slow-10": "spin 10s linear infinite",
+        "marquee-infinite": "marquee 25s linear infinite",
       },
     },
   },
   plugins: [require("daisyui")],
-}
+};

@@ -10,11 +10,13 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="navbar bg-neutral text-neutral-content">
+      <div className="navbar bg-primary w-full h-3/4">
         <div className="flex-1">
-          <a className="btn btn-ghost normal-case text-xl">RVM Hog Farm</a>
+          <a className="btn btn-ghost normal-case text-primary-content text-2xl">
+            RVM Hog Farm
+          </a>
         </div>
-        <div className=" w-full flex">
+        <div className=" w-full primary-content flex">
           <select
             data-choose-theme
             className="select select-bordered bg-neutral hidden max-w-xs ml-auto mr-4"

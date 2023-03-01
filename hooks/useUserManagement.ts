@@ -164,3 +164,19 @@ export const Create = async (
   let data = await response.json();
   return data;
 };
+
+export async function ViewUser(id: string | null) {
+  let headersList = {
+    Accept: "*/*",
+  };
+
+  let response = await fetch(
+    `${location.origin}/api/post/UserManagement/view_user/${id}`,
+    {
+      method: "POST",
+      headers: headersList,
+    }
+  );
+  let data = await response.json();
+  return data;
+}

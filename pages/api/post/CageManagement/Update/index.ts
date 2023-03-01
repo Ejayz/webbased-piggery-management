@@ -17,6 +17,12 @@ export default async function handler(
   const cage_capacity: number = Number(req.body.cage_capacity);
 
   try {
+    const dups: any = await checkDups(cage_name, cage_id);
+    if (dups.length != 0) {
+      return res
+        .status(409)
+        .json({ code: 409, message: "Cage name already exist" });
+    }
     const data: any = await UpdateCage(
       cage_id,
       cage_name,
@@ -57,6 +63,19 @@ async function UpdateCage(
           resolve(result);
         }
       );
+    });
+  });
+}
+async function checkDups(cage_name: string, cage_id: number) {
+  return new Promise((resolve, reject) => {
+    connection.getConnection((err, conn) => {
+      if (err) reject(err);
+      const sql =
+        "select * from tbl_cage where cage_name=? and cage_id!=? and is_exist='true' ";
+      conn.query(sql, [cage_name, cage_id], (err, result, field) => {
+        if (err) reject(err);
+        resolve(result);
+      });
     });
   });
 }
