@@ -370,7 +370,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <Link href="/inventory_management/worker/List">
                         <Image
                           src={"/assets/icons/user_list.png"}
-                          className="h-6 w-6 hiddem"
+                          className="h-6 w-6 hidden"
                           alt={""}
                           height={512}
                           width={512}
@@ -382,6 +382,53 @@ export default function User({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               {/* End of Inventory management menu */}
+              {/* Reorder Management */}
+              <div
+                className={`${
+                  loading.data.job == "worker" ? "block" : "hidden"
+                }`}
+              >
+                <div className="collapse">
+                  <input type="checkbox" />
+                  <div className="collapse-title text-base flex flex-cols font-medium">
+                    <Image
+                      src={"/assets/icons/user_management.png"}
+                      className="h-6 w-6 mr-2 my-auto hidden"
+                      alt={""}
+                      height={512}
+                      width={512}
+                    ></Image>
+                    Manage Reorder
+                  </div>
+                  <div className="collapse-content">
+                    <li>
+                      <Link href="/reorder_management/worker/Create">
+                        <Image
+                          src={"/assets/icons/create_user.png"}
+                          className="h-6 w-6 hidden"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Create
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/reorder_management/worker/List">
+                        <Image
+                          src={"/assets/icons/user_list.png"}
+                          className="h-6 w-6 hidden"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Reorder List
+                      </Link>
+                    </li>
+                  </div>
+                </div>
+              </div>
+              {/* End of Reorder management menu */}
               <div className="font-medium text-base">
                 <li>
                   <Link
