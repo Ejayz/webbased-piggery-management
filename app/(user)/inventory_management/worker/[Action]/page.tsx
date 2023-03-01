@@ -210,6 +210,7 @@ export default function Page({ params }: any) {
                   getter={item_name}
                   setter={setItemName}
                   required={true}
+                  readonly={Action == "View" || Action == "Remove"}
                   validation={validateNormal}
                   setIsValid={setIsItemName}
                 />
@@ -223,6 +224,7 @@ export default function Page({ params }: any) {
                   setter={setCategoryId}
                   required={true}
                   className={`input input-bordered h-10  `}
+                  readonly={Action == "View" || Action == "Remove"}
                   validation={validateSelect}
                   setIsValid={setIsCategoryId}
                 />
@@ -233,6 +235,7 @@ export default function Page({ params }: any) {
                   name={"Description"}
                   disabled={false}
                   className={"input input-bordered h-8"}
+                  readonly={Action == "View" || Action == "Remove"}
                   getter={item_description}
                   setter={setItemDescription}
                   required={true}
