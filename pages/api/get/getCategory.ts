@@ -10,13 +10,17 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const data: any = await GetCategory();
-  if (data.length != 0) {
-    return res.status(200).json({ code: 200, data: data });
-  } else {
-    return res
-      .status(500)
-      .json({ code: 200, message: "500 Server Error.Something went wrong" });
+  try {
+    const data: any = await GetCategory();
+    if (data.length != 0) {
+      return res.status(200).json({ code: 200, data: data });
+    } else {
+      return res
+        .status(500)
+        .json({ code: 500, message: "500 Server Error.Something went wrong" });
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 

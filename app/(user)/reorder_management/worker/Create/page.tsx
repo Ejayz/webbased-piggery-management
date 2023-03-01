@@ -116,18 +116,17 @@ export default function Page() {
   useEffect(() => {
     async function exec_get() {
       const returned = await GetCategory();
-      console.log(returned);
+
       if (returned.code == 200) {
-        if (returned.data.length !== 0) {
-          returned.data.map((data: any, key: number) => {
-            list.push({
-              value: data.category_id,
-              display: data.category_name,
-              disabled: false,
-            });
+        console.log(returned);
+        returned.data.map((data: any, key: number) => {
+          list.push({
+            value: data.category_id,
+            display: data.category_name,
+            disabled: false,
           });
-          setCategoryList(list);
-        }
+        });
+        setCategoryList(list);
       }
     }
     exec_get();
@@ -165,116 +164,7 @@ export default function Page() {
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                    <InputBox
-                      type={"text"}
-                      label={"Item Name"}
-                      placeholder={"Item Name"}
-                      name={"ItemName"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_name}
-                      setter={setItemName}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemName}
-                      reset={reset}
-                    />
-                    <SelectBox
-                      label={"Category"}
-                      name={"category"}
-                      selected={category_id}
-                      options={category_list}
-                      disabled={false}
-                      default_option={"Category"}
-                      setter={setCategoryId}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsCategoryId}
-                      reset={reset}
-                    />
-                    <InputBox
-                      type={"text"}
-                      label={"Item Description"}
-                      placeholder={"Item Description"}
-                      name={"Description"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_description}
-                      setter={setItemDescription}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemDescription}
-                      reset={reset}
-                    />
-                  </div>
-
-                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                    <InputBox
-                      type={"number"}
-                      label={"Item Quantity"}
-                      placeholder={"Item Quantity"}
-                      name={"quantity"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_quantity}
-                      setter={setItemQuantity}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemQuantity}
-                      reset={reset}
-                    />{" "}
-                    <SelectBox
-                      label={"Unit"}
-                      name={"Unit"}
-                      selected={item_unit}
-                      options={[
-                        {
-                          value: "sack",
-                          display: "Sacks",
-                          disabled: false,
-                        },
-                        {
-                          value: "kg",
-                          display: "Kilo Gram",
-                          disabled: false,
-                        },
-                        {
-                          value: "mg",
-                          display: "Milli Gram",
-                          disabled: false,
-                        },
-                        {
-                          value: "pcs",
-                          display: "Pieces",
-                          disabled: false,
-                        },
-                      ]}
-                      disabled={false}
-                      default_option={"Units"}
-                      setter={setItemUnit}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsItemUnit}
-                      reset={reset}
-                    />{" "}
-                    <InputBox
-                      type={"number"}
-                      label={"Item Net Weight"}
-                      placeholder={"Item Net Weight"}
-                      name={"net_weight"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_net_weight}
-                      setter={setItemNetWeight}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemNetWeight}
-                      reset={reset}
-                    />
-                  </div>
+                  <div className="overflow-x-auto"></div>
                   <div className="card-actions justify-end">
                     <button className="btn btn-active btn-primary mx-4">
                       Create
