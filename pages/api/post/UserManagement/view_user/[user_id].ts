@@ -59,16 +59,12 @@ export default async function handler(
 }
 
 async function viewUser(user_id: string) {
-  return new Promise((resolve, reject) => {
-    const sql =
-      "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where user_id=? and is_exist='true'";
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      conn.query(sql, [user_id], (err, result, feilds) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where user_id=? and is_exist='true'";
+
+  const [err, result] = await conn.query(sql, [user_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

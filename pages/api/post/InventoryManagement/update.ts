@@ -41,35 +41,26 @@ async function Update(
   category_id: any,
   item_description: string
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "update tbl_inventory set item_name=?, category_id=? , item_description=? where item_id=? and is_exist='true'";
-      conn.query(
-        sql,
-        [item_name, category_id, item_description, item_id],
-        (err, result, feilds) => {
-          if (err) reject(err);
-          resolve(result);
-          conn.release();
-        }
-      );
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "update tbl_inventory set item_name=?, category_id=? , item_description=? where item_id=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [
+    item_name,
+    category_id,
+    item_description,
+    item_id,
+  ]);
+  conn.release();
+  if (err) return err;
+  return err;
 }
 
 async function checkDups(item_name: string, item_id: any) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "select * from tbl_inventory where item_name=? and  item_id!=? and is_exist='true'";
-      conn.query(sql, [item_name, item_id], (err, result, field) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_inventory where item_name=? and  item_id!=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [item_name, item_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

@@ -1,6 +1,6 @@
 "use client";
-import Table from "@/components/TableBody/Table";
-import { getData, Search, sortData } from "@/hooks/useInventory";
+import Table from "@/components/TableModified/Table";
+import { getData, Search, sortData } from "@/hooks/useReorder";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -22,16 +22,10 @@ interface ApiData {
 export default function Page() {
   const [parsed, setParsed] = useState<Inventory[]>([]);
   const [sorts, setSort] = useState("asc");
-  const [sortby, setSortBy] = useState("item_name");
-  const colsName = [
-    "item_name",
-    "category_name",
-    "item_description",
-    "item_left",
-    "item_unit",
-  ];
+  const [sortby, setSortBy] = useState("r.reorder_date");
+  const colsName = ["reorder_id", "total_reorder", "reorder_date", "status"];
   const [isSorting, setisSorting] = useState(false);
-  const pathname = "/inventory_management/worker";
+  const pathname = "/reorder_management/worker";
   const [page, setPage] = useState(1);
   const msg = useSearchParams().get("msg");
   const status = useSearchParams().get("status");

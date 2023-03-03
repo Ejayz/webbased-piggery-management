@@ -54,19 +54,14 @@ async function GetCage(
   SortOrder: any,
   sortby: any
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql = `select * from tbl_breed where is_exist='true' ORDER BY ${conn.escapeId(
-        sortby
-      )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
-      conn.query(sql, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql = `select * from tbl_breed where is_exist='true' ORDER BY ${conn.escapeId(
+    sortby
+  )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
+  const [err, result] = await conn.query(sql);
+  conn.release();
+  if (err) return err;
+  return result;
 }
 
 async function SearhGetCage(
@@ -76,18 +71,13 @@ async function SearhGetCage(
   sortby: any,
   keyword: string
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      keyword = `%${keyword}%`;
-      if (err) reject(err);
-      const sql = `select * from tbl_breed where (breed_name LIKE ? ) AND is_exist='true'  ORDER BY ${conn.escapeId(
-        sortby
-      )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
-      conn.query(sql, [keyword, keyword, keyword], (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  keyword = `%${keyword}%`;
+  const sql = `select * from tbl_breed where (breed_name LIKE ? ) AND is_exist='true'  ORDER BY ${conn.escapeId(
+    sortby
+  )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
+  const [err, result] = await conn.query(sql, [keyword, keyword, keyword]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

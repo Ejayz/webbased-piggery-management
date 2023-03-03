@@ -176,7 +176,7 @@ export default function Page({ params }: any) {
         <div className=" h-auto w-full">
           <div className="w-11/12  mx-auto flex flex-row">
             <p className="text-2xl text-base-content my-auto p-4">
-              Manage User
+              Manage Inventory
             </p>
           </div>
         </div>
@@ -187,9 +187,9 @@ export default function Page({ params }: any) {
           <div className="card-body">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
-                <li>User Management</li>
+                <li>Inventory Management</li>
 
-                <li>View</li>
+                <li>{Action}</li>
 
                 <li className="font-bold">{Action}</li>
               </ul>

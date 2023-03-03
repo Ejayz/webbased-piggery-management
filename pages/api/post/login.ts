@@ -9,7 +9,10 @@ dotenv.config();
 const jwt_key: any = process.env.JWT_KEY;
 
 //API Function that only accepts post request
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -22,7 +25,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   );
 
   if (req.method !== "POST") {
-    res.status(405).json({
+    return res.status(405).json({
       code: 405,
       message: "Invalid method. This endpoint only accept POST method",
     });
@@ -46,20 +49,25 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             };
             const token = jwt.sign(userInfo, jwt_key);
             if (rememberme) {
-              res.setHeader(
-                "Set-Cookie",
-                `auth=${token}; path=/; max-age=2592000;"`
-              );
+              return res
+                .status(200)
+                .setHeader(
+                  "Set-Cookie",
+                  `auth=${token}; path=/; max-age=2592000;"`
+                )
+                .json({
+                  code: "200",
+                  message: `Welcome back ${data.username} .`,
+                });
             } else {
-              res.setHeader(
-                "Set-Cookie",
-                `auth=${token};path=/; max-age=86400;`
-              );
+              return res
+                .status(200)
+                .setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`)
+                .json({
+                  code: "200",
+                  message: `Welcome back ${data.username} .`,
+                });
             }
-            return res.status(200).json({
-              code: "200",
-              message: `Welcome back ${data.username} .`,
-            });
           } else {
             return res.status(401).json({
               code: 401,
@@ -85,19 +93,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function VerifyUser(username: string, job: string) {
-  return new Promise((resolve, rejects) => {
-    connection.getConnection((err, conn) => {
-      if (err) {
-        rejects(err);
-      }
-      conn.query(
-        "select * from tbl_users where username=? and job=? and is_exist='true'",
-        [username, job],
-        (err, result, fields) => {
-          if (err) rejects(err);
-          resolve(result);
-        }
-      );
-    });
-  });
+  const conn = await connection.getConnection();
+  const [err, result] = await conn.query(
+    "select * from tbl_users where username=? and job=? and is_exist='true'",
+    [username, job]
+  );
+  conn.release();
+
+  if (err) return err;
+  return result;
 }

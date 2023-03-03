@@ -16,7 +16,7 @@ export default async function handler(
   if (dups.length != 0) {
     return res
       .status(409)
-      .json({ code: 409, message: "Cage name already exist." });
+      .json({ code: 409, message: "Breed name already exist." });
   }
 
   const data: any = await Update(breed_id, breed_name);
@@ -30,31 +30,21 @@ export default async function handler(
 }
 
 async function Update(breed_id: any, breed_name: string) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "update tbl_breed set breed_name=? where breed_id=? and is_exist='true'";
-      conn.query(sql, [breed_name, breed_id], (err, result, feilds) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "update tbl_breed set breed_name=? where breed_id=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [breed_name, breed_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }
 
 async function checkDups(breed_id: any, breed_name: any) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "select * from tbl_breed where breed_id!=? and breed_name=? and is_exist='true'";
-      conn.query(sql, [breed_id, breed_name], (err, result, field) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_breed where breed_id!=? and breed_name=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [breed_id, breed_name]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

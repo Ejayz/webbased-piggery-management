@@ -2,7 +2,7 @@
 
 import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
-import { GetCategory, Remove, Update, View } from "@/hooks/useInventory";
+import { Confirm, getSpecificOrderList, Remove } from "@/hooks/useReorder";
 import {
   validateNormal,
   validatePhone,
@@ -16,24 +16,64 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import PageNotFound from "@/components/Errors/PageNotFound";
+import { DateTime } from "luxon";
+
+interface reorderListType {
+  item_id: number;
+  item_name: string;
+  quantity: number;
+  confirmed: boolean;
+}
 
 export default function Page({ params }: any) {
-  const [item_id, setItemId] = useState("");
-  const [item_name, setItemName] = useState("");
-  const [category_id, setCategoryId] = useState("default");
-  const [item_description, setItemDescription] = useState("");
-  const [item_quantity, setItemQuantity] = useState("");
-  const [item_unit, setItemUnit] = useState("default");
-  const [item_net_weight, setItemNetWeight] = useState("");
-
-  const [isItemName, setIsItemName] = useState(true);
-  const [isCategoryId, setIsCategoryId] = useState(true);
-  const [isItemDescription, setIsItemDescription] = useState(true);
-  const [isItemQuantity, setIsItemQuantity] = useState(true);
-  const [isItemUnit, setIsItemUnit] = useState(true);
-  const [category_list, setCategoryList] = useState([]);
-  const [isItemNetWeight, setIsItemNetWeight] = useState(true);
   let list: any = [];
+  const [reorderList, setReorderList] = useState<reorderListType[]>([]);
+  const [reorder_date, setReorderDate] = useState("");
+  const [requesting, setRequesting] = useState(false);
+  const [file, setFile] = useState<FileList | null>();
+  const handleQuantity = async (quantity: any, item_id: number) => {
+    setReorderList((prevList) => {
+      const updatedList = prevList.map((item) => {
+        if (item.item_id === item_id) {
+          return { ...item, quantity: quantity };
+        } else {
+          return item;
+        }
+      });
+      console.log(updatedList);
+      return updatedList;
+    });
+  };
+  const handleConfirmQuantity = async (
+    confirm_quantity: any,
+    item_id: number
+  ) => {
+    setReorderList((prevList) => {
+      const updatedList = prevList.map((item) => {
+        if (item.item_id === item_id) {
+          return { ...item, confirm_reorder: confirm_quantity };
+        } else {
+          return item;
+        }
+      });
+      console.log(updatedList);
+      return updatedList;
+    });
+  };
+
+  const handleConfirm = async (item_id: number) => {
+    setReorderList((prevList) => {
+      const updatedList = prevList.map((item) => {
+        if (item.item_id === item_id) {
+          return { ...item, confirmed: true };
+        } else {
+          return item;
+        }
+      });
+      console.log(updatedList);
+      return updatedList;
+    });
+  };
 
   const Action = params.Action;
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,64 +81,76 @@ export default function Page({ params }: any) {
   const Queryid = useSearchParams().get("id");
   const [startValidation, setStartValidation] = useState(false);
   let message: any = [];
-  function resetState() {
-    setItemName("");
-    setCategoryId("default");
-    setItemDescription("");
-    setItemQuantity("");
-    setItemUnit("default");
-    setItemNetWeight("");
-  }
+  function resetState() {}
   const verifyInput = async (e: any) => {
     e.preventDefault();
-    if (item_name == "" || category_id == "default" || item_description == "") {
-      toast.error("All fields are required.");
-      return false;
-    }
-    if (!(isItemName && isCategoryId && isItemDescription)) {
-      toast.error("Please correct the inputs indicated in red.");
-      return false;
-    }
+    console.log(reorderList);
     if (params.Action == "Update") {
-      if (!(isItemName && isCategoryId && isItemDescription)) {
-        toast.error("Please correct the inputs indicated in red.");
-        return false;
-      }
       var isOk = confirm("are you sure you want to update?");
       setIsSubmitting(true);
       if (isOk) {
+        setIsSubmitting(false);
         updateUser();
       } else {
+        setIsSubmitting(false);
         return false;
       }
     } else if (params.Action == "Remove") {
       if (!confirm("Are you sure you want to remove?")) {
+        setIsSubmitting(false);
         return false;
       }
 
       exec_remove();
+    } else if (params.Action == "Confirm") {
+      if (!confirm("Are you sure you want to confirm?")) {
+        setIsSubmitting(false);
+
+        return false;
+      }
+      exect_confirm();
     }
   };
+
+  const exect_confirm = async () => {
+    const returned = await Confirm(file, Queryid, reorderList);
+    if (returned.code == 200) {
+      callCancel(returned.message, returned.code);
+    } else {
+      toast.error(returned.message);
+    }
+  };
+
   useEffect(() => {
     async function exec_get() {
-      const returned = await GetCategory();
+      const returned = await getSpecificOrderList(Queryid);
 
       if (returned.code == 200) {
-        console.log(returned);
+        setReorderDate(
+          DateTime.fromISO(returned.data[0].reorder_date).toFormat(
+            "MMMM dd, yyyy hh:mm:ssa"
+          )
+        );
+        console.log(returned.data);
         returned.data.map((data: any, key: number) => {
           list.push({
-            value: data.category_id,
-            display: data.category_name,
-            disabled: false,
+            item_id: data.item_id,
+            item_name: data.item_name,
+            quantity: data.reorder_quantity,
+            confirm_reorder: 0,
+            reorder_detail_id: data.reorder_details_id,
+            confirmed: false,
+            item_net_weight: data.item_net_weight,
           });
         });
-        setCategoryList(list);
+        setReorderList(list);
       }
+      console.log(reorderList);
     }
     exec_get();
   }, []);
   const exec_remove = async () => {
-    const returned = await Remove(item_id);
+    const returned = await Remove(Queryid);
     if (returned.code == 200) {
       callCancel(returned.message, "success");
       setIsSubmitting(false);
@@ -108,51 +160,23 @@ export default function Page({ params }: any) {
     }
   };
 
-  const updateUser = async () => {
-    const returned = await Update(
-      item_id,
-      item_name,
-      category_id,
-      item_description
-    );
-    if (returned.code == 200) {
-      resetState();
-      callCancel(returned.message, "success");
-      setIsSubmitting(false);
-    } else {
-      toast.error(returned.message);
-      setIsSubmitting(false);
-    }
-  };
+  const updateUser = async () => {};
 
   if (Queryid == undefined) {
   }
 
   function callCancel(message?: string, status?: string) {
     if (message == undefined) {
-      router.push("/inventory_management/worker/List");
+      router.push("/reorder_management/worker/List");
     } else {
       router.push(
-        `/inventory_management/worker/List?msg=${message}&status=${status}`
+        `/reorder_management/worker/List?msg=${message}&status=${status}`
       );
     }
   }
 
   useEffect(() => {
-    const exec = async () => {
-      const returned = await View(Queryid);
-
-      if (returned.code == 200) {
-        setItemId(returned.data[0].item_id);
-        setItemName(returned.data[0].item_name);
-        setItemDescription(returned.data[0].item_description);
-        setCategoryId(returned.data[0].category_id);
-      } else {
-        toast.error(returned.message);
-        callCancel();
-      }
-    };
-
+    const exec = async () => {};
     if (Queryid !== null || Queryid !== undefined) {
       exec().then(() => {
         setStartValidation(true);
@@ -160,7 +184,9 @@ export default function Page({ params }: any) {
     }
   }, [Queryid]);
 
-  if (item_id == "") {
+  console.log(Action);
+
+  if (reorderList.length == 0) {
     return (
       <>
         <div className="w-full h-1/2 flex">
@@ -168,7 +194,12 @@ export default function Page({ params }: any) {
         </div>
       </>
     );
-  } else if (Action != "Update" && Action != "Remove" && Action != "View") {
+  } else if (
+    Action != "Update" &&
+    Action != "Remove" &&
+    Action != "View" &&
+    Action != "Confirm"
+  ) {
     return <PageNotFound></PageNotFound>;
   } else {
     return (
@@ -199,42 +230,111 @@ export default function Page({ params }: any) {
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="overflow-x-auto">
-                <table className="table table-zebra w-full">
-                  {/* head */}
+              <div className="overflow-x-auto mb-4">
+                <div>
+                  <span className="font-bold">Reorder Id: </span>
+                  <span>{Queryid}</span>
+                </div>{" "}
+                <div>
+                  <span className="font-bold">Reorder Date: </span>
+                  <span>{reorder_date}</span>
+                </div>
+                <table className="table w-full">
+                  {/* head*/}
                   <thead>
                     <tr>
-                      <th></th>
-                      <th>Name</th>
-                      <th>Job</th>
-                      <th>Favorite Color</th>
+                      <th>Item Name</th>
+                      <th>Quantity</th>
+                      <th
+                        className={`${
+                          Action == "View" || Action == "Remove" ? "hidden" : ""
+                        }`}
+                      >
+                        Confirm Quantity
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* row 1 */}
-                    <tr>
-                      <th>1</th>
-                      <td>Cy Ganderton</td>
-                      <td>Quality Control Specialist</td>
-                      <td>Blue</td>
-                    </tr>
-                    {/* row 2 */}
-                    <tr>
-                      <th>2</th>
-                      <td>Hart Hagerty</td>
-                      <td>Desktop Support Technician</td>
-                      <td>Purple</td>
-                    </tr>
-                    {/* row 3 */}
-                    <tr>
-                      <th>3</th>
-                      <td>Brice Swyre</td>
-                      <td>Tax Accountant</td>
-                      <td>Red</td>
-                    </tr>
+                    {reorderList.map((data: any, key: number) => {
+                      return (
+                        <tr key={key}>
+                          <td>{data.item_name}</td>
+                          <td>
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Item Quantity"
+                              className={`input w-full max-w-xs ${
+                                data.quantity === "0" || data.quantity === ""
+                                  ? "input-error"
+                                  : ""
+                              }`}
+                              value={data.quantity === 0 ? "" : data.quantity}
+                              readOnly={Action == "View"}
+                              onChange={(e) => {
+                                handleQuantity(e.target.value, data.item_id);
+                              }}
+                            />
+
+                            <span
+                              className={`text-error ${
+                                data.quantity === "0" || data.quantity === ""
+                                  ? "block"
+                                  : "hidden"
+                              }`}
+                            >
+                              Atleast 1 Quantity is required
+                            </span>
+                          </td>
+                          <td
+                            className={`${
+                              Action == "View" || Action == "Remove"
+                                ? "hidden"
+                                : ""
+                            }`}
+                          >
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Confirm Quantity"
+                              className={`input w-full max-w-xs ${
+                                Action == "View" ? "hidden" : ""
+                              } ${
+                                data.confirm_reorder === "0" ||
+                                data.confirm_reorder === ""
+                                  ? "input-error"
+                                  : ""
+                              }`}
+                              value={
+                                data.confirm_reorder === 0
+                                  ? ""
+                                  : data.confirm_reorder
+                              }
+                              onChange={(e) => {
+                                handleConfirmQuantity(
+                                  e.target.value,
+                                  data.item_id
+                                );
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
+              <input
+                type="file"
+                className={`file-input file-input-bordered w-full max-w-xs ${
+                  Action == "View" || Action == "Remove" ? "hidden" : ""
+                }`}
+                onChange={(e) => {
+                  setFile(e.target.files);
+                  console.log(file);
+                }}
+              />
 
               <div className="card-actions justify-end">
                 {params.Action == "View" ? (
@@ -247,7 +347,7 @@ export default function Page({ params }: any) {
                   >
                     Update
                   </button>
-                ) : (
+                ) : params.Action == "Remove" ? (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
                       isSubmitting ? "loading" : ""
@@ -255,13 +355,21 @@ export default function Page({ params }: any) {
                   >
                     REMOVE
                   </button>
+                ) : (
+                  <button
+                    className={`btn btn-active btn-primary mx-4 ${
+                      isSubmitting ? "loading" : ""
+                    }`}
+                  >
+                    Confirm
+                  </button>
                 )}
                 <Link
                   onClick={(e) => {
                     callCancel();
                   }}
                   className="btn btn-active btn-primary mx-4"
-                  href={"/inventory_management/worker/List"}
+                  href={"/reorder_management/worker/List"}
                 >
                   Cancel
                 </Link>

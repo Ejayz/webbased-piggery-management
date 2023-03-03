@@ -23,15 +23,14 @@ export default async function handler(
 }
 
 async function RemoveUser({ user_id }: any) {
-  return new Promise((resolve, reject) => {
-    const sql = "UPDATE `tbl_users` SET  `is_exist`='false' WHERE `user_id`=?;";
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      conn.query(sql, [user_id], (err, result, feild) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+
+  const sql = "UPDATE `tbl_users` SET  `is_exist`='false' WHERE `user_id`=?;";
+
+  const [err, result] = await conn.query(sql, [user_id]);
+  conn.release();
+  if (err) {
+    return err;
+  }
+  return result;
 }

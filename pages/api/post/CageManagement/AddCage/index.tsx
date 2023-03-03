@@ -36,33 +36,24 @@ async function AddCage(
   cage_capacity: Number,
   cage_type: String
 ) {
-  return new Promise((resolve, reject) => {
-    const sql =
-      "INSERT INTO `tbl_cage` ( `cage_name`, `cage_type`, `cage_capacity`) VALUES ( ?, ?, ?);";
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      conn.query(
-        sql,
-        [cage_name, cage_type, cage_capacity],
-        (err, result, feild) => {
-          if (err) reject(err);
-          resolve(result);
-          conn.release();
-        }
-      );
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "INSERT INTO `tbl_cage` ( `cage_name`, `cage_type`, `cage_capacity`) VALUES ( ?, ?, ?);";
+
+  const [err, result] = await conn.query(sql, [
+    cage_name,
+    cage_type,
+    cage_capacity,
+  ]);
+  conn.release();
+  if (err) return err;
+  return result;
 }
 async function checkDups(cage_name: string) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "select * from tbl_cage where cage_name=? and is_exist='true' ";
-      conn.query(sql, [cage_name], (err, result, field) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql = "select * from tbl_cage where cage_name=? and is_exist='true' ";
+  const [err, result] = await conn.query(sql, [cage_name]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

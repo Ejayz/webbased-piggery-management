@@ -25,15 +25,10 @@ export default async function handler(
 }
 
 async function GetCategory() {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql = "select * from tbl_category where is_exist='true'";
-      conn.query(sql, [], (err, result, feilds) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql = "select * from tbl_category where is_exist='true'";
+  const [err, result] = await conn.query(sql, []);
+  conn.release();
+  if (err) return err;
+  return result;
 }

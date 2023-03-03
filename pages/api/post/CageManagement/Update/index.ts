@@ -50,32 +50,25 @@ async function UpdateCage(
   cage_type: string,
   cage_capacity: number
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "UPDATE `tbl_cage` SET  `cage_name`=?, `cage_type`=?, `cage_capacity`=? WHERE `cage_id`=? and is_exist='true';";
-      conn.query(
-        sql,
-        [cage_name, cage_type, cage_capacity, cage_id],
-        (err, result, field) => {
-          if (err) reject(err);
-          resolve(result);
-        }
-      );
-    });
-  });
+  const sql =
+    "UPDATE `tbl_cage` SET  `cage_name`=?, `cage_type`=?, `cage_capacity`=? WHERE `cage_id`=? and is_exist='true';";
+  const conn = await connection.getConnection();
+  const [err, result] = await conn.query(sql, [
+    cage_name,
+    cage_type,
+    cage_capacity,
+    cage_id,
+  ]);
+  conn.release();
+  if (err) return err;
+  return result;
 }
 async function checkDups(cage_name: string, cage_id: number) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "select * from tbl_cage where cage_name=? and cage_id!=? and is_exist='true' ";
-      conn.query(sql, [cage_name, cage_id], (err, result, field) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_cage where cage_name=? and cage_id!=? and is_exist='true' ";
+  const [err, result] = await conn.query(sql, [cage_name, cage_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

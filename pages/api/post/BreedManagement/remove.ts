@@ -24,16 +24,11 @@ export default async function handler(
 }
 
 async function RemoveCage(breed_id: any) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "update tbl_breed set is_exist='false' where is_exist='true' and breed_id=?";
-      conn.query(sql, [breed_id], (err, result, feilds) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "update tbl_breed set is_exist='false' where is_exist='true' and breed_id=?";
+  const [err, result] = await conn.query(sql, [breed_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

@@ -1,4 +1,4 @@
-import * as mysql from "mysql2";
+import * as mysql from "mysql2/promise";
 import * as dotenv from "dotenv";
 import fs from "fs";
 dotenv.config();

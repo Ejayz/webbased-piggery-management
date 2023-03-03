@@ -156,7 +156,7 @@ export default function Page() {
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Inventory</li>
-                    <li className="font-bold">Creat Inventory</li>
+                    <li className="font-bold">Create Inventory</li>
                   </ul>
                 </div>
 

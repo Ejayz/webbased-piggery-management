@@ -17,12 +17,12 @@ async function send_sms(phone: any, username: any) {
   let sms = {};
   let otp = generateOTP();
   let completePhone = `+63${phone}`;
-  const data = await client.messages.create({
-    body: `Hi ${username},You requested a password change. Use this One Time Password(OTP):${otp} to authenticate this request.`,
-    from: twillioPhone,
-    to: completePhone,
-  });
-  // const data = { status: "sent" };
+  // const data = await client.messages.create({
+  //   body: `Hi ${username},You requested a password change. Use this One Time Password(OTP):${otp} to authenticate this request.`,
+  //   from: twillioPhone,
+  //   to: completePhone,
+  // });
+  const data = { status: "sent" };
   if (data.status === "queued" || data.status === "sent") {
     return {
       status: 200,
@@ -38,16 +38,13 @@ async function send_sms(phone: any, username: any) {
 }
 
 async function VerifySms(username: string, phone: string, job: string) {
-  return new Promise((resolve, rejects) => {
-    const query =
-      "select * from tbl_users where username=? and phone=? and job=? and is_exist='true'";
-    connection.getConnection((err, conn) => {
-      conn.query(query, [username, phone, job], (err, result, fields) => {
-        if (err) rejects(err);
-        resolve(result);
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_users where username=? and phone=? and job=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [username, phone, job]);
+  conn.release();
+  if (err) return err;
+  return result;
 }
 
 export default async function handler(
