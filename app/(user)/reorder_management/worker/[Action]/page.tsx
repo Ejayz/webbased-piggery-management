@@ -103,19 +103,22 @@ export default function Page({ params }: any) {
 
       exec_remove();
     } else if (params.Action == "Confirm") {
-      if (!confirm("Are you sure you want to confirm?")) {
-        setIsSubmitting(false);
-
-        return false;
+      if (file == undefined) {
+        toast.error("Please attach the reciept before confirming.");
+      } else {
+        if (!confirm("Are you sure you want to confirm?")) {
+          setIsSubmitting(false);
+          return false;
+        }
+        exect_confirm();
       }
-      exect_confirm();
     }
   };
 
   const exect_confirm = async () => {
     const returned = await Confirm(file, Queryid, reorderList);
     if (returned.code == 200) {
-      callCancel(returned.message, returned.code);
+      callCancel(returned.message, "success");
     } else {
       toast.error(returned.message);
     }
@@ -297,6 +300,7 @@ export default function Page({ params }: any) {
                             <input
                               type="number"
                               min="0"
+                              required={true}
                               placeholder="Confirm Quantity"
                               className={`input w-full max-w-xs ${
                                 Action == "View" ? "hidden" : ""
