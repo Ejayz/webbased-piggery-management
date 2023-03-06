@@ -241,7 +241,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               {/* End of cage management menu */}
-              {/* Breed Management */}
+              {/* Pig Management */}
               <div
                 className={`${
                   loading.data.job == "worker" ? "block" : "hidden"
@@ -260,20 +260,47 @@ export default function User({ children }: { children: React.ReactNode }) {
                     Manage Pig
                   </div>
                   <div className="collapse-content">
-                    <li>
-                      <Link href="/breed_management/worker/Create">
+                    <div className="collapse">
+                      <input type="checkbox" />
+                      <div className="collapse-title text-base flex flex-cols font-medium">
                         <Image
-                          src={"/assets/icons/create_user.png"}
-                          className="h-6 w-6 hidden"
+                          src={"/assets/icons/user_management.png"}
+                          className="h-6 w-6 mr-2 my-auto hidden"
                           alt={""}
                           height={512}
                           width={512}
                         ></Image>
                         Create
-                      </Link>
-                    </li>
+                      </div>
+                      <div className="collapse-content">
+                        <li>
+                          <Link href="/pig_management/worker/Create/Pigs">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Pigs
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/pig_management/worker/Create/Breeder">
+                            <Image
+                              src={"/assets/icons/user_list.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Breeder
+                          </Link>
+                        </li>
+                      </div>
+                    </div>
                     <li>
-                      <Link href="/breed_management/worker/List">
+                      <Link href="/pig_management/worker/List">
                         <Image
                           src={"/assets/icons/user_list.png"}
                           className="h-6 w-6 hidden"
@@ -281,13 +308,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                           height={512}
                           width={512}
                         ></Image>
-                        Breed List
+                        Pig List
                       </Link>
                     </li>
                   </div>
                 </div>
               </div>
-              {/* End of Breed management menu */}
+              {/* End of Pig management menu */}
               {/* Breed Management */}
               <div
                 className={`${

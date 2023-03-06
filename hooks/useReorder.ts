@@ -50,7 +50,7 @@ export const getTotalReorderList = async () => {
   let bodyContent = JSON.stringify({});
 
   let response = await fetch(
-    "http://localhost:3000/api/post/ReorderListManagement/getReorderTotalList",
+    `${location.origin}/api/post/ReorderListManagement/getReorderTotalList`,
     {
       method: "POST",
       body: bodyContent,
@@ -94,7 +94,7 @@ export const Remove = async (reorder_id: any) => {
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/ReorderListManagement/remove",
+    `${location.origin}/api/post/ReorderListManagement/remove`,
     {
       method: "POST",
       body: bodyContent,
@@ -118,7 +118,7 @@ export const getSpecificOrderList = async (reorder_id: any) => {
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/ReorderListManagement/getSpecificOrderList",
+    `${location.origin}/api/post/ReorderListManagement/getSpecificOrderList`,
     {
       method: "POST",
       body: bodyContent,
@@ -142,7 +142,7 @@ export const Confirm = async (file: any, reorder_id: any, details: any) => {
   bodyContent.append("attachment", file[0]);
 
   let response = await fetch(
-    "http://localhost:3000/api/post/ReorderListManagement/Confirm",
+    `${location.origin}/api/post/ReorderListManagement/Confirm`,
     {
       method: "POST",
       body: bodyContent,
@@ -165,7 +165,7 @@ export const Lock = async (reorder_id: any) => {
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/ReorderListManagement/LockReorderList",
+    `${location.origin}/api/post/ReorderListManagement/LockReorderList`,
     {
       method: "POST",
       body: bodyContent,
