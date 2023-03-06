@@ -55,3 +55,25 @@ export const GetCages = async () => {
   let data = await response.json();
   return data;
 };
+
+export const getBreedList = async () => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+  };
+
+  let bodyContent = new FormData();
+  bodyContent.append("attachment", "c:UsersEjayz-SuperDocumentsai(1).png");
+
+  let response = await fetch(
+    `${location.origin}/api/post/BreedManagement/getBreedList`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};

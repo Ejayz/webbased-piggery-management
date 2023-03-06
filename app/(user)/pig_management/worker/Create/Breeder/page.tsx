@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
 import { Create } from "@/hooks/useCageManagement";
@@ -9,16 +9,20 @@ import SelectBox from "@/components/FormComponents/selectBox";
 import { toast } from "react-toastify";
 import {
   validateNormal,
+  validateNumber,
   validatePassword,
   validatePhone,
   validateSelect,
   validateSkip,
 } from "@/hooks/useValidation";
 import PasswordBox from "@/components/FormComponents/passwordBox";
-import { GetCages, IdGenerator } from "@/hooks/usePigManagement";
+import { getBreedList, GetCages, IdGenerator } from "@/hooks/usePigManagement";
 import QrCode from "@/components/QrComponent/qrcode";
+import QRCode from "react-qr-code";
+import Link from "next/link";
+import printJS from "print-js";
 
-interface CageList {
+interface SelectInter {
   value: number;
   display: string;
   disabled: boolean;
@@ -33,9 +37,10 @@ export default function Page() {
   const [pig_tag, setPigTag] = useState("");
   const [pig_type, setPigType] = useState("default");
   const [birth_date, setBirthDate] = useState("");
-  const [Weight, setWeight] = useState("");
-  const [unit, setUnit] = useState("");
+  const [weight, setWeight] = useState("");
+  const [breed, setBreed] = useState("default");
 
+  const [isBreed, setIsBreed] = useState(true);
   const [isPigId, setIsPigId] = useState(true);
   const [isCageId, setIsCageId] = useState(true);
   const [isBatchId, setIsBatchId] = useState(true);
@@ -43,10 +48,12 @@ export default function Page() {
   const [isPigType, setIsPigType] = useState(true);
   const [isBirthDate, setIsBirthDate] = useState(true);
   const [isWeight, setIsWeight] = useState(true);
-  const [isUnit, setIsUnit] = useState(true);
 
-  const [cageList, setCageList] = useState<CageList[]>([]);
+  const qrCodeContainer = useRef<any>();
 
+  const [cageList, setCageList] = useState<SelectInter[]>([]);
+  const [breedList, setBreedList] = useState<SelectInter[]>([]);
+  const [scannerLink, setScannerLink] = useState<any>("");
   const [hideScanner, setHideScanner] = useState(false);
   const [reset, setReset] = useState(false);
   const router = useRouter();
@@ -64,13 +71,21 @@ export default function Page() {
     checkUser();
   }, [loading]);
 
-  function resetState() {
+  async function resetState() {
     setReset(!reset);
+    const returned = await IdGenerator();
+    setPigId(returned);
+    setCageId("default");
+    setPigTag("");
+    setPigType("default");
+    setBirthDate("");
+    setWeight("");
   }
   useEffect(() => {
     async function readyData() {
       const returned = await IdGenerator();
       const cage_list: any = await GetCages();
+      const breed_list: any = await getBreedList();
       if (cage_list.code == 200) {
         cage_list.data.map((data: any, key: any) => {
           cageList.push({
@@ -81,8 +96,36 @@ export default function Page() {
         });
         console.log(cageList);
       }
+      if (breed_list.code == 200) {
+        breed_list.data.map((data: any, key: any) => {
+          breedList.push({
+            value: data.breed_id,
+            display: data.breed_name,
+            disabled: false,
+          });
+        });
+      }
 
       setPigId(returned);
+      let outerHTML =
+        qrCodeContainer.current.children[0].cloneNode(true).outerHTML;
+      let blob = new Blob([outerHTML], { type: "image/svg+xml;charset=utf-8" });
+      let URL = window.URL || window.webkitURL || window;
+      let blobURL = URL.createObjectURL(blob);
+
+      let image = new Image();
+
+      image.onload = () => {
+        let canvas = document.createElement("canvas");
+        canvas.width = 200;
+        canvas.height = 200;
+        let context: any = canvas.getContext("2d");
+        // draw image in canvas starting left-0 , top - 0
+        context.drawImage(image, 0, 0, 200, 200);
+        setScannerLink(canvas.toDataURL());
+        //  downloadImage(canvas); need to implement
+      };
+      image.src = blobURL;
     }
     readyData();
   }, []);
@@ -224,7 +267,23 @@ export default function Page() {
                       setIsValid={setIsBatchId}
                       reset={reset}
                       readonly={true}
-                    />{" "}
+                    />
+                    <SelectBox
+                      label={"Breed"}
+                      name={"Breed"}
+                      selected={breed}
+                      options={breedList}
+                      disabled={false}
+                      default_option={"Select Breed"}
+                      setter={setBreed}
+                      required={true}
+                      className={`input input-bordered h-10  `}
+                      validation={validateSelect}
+                      setIsValid={setIsBreed}
+                      reset={reset}
+                    />
+                  </div>
+                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
                     <InputBox
                       type={"text"}
                       label={"Pig Tag"}
@@ -240,8 +299,6 @@ export default function Page() {
                       reset={reset}
                       readonly={false}
                     />
-                  </div>
-                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
                     <SelectBox
                       label={"Pig Type"}
                       name={"pig_Type"}
@@ -296,7 +353,55 @@ export default function Page() {
                       setIsValid={setIsBirthDate}
                       reset={reset}
                       readonly={false}
+                    />{" "}
+                    <InputBox
+                      type={"text"}
+                      label={"Weight"}
+                      placeholder={"Pig Weight"}
+                      name={"weight"}
+                      disabled={false}
+                      className={"input input-bordered h-8"}
+                      getter={weight}
+                      setter={setWeight}
+                      required={true}
+                      validation={validateNumber}
+                      setIsValid={setIsWeight}
+                      reset={reset}
+                      readonly={false}
                     />
+                  </div>
+                  <div className="flex flex-row" ref={qrCodeContainer}>
+                    <div className="w-1/4 h-1/4">
+                      <span className="label text-base font-bold text-base-content">
+                        Qr Code
+                      </span>
+                      <QRCode
+                        id={"printable"}
+                        size={200}
+                        className="w-3/4 h-3/4 p-6 bg-white rounded-md"
+                        value={pig_id}
+                        viewBox={`0 0 200 200`}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <Link
+                        className="my-auto btn btn-primary"
+                        download={`${pig_id}.png`}
+                        target="_blank"
+                        href={scannerLink}
+                      >
+                        Download
+                      </Link>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          printJS("printable", "html");
+                        }}
+                        type="button"
+                      >
+                        Print
+                      </button>
+                    </div>
                   </div>
                   <div className="card-actions justify-end">
                     <button className="btn btn-active btn-primary mx-4">

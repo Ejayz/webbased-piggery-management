@@ -78,3 +78,11 @@ export async function validateUpdatePassword(password: string) {
 
   return { message: message };
 }
+
+export async function validateNumber(value: any) {
+  let message = [];
+  if (!/^\d+$/.test(value)) {
+    message.push("Numbers are only allowed.");
+  }
+  return { message: message };
+}
