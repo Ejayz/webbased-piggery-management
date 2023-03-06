@@ -89,9 +89,17 @@ export default function Page() {
         setRequesting(false);
 
         createUser();
+      } else if (returned.code == 404) {
+        if (!confirm(`Are you sure you want to create?`)) {
+          setRequesting(false);
+          return false;
+        }
+        setRequesting(false);
+        createUser();
       } else {
         setRequesting(false);
         toast.error(returned.message);
+        return false;
       }
     });
   };
@@ -101,6 +109,7 @@ export default function Page() {
     if (returned.code == 200) {
       toast.success(returned.message);
       resetState();
+      router.push("/reorder_management/worker/List");
     } else {
       toast.error(returned.message);
     }

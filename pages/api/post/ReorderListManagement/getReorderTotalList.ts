@@ -14,6 +14,8 @@ export default async function handler(
     const data: any = await getReorderTotal();
     if (data.length != 0) {
       return res.status(200).json({ code: 200, count: data.length });
+    } else {
+      return res.status(404).json({ code: 404, count: 0 });
     }
   } catch (error) {
     return res
