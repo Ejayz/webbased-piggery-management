@@ -81,8 +81,8 @@ export default function TableGeneratorData({
 
           <Link
             className={`px-1 hover:text-blue-500 link ${
-              tbl_data.status == "viewed" ? "" : "hidden"
-            } ${isShowOption.delete ? "block" : "hidden"}`}
+              tbl_data.status === "viewed" ? "hidden" : ""
+            } `}
             href={{
               pathname: `${pathname}/Confirm`,
               query: {

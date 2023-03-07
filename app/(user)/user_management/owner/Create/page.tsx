@@ -37,6 +37,8 @@ export default function Page() {
   const [isPassword, setIsPassword] = useState(false);
   const [isRepeatPassword, setIsRepeatPassword] = useState(false);
   const [reset, setReset] = useState(false);
+
+  const [requesting, setRequesting] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function Page() {
 
   const validate = async (e: any) => {
     e.preventDefault();
+    setRequesting(true);
     if (
       username == "" ||
       first_name == "" ||
@@ -77,6 +80,7 @@ export default function Page() {
       phone == "" ||
       job == "default"
     ) {
+      setRequesting(false);
       toast.error("All feilds are required.");
       return false;
     }
@@ -93,12 +97,14 @@ export default function Page() {
         isRepeatPassword
       )
     ) {
+      setRequesting(false);
       toast.error(
         "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
       );
       return false;
     }
     if (password != repeatPassword) {
+      setRequesting(false);
       toast.error("Password and Repeat Password should be the same.");
       return false;
     }
@@ -120,9 +126,11 @@ export default function Page() {
       job
     );
     if (returned.code == 200) {
+      setRequesting(false);
       toast.success(returned.message);
       resetState();
     } else {
+      setRequesting(false);
       toast.error(returned.message);
     }
   }
@@ -290,7 +298,11 @@ export default function Page() {
                   </div>
 
                   <div className="card-actions justify-end">
-                    <button className="btn btn-active btn-primary mx-4">
+                    <button
+                      className={`btn btn-active btn-primary mx-4 ${
+                        requesting ? "loading" : ""
+                      }`}
+                    >
                       Create
                     </button>
                     <button

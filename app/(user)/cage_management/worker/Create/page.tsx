@@ -29,6 +29,8 @@ export default function Page() {
   const [isCageName, setIsCageName] = useState(true);
   const [isCageType, setIsCageType] = useState(true);
 
+  const [processing, setProcessing] = useState(false);
+
   const [reset, setReset] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
@@ -54,8 +56,10 @@ export default function Page() {
 
   const validate = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (cage_type == "default" || cage_name == "" || cage_capacity == "") {
       toast.error("All feilds are required.");
+      setProcessing(false);
       return false;
     }
 
@@ -63,10 +67,12 @@ export default function Page() {
       toast.error(
         "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
       );
+      setProcessing(false);
       return false;
     }
 
     if (!confirm("Are you sure you want to create?")) {
+      setProcessing(false);
       return false;
     }
 
@@ -95,9 +101,11 @@ export default function Page() {
   async function createUser() {
     const returned = await Create(cage_name, cage_capacity, cage_type);
     if (returned.code == 200) {
+      setProcessing(false);
       toast.success(returned.message);
       resetState();
     } else {
+      setProcessing(false);
       toast.error(returned.message);
     }
   }
@@ -211,7 +219,11 @@ export default function Page() {
                   </div>
 
                   <div className="card-actions justify-end">
-                    <button className="btn btn-active btn-primary mx-4">
+                    <button
+                      className={`btn btn-active btn-primary mx-4 ${
+                        processing ? "loading" : ""
+                      }`}
+                    >
                       Create
                     </button>
                     <button

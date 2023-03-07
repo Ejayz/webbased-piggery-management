@@ -63,6 +63,7 @@ export default function Page() {
   const [reset, setReset] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
+  const [processing, setProcessing] = useState(false);
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -129,6 +130,7 @@ export default function Page() {
   }, [pig_id]);
   const validate = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (
       pig_id == "" ||
       cage_id == "default" ||
@@ -137,6 +139,7 @@ export default function Page() {
       pig_type == "default" ||
       birth_date == ""
     ) {
+      setProcessing(false);
       toast.error("All feilds are required.");
       return false;
     }
@@ -152,6 +155,7 @@ export default function Page() {
         isWeight
       )
     ) {
+      setProcessing(false);
       toast.error(
         "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
       );
@@ -159,6 +163,7 @@ export default function Page() {
     }
 
     if (!confirm("Are you sure you want to create?")) {
+      setProcessing(false);
       return false;
     }
     exec_create();
@@ -176,9 +181,11 @@ export default function Page() {
       weight
     );
     if (returned.code == 200) {
+      setProcessing(false);
       toast.success(returned.message);
       resetState();
     } else {
+      setProcessing(false);
       toast.error(returned.message);
     }
   };
@@ -419,7 +426,11 @@ export default function Page() {
                     </div>
                   </div>
                   <div className="card-actions justify-end">
-                    <button className="btn btn-active btn-primary mx-4">
+                    <button
+                      className={`btn btn-active btn-primary mx-4 ${
+                        processing ? "loading" : ""
+                      }`}
+                    >
                       Create
                     </button>
                     <button
