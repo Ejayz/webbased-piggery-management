@@ -30,5 +30,6 @@ async function View(item_id: any) {
       WHERE i.is_exist = 'true' AND i.item_id = ? `;
   const [err, result] = await conn.query(sql, [item_id]);
   if (err) return err;
+  conn.release()
   return result;
 }

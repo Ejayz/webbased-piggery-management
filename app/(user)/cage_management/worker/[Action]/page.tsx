@@ -32,6 +32,7 @@ export default function Page({ params }: any) {
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
   const [startValidation, setStartValidation] = useState(false);
+
   let message: any = [];
   function resetState() {
     setCageName("");

@@ -28,27 +28,34 @@ export default function Page({ params }: any) {
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
   const [startValidation, setStartValidation] = useState(false);
+  const [processing, setProcessing] = useState(false);
   let message: any = [];
   function resetState() {
     setBreedName("");
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (breed_name == "") {
       toast.error("All fields are required.");
+      setProcessing(false);
       return false;
     }
     if (!isBreedName) {
+      setProcessing(false);
+
       toast.error("Please correct the inputs indicated in red.");
       return false;
     }
     if (params.Action == "Update") {
       if (!isBreedName) {
+        setProcessing(false);
+
         toast.error("Please correct the inputs indicated in red.");
         return false;
       }
       var isOk = confirm("are you sure you want to update?");
-      setIsSubmitting(true);
+
       if (isOk) {
         updateUser();
       } else {
@@ -56,6 +63,7 @@ export default function Page({ params }: any) {
       }
     } else if (params.Action == "Remove") {
       if (!confirm("Are you sure you want to remove?")) {
+        setProcessing(false);
         return false;
       }
 
@@ -67,10 +75,10 @@ export default function Page({ params }: any) {
     const returned = await Remove(breed_id);
     if (returned.code == 200) {
       callCancel(returned.message, "success");
-      setIsSubmitting(false);
+      setProcessing(false);
     } else {
       toast.error(returned.message);
-      setIsSubmitting(false);
+      setProcessing(false);
     }
   };
 
@@ -79,10 +87,10 @@ export default function Page({ params }: any) {
     if (returned.code == 200) {
       resetState();
       callCancel(returned.message, "success");
-      setIsSubmitting(false);
+      setProcessing(false);
     } else {
       toast.error(returned.message);
-      setIsSubmitting(false);
+      setProcessing(false);
     }
   };
 
@@ -185,7 +193,7 @@ export default function Page({ params }: any) {
                 ) : params.Action == "Update" ? (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     Update
@@ -193,7 +201,7 @@ export default function Page({ params }: any) {
                 ) : (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     REMOVE
