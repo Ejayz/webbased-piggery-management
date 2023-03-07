@@ -73,6 +73,8 @@ async function checkDups(item_name: string) {
   const sql =
     "select * from tbl_inventory where item_name=? and is_exist='true'";
   const [err, result] = await conn.query(sql, [item_name]);
+
   if (err) return err;
+  conn.release();
   return result;
 }

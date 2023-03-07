@@ -37,12 +37,10 @@ export default async function handler(
         .status(200)
         .json({ code: 200, message: "Created successfully" });
     } else {
-      return res
-        .status(500)
-        .json({
-          code: 500,
-          message: "A problem occurred or the cage is already full.",
-        });
+      return res.status(500).json({
+        code: 500,
+        message: "A problem occurred or the cage is already full.",
+      });
     }
   } catch (error) {
     console.log(error);
@@ -109,7 +107,7 @@ async function Ops(
   } catch (error) {
     conn.rollback();
     conn.release;
-    return { affectedRows: 0 };
     console.log(error);
+    return { affectedRows: 0 };
   }
 }

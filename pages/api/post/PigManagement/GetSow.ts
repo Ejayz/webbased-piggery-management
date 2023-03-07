@@ -11,18 +11,13 @@ export default async function handler(
     return false;
   }
   const data: any = await Ops();
-  if (data.length !== 0) {
-    return res.status(200).json({ code: 200, id: data[0].batch_id });
-  } else {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Cannot get latest Batch number" });
-  }
+  return res.status(200).json({ code: 200, data: data });
 }
 
 async function Ops() {
   const conn = await connection.getConnection();
-  const sql = "select MAX(batch_id) as batch_id from tbl_batch";
+  const sql =
+    "select * from tbl_pig where pig_type='Sow' and is_exist='true' and status='active'";
   const [result] = await conn.query(sql);
   conn.release();
   return result;

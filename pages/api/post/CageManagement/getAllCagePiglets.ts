@@ -10,19 +10,14 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const data: any = await Ops();
-  if (data.length !== 0) {
-    return res.status(200).json({ code: 200, id: data[0].batch_id });
-  } else {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Cannot get latest Batch number" });
-  }
+  const data: any = await GetCage();
+  return res.status(200).json({ code: 200, data: data });
 }
 
-async function Ops() {
+async function GetCage() {
   const conn = await connection.getConnection();
-  const sql = "select MAX(batch_id) as batch_id from tbl_batch";
+  const sql =
+    "select * from tbl_cage where is_exist='true' and is_full='false' and cage_type='Nursery Pens'";
   const [result] = await conn.query(sql);
   conn.release();
   return result;

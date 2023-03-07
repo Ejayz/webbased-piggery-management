@@ -135,3 +135,94 @@ export const GetBatchId = async () => {
   let data = await response.json();
   return data;
 };
+export const GetNurseryCage = async () => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+  };
+
+  let response = await fetch(
+    `${location.origin}/api/post/CageManagement/getAllCagePiglets`,
+    {
+      method: "POST",
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
+export const GetBoarList = async () => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+  };
+
+  let response = await fetch(
+    `${location.origin}/api/post/PigManagement/GetBoar`,
+    {
+      method: "POST",
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
+export const GetSowList = async () => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+  };
+
+  let response = await fetch(
+    `${location.origin}/api/post/PigManagement/GetSow`,
+    {
+      method: "POST",
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
+
+export const CreatePigs = async (
+  batch_id: any,
+  boar_id: any,
+  sow_id: any,
+  pig_type: any,
+  birth_date: any,
+  breed_id: any,
+  pigData: any,
+  batch_name: any
+) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    batch_id: batch_id,
+    boar_id: boar_id,
+    sow_id: sow_id,
+    pig_type: pig_type,
+    birth_date: birth_date,
+    breed_id: breed_id,
+    batch_name: batch_name,
+    pigData: pigData,
+  });
+
+  let response = await fetch(
+    `${location.origin}/api/post/PigManagement/CreatePigs`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
