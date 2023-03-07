@@ -293,39 +293,44 @@ export default function Page({ params }: any) {
                               Atleast 1 Quantity is required
                             </span>
                           </td>
-                          <td
-                            className={`${
-                              Action == "View" || Action == "Remove"
-                                ? "hidden"
-                                : ""
-                            }`}
-                          >
-                            <input
-                              type="number"
-                              min="0"
-                              required={true}
-                              placeholder="Confirm Quantity"
-                              className={`input w-full max-w-xs ${
-                                Action == "View" ? "hidden" : ""
-                              } ${
-                                data.confirm_reorder === "0" ||
-                                data.confirm_reorder === ""
-                                  ? "input-error"
+                          {Action == "View" || Action == "Remove" ? (
+                            ""
+                          ) : (
+                            <td
+                              className={`${
+                                Action == "View" || Action == "Remove"
+                                  ? "hidden"
                                   : ""
                               }`}
-                              value={
-                                data.confirm_reorder === 0
-                                  ? ""
-                                  : data.confirm_reorder
-                              }
-                              onChange={(e) => {
-                                handleConfirmQuantity(
-                                  e.target.value,
-                                  data.item_id
-                                );
-                              }}
-                            />
-                          </td>
+                            >
+                              <input
+                                type="number"
+                                min="0"
+                                name="Confirm Quantity"
+                                required={true}
+                                placeholder="Confirm Quantity"
+                                className={`input w-full max-w-xs ${
+                                  Action == "View" ? "hidden" : ""
+                                } ${
+                                  data.confirm_reorder === "0" ||
+                                  data.confirm_reorder === ""
+                                    ? "input-error"
+                                    : ""
+                                }`}
+                                value={
+                                  data.confirm_reorder === 0
+                                    ? ""
+                                    : data.confirm_reorder
+                                }
+                                onChange={(e) => {
+                                  handleConfirmQuantity(
+                                    e.target.value,
+                                    data.item_id
+                                  );
+                                }}
+                              />
+                            </td>
+                          )}
                         </tr>
                       );
                     })}
