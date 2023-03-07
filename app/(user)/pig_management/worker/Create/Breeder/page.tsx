@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
-import { Create } from "@/hooks/useCageManagement";
 import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
 import { toast } from "react-toastify";
@@ -16,11 +15,17 @@ import {
   validateSkip,
 } from "@/hooks/useValidation";
 import PasswordBox from "@/components/FormComponents/passwordBox";
-import { getBreedList, GetCages, IdGenerator } from "@/hooks/usePigManagement";
+import {
+  Create,
+  getBreedList,
+  GetCages,
+  IdGenerator,
+} from "@/hooks/usePigManagement";
 import QrCode from "@/components/QrComponent/qrcode";
 import QRCode from "react-qr-code";
 import Link from "next/link";
 import printJS from "print-js";
+import { QRCodeCanvas } from "qrcode.react";
 
 interface SelectInter {
   value: number;
@@ -31,14 +36,14 @@ interface SelectInter {
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
 
-  const [pig_id, setPigId] = useState("1");
+  const [pig_id, setPigId] = useState("");
   const [cage_id, setCageId] = useState("default");
-  const [batch_id, setBatchId] = useState(1);
+  const [batch_id, setBatchId] = useState("1");
   const [pig_tag, setPigTag] = useState("");
   const [pig_type, setPigType] = useState("default");
   const [birth_date, setBirthDate] = useState("");
   const [weight, setWeight] = useState("");
-  const [breed, setBreed] = useState("default");
+  const [breed_id, setBreed] = useState("default");
 
   const [isBreed, setIsBreed] = useState(true);
   const [isPigId, setIsPigId] = useState(true);
@@ -72,7 +77,6 @@ export default function Page() {
   }, [loading]);
 
   async function resetState() {
-    setReset(!reset);
     const returned = await IdGenerator();
     setPigId(returned);
     setCageId("default");
@@ -80,6 +84,10 @@ export default function Page() {
     setPigType("default");
     setBirthDate("");
     setWeight("");
+    setBreed("default");
+    setCageList([]);
+    setBreedList([]);
+    setReset(!reset);
   }
   useEffect(() => {
     async function readyData() {
@@ -94,7 +102,6 @@ export default function Page() {
             disabled: false,
           });
         });
-        console.log(cageList);
       }
       if (breed_list.code == 200) {
         breed_list.data.map((data: any, key: any) => {
@@ -105,39 +112,46 @@ export default function Page() {
           });
         });
       }
-
       setPigId(returned);
-      let outerHTML =
-        qrCodeContainer.current.children[0].cloneNode(true).outerHTML;
-      let blob = new Blob([outerHTML], { type: "image/svg+xml;charset=utf-8" });
-      let URL = window.URL || window.webkitURL || window;
-      let blobURL = URL.createObjectURL(blob);
-
-      let image = new Image();
-
-      image.onload = () => {
-        let canvas = document.createElement("canvas");
-        canvas.width = 200;
-        canvas.height = 200;
-        let context: any = canvas.getContext("2d");
-        // draw image in canvas starting left-0 , top - 0
-        context.drawImage(image, 0, 0, 200, 200);
-        setScannerLink(canvas.toDataURL());
-        //  downloadImage(canvas); need to implement
-      };
-      image.src = blobURL;
     }
     readyData();
   }, []);
 
+  const createDownloadLink = async () => {
+    let data: any = document.getElementById("canvasable");
+    setScannerLink(data.toDataURL());
+  };
+
+  useEffect(() => {
+    if (pig_id != "") {
+      createDownloadLink();
+    }
+  }, [pig_id]);
   const validate = async (e: any) => {
     e.preventDefault();
-    if (true) {
+    if (
+      pig_id == "" ||
+      cage_id == "default" ||
+      batch_id == "" ||
+      pig_tag == "" ||
+      pig_type == "default" ||
+      birth_date == ""
+    ) {
       toast.error("All feilds are required.");
       return false;
     }
 
-    if (!true) {
+    if (
+      !(
+        isPigId &&
+        isCageId &&
+        isBatchId &&
+        isPigTag &&
+        isPigType &&
+        isBirthDate &&
+        isWeight
+      )
+    ) {
       toast.error(
         "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
       );
@@ -146,6 +160,26 @@ export default function Page() {
 
     if (!confirm("Are you sure you want to create?")) {
       return false;
+    }
+    exec_create();
+  };
+
+  const exec_create = async () => {
+    const returned = await Create(
+      pig_id,
+      cage_id,
+      batch_id,
+      breed_id,
+      pig_tag,
+      pig_type,
+      birth_date,
+      weight
+    );
+    if (returned.code == 200) {
+      toast.success(returned.message);
+      resetState();
+    } else {
+      toast.error(returned.message);
     }
   };
 
@@ -203,7 +237,8 @@ export default function Page() {
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Pig</li>
-                    <li className="font-bold">Create</li>
+                    <li>Create</li>
+                    <li className="font-bold">Breeder</li>
                   </ul>
                 </div>
 
@@ -271,7 +306,7 @@ export default function Page() {
                     <SelectBox
                       label={"Breed"}
                       name={"Breed"}
-                      selected={breed}
+                      selected={breed_id}
                       options={breedList}
                       disabled={false}
                       default_option={"Select Breed"}
@@ -305,28 +340,14 @@ export default function Page() {
                       selected={pig_type}
                       options={[
                         {
-                          value: "Gilt",
-                          display: "Gilt",
-                          disabled: false,
-                        },
-                        {
                           value: "Sow",
                           display: "Sow",
                           disabled: false,
                         },
-                        {
-                          value: "Piglet",
-                          display: "Piglet",
-                          disabled: false,
-                        },
+
                         {
                           value: "Boar",
                           display: "Boar",
-                          disabled: false,
-                        },
-                        {
-                          value: "Fattening",
-                          display: "Fattening",
                           disabled: false,
                         },
                       ]}
@@ -370,18 +391,12 @@ export default function Page() {
                       readonly={false}
                     />
                   </div>
-                  <div className="flex flex-row" ref={qrCodeContainer}>
-                    <div className="w-1/4 h-1/4">
+                  <div className="flex flex-row " ref={qrCodeContainer}>
+                    <div className="w-1/4 h-1/4 ">
                       <span className="label text-base font-bold text-base-content">
                         Qr Code
                       </span>
-                      <QRCode
-                        id={"printable"}
-                        size={200}
-                        className="w-3/4 h-3/4 p-6 bg-white rounded-md"
-                        value={pig_id}
-                        viewBox={`0 0 200 200`}
-                      />
+                      <QRCodeCanvas id="canvasable" value={pig_id} />
                     </div>
                     <div className="flex flex-col">
                       <Link
@@ -395,7 +410,7 @@ export default function Page() {
                       <button
                         className="btn btn-primary"
                         onClick={() => {
-                          printJS("printable", "html");
+                          printJS("canvasable", "html");
                         }}
                         type="button"
                       >

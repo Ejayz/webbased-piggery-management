@@ -34,7 +34,6 @@ export default function QrCode({ setter, setHide, hide }: any) {
   useEffect(() => {
     Html5Qrcode.getCameras()
       .then((devices) => {
-        console.log(devices);
         setCamera(devices);
         if (devices && devices.length) {
           var cameraId = devices[0].id;

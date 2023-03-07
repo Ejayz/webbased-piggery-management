@@ -10,10 +10,106 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+  const {
+    pig_id,
+    cage_id,
+    batch_id,
+    breed_id,
+    pig_tag,
+    pig_type,
+    birthdate,
+    weight,
+  }: any = req.body;
+  try {
+    const data: any = await Ops(
+      pig_id,
+      cage_id,
+      batch_id,
+      breed_id,
+      pig_tag,
+      pig_type,
+      birthdate,
+      weight
+    );
+    console.log(data);
+    if (data.affectedRows >= 1) {
+      return res
+        .status(200)
+        .json({ code: 200, message: "Created successfully" });
+    } else {
+      return res
+        .status(500)
+        .json({
+          code: 500,
+          message: "A problem occurred or the cage is already full.",
+        });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(200)
+      .json({ code: 500, message: "500 Server error, Something went long" });
+  }
 }
 
-async function UpdateCage() {
+async function Ops(
+  pig_id: any,
+  cage_id: any,
+  batch_id: any,
+  breed_id: any,
+  pig_tag: any,
+  pig_type: any,
+  birthdate: any,
+  weight: any
+) {
   const conn = await connection.getConnection();
-  const sql =
-    "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`, `cage_id`, `batch_id`, `pig_tag`, `pig_type`, `birthdate`, ) VALUES (?, ?, ?, ?, ?, ?, ?);";
+  conn.beginTransaction();
+  try {
+    const sql =
+      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`, `cage_id`, `batch_id`, `breed_id`,`pig_tag`, `pig_type`, `birthdate`,`weight` ) VALUES (?,?, ?, ?, ?,?, ?, ?);";
+    await conn.query(sql, [
+      pig_id,
+      cage_id,
+      batch_id,
+      breed_id,
+      pig_tag,
+      pig_type,
+      birthdate,
+      weight,
+    ]);
+    const getCageCapacity =
+      "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";
+    const [result]: any = await conn.query(getCageCapacity, [cage_id]);
+    if (result.length == 0) {
+      conn.rollback();
+      conn.release;
+      return { affectedRows: 0 };
+    } else if (result[0].cage_capacity! >= result[0].current_caged) {
+      let updatedCage = result[0].current_caged + 1;
+      if (result[0].cage_capacity == updatedCage) {
+        const updateCage =
+          "update tbl_cage set current_caged=? , is_full='true' where is_exist='true' and cage_id=?";
+        const [result] = await conn.query(updateCage, [updatedCage, cage_id]);
+        conn.commit();
+        conn.release;
+        return result;
+      } else {
+        const updateCage =
+          "update tbl_cage set current_caged=?  where is_exist='true' and cage_id=?";
+        const [result] = await conn.query(updateCage, [updatedCage, cage_id]);
+        conn.commit();
+        conn.release;
+        return result;
+      }
+    } else {
+      conn.rollback();
+      conn.release();
+      return { affectedRows: 0 };
+    }
+  } catch (error) {
+    conn.rollback();
+    conn.release;
+    return { affectedRows: 0 };
+    console.log(error);
+  }
 }
