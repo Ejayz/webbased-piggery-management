@@ -27,6 +27,7 @@ export default async function handler(
     } else {
       data = await SearhGetCage(offset, limit, sortorder, sortby, keyword);
     }
+    console.log(data);
     if (data.length != 0) {
       return res.status(200).json({ code: 200, data: data });
     } else {
@@ -54,19 +55,15 @@ async function GetCage(
   SortOrder: any,
   sortby: any
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql = `select cage_id,cage_name,cage_capacity,cage_type from tbl_cage where is_exist='true' and is_full='false' ORDER BY ${conn.escapeId(
-        sortby
-      )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
-      conn.query(sql, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql = `select cage_id,cage_name,cage_capacity,cage_type from tbl_cage where is_exist='true' and is_full='false' ORDER BY ${conn.escapeId(
+    sortby
+  )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
+  const [result] = await conn.query(sql, []);
+  conn.release();
+  console.log("no key");
+  console.log(result);
+  return result;
 }
 
 async function SearhGetCage(
@@ -76,18 +73,13 @@ async function SearhGetCage(
   sortby: any,
   keyword: string
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      keyword = `%${keyword}%`;
-      if (err) reject(err);
-      const sql = `select cage_id,cage_name,cage_capacity,cage_type from tbl_cage where (cage_name LIKE ? OR cage_type LIKE ? OR cage_capacity LIKE ? ) AND is_exist='true' AND is_full='false' ORDER BY ${conn.escapeId(
-        sortby
-      )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
-      conn.query(sql, [keyword, keyword, keyword], (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  keyword = `%${keyword}%`;
+  const sql = `select cage_id,cage_name,cage_capacity,cage_type from tbl_cage where (cage_name LIKE ? OR cage_type LIKE ? OR cage_capacity LIKE ? ) AND is_exist='true' AND is_full='false' ORDER BY ${conn.escapeId(
+    sortby
+  )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
+  const [result] = await conn.query(sql, [keyword, keyword, keyword]);
+  console.log(result);
+  conn.release();
+  return result;
 }

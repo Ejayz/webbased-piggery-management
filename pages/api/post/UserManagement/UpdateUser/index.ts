@@ -63,45 +63,41 @@ async function UpdateUsername({
   job,
   user_id,
 }: any) {
-  return new Promise((resolve, reject) => {
-    var sql = "";
-    connection.getConnection((err, conn) => {
-      if (hashedPass != "") {
-        sql =
-          "UPDATE `tbl_users` SET  `username`=?, `password`=?, `first_name`=?, `middle_name`=?, `last_name`=?, `phone`=?, `job`=?  WHERE `user_id`=?;";
-        conn.query(
-          sql,
-          [
-            username,
-            hashedPass,
-            first_name,
-            middle_name,
-            last_name,
-            phone,
-            job,
-            user_id,
-          ],
-          (err, result) => {
-            if (err) reject(err);
-            resolve(result);
-            conn.release();
-          }
-        );
-      } else {
-        sql =
-          "UPDATE `tbl_users` SET  `username`=?,  `first_name`=?, `middle_name`=?, `last_name`=?, `phone`=?, `job`=? WHERE `user_id`=?;";
-        conn.query(
-          sql,
-          [username, first_name, middle_name, last_name, phone, job, user_id],
-          (err, result) => {
-            if (err) reject(err);
-            resolve(result);
-            conn.release();
-          }
-        );
-      }
-    });
-  });
+  const conn = await connection.getConnection();
+  var sql = "";
+
+  if (hashedPass != "") {
+    sql =
+      "UPDATE `tbl_users` SET  `username`=?, `password`=?, `first_name`=?, `middle_name`=?, `last_name`=?, `phone`=?, `job`=?  WHERE `user_id`=?;";
+    const [err, result] = await conn.query(sql, [
+      username,
+      hashedPass,
+      first_name,
+      middle_name,
+      last_name,
+      phone,
+      job,
+      user_id,
+    ]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } else {
+    sql =
+      "UPDATE `tbl_users` SET  `username`=?,  `first_name`=?, `middle_name`=?, `last_name`=?, `phone`=?, `job`=? WHERE `user_id`=?;";
+    const [err, result] = await conn.query(sql, [
+      username,
+      first_name,
+      middle_name,
+      last_name,
+      phone,
+      job,
+      user_id,
+    ]);
+    conn.release();
+    if (err) return err;
+    return result;
+  }
 }
 async function generateHased(password: string) {
   const salt = await bcrypt.genSaltSync(10);
@@ -109,17 +105,10 @@ async function generateHased(password: string) {
 }
 
 async function checkDups({ username, user_id, job }: any) {
-  return new Promise((resolve, reject) => {
-    const sql =
-      "select * from tbl_users where BINARY username=? and user_id!=? and job=? and is_exist='true'";
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      conn.query(sql, [username, user_id, job], (error, result, fields) => {
-        if (error) reject(error);
-
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_users where BINARY username=? and user_id!=? and job=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [username, user_id, job]);
+  if (err) return err;
+  return result;
 }

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import connection from "pages/api/mysql";
@@ -27,16 +26,11 @@ export default async function handler(
 }
 
 async function ViewCage(cage_id: any) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "select * from tbl_cage where cage_id=? AND is_exist='true' AND is_full='false'";
-      conn.query(sql, [cage_id], (err, result, fields) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_cage where cage_id=? AND is_exist='true' AND is_full='false'";
+  const [err, result] = await conn.query(sql, [cage_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

@@ -72,44 +72,32 @@ async function createUser({
   phone,
   job,
 }: any) {
-  return new Promise((resolve, rejects) => {
-    const sql =
-      "INSERT INTO `piggery_management`.`tbl_users` (`username`, `password`, `first_name`, `middle_name`, `last_name`, `phone`, `job`) VALUES (?, ?, ?, ?, ?, ?, ?);";
-    connection.getConnection((err, conn) => {
-      if (err) rejects(err);
-      conn.query(
-        sql,
-        [
-          username,
-          hashedPassword,
-          first_name,
-          middle_name,
-          last_name,
-          phone,
-          job,
-        ],
-        (error, result, feilds) => {
-          if (error?.errno == 1062)
-            rejects({ code: 1062, message: "Username already used" });
-          resolve(result);
-          conn.release();
-        }
-      );
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "INSERT INTO `piggery_management`.`tbl_users` (`username`, `password`, `first_name`, `middle_name`, `last_name`, `phone`, `job`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+
+  const [result] = await conn.query(sql, [
+    username,
+    hashedPassword,
+    first_name,
+    middle_name,
+    last_name,
+    phone,
+    job,
+  ]);
+  return result;
 }
 
 async function checkDups({ username, job }: any) {
-  return new Promise((resolve, reject) => {
-    const sql =
-      "select * from tbl_users where BINARY username=? and is_exist='true' and job=?";
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      conn.query(sql, [username, job], (error, result, fields) => {
-        if (error) reject(error);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "select * from tbl_users where BINARY username=? and is_exist='true' and job=?";
+
+  const [err, result] = await conn.query(sql, [username, job]);
+  conn.release();
+  if (err) {
+    return err;
+  }
+
+  return result;
 }

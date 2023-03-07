@@ -54,22 +54,17 @@ async function GetCage(
   SortOrder: any,
   sortby: any
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql = `SELECT i.*, c.category_name
+  const conn = await connection.getConnection();
+  const sql = `SELECT i.*, c.category_name
       FROM tbl_inventory i 
       JOIN tbl_category c ON i.category_id = c.category_id 
       WHERE i.is_exist = 'true' 
       ORDER BY ${conn.escapeId(sortby)} ${SortOrder} 
       LIMIT ${limit} OFFSET ${offset};`;
-      conn.query(sql, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const [err, result] = await conn.query(sql, []);
+  conn.release();
+  if (err) return err;
+  return err;
 }
 
 async function SearhGetCage(
@@ -79,23 +74,18 @@ async function SearhGetCage(
   sortby: any,
   keyword: string
 ) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      keyword = `%${keyword}%`;
-      if (err) reject(err);
-      const sql = `SELECT i.*, c.category_name, FORMAT((i.item_quantity / i.item_net_weight), 2) AS item_left
+  const conn = await connection.getConnection();
+  keyword = `%${keyword}%`;
+
+  const sql = `SELECT i.*, c.category_name, FORMAT((i.item_quantity / i.item_net_weight), 2) AS item_left
       FROM tbl_inventory i 
       JOIN tbl_category c ON i.category_id = c.category_id 
       WHERE (i.item_name LIKE ? OR i.item_description LIKE ?) 
         AND i.is_exist = 'true' 
       ORDER BY ${conn.escapeId(sortby)} ${SortOrder} 
       LIMIT ${limit} OFFSET ${offset};`;
-      conn.query(sql, [keyword, keyword], (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const [err, result] = await conn.query(sql, [keyword, keyword]);
+  conn.release();
+  if (err) return err;
+  return result;
 }
-

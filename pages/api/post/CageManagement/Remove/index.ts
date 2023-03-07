@@ -31,16 +31,11 @@ export default async function handler(
 }
 
 async function UpdateCage(cage_id: number) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "UPDATE tbl_cage SET is_exist='false'  where is_exist='true' and cage_id=?";
-      conn.query(sql, [cage_id], (err, result, field) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql =
+    "UPDATE tbl_cage SET is_exist='false'  where is_exist='true' and cage_id=?";
+  const [err, result] = await conn.query(sql, [cage_id]);
+  conn.release();
+  if (err) return err;
+  return result;
 }

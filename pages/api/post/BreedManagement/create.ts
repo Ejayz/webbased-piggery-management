@@ -30,29 +30,18 @@ export default async function handler(
 }
 
 async function CreateBreed(breed_name: string) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql = "insert into tbl_breed  (`breed_name`) values (?)";
-      conn.query(sql, [breed_name], (err, result, feilds) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql = "insert into tbl_breed  (`breed_name`) values (?)";
+  const [err, result] = await conn.query(sql, [breed_name]);
+  conn.release();
+  if (err) return err;
+  return err;
 }
 async function checkDups(breed_name: string) {
-  return new Promise((resolve, reject) => {
-    connection.getConnection((err, conn) => {
-      if (err) reject(err);
-      const sql =
-        "select * from tbl_breed where breed_name=? and is_exist='true'";
-      conn.query(sql, [breed_name], (err, result, fields) => {
-        if (err) reject(err);
-        resolve(result);
-        conn.release();
-      });
-    });
-  });
+  const conn = await connection.getConnection();
+  const sql = "select * from tbl_breed where breed_name=? and is_exist='true'";
+  const [err, result] = await conn.query(sql, [breed_name]);
+  conn.release();
+  if (err) return err;
+  return err;
 }

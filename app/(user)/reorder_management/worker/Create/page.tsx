@@ -3,43 +3,28 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
-import {} from "@/hooks/useBreedManagement";
-import InputBox from "@/components/FormComponents/inputbox";
 import { toast } from "react-toastify";
-import {
-  validateNormal,
-  validatePassword,
-  validatePhone,
-  validateSelect,
-  validateSkip,
-} from "@/hooks/useValidation";
-import PasswordBox from "@/components/FormComponents/passwordBox";
-import SelectBox from "@/components/FormComponents/selectBox";
-import { GetCategory, Create } from "@/hooks/useInventory";
+import { getLowLvl, Create, getTotalReorderList } from "@/hooks/useReorder";
+
+interface reorderListType {
+  item_id: number;
+  item_name: string;
+  quantity: number;
+  confirmed: boolean;
+}
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
 
-  const [item_id, setItemId] = useState("");
-  const [item_name, setItemName] = useState("");
-  const [category_id, setCategoryId] = useState("default");
-  const [item_description, setItemDescription] = useState("");
-  const [item_quantity, setItemQuantity] = useState("");
-  const [item_unit, setItemUnit] = useState("default");
-  const [item_net_weight, setItemNetWeight] = useState("");
+  //Reorder vars
+  const [reorderList, setReorderList] = useState<reorderListType[]>([]);
 
-  const [isItemName, setIsItemName] = useState(true);
-  const [isCategoryId, setIsCategoryId] = useState(true);
-  const [isItemDescription, setIsItemDescription] = useState(true);
-  const [isItemQuantity, setIsItemQuantity] = useState(true);
-  const [isItemUnit, setIsItemUnit] = useState(true);
-  const [category_list, setCategoryList] = useState([]);
-  const [isItemNetWeight, setIsItemNetWeight] = useState(true);
+  const [requesting, setRequesting] = useState(false);
 
-  const [reset, setReset] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
   let list: any = [];
+
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -52,81 +37,97 @@ export default function Page() {
     }
     checkUser();
   }, [loading]);
+  const handleQuantity = async (quantity: any, item_id: number) => {
+    setReorderList((prevList) => {
+      const updatedList = prevList.map((item) => {
+        if (item.item_id === item_id) {
+          return { ...item, quantity: quantity };
+        } else {
+          return item;
+        }
+      });
+      console.log(updatedList);
+      return updatedList;
+    });
+  };
 
-  function resetState() {
-    setReset(!reset);
-    setItemName("");
-    setCategoryId("default");
-    setItemDescription("");
-    setItemQuantity("");
-    setItemUnit("default");
-    setItemNetWeight("");
-  }
+  const handleConfirm = async (item_id: number) => {
+    setReorderList((prevList) => {
+      const updatedList = prevList.map((item) => {
+        if (item.item_id === item_id) {
+          return { ...item, confirmed: true };
+        } else {
+          return item;
+        }
+      });
+      console.log(updatedList);
+      return updatedList;
+    });
+  };
+
+  function resetState() {}
 
   const validate = async (e: any) => {
     e.preventDefault();
-    if (
-      item_name == "" ||
-      category_id == "default" ||
-      item_description == "" ||
-      item_quantity == "" ||
-      item_unit == "default"
-    ) {
-      toast.error("All feilds are required.");
-      return false;
-    }
+    setRequesting(true);
+    reorderList.forEach((data) => {
+      if (data.quantity == 0) {
+        toast.error("Quantity should be atleast 1");
+        return false;
+      }
+    });
+    getTotalReorderList().then((returned) => {
+      if (returned.code == 200) {
+        if (
+          !confirm(
+            `Currently there is still ${returned.count} pending reorder list. Are you sure you want to create?`
+          )
+        ) {
+          setRequesting(false);
+          return false;
+        }
+        setRequesting(false);
 
-    if (
-      !(
-        isItemName &&
-        isCategoryId &&
-        isItemDescription &&
-        isItemQuantity &&
-        isItemUnit
-      )
-    ) {
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      return false;
-    }
-
-    if (!confirm("Are you sure you want to create?")) {
-      return false;
-    }
-    createUser();
+        createUser();
+      } else if (returned.code == 404) {
+        if (!confirm(`Are you sure you want to create?`)) {
+          setRequesting(false);
+          return false;
+        }
+        setRequesting(false);
+        createUser();
+      } else {
+        setRequesting(false);
+        toast.error(returned.message);
+        return false;
+      }
+    });
   };
 
   async function createUser() {
-    const returned = await Create(
-      item_name,
-      category_id,
-      item_description,
-      item_quantity,
-      item_unit,
-      item_net_weight
-    );
+    const returned = await Create(reorderList);
     if (returned.code == 200) {
       toast.success(returned.message);
       resetState();
+      router.push("/reorder_management/worker/List");
     } else {
       toast.error(returned.message);
     }
   }
   useEffect(() => {
     async function exec_get() {
-      const returned = await GetCategory();
+      const returned = await getLowLvl();
 
       if (returned.code == 200) {
-        console.log(returned);
         returned.data.map((data: any, key: number) => {
           list.push({
-            value: data.category_id,
-            display: data.category_name,
-            disabled: false,
+            item_id: data.item_id,
+            item_name: data.item_name,
+            quantity: 1,
+            confirmed: false,
           });
         });
-        setCategoryList(list);
+        setReorderList(list);
       }
     }
     exec_get();
@@ -164,17 +165,69 @@ export default function Page() {
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="overflow-x-auto"></div>
+                  <div className="overflow-x-auto mb-4">
+                    <table className="table w-full">
+                      {/* head*/}
+                      <thead>
+                        <tr>
+                          <th>Item Name</th>
+                          <th>Quantity</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {/* row 1 */}
+                        {reorderList.map((data: any, key: number) => {
+                          return (
+                            <tr key={key}>
+                              <td>{data.item_name}</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  placeholder="Item Quantity"
+                                  className={`input w-full max-w-xs ${
+                                    data.quantity === "0" ||
+                                    data.quantity === ""
+                                      ? "input-error"
+                                      : ""
+                                  }`}
+                                  value={
+                                    data.quantity === 0 ? "" : data.quantity
+                                  }
+                                  readOnly={data.confirmed}
+                                  onChange={(e) => {
+                                    handleQuantity(
+                                      e.target.value,
+                                      data.item_id
+                                    );
+                                  }}
+                                  required={true}
+                                />
+                                <span
+                                  className={`text-error ${
+                                    data.quantity === "0" ||
+                                    data.quantity === ""
+                                      ? "block"
+                                      : "hidden"
+                                  }`}
+                                >
+                                  Atleast 1 Quantity is required
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                   <div className="card-actions justify-end">
-                    <button className="btn btn-active btn-primary mx-4">
-                      Create
-                    </button>
                     <button
-                      type="reset"
-                      onClick={resetState}
-                      className="btn mx-4"
+                      disabled={requesting}
+                      className={`btn btn-active btn-primary mx-4 ${
+                        requesting ? "loading" : ""
+                      }`}
                     >
-                      Reset
+                      Create
                     </button>
                   </div>
                 </form>
