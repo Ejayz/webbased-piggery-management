@@ -17,12 +17,12 @@ async function send_sms(phone: any, username: any) {
   let sms = {};
   let otp = generateOTP();
   let completePhone = `+63${phone}`;
-  // const data = await client.messages.create({
-  //   body: `Hi ${username},You requested a password change. Use this One Time Password(OTP):${otp} to authenticate this request.`,
-  //   from: twillioPhone,
-  //   to: completePhone,
-  // });
-  const data = { status: "sent" };
+  const data = await client.messages.create({
+    body: `Hi ${username},You requested a password change. Use this One Time Password(OTP):${otp} to authenticate this request.`,
+    from: twillioPhone,
+    to: completePhone,
+  });
+  // const data = { status: "sent" };
   if (data.status === "queued" || data.status === "sent") {
     return {
       status: 200,
