@@ -40,6 +40,7 @@ export default function Page({ params }: any) {
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
   const [startValidation, setStartValidation] = useState(false);
+  const [processing, setProcessing] = useState(false);
   let message: any = [];
   function resetState() {
     setItemName("");
@@ -51,16 +52,20 @@ export default function Page({ params }: any) {
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (item_name == "" || category_id == "default" || item_description == "") {
+      setProcessing(false);
       toast.error("All fields are required.");
       return false;
     }
     if (!(isItemName && isCategoryId && isItemDescription)) {
+      setProcessing(false);
       toast.error("Please correct the inputs indicated in red.");
       return false;
     }
     if (params.Action == "Update") {
       if (!(isItemName && isCategoryId && isItemDescription)) {
+        setProcessing(false);
         toast.error("Please correct the inputs indicated in red.");
         return false;
       }
@@ -69,10 +74,12 @@ export default function Page({ params }: any) {
       if (isOk) {
         updateUser();
       } else {
+        setProcessing(false);
         return false;
       }
     } else if (params.Action == "Remove") {
       if (!confirm("Are you sure you want to remove?")) {
+        setProcessing(false);
         return false;
       }
 
@@ -101,9 +108,11 @@ export default function Page({ params }: any) {
     const returned = await Remove(item_id);
     if (returned.code == 200) {
       callCancel(returned.message, "success");
+      setProcessing(false);
       setIsSubmitting(false);
     } else {
       toast.error(returned.message);
+      setProcessing(false);
       setIsSubmitting(false);
     }
   };
@@ -117,10 +126,12 @@ export default function Page({ params }: any) {
     );
     if (returned.code == 200) {
       resetState();
+      setProcessing(false);
       callCancel(returned.message, "success");
       setIsSubmitting(false);
     } else {
       toast.error(returned.message);
+      setProcessing(false);
       setIsSubmitting(false);
     }
   };
@@ -250,7 +261,7 @@ export default function Page({ params }: any) {
                 ) : params.Action == "Update" ? (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     Update
@@ -258,7 +269,7 @@ export default function Page({ params }: any) {
                 ) : (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     REMOVE

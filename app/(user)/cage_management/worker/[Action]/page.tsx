@@ -32,6 +32,9 @@ export default function Page({ params }: any) {
   const router = useRouter();
   const Queryid = useSearchParams().get("id");
   const [startValidation, setStartValidation] = useState(false);
+
+  const [processing, setProcessing] = useState(false);
+
   let message: any = [];
   function resetState() {
     setCageName("");
@@ -40,14 +43,17 @@ export default function Page({ params }: any) {
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (cage_type == "default" || cage_name == "" || cage_capacity == "") {
       toast.error("All feilds are required.");
+      setProcessing(false);
       return false;
     }
 
     if (params.Action == "Update") {
       if (!(isCageCapacity && isCageType && isCageName)) {
         toast.error("Please correct the inputs indicated in red.");
+        setProcessing(false);
         return false;
       }
       var isOk = confirm("are you sure you want to update?");
@@ -55,10 +61,12 @@ export default function Page({ params }: any) {
       if (isOk) {
         updateUser();
       } else {
+        setProcessing(false);
         return false;
       }
     } else if (params.Action == "Remove") {
       if (!confirm("Are you sure you want to remove?")) {
+        setProcessing(false);
         return false;
       }
 
@@ -90,10 +98,11 @@ export default function Page({ params }: any) {
     const returned = await Remove(cage_id);
     if (returned.code == 200) {
       callCancel(returned.message, "success");
-      setIsSubmitting(false);
+
+      setProcessing(false);
     } else {
       toast.error(returned.message);
-      setIsSubmitting(false);
+      setProcessing(false);
     }
   };
 
@@ -275,7 +284,7 @@ export default function Page({ params }: any) {
                 ) : params.Action == "Update" ? (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     Update
@@ -283,7 +292,7 @@ export default function Page({ params }: any) {
                 ) : (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     REMOVE

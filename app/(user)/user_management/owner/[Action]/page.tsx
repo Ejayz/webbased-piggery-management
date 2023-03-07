@@ -44,7 +44,7 @@ export default function Page({ params }: any) {
   const Queryid = useSearchParams().get("id");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [startValidation, setStartValidation] = useState(false);
-
+  const [requesting, setRequesting] = useState(false);
   let message: any = [];
   function resetState() {
     setUsername("");
@@ -58,9 +58,10 @@ export default function Page({ params }: any) {
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
-
+    setRequesting(true);
     if (username == "" || first_name == "" || last_name == "" || phone == "") {
       toast.error("All feilds are required.");
+      setRequesting(false);
       return false;
     }
 
@@ -77,18 +78,21 @@ export default function Page({ params }: any) {
           isRepeatPassword
         )
       ) {
+        setRequesting(false);
         toast.error("Please correct the inputs indicated in red.");
         return false;
       }
       var isOk = confirm("are you sure you want to update?");
-      setIsSubmitting(true);
+
       if (isOk) {
         updateUser();
       } else {
+        setRequesting(false);
         return false;
       }
     } else if (params.Action == "Remove") {
       if (!confirm("Are you sure you want to remove?")) {
+        setRequesting(false);
         return false;
       }
 
@@ -99,8 +103,10 @@ export default function Page({ params }: any) {
   const exec_remove = async () => {
     const returned = await Remove(user_id);
     if (returned.code == 200) {
+      setRequesting(false);
       callCancel(returned.message, "success");
     } else {
+      setRequesting(false);
       toast.error(returned.message);
     }
   };
@@ -118,8 +124,10 @@ export default function Page({ params }: any) {
     );
     if (returned.code == 200) {
       resetState();
+      setRequesting(false);
       callCancel(returned.message, "success");
     } else {
+      setRequesting(false);
       toast.error(returned.message);
     }
   };
@@ -344,7 +352,7 @@ export default function Page({ params }: any) {
                 ) : params.Action == "Update" ? (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      requesting ? "loading" : ""
                     }`}
                   >
                     Update
@@ -352,7 +360,7 @@ export default function Page({ params }: any) {
                 ) : (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      requesting ? "loading" : ""
                     }`}
                   >
                     REMOVE

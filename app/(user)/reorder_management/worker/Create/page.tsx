@@ -72,6 +72,8 @@ export default function Page() {
     setRequesting(true);
     reorderList.forEach((data) => {
       if (data.quantity == 0) {
+        setRequesting(false);
+
         toast.error("Quantity should be atleast 1");
         return false;
       }
@@ -86,7 +88,6 @@ export default function Page() {
           setRequesting(false);
           return false;
         }
-        setRequesting(false);
 
         createUser();
       } else if (returned.code == 404) {
@@ -94,7 +95,7 @@ export default function Page() {
           setRequesting(false);
           return false;
         }
-        setRequesting(false);
+
         createUser();
       } else {
         setRequesting(false);
@@ -107,10 +108,12 @@ export default function Page() {
   async function createUser() {
     const returned = await Create(reorderList);
     if (returned.code == 200) {
+      setRequesting(false);
       toast.success(returned.message);
       resetState();
       router.push("/reorder_management/worker/List");
     } else {
+      setRequesting(false);
       toast.error(returned.message);
     }
   }

@@ -36,6 +36,7 @@ export default function Page() {
   const [category_list, setCategoryList] = useState([]);
   const [isItemNetWeight, setIsItemNetWeight] = useState(true);
 
+  const [processing, setProcessing] = useState(false);
   const [reset, setReset] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
@@ -65,6 +66,7 @@ export default function Page() {
 
   const validate = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (
       item_name == "" ||
       category_id == "default" ||
@@ -72,6 +74,7 @@ export default function Page() {
       item_quantity == "" ||
       item_unit == "default"
     ) {
+      setProcessing(false);
       toast.error("All feilds are required.");
       return false;
     }
@@ -85,6 +88,7 @@ export default function Page() {
         isItemUnit
       )
     ) {
+      setProcessing(false);
       toast.error(
         "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
       );
@@ -92,6 +96,7 @@ export default function Page() {
     }
 
     if (!confirm("Are you sure you want to create?")) {
+      setProcessing(false);
       return false;
     }
     createUser();
@@ -107,9 +112,11 @@ export default function Page() {
       item_net_weight
     );
     if (returned.code == 200) {
+      setProcessing(false);
       toast.success(returned.message);
       resetState();
     } else {
+      setProcessing(false);
       toast.error(returned.message);
     }
   }
@@ -276,7 +283,11 @@ export default function Page() {
                     />
                   </div>
                   <div className="card-actions justify-end">
-                    <button className="btn btn-active btn-primary mx-4">
+                    <button
+                      className={`btn btn-active btn-primary mx-4 ${
+                        processing ? "loading" : ""
+                      }`}
+                    >
                       Create
                     </button>
                     <button

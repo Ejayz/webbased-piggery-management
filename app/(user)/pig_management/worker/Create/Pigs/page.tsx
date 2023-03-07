@@ -28,6 +28,7 @@ import {
 import { QRCodeCanvas } from "qrcode.react";
 import printJS from "print-js";
 import QrCode from "@/components/QrComponent/qrcodeArrayState";
+import Loading from "@/components/Loading/loading";
 interface SelectInter {
   value: number;
   display: string;
@@ -66,14 +67,14 @@ export default function Page() {
 
   const [boarList, setBoarList] = useState<SelectInter[]>([]);
   const [sowList, setSowList] = useState<SelectInter[]>([]);
-  const [doneRender, setDoneRender] = useState(false);
   const [cageList, setCageList] = useState<SelectInter[]>([]);
   const [breedList, setBreedList] = useState<SelectInter[]>([]);
-  const [scannerLink, setScannerLink] = useState<any>("");
   const [hideScanner, setHideScanner] = useState({ show: false, index: 0 });
   const [reset, setReset] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
+  const [processing, setProcessing] = useState(false);
+  const [doneRender, setDoneRender] = useState(false);
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -140,7 +141,9 @@ export default function Page() {
         });
       }
     }
-    readyData();
+    readyData().then(() => {
+      setDoneRender(true);
+    });
   }, []);
 
   const idSetter = async () => {
@@ -256,6 +259,7 @@ export default function Page() {
   }
   const validate = async (e: any) => {
     e.preventDefault();
+    setProcessing(true);
     if (
       batch_name == "" ||
       sow_id == "default" ||
@@ -264,6 +268,7 @@ export default function Page() {
       pig_type == "default"
     ) {
       toast.error("All fields are required");
+      setProcessing(false);
       return false;
     }
     pigData.forEach((value, index) => {
@@ -276,18 +281,25 @@ export default function Page() {
         toast.error(
           "There are errors in your form. Please review and correct the row(s) created  before submitting."
         );
+        setProcessing(false);
         return false;
       }
     });
 
-    if (!true) {
+    if (!(isBoar || isBreed || isSow)) {
       toast.error(
         "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
       );
+      setProcessing(false);
       return false;
     }
-
+    if (pigData.length == 0) {
+      toast.error("Pig detail list is empty.");
+      setProcessing(false);
+      return false;
+    }
     if (!confirm("Are you sure you want to create?")) {
+      setProcessing(false);
       return false;
     }
     exec_create();
@@ -306,12 +318,18 @@ export default function Page() {
     );
     if (returned.code == 200) {
       toast.success(returned.message);
+      resetState();
+      setProcessing(false);
     } else {
+      setProcessing(false);
       toast.error(returned.error);
     }
   };
 
   if (loading.loading) {
+    return loading.loader;
+  }
+  if (!doneRender) {
     return loading.loader;
   } else if (!allowed) {
     return loading.loader;
@@ -663,7 +681,11 @@ export default function Page() {
                     </table>
                   </div>
                   <div className="card-actions justify-end">
-                    <button className="btn btn-active btn-primary mx-4">
+                    <button
+                      className={`btn btn-active btn-primary mx-4 ${
+                        processing ? "loading" : ""
+                      }`}
+                    >
                       Create
                     </button>
                     <button

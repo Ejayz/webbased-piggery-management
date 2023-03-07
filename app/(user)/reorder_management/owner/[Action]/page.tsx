@@ -2,7 +2,13 @@
 
 import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
-import { Confirm, getSpecificOrderList, Remove } from "@/hooks/useReorder";
+import printJS from "print-js";
+import {
+  Confirm,
+  getSpecificOrderList,
+  Lock,
+  Remove,
+} from "@/hooks/useReorder";
 import {
   validateNormal,
   validatePhone,
@@ -31,6 +37,7 @@ export default function Page({ params }: any) {
   const [reorder_date, setReorderDate] = useState("");
   const [requesting, setRequesting] = useState(false);
   const [file, setFile] = useState<FileList | null>();
+  const [printable, setPrintables] = useState<any>([]);
   const handleQuantity = async (quantity: any, item_id: number) => {
     setReorderList((prevList) => {
       const updatedList = prevList.map((item) => {
@@ -56,6 +63,7 @@ export default function Page({ params }: any) {
           return item;
         }
       });
+      console.log(updatedList);
       return updatedList;
     });
   };
@@ -69,6 +77,7 @@ export default function Page({ params }: any) {
           return item;
         }
       });
+      console.log(updatedList);
       return updatedList;
     });
   };
@@ -101,23 +110,53 @@ export default function Page({ params }: any) {
 
       exec_remove();
     } else if (params.Action == "Confirm") {
-      if (file == undefined) {
+      if (!confirm("Are you sure you want to confirm?")) {
         setIsSubmitting(false);
-        toast.error("Please attach the reciept before confirming.");
-      } else {
-        if (!confirm("Are you sure you want to confirm?")) {
-          setIsSubmitting(false);
-          return false;
-        }
-        exect_confirm();
+
+        return false;
       }
+      exect_confirm();
+    } else if (params.Action == "View") {
+      if (
+        confirm(
+          "Are you sure you want to lock this order list ? Workers won't be able to remove it."
+        )
+      ) {
+        exec_lock_request();
+      }
+      setIsSubmitting(false);
+    }
+  };
+  const exec_lock_request = async () => {
+    const returned = await Lock(Queryid);
+    if (returned.code == 200) {
+      alert("Generating printable list....");
+      alert(
+        "After delivery give the reciept to the worker for them to attach it during confirmation process. Thank you.."
+      );
+      printJS({
+        printable: printable,
+        type: "json",
+        properties: [
+          { field: "item_name", displayName: "Item Name" },
+          { field: "Quantity", displayName: "Requested Quantity" },
+        ],
+        header: ` Reorder List #${Queryid} as of ${reorder_date}:`,
+        onPrintDialogClose: function () {
+          callCancel(returned.message, "success");
+          setIsSubmitting(false);
+        },
+      });
+    } else {
+      toast.error(returned.message);
+      setIsSubmitting(false);
     }
   };
 
   const exect_confirm = async () => {
     const returned = await Confirm(file, Queryid, reorderList);
     if (returned.code == 200) {
-      callCancel(returned.message, "success");
+      callCancel(returned.message, returned.code);
       setIsSubmitting(false);
     } else {
       toast.error(returned.message);
@@ -135,7 +174,6 @@ export default function Page({ params }: any) {
             "MMMM dd, yyyy hh:mm:ssa"
           )
         );
-        console.log(returned.data);
         returned.data.map((data: any, key: number) => {
           list.push({
             item_id: data.item_id,
@@ -144,23 +182,23 @@ export default function Page({ params }: any) {
             confirm_reorder: 0,
             reorder_detail_id: data.reorder_details_id,
             confirmed: false,
-            item_net_weight: data.item_net_weight,
+          });
+          printable.push({
+            item_name: data.item_name,
+            Quantity: data.reorder_quantity,
           });
         });
         setReorderList(list);
       }
-      console.log(reorderList);
     }
     exec_get();
   }, []);
   const exec_remove = async () => {
     const returned = await Remove(Queryid);
     if (returned.code == 200) {
-      setIsSubmitting(false);
       callCancel(returned.message, "success");
       setIsSubmitting(false);
     } else {
-      setIsSubmitting(false);
       toast.error(returned.message);
       setIsSubmitting(false);
     }
@@ -173,10 +211,10 @@ export default function Page({ params }: any) {
 
   function callCancel(message?: string, status?: string) {
     if (message == undefined) {
-      router.push("/reorder_management/worker/List");
+      router.push("/reorder_management/owner/List");
     } else {
       router.push(
-        `/reorder_management/worker/List?msg=${message}&status=${status}`
+        `/reorder_management/owner/List?msg=${message}&status=${status}`
       );
     }
   }
@@ -236,7 +274,7 @@ export default function Page({ params }: any) {
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="overflow-x-auto mb-4">
+              <div id="itemList" className="overflow-x-auto h-auto mb-4">
                 <div>
                   <span className="font-bold">Reorder Id: </span>
                   <span>{Queryid}</span>
@@ -293,44 +331,38 @@ export default function Page({ params }: any) {
                               Atleast 1 Quantity is required
                             </span>
                           </td>
-                          {Action == "View" || Action == "Remove" ? (
-                            ""
-                          ) : (
-                            <td
-                              className={`${
-                                Action == "View" || Action == "Remove"
-                                  ? "hidden"
+                          <td
+                            className={`${
+                              Action == "View" || Action == "Remove"
+                                ? "hidden"
+                                : ""
+                            }`}
+                          >
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Confirm Quantity"
+                              className={`input w-full max-w-xs ${
+                                Action == "View" ? "hidden" : ""
+                              } ${
+                                data.confirm_reorder === "0" ||
+                                data.confirm_reorder === ""
+                                  ? "input-error"
                                   : ""
                               }`}
-                            >
-                              <input
-                                type="number"
-                                min="0"
-                                name="Confirm Quantity"
-                                required={true}
-                                placeholder="Confirm Quantity"
-                                className={`input w-full max-w-xs ${
-                                  Action == "View" ? "hidden" : ""
-                                } ${
-                                  data.confirm_reorder === "0" ||
-                                  data.confirm_reorder === ""
-                                    ? "input-error"
-                                    : ""
-                                }`}
-                                value={
-                                  data.confirm_reorder === 0
-                                    ? ""
-                                    : data.confirm_reorder
-                                }
-                                onChange={(e) => {
-                                  handleConfirmQuantity(
-                                    e.target.value,
-                                    data.item_id
-                                  );
-                                }}
-                              />
-                            </td>
-                          )}
+                              value={
+                                data.confirm_reorder === 0
+                                  ? ""
+                                  : data.confirm_reorder
+                              }
+                              onChange={(e) => {
+                                handleConfirmQuantity(
+                                  e.target.value,
+                                  data.item_id
+                                );
+                              }}
+                            />
+                          </td>
                         </tr>
                       );
                     })}
@@ -376,12 +408,19 @@ export default function Page({ params }: any) {
                     Confirm
                   </button>
                 )}
+                <button
+                  className={`btn btn-active btn-primary mx-4 ${
+                    isSubmitting ? "loading" : ""
+                  }`}
+                >
+                  Print List
+                </button>
                 <Link
                   onClick={(e) => {
                     callCancel();
                   }}
                   className="btn btn-active btn-primary mx-4"
-                  href={"/reorder_management/worker/List"}
+                  href={"/reorder_management/owner/List"}
                 >
                   Cancel
                 </Link>

@@ -33,6 +33,7 @@ export default function Page({ params }: any) {
   const Queryid = useSearchParams().get("id");
   const [startValidation, setStartValidation] = useState(false);
   let message: any = [];
+  const [processing, setProcessing] = useState(false);
   function resetState() {
     setCageName("");
     setCageCapacity("");
@@ -40,13 +41,16 @@ export default function Page({ params }: any) {
   }
   const verifyInput = async (e: any) => {
     e.preventDefault();
+    setProcessing(true)
     if (cage_type == "default" || cage_name == "" || cage_capacity == "") {
+      setProcessing(false)
       toast.error("All feilds are required.");
       return false;
     }
 
     if (params.Action == "Update") {
       if (!(isCageCapacity && isCageType && isCageName)) {
+        setProcessing(false)
         toast.error("Please correct the inputs indicated in red.");
         return false;
       }
@@ -55,10 +59,12 @@ export default function Page({ params }: any) {
       if (isOk) {
         updateUser();
       } else {
+        setProcessing(false)
         return false;
       }
     } else if (params.Action == "Remove") {
       if (!confirm("Are you sure you want to remove?")) {
+        setProcessing(false)
         return false;
       }
 
@@ -89,9 +95,11 @@ export default function Page({ params }: any) {
   const exec_remove = async () => {
     const returned = await Remove(cage_id);
     if (returned.code == 200) {
+      setProcessing(false)
       callCancel(returned.message, "success");
       setIsSubmitting(false);
     } else {
+      setProcessing(false)
       toast.error(returned.message);
       setIsSubmitting(false);
     }
@@ -101,9 +109,11 @@ export default function Page({ params }: any) {
     const returned = await Update(cage_name, cage_id, cage_type, cage_capacity);
     if (returned.code == 200) {
       resetState();
+      setProcessing(false)
       callCancel(returned.message, "success");
       setIsSubmitting(false);
     } else {
+      setProcessing(false)
       toast.error(returned.message);
       setIsSubmitting(false);
     }
@@ -275,7 +285,7 @@ export default function Page({ params }: any) {
                 ) : params.Action == "Update" ? (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     Update
@@ -283,7 +293,7 @@ export default function Page({ params }: any) {
                 ) : (
                   <button
                     className={`btn btn-active btn-primary mx-4 ${
-                      isSubmitting ? "loading" : ""
+                      processing ? "loading" : ""
                     }`}
                   >
                     REMOVE
