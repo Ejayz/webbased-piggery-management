@@ -9,6 +9,7 @@ export default function Input({
   errors,
   required,
   options,
+  disabled = false,
   validationSchema,
 }: any) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -21,13 +22,14 @@ export default function Input({
       </label>
       <div className="input-group">
         <select
+          required={required}
           className={`select text-base-content w-full max-w-xs select-bordered ${
             errors[name] != undefined ? "select-error" : ""
           }`}
           {...register(name, validationSchema)}
         >
-          <option className="text-base-content" value="">
-            Job
+          <option className="text-base-content" disabled={disabled} value="">
+            {label}
           </option>
           {options.map((value: any, key: number) => {
             return (

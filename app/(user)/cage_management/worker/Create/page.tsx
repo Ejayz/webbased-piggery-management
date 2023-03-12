@@ -28,7 +28,9 @@ export default function Page() {
   });
   const onSubmit = (data: any, event: any) => {
     event.preventDefault();
+    setProcessing(true);
     if (!confirm("Create cage?")) {
+      setProcessing(false);
       return false;
     }
     createUser(data);

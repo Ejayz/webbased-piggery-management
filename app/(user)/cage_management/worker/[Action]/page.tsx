@@ -39,6 +39,7 @@ export default function Page({ params }: any) {
   });
   const onSubmit = (data: any, event: any) => {
     event.preventDefault();
+    setProcessing(true);
     if (params.Action == "Update") {
       var isOk = confirm("are you sure you want to update?");
       if (isOk) {

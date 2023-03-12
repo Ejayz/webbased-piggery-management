@@ -7,10 +7,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const authorized = await authorizationHandler(req, res, "POST");
+
   if (!authorized) {
     return false;
   }
-  const { breed_id } = req.body;
+  const breed_id = req.query.view;
   const data: any = await ViewCage(breed_id);
   if (data.length != 0) {
     return res.status(200).json({ code: 200, data: data });

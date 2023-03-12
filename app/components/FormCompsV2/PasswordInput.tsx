@@ -24,7 +24,8 @@ export default function Input({
         <input
           id={name}
           type={showPassword ? "text" : "password"}
-          placeholder="password"
+          placeholder={label}
+          required={required}
           className={`input text-base-content input-bordered w-full ${
             errors.password != undefined ? "input-error" : ""
           }`}

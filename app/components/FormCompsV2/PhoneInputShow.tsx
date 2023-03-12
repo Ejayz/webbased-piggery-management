@@ -1,7 +1,7 @@
 "use client";
 
 import { ErrorMessage } from "@hookform/error-message";
-
+import Image from "next/image";
 const Input = ({
   name,
   label,
@@ -11,6 +11,8 @@ const Input = ({
   type,
   validationSchema,
   readonly = false,
+  triggerValidation = null,
+  validateOnChange = false,
 }: any) => (
   <div className="form-control text-base-content">
     <label className="label">
@@ -32,6 +34,11 @@ const Input = ({
         }`}
         {...register(name, validationSchema)}
         required={required}
+        onChange={() => {
+          if (validateOnChange) {
+            triggerValidation(name);
+          }
+        }}
       />
     </label>
     <ErrorMessage

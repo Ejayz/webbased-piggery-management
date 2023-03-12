@@ -3,7 +3,7 @@ import { Html5Qrcode, Html5QrcodeScanner } from "html5-qrcode";
 import { CameraDevice } from "html5-qrcode/esm/camera/core";
 import { useEffect, useState } from "react";
 
-export default function QrCode({ setter, setHide, hide }: any) {
+export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
   const [camera, setCamera] = useState<CameraDevice[] | undefined>();
   const [choosen, setChoose] = useState("");
 
@@ -56,7 +56,7 @@ export default function QrCode({ setter, setHide, hide }: any) {
             qrbox: { width: 500, height: 500 }, // Optional, if you want bounded box UI
           },
           (decodedText: any, decodedResult: any) => {
-            setter(decodedText);
+            setter(ActionMaker, decodedText);
             setHide(false);
           },
           (errorMessage: any) => {}

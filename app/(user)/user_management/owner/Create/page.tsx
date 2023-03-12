@@ -13,6 +13,8 @@ import NormalInput from "@/components/FormCompsV2/NormalInput";
 import PasswordInput from "@/components/FormCompsV2/PasswordInput";
 import PhoneInput from "@/components/FormCompsV2/PhoneInput";
 import SelectInput from "@/components/FormCompsV2/SelectInput";
+import PasswordInputShow from "@/components/FormCompsV2/PasswordInputShow";
+import PhoneInputShow from "@/components/FormCompsV2/PhoneInputShow";
 
 export default function Page() {
   const {
@@ -28,7 +30,7 @@ export default function Page() {
       username: "",
       first_name: "",
       last_name: "",
-      middel_name: "",
+      middle_name: "",
       phone: "",
       job: "",
       password: "",
@@ -37,31 +39,13 @@ export default function Page() {
     criteriaMode: "all",
     mode: "onChange",
   });
-  const onSubmit = (data: any) => console.log();
 
   const [allowed, setIsAllowed] = useState(false);
-
-  const [username, setUsername] = useState("");
-  const [first_name, setFirst_name] = useState("");
-  const [middle_name, setMiddle_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [phone, setPhone] = useState("");
-  const [job, setJob] = useState("default");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setrepeatPass] = useState("");
-
-  const [isUsername, setIsUsername] = useState(false);
-  const [isFirstName, setIsFirstName] = useState(false);
-  const [isMiddleName, setIsMiddleName] = useState(true);
-  const [isLastName, setIsLastName] = useState(false);
-  const [isPhone, setIsPhone] = useState(false);
-  const [isJob, setIsJob] = useState(false);
-  const [isPassword, setIsPassword] = useState(false);
-  const [isRepeatPassword, setIsRepeatPassword] = useState(false);
 
   const [requesting, setRequesting] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
+
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -79,98 +63,24 @@ export default function Page() {
   }, [loading]);
 
   function resetState() {
-    setUsername("");
-    setFirst_name("");
-    setMiddle_name("");
-    setLast_name("");
-    setPhone("");
-    setJob("default");
-    setPassword("");
-    setrepeatPass("");
+    reset();
   }
-
-  const validate = async (e: any) => {
-    e.preventDefault();
-    setRequesting(true);
-    if (
-      username == "" ||
-      first_name == "" ||
-      last_name == "" ||
-      phone == "" ||
-      job == "default"
-    ) {
-      setRequesting(false);
-      toast.error("All feilds are required.");
-      return false;
-    }
-
-    if (
-      !(
-        isUsername &&
-        isFirstName &&
-        isMiddleName &&
-        isLastName &&
-        isPhone &&
-        isJob &&
-        isPassword &&
-        isRepeatPassword
-      )
-    ) {
-      setRequesting(false);
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      return false;
-    }
-    if (password != repeatPassword) {
-      setRequesting(false);
-      toast.error("Password and Repeat Password should be the same.");
-      return false;
-    }
-    if (!confirm("Are you sure you want to create?")) {
-      return false;
-    }
-
-    createUser();
-  };
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
-  const validatePassword = (value: string) => {
-    console.log(value);
-    if (!/^(?=.*[0-9])/.test(value)) {
-      return "Password must contain at least one number";
-    }
-    if (!/^(?=.*[a-z])/.test(value)) {
-      return "Password must contain at least one lowercase letter";
-    }
-    if (!/^(?=.*[A-Z])/.test(value)) {
-      return "Password must contain at least one uppercase letter";
-    }
-    if (!/^.{6,}$/.test(value)) {
-      return "Password must have a minimum length of 6 characters";
-    } else {
-      return true;
-    }
-  };
 
   const validateRepeatPassword = (value: string) => {
     const passwordValue = (
       document.getElementById("password") as HTMLInputElement
     )?.value;
-    return value === passwordValue || "Passwords must match";
+    return value === passwordValue || "Password and Repeat password must match";
   };
-  console.log(errors);
-  async function createUser() {
+  async function createUser(data: any) {
     const returned = await Create(
-      username,
-      first_name,
-      middle_name,
-      last_name,
-      password,
-      phone,
-      job
+      data.username,
+      data.first_name,
+      data.middle_name,
+      data.last_name,
+      data.password,
+      data.phone,
+      data.job
     );
     if (returned.code == 200) {
       setRequesting(false);
@@ -181,6 +91,14 @@ export default function Page() {
       toast.error(returned.message);
     }
   }
+  const onSubmit = (data: any) => {
+    setRequesting(true);
+    if (!confirm("Create user?")) {
+      setRequesting(false);
+      return false;
+    }
+    createUser(data);
+  };
 
   if (loading.loading) {
     return loading.loader;
@@ -229,7 +147,7 @@ export default function Page() {
                         },
                       }}
                     ></NormalInput>
-                    <PasswordInput
+                    <PasswordInputShow
                       name={"password"}
                       label={"Password"}
                       register={register}
@@ -237,9 +155,12 @@ export default function Page() {
                       required={true}
                       validationSchema={{
                         required: "This field is required",
-                        validate: validatePassword,
+                        pattern: {
+                          value: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                          message: `Valid password should contain the following:One LowerCase \n,UpperCase ,Number and atleast 8 character long.`,
+                        },
                       }}
-                    ></PasswordInput>
+                    ></PasswordInputShow>
                     <NormalInput
                       name={"repeat_password"}
                       label={"Repeat Password"}
@@ -295,22 +216,16 @@ export default function Page() {
                       required={true}
                       type={"number"}
                       validationSchema={{
-                        required: "This field is required",
-                        minLength: {
-                          value: 10,
-                          message: "Min 10 Character long",
-                        },
-                        maxLength: {
-                          value: 10,
-                          message: "Max 10 Character long.",
+                        required: {
+                          value: true,
+                          message: "This field is required",
                         },
                         pattern: {
-                          value: /^\d+$/,
-                          message: "Should only contain numbers",
+                          value: /^9\d{9}$/,
+                          message:
+                            "Valid password should start with 9,all numbers, and 10 character long.",
                         },
                       }}
-                      triggerValidation={trigger}
-                      validateOnChange={true}
                     ></PhoneInput>
                     <SelectInput
                       name={"job"}

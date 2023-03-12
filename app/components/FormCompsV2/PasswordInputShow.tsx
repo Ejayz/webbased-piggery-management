@@ -9,10 +9,11 @@ export default function Input({
   register,
   errors,
   required,
+  readonly = false,
   validationSchema,
 }: any) {
-  console.log(errors);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
   return (
     <div className="form-control">
       <label className="label">
@@ -24,7 +25,9 @@ export default function Input({
         <input
           id={name}
           type={showPassword ? "text" : "password"}
-          placeholder="password"
+          placeholder={label}
+          required={required}
+          readOnly={readonly}
           className={`input text-base-content input-bordered w-full ${
             errors.password != undefined ? "input-error" : ""
           }`}
@@ -63,7 +66,7 @@ export default function Input({
         name={name}
         render={({ message }) => (
           <p className="mt-2 text-sm  text-error">
-            <span className="font-medium">{message}</span>{" "}
+            <span className="font-bold">{message}</span>{" "}
           </p>
         )}
       />

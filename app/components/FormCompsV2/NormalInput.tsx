@@ -25,6 +25,7 @@ const Input = ({
       name={name}
       type={type}
       readOnly={readonly}
+      required={required}
       placeholder={label}
       className={`input input-bordered text-base-content ${
         errors[name] != undefined ? "input-error" : ""
