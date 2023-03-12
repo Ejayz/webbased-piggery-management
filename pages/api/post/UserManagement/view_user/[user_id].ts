@@ -60,11 +60,18 @@ export default async function handler(
 
 async function viewUser(user_id: string) {
   const conn = await connection.getConnection();
-  const sql =
-    "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where user_id=? and is_exist='true'";
+  try {
+    const sql =
+      "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where user_id=? and is_exist='true'";
 
-  const [err, result] = await conn.query(sql, [user_id]);
-  conn.release();
-  if (err) return err;
-  return result;
+    const [err, result] = await conn.query(sql, [user_id]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

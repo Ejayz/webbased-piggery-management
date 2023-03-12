@@ -109,5 +109,7 @@ async function Ops(
     conn.release;
     console.log(error);
     return { affectedRows: 0 };
+  } finally {
+    conn.release();
   }
 }

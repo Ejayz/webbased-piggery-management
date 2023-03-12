@@ -32,11 +32,19 @@ export default async function handler(
 }
 
 async function getUsers(USER_ID: any) {
-  const sql =
-    "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where is_exist='true' and user_id !=? ORDER BY username ASC";
   const conn = await connection.getConnection();
-  const [err, result] = await conn.query(sql, [USER_ID]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql =
+      "select user_id,username,first_name,middle_name,last_name,phone,job from tbl_users where is_exist='true' and user_id !=? ORDER BY username ASC";
+
+    const [err, result] = await conn.query(sql, [USER_ID]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

@@ -48,12 +48,23 @@ async function resetPassword(
   job: string
 ) {
   const conn = await connection.getConnection();
-  const sql =
-    "UPDATE `tbl_users` SET  `password`=? WHERE username=? and job=? and  phone=? and is_exist='true';";
-  const [err, result] = await conn.query(sql, [password, username, job, phone]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql =
+      "UPDATE `tbl_users` SET  `password`=? WHERE username=? and job=? and  phone=? and is_exist='true';";
+    const [err, result] = await conn.query(sql, [
+      password,
+      username,
+      job,
+      phone,
+    ]);
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 
 async function generateHased(password: string) {

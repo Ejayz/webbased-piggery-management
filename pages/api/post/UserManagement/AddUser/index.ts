@@ -73,31 +73,45 @@ async function createUser({
   job,
 }: any) {
   const conn = await connection.getConnection();
-  const sql =
-    "INSERT INTO `piggery_management`.`tbl_users` (`username`, `password`, `first_name`, `middle_name`, `last_name`, `phone`, `job`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+  try {
+    const sql =
+      "INSERT INTO `piggery_management`.`tbl_users` (`username`, `password`, `first_name`, `middle_name`, `last_name`, `phone`, `job`) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-  const [result] = await conn.query(sql, [
-    username,
-    hashedPassword,
-    first_name,
-    middle_name,
-    last_name,
-    phone,
-    job,
-  ]);
-  return result;
+    const [result] = await conn.query(sql, [
+      username,
+      hashedPassword,
+      first_name,
+      middle_name,
+      last_name,
+      phone,
+      job,
+    ]);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 
 async function checkDups({ username, job }: any) {
   const conn = await connection.getConnection();
-  const sql =
-    "select * from tbl_users where BINARY username=? and is_exist='true' and job=?";
+  try {
+    const sql =
+      "select * from tbl_users where BINARY username=? and is_exist='true' and job=?";
 
-  const [err, result] = await conn.query(sql, [username, job]);
-  conn.release();
-  if (err) {
-    return err;
+    const [err, result] = await conn.query(sql, [username, job]);
+    conn.release();
+    if (err) {
+      return err;
+    }
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
   }
-
-  return result;
 }

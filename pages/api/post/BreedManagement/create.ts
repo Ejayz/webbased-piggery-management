@@ -31,17 +31,32 @@ export default async function handler(
 
 async function CreateBreed(breed_name: string) {
   const conn = await connection.getConnection();
-  const sql = "insert into tbl_breed  (`breed_name`) values (?)";
-  const [err, result] = await conn.query(sql, [breed_name]);
-  conn.release();
-  if (err) return err;
-  return err;
+  try {
+    const sql = "insert into tbl_breed  (`breed_name`) values (?)";
+    const [err, result] = await conn.query(sql, [breed_name]);
+    conn.release();
+    if (err) return err;
+    return err;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 async function checkDups(breed_name: string) {
   const conn = await connection.getConnection();
-  const sql = "select * from tbl_breed where breed_name=? and is_exist='true'";
-  const [err, result] = await conn.query(sql, [breed_name]);
-  conn.release();
-  if (err) return err;
-  return err;
+  try {
+    const sql =
+      "select * from tbl_breed where breed_name=? and is_exist='true'";
+    const [err, result] = await conn.query(sql, [breed_name]);
+    conn.release();
+    if (err) return err;
+    return err;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

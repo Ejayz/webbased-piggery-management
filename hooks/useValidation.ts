@@ -1,4 +1,4 @@
-export async function validatePhone(phone: string) {
+export function validatePhone(phone: string) {
   let message = [];
 
   if (phone == "") {

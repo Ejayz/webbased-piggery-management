@@ -78,6 +78,7 @@ export default function Page() {
   }, [loading]);
 
   async function resetState() {
+    setReset(true);
     const returned = await IdGenerator();
     setPigId(returned);
     setCageId("default");
@@ -88,7 +89,7 @@ export default function Page() {
     setBreed("default");
     setCageList([]);
     setBreedList([]);
-    setReset(!reset);
+    setReset(false);
   }
   useEffect(() => {
     async function readyData() {
@@ -383,7 +384,7 @@ export default function Page() {
                       readonly={false}
                     />{" "}
                     <InputBox
-                      type={"text"}
+                      type={"number"}
                       label={"Weight"}
                       placeholder={"Pig Weight"}
                       name={"weight"}
@@ -392,7 +393,7 @@ export default function Page() {
                       getter={weight}
                       setter={setWeight}
                       required={true}
-                      validation={validateNumber}
+                      validation={validateNormal}
                       setIsValid={setIsWeight}
                       reset={reset}
                       readonly={false}

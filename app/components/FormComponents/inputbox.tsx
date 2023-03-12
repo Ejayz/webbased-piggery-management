@@ -37,21 +37,24 @@ export default function InputBox({
   startValidation,
 }: any) {
   const [errorMessage, setErrorMessage] = useState([]);
+  const [startType, setStartType] = useState(false);
   const validate = async (value: string) => {
     let valid: any = await validation(value);
     if (valid.message.length != 0) {
       setErrorMessage(valid.message);
-      setter(value);
       setIsValid(false);
     } else {
       setErrorMessage([]);
-      setter(value);
       setIsValid(true);
     }
   };
   useEffect(() => {
-    setErrorMessage([]);
+    setStartType(false);
   }, [reset]);
+  useEffect(() => {
+    console.log("triggered");
+    setErrorMessage([]);
+  }, [startType]);
 
   useEffect(() => {
     if (startValidation) {
@@ -68,6 +71,12 @@ export default function InputBox({
     }
   }, [startValidation]);
 
+  // useEffect(() => {
+  //   console.log(reset);
+  //   if (startType && !reset) {
+  //     validate(getter);
+  //   }
+  // }, [getter]);
   return (
     <>
       <div id="input-form text-base-content px-10 w-auto">
@@ -82,8 +91,11 @@ export default function InputBox({
           }`}
           name={name}
           value={getter}
+          onClick={() => {
+            setStartType(true);
+          }}
           onChange={(e) => {
-            validate(e.target.value);
+            setter(e.target.value);
           }}
           required={required}
           autoFocus={autofocus}
@@ -93,8 +105,10 @@ export default function InputBox({
         <label className="label">
           <span className="label-text text-base">
             <ul className="max-w-md space-y-1 text-error text-sm text-gray-500 list-disc list-inside dark:text-gray-400">
-              {errorMessage.map((message: string, key: number) => {
-                return <li key={key}>{message}</li>;
+              {validation(getter).then((message: any) => {
+                return message.map((message: string, key: number) => {
+                  return <li key={key}>{message}</li>;
+                });
               })}
             </ul>
           </span>

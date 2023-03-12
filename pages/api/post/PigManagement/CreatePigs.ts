@@ -63,6 +63,31 @@ async function Ops(
       batch_capacity,
     ]);
     pigData.map(async (value: any, key: number) => {
+      const getCageCapacity =
+        "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";
+      const [result]: any = await conn.query(getCageCapacity, [value.cage_id]);
+      if (result.length == 0) {
+        conn.rollback();
+        conn.release;
+        return { affectedRows: 0 };
+      } else if (result[0].cage_capacity! >= result[0].current_caged) {
+        let updatedCage = result[0].current_caged + 1;
+        if (result[0].cage_capacity == updatedCage) {
+          const updateCage =
+            "update tbl_cage set current_caged=? , is_full='true' where is_exist='true' and cage_id=?";
+          const [result] = await conn.query(updateCage, [
+            updatedCage,
+            value.cage_id,
+          ]);
+        } else {
+          const updateCage =
+            "update tbl_cage set current_caged=?  where is_exist='true' and cage_id=?";
+          const [result] = await conn.query(updateCage, [
+            updatedCage,
+            value.cage_id,
+          ]);
+        }
+      }
       const insertPig =
         "insert into tbl_pig (pig_id,cage_id,batch_id,breed_id,pig_tag,pig_type,birthdate,weight) values(?,?,?,?,?,?,?,?)";
       await conn.query(insertPig, [
@@ -84,5 +109,7 @@ async function Ops(
     conn.rollback();
     conn.release;
     return 500;
+  } finally {
+    conn.release();
   }
 }

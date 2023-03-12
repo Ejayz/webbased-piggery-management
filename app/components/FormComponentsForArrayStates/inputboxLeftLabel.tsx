@@ -34,16 +34,8 @@ export default function InputBoxLeft({
     }
   };
   useEffect(() => {
-    setStartType(false);
-  }, [reset]);
-
-  
-  useEffect(() => {
-    console.log("triggered");
     setErrorMessage([]);
-  }, [startType]);
-
-
+  }, [reset]);
   useEffect(() => {
     if (startValidation) {
       if (
@@ -62,7 +54,7 @@ export default function InputBoxLeft({
     if (startType) {
       validate(getter);
     }
-  }, [getter]);
+  });
   return (
     <>
       <div className="form-control text-base-content">

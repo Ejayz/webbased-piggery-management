@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
 import { toast } from "react-toastify";
 import { getLowLvl, Create, getTotalReorderList } from "@/hooks/useReorder";
-
+import Image from "next/image";
 interface reorderListType {
   item_id: number;
   item_name: string;
@@ -162,7 +162,14 @@ export default function Page() {
                     <li className="font-bold">Creat Inventory</li>
                   </ul>
                 </div>
-
+                <Image
+                  src={
+                    "https://webbasedpiggeryuploaded.sgp1.cdn.digitaloceanspaces.com/public/attachments/0682077124.png"
+                  }
+                  alt={""}
+                  height={100}
+                  width={300}
+                ></Image>
                 <form
                   onSubmit={validate}
                   method="post"

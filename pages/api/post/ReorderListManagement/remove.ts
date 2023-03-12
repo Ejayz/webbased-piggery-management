@@ -23,9 +23,16 @@ export default async function handler(
 
 async function RemoveReorder(reorder_id: any) {
   const conn = await connection.getConnection();
-  const sql =
-    "update tbl_reorder set is_exist='false' where reorder_id=? and is_exist='true'";
-  const [result] = await conn.query(sql, [reorder_id]);
-  conn.release();
-  return result;
+  try {
+    const sql =
+      "update tbl_reorder set is_exist='false' where reorder_id=? and is_exist='true'";
+    const [result] = await conn.query(sql, [reorder_id]);
+    conn.release();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

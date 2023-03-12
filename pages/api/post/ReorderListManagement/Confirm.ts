@@ -13,10 +13,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   console.log(req.body);
-  const authorization = await authorizationHandler(req, res, "POST");
-  if (!authorization) {
-    return false;
-  }
+  // const authorization = await authorizationHandler(req, res, "POST");
+  // if (!authorization) {
+  //   return false;
+  // }
   const data: any = await fileHandler(req);
 
   if (data !== false) {

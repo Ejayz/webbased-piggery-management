@@ -16,9 +16,16 @@ export default async function handler(
 
 async function GetCage() {
   const conn = await connection.getConnection();
-  const sql =
-    "select * from tbl_cage where is_exist='true' and is_full='false' and cage_type='Nursery Pens'";
-  const [result] = await conn.query(sql);
-  conn.release();
-  return result;
+  try {
+    const sql =
+      "select * from tbl_cage where is_exist='true' and is_full='false' and cage_type='Nursery Pens'";
+    const [result] = await conn.query(sql);
+    conn.release();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

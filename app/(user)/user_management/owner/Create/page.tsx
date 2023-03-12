@@ -7,16 +7,38 @@ import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
 import { toast } from "react-toastify";
 import InputBoxLeft from "@/components/FormComponents/inputboxLeftLabel";
-import {
-  validateNormal,
-  validatePassword,
-  validatePhone,
-  validateSelect,
-  validateSkip,
-} from "@/hooks/useValidation";
 import PasswordBox from "@/components/FormComponents/passwordBox";
+import { useForm } from "react-hook-form";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import PasswordInput from "@/components/FormCompsV2/PasswordInput";
+import PhoneInput from "@/components/FormCompsV2/PhoneInput";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
 
 export default function Page() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors, isSubmitSuccessful, isSubmitting, isSubmitted },
+  } = useForm({
+    defaultValues: {
+      username: "",
+      first_name: "",
+      last_name: "",
+      middel_name: "",
+      phone: "",
+      job: "",
+      password: "",
+      repeat_password: "",
+    },
+    criteriaMode: "all",
+    mode: "onChange",
+  });
+  const onSubmit = (data: any) => console.log();
+
   const [allowed, setIsAllowed] = useState(false);
 
   const [username, setUsername] = useState("");
@@ -36,7 +58,6 @@ export default function Page() {
   const [isJob, setIsJob] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
   const [isRepeatPassword, setIsRepeatPassword] = useState(false);
-  const [reset, setReset] = useState(false);
 
   const [requesting, setRequesting] = useState(false);
   const router = useRouter();
@@ -58,8 +79,6 @@ export default function Page() {
   }, [loading]);
 
   function resetState() {
-    setReset(!reset);
-
     setUsername("");
     setFirst_name("");
     setMiddle_name("");
@@ -115,6 +134,34 @@ export default function Page() {
     createUser();
   };
 
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
+  const validatePassword = (value: string) => {
+    console.log(value);
+    if (!/^(?=.*[0-9])/.test(value)) {
+      return "Password must contain at least one number";
+    }
+    if (!/^(?=.*[a-z])/.test(value)) {
+      return "Password must contain at least one lowercase letter";
+    }
+    if (!/^(?=.*[A-Z])/.test(value)) {
+      return "Password must contain at least one uppercase letter";
+    }
+    if (!/^.{6,}$/.test(value)) {
+      return "Password must have a minimum length of 6 characters";
+    } else {
+      return true;
+    }
+  };
+
+  const validateRepeatPassword = (value: string) => {
+    const passwordValue = (
+      document.getElementById("password") as HTMLInputElement
+    )?.value;
+    return value === passwordValue || "Passwords must match";
+  };
+  console.log(errors);
   async function createUser() {
     const returned = await Create(
       username,
@@ -163,112 +210,114 @@ export default function Page() {
                 </div>
 
                 <form
-                  onSubmit={validate}
+                  onSubmit={handleSubmit(onSubmit)}
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                    <InputBox
-                      type={"text"}
-                      label={"Username"}
-                      placeholder={"Username"}
+                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
+                    <NormalInput
                       name={"username"}
-                      disabled={false}
-                      className={`input input-bordered  h-10  `}
-                      getter={username}
-                      setter={setUsername}
+                      label={"Username"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsUsername}
-                      reset={reset}
-                    />
-                    <PasswordBox
-                      placeholder={"Password"}
+                      type={"text"}
+                      validationSchema={{
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                      }}
+                    ></NormalInput>
+                    <PasswordInput
                       name={"password"}
-                      disabled={false}
-                      className={`input input-bordered h-10  `}
-                      getter={password}
-                      setter={setPassword}
+                      label={"Password"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validatePassword}
-                      setIsValid={setIsPassword}
-                      reset={reset}
-                    ></PasswordBox>
-                    <InputBox
-                      type={"password"}
+                      validationSchema={{
+                        required: "This field is required",
+                        validate: validatePassword,
+                      }}
+                    ></PasswordInput>
+                    <NormalInput
+                      name={"repeat_password"}
                       label={"Repeat Password"}
-                      placeholder={"Repeat Password"}
-                      name={"repeatPass"}
-                      disabled={false}
-                      className={`input  input-bordered h-10  `}
-                      getter={repeatPassword}
-                      setter={setrepeatPass}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validatePassword}
-                      setIsValid={setIsRepeatPassword}
-                      reset={reset}
-                    />
+                      type={"password"}
+                      validationSchema={{
+                        required: "This field is required",
+                        validate: validateRepeatPassword,
+                      }}
+                    ></NormalInput>
                   </div>
-                  <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
-                    <InputBox
-                      type={"text"}
+                  <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2 gap-2">
+                    <NormalInput
+                      name={"first_name"}
                       label={"First Name"}
-                      placeholder={"first name"}
-                      name={"first_name"}
-                      className={`input input-bordered h-10  `}
-                      getter={first_name}
-                      setter={setFirst_name}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsFirstName}
-                      reset={reset}
-                    />
-                    <InputBox
                       type={"text"}
-                      label={"Middle Name (Optional)"}
-                      placeholder={"Middle Name"}
-                      name={"first_name"}
-                      className={`input input-bordered h-10  `}
-                      getter={middle_name}
-                      setter={setMiddle_name}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></NormalInput>
+                    <NormalInput
+                      name={"middle_name"}
+                      label={"Middle Name"}
+                      register={register}
+                      errors={errors}
                       required={false}
-                      validation={validateSkip}
-                      setIsValid={setIsMiddleName}
-                      reset={reset}
-                    />
-                    <InputBox
                       type={"text"}
-                      label={"Last Name"}
-                      placeholder={"Last Name"}
+                      validationSchema={{}}
+                    ></NormalInput>
+                    <NormalInput
                       name={"last_name"}
-                      className={`input input-bordered h-10  `}
-                      getter={last_name}
-                      setter={setLast_name}
+                      label={"Last Name"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsLastName}
-                      reset={reset}
-                    />
+                      type={"text"}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></NormalInput>
                   </div>
                   <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
-                    <InputBoxLeft
-                      type="text"
-                      label={"Phone"}
-                      placeholder="Phone"
-                      name="phone"
-                      className={`input input-bordered h-10  `}
-                      getter={phone}
-                      setter={setPhone}
+                    <PhoneInput
+                      name={"phone"}
+                      label={"Phone Number"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      startingData={"+63"}
-                      validation={validatePhone}
-                      setIsValid={setIsPhone}
-                      reset={reset}
-                    />
-                    <SelectBox
+                      type={"number"}
+                      validationSchema={{
+                        required: "This field is required",
+                        minLength: {
+                          value: 10,
+                          message: "Min 10 Character long",
+                        },
+                        maxLength: {
+                          value: 10,
+                          message: "Max 10 Character long.",
+                        },
+                        pattern: {
+                          value: /^\d+$/,
+                          message: "Should only contain numbers",
+                        },
+                      }}
+                      triggerValidation={trigger}
+                      validateOnChange={true}
+                    ></PhoneInput>
+                    <SelectInput
+                      name={"job"}
                       label={"Job"}
-                      name={"Job"}
-                      selected={job}
+                      register={register}
+                      errors={errors}
+                      required={true}
                       options={[
                         {
                           value: "worker",
@@ -286,15 +335,8 @@ export default function Page() {
                           disabled: false,
                         },
                       ]}
-                      disabled={false}
-                      default_option={"Job"}
-                      setter={setJob}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsJob}
-                      reset={reset}
-                    />
+                      validationSchema={{ required: "This field is required" }}
+                    ></SelectInput>
                   </div>
 
                   <div className="card-actions justify-end">

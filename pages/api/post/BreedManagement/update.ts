@@ -41,10 +41,17 @@ async function Update(breed_id: any, breed_name: string) {
 
 async function checkDups(breed_id: any, breed_name: any) {
   const conn = await connection.getConnection();
-  const sql =
-    "select * from tbl_breed where breed_id!=? and breed_name=? and is_exist='true'";
-  const [err, result] = await conn.query(sql, [breed_id, breed_name]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql =
+      "select * from tbl_breed where breed_id!=? and breed_name=? and is_exist='true'";
+    const [err, result] = await conn.query(sql, [breed_id, breed_name]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

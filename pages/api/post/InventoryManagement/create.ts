@@ -54,27 +54,41 @@ async function CreateInventory(
   item_net_weight: any
 ) {
   const conn = await connection.getConnection();
-  const sql =
-    "INSERT INTO `piggery_management`.`tbl_inventory` (`item_name`, `category_id`, `item_description`, `item_quantity`, `item_unit`,`item_net_weight`) VALUES (?, ?, ?, ?, ?,?);";
-  const [err, result] = await conn.query(sql, [
-    item_name,
-    category_id,
-    item_description,
-    item_quantity,
-    item_unit,
-    item_net_weight,
-  ]);
-  if (err) return err;
-  return result;
+  try {
+    const sql =
+      "INSERT INTO `piggery_management`.`tbl_inventory` (`item_name`, `category_id`, `item_description`, `item_quantity`, `item_unit`,`item_net_weight`) VALUES (?, ?, ?, ?, ?,?);";
+    const [err, result] = await conn.query(sql, [
+      item_name,
+      category_id,
+      item_description,
+      item_quantity,
+      item_unit,
+      item_net_weight,
+    ]);
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 
 async function checkDups(item_name: string) {
   const conn = await connection.getConnection();
-  const sql =
-    "select * from tbl_inventory where item_name=? and is_exist='true'";
-  const [err, result] = await conn.query(sql, [item_name]);
+  try {
+    const sql =
+      "select * from tbl_inventory where item_name=? and is_exist='true'";
+    const [err, result] = await conn.query(sql, [item_name]);
 
-  if (err) return err;
-  conn.release();
-  return result;
+    if (err) return err;
+    conn.release();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

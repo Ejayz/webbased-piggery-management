@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
 import { Create } from "@/hooks/useCageManagement";
-import InputBox from "@/components/FormComponents/inputbox";
-import SelectBox from "@/components/FormComponents/selectBox";
+import InputBox from "@/components/FormComponentsForArrayStates/inputbox";
+import SelectBox from "@/components/FormComponentsForArrayStates/selectBoxCustomCage";
+import SelectBoxNormal from "@/components/FormComponents/selectBox";
+import InputBoxNormal from "@/components/FormComponents/inputbox";
 import { toast } from "react-toastify";
 import {
   validateNormal,
@@ -29,6 +31,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import printJS from "print-js";
 import QrCode from "@/components/QrComponent/qrcodeArrayState";
 import Loading from "@/components/Loading/loading";
+import { useQuery, useQueryClient } from "react-query";
 interface SelectInter {
   value: number;
   display: string;
@@ -44,16 +47,17 @@ interface PigData {
   error: boolean;
 }
 export default function Page() {
+  const queryClient = useQueryClient();
   const [allowed, setIsAllowed] = useState(false);
 
   const [pigData, setPigData] = useState<PigData[]>([]);
 
   const [batch_id, setBatchId] = useState("1");
-  const [boar_id, setBoardId] = useState("default");
-  const [sow_id, setSowId] = useState("default");
-  const [pig_type, setPigType] = useState("default");
+  const [boar_id, setBoardId] = useState("");
+  const [sow_id, setSowId] = useState("");
+  const [pig_type, setPigType] = useState("");
   const [birth_date, setBirthDate] = useState(new Date());
-  const [breed_id, setBreed] = useState("default");
+  const [breed_id, setBreed] = useState("");
   const [batch_name, setBatchName] = useState("");
 
   const [isBatchName, setIsBatchName] = useState(true);
@@ -75,6 +79,74 @@ export default function Page() {
   const loading = getUserInfo();
   const [processing, setProcessing] = useState(false);
   const [doneRender, setDoneRender] = useState(false);
+
+  const { isLoading, error, data, refetch } = useQuery(
+    "formDetails",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/post/PigManagement/getFormDetail`
+      );
+      return response.json();
+    }
+  );
+
+  useEffect(() => {
+    if (data !== undefined) {
+      if (data.code == "200") {
+        const breed_list = data.data.BreedList;
+        const cage_list = data.data.PigletCageList;
+        const batchid = data.data.LatestBatchId;
+        const boarlist = data.data.BoarList;
+        const sowlist = data.data.SowList;
+
+        cage_list.map((data: any, key: any) => {
+          cageList.push({
+            value: data.cage_id,
+            display: data.cage_name,
+            disabled: false,
+            max: data.cage_capacity,
+            current_capacity: data.current_caged,
+          });
+        });
+        breed_list.map((data: any, key: any) => {
+          breedList.push({
+            value: data.breed_id,
+            display: data.breed_name,
+            disabled: false,
+          });
+        });
+        setBatchId(batchid[0].batch_id + 1);
+        setBatchName(`Batch ${batchid[0].batch_id + 1}`);
+        sowlist.map((data: any, key: number) => {
+          sowList.push({
+            value: data.pig_id,
+            display: data.pig_id,
+            disabled: false,
+          });
+        });
+        boarlist.map((data: any, key: number) => {
+          setBoarList((prevData) => [
+            ...prevData,
+            {
+              value: data.pig_id,
+              display: data.pig_id,
+              disabled: false,
+            },
+          ]);
+        });
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    console.log(isLoading);
+    if (isLoading) {
+      setCageList([]);
+      setBreedList([]);
+      setSowList([]);
+      setBoarList([]);
+    }
+  }, [isLoading]);
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -89,58 +161,7 @@ export default function Page() {
   }, [loading]);
 
   useEffect(() => {
-    async function readyData() {
-      const cage_list: any = await GetNurseryCage();
-      const breed_list: any = await getBreedList();
-      const batchid: any = await GetBatchId();
-      const boarlist: any = await GetBoarList();
-      const sowlist: any = await GetSowList();
-      if (cage_list.code == 200) {
-        cage_list.data.map((data: any, key: any) => {
-          cageList.push({
-            value: data.cage_id,
-            display: data.cage_name,
-            disabled: false,
-            max: data.cage_capacity,
-            current_capacity: data.current_caged,
-          });
-        });
-      }
-      if (breed_list.code == 200) {
-        breed_list.data.map((data: any, key: any) => {
-          breedList.push({
-            value: data.breed_id,
-            display: data.breed_name,
-            disabled: false,
-          });
-        });
-      }
-      if (batchid.code == 200) {
-        setBatchId(batchid.id + 1);
-        setBatchName(`Batch ${batchid.id + 1}`);
-      }
-      if (sowlist.code == 200) {
-        sowlist.data.map((data: any, key: number) => {
-          sowList.push({
-            value: data.pig_id,
-            display: data.pig_id,
-            disabled: false,
-          });
-        });
-      }
-      if (boarlist.code == 200) {
-        boarlist.data.map((data: any, key: number) => {
-          setBoarList((prevData) => [
-            ...prevData,
-            {
-              value: data.pig_id,
-              display: data.pig_id,
-              disabled: false,
-            },
-          ]);
-        });
-      }
-    }
+    async function readyData() {}
     readyData().then(() => {
       setDoneRender(true);
     });
@@ -203,13 +224,14 @@ export default function Page() {
     link.remove();
   };
   function resetState() {
+    queryClient.invalidateQueries("formDetails");
     setReset(!reset);
     setPigData([]);
-    setBoardId("default");
-    setSowId("default");
-    setPigType("default");
+    setBoardId("");
+    setSowId("");
+    setPigType("");
     setBirthDate(new Date());
-    setBreed("default");
+    setBreed("");
     setBatchName(`Batch ${batch_id}`);
   }
   function updatePigIdAtIndex(index: number, pigId: string): void {
@@ -257,6 +279,7 @@ export default function Page() {
       });
     }
   }
+
   const validate = async (e: any) => {
     e.preventDefault();
     setProcessing(true);
@@ -400,7 +423,7 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
-                    <InputBox
+                    <InputBoxNormal
                       type={"text"}
                       label={"Batch Name"}
                       placeholder={"Batch Name"}
@@ -415,7 +438,7 @@ export default function Page() {
                       reset={reset}
                       readonly={true}
                     />
-                    <SelectBox
+                    <SelectBoxNormal
                       label={"Sow"}
                       name={"Sow Id"}
                       selected={sow_id}
@@ -429,7 +452,7 @@ export default function Page() {
                       setIsValid={setIsSow}
                       reset={reset}
                     />
-                    <SelectBox
+                    <SelectBoxNormal
                       label={"Boar"}
                       name={"Boar"}
                       selected={boar_id}
@@ -443,7 +466,7 @@ export default function Page() {
                       setIsValid={setIsBoar}
                       reset={reset}
                     />
-                    <SelectBox
+                    <SelectBoxNormal
                       label={"Breed"}
                       name={"Breed"}
                       selected={breed_id}
@@ -457,7 +480,7 @@ export default function Page() {
                       setIsValid={setIsBreed}
                       reset={reset}
                     />
-                    <SelectBox
+                    <SelectBoxNormal
                       label={"Pig Type"}
                       name={"pig_Type"}
                       selected={pig_type}
@@ -477,7 +500,7 @@ export default function Page() {
                       setIsValid={setIsPigType}
                       reset={reset}
                     />
-                    <InputBox
+                    <InputBoxNormal
                       type={"date"}
                       label={"Birth Date"}
                       placeholder={"Pig Birth Date"}
@@ -517,7 +540,6 @@ export default function Page() {
                       </thead>
                       <tbody>
                         {pigData.map((value: PigData, key: number) => {
-                          console.log(value.error);
                           return (
                             <tr key={key}>
                               <th>{key + 1}</th>
@@ -529,79 +551,49 @@ export default function Page() {
                               </th>
                               <th>{value.pig_id}</th>
                               <td>
-                                <select
+                                <SelectBox
+                                  label={"Cage Name"}
+                                  name={"Cage Name"}
+                                  selected={value.cage_id}
+                                  options={cageList}
+                                  disabled={false}
+                                  default_option={"Cage Name"}
+                                  setter={updateCageIdAtIndex}
                                   required={true}
-                                  key={key}
-                                  value={value.cage_id}
-                                  className={`select w-full max-w-xs select-sm ${
-                                    value.cage_id == "" ? "select-error" : ""
-                                  }`}
-                                  onChange={(e) => {
-                                    if (value.cage_id == "") {
-                                      updateCageCurrentCapacityAdd(
-                                        e.target.value
-                                      );
-                                      updateCageIdAtIndex(key, e.target.value);
-                                    } else if (
-                                      value.cage_id != e.target.value
-                                    ) {
-                                      updateCageCurrentCapacitySubtract(
-                                        value.cage_id
-                                      );
-                                      updateCageCurrentCapacityAdd(
-                                        e.target.value
-                                      );
-                                      updateCageIdAtIndex(key, e.target.value);
-                                    } else {
-                                      updateCageCurrentCapacityAdd(
-                                        e.target.value
-                                      );
-                                      updateCageIdAtIndex(key, e.target.value);
-                                    }
-                                  }}
-                                >
-                                  <option value="">Cage Name</option>
-                                  {cageList.map((cage: any, key: number) => {
-                                    return (
-                                      <option
-                                        key={key}
-                                        disabled={
-                                          cage.max == cage.current_capacity
-                                        }
-                                        value={cage.value}
-                                      >
-                                        {cage.display}
-                                      </option>
-                                    );
-                                  })}
-                                </select>
-                              </td>
-                              <td>
-                                <input
-                                  required={true}
-                                  type="text"
-                                  placeholder="Pig Tag"
-                                  className={`input input-sm w-full max-w-xs ${
-                                    value.pig_tag == "" ? "input-error" : ""
-                                  }`}
-                                  value={value.pig_tag}
-                                  onChange={(e) => {
-                                    updatePigTagAtIndex(key, e.target.value);
-                                  }}
+                                  validation={validateSelect}
+                                  reset={reset}
+                                  keys={key}
+                                  add={updateCageCurrentCapacityAdd}
+                                  deduct={updateCageCurrentCapacitySubtract}
                                 />
                               </td>
                               <td>
-                                <input
+                                <InputBox
+                                  type={"text"}
+                                  label={"Pig Tag"}
+                                  placeholder={"Pig Tag"}
+                                  name={"PigTag"}
+                                  disabled={false}
+                                  getter={value.pig_tag}
+                                  setter={updatePigTagAtIndex}
                                   required={true}
-                                  type="text"
-                                  placeholder="Weight"
-                                  className={`input input-sm w-full max-w-xs ${
-                                    value.weight == "" ? "input-error" : ""
-                                  }`}
-                                  value={value.weight}
-                                  onChange={(e) => {
-                                    updateWeightAtIndex(key, e.target.value);
-                                  }}
+                                  validation={validateNormal}
+                                  reset={reset}
+                                  keys={key}
+                                />
+                              </td>
+                              <td>
+                                <InputBox
+                                  type={"number"}
+                                  placeholder={"Weight"}
+                                  name={"Weight"}
+                                  disabled={false}
+                                  getter={value.weight}
+                                  setter={updateWeightAtIndex}
+                                  required={true}
+                                  validation={validateNormal}
+                                  reset={reset}
+                                  keys={key}
                                 />
                               </td>
                               <td className="grid my-auto md:grid-cols-2 grid-cols-none grid-rows-4 md:grid-rows-none  gap-2">

@@ -40,18 +40,16 @@ export default function SelectBox({
   setIsValid,
   reset,
   startValidation,
+  keys,
 }: any) {
+
   const [errorMessage, setErrorMessage] = useState([]);
   const validate = async (value: string) => {
     const valid = await validation(value);
     if (valid.message.lenght) {
       setErrorMessage(valid.message);
-      setter(value);
-      setIsValid(false);
     } else {
       setErrorMessage([]);
-      setter(value);
-      setIsValid(true);
     }
   };
   useEffect(() => {
@@ -71,31 +69,42 @@ export default function SelectBox({
       }
     }
   }, []);
+
+  useEffect(() => {
+    validate(selected);
+  }, [selected]);
+
   return (
     <>
-      <div className="input-control   w-auto">
-        <label className="label">
-          <span className="label-text text-base">{label}</span>
-        </label>
-        <select
-          name={name}
-          className={`select  select-bordered text-base-content ${className} ${
-            errorMessage.length == 0 ? "" : "select-error"
-          }`}
-          onChange={(e) => validate(e.target.value)}
-          value={selected}
-          required={required}
-        >
-          <option value={""}>{default_option}</option>
-          {options.map((item: any, index: number) => {
-            return (
-              <option key={index} value={item.value} disabled={item.disabled}>
-                {item.display}
-              </option>
-            );
-          })}
-        </select>
-      </div>
+      <select
+        name={name}
+        className={`select  select-bordered text-base-content ${className} ${
+          errorMessage.length == 0 ? "" : "select-error"
+        }`}
+        onChange={(e) => setter(keys, e.target.value)}
+        value={selected}
+        required={required}
+      >
+        <option value={""} disabled={true}>
+          {default_option}
+        </option>
+        {options.map((item: any, index: number) => {
+          return (
+            <option key={index} value={item.value} disabled={item.disabled}>
+              {item.display}
+            </option>
+          );
+        })}
+      </select>
+      <label className="label">
+        <span className="label-text text-base">
+          <ul className="max-w-md space-y-1 text-error text-sm text-gray-500 list-disc list-inside dark:text-gray-400">
+            {errorMessage.map((message: string, key: number) => {
+              return <li key={key}>{message}</li>;
+            })}
+          </ul>
+        </span>
+      </label>
     </>
   );
 }

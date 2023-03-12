@@ -94,12 +94,18 @@ export default async function handler(
 
 async function VerifyUser(username: string, job: string) {
   const conn = await connection.getConnection();
-  const [err, result] = await conn.query(
-    "select * from tbl_users where username=? and job=? and is_exist='true'",
-    [username, job]
-  );
-  conn.release();
+  try {
+    const [err, result] = await conn.query(
+      "select * from tbl_users where username=? and job=? and is_exist='true'",
+      [username, job]
+    );
+    conn.release();
 
-  if (err) return err;
-  return result;
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
 }
