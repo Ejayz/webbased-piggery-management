@@ -244,7 +244,7 @@ export default function Page({ params }: any) {
                   validationSchema={{
                     pattern: {
                       value: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-                      message: `Valid password should contain the following:One LowerCase \n,UpperCase ,Number and atleast 8 character long.`,
+                      message: `Valid password: 8+ characters, 1 lowercase, 1 uppercase, 1 number.`,
                     },
                   }}
                 ></PasswordInputShow>
@@ -314,7 +314,7 @@ export default function Page({ params }: any) {
                     pattern: {
                       value: /^9\d{9}$/,
                       message:
-                        "Valid password should start with 9,all numbers, and 10 character long.",
+                        "Phone number format: 9XXXXXXXXX.",
                     },
                   }}
                 ></PhoneInput>

@@ -198,6 +198,56 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                 </div>
+                <div
+                  className={`${
+                    loading.data.job == "owner" ? "block" : "hidden"
+                  }`}
+                >
+                  <div
+                    tabIndex={0}
+                    className="collapse collapse-plus rounded-md bg-base-100"
+                  >
+                    <div className="collapse">
+                      <input type="checkbox" />
+                      <div className="collapse-title text-base flex flex-cols font-medium">
+                        <Image
+                          src={"/assets/icons/user_management.png"}
+                          className="h-6 w-6 mr-2 my-auto hidden"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Reports
+                      </div>
+                      <div className="collapse-content">
+                        <li>
+                          <Link href="/reorder_report/owner/Create">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Reorder List
+                          </Link>
+                        </li>
+                        {/* <li>
+                          <Link href="/user_management/owner/List">
+                            <Image
+                              src={"/assets/icons/user_list.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            User List
+                          </Link>
+                        </li> */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {/* Cage Management */}
                 <div
                   className={`${

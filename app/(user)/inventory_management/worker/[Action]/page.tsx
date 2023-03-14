@@ -209,7 +209,7 @@ export default function Page({ params }: any) {
               <ul>
                 <li>Inventory Management</li>
 
-                <li>{Action}</li>
+                <li>View</li>
 
                 <li className="font-bold">{Action}</li>
               </ul>
