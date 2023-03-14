@@ -19,6 +19,7 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+  console.log(req.body);
   const { phone, username, password, job }: any = req.body;
   try {
     const hashedPass = await generateHased(password);

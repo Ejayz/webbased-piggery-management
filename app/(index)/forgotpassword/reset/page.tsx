@@ -8,7 +8,23 @@ import getBaseUrl from "@/hooks/getBaseUrl";
 import PasswordBox from "@/components/FormComponents/passwordBox";
 import InputBox from "@/components/FormComponents/inputbox";
 import { validatePassword } from "@/hooks/useValidation";
+import { useForm } from "react-hook-form";
+import PasswordInputShow from "@/components/FormCompsV2/PasswordInputShow";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
 export default function ResetPassword() {
+  const {
+    reset,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      password: "",
+      repeat_password: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+  });
   const [allowed, setAllowed] = useState<boolean>(true);
   const [requesting, setIsRequesting] = useState(false);
   const rout = useRouter();
@@ -20,6 +36,14 @@ export default function ResetPassword() {
   const [repeatPassword, setrepeatPass] = useState("");
   const [isPassword, setIsPassword] = useState(false);
   const [isRepeatPassword, setIsRepeatPassword] = useState(false);
+
+  const validateRepeatPassword = (value: string) => {
+    const passwordValue = (
+      document.getElementById("password") as HTMLInputElement
+    )?.value;
+    return value === passwordValue || "Password and Repeat password must match";
+  };
+
   const validateForm = async (e: any) => {
     e.preventDefault();
     if (password !== repeatPassword) {
@@ -38,7 +62,7 @@ export default function ResetPassword() {
       exec_reset(password);
     }
   };
-  async function exec_reset(password: string) {
+  async function exec_reset(data: any) {
     setIsRequesting(true);
 
     let headersList = {
@@ -50,7 +74,7 @@ export default function ResetPassword() {
     let bodyContent = JSON.stringify({
       username: username,
       phone: phone,
-      password: password,
+      password: data.password,
       job: job,
     });
 
@@ -60,16 +84,24 @@ export default function ResetPassword() {
       headers: headersList,
     });
 
-    let data = JSON.parse(await response.text());
-    if (data.code == 200) {
-      toast.success(data.message);
+    let returned = JSON.parse(await response.text());
+    if (returned.code == 200) {
+      toast.success(returned.message);
       setIsRequesting(false);
       rout.push("/");
     } else {
-      toast.error(data.message);
+      toast.error(returned.message);
       setIsRequesting(false);
     }
   }
+  const onSubmit = (data: any) => {
+    setIsRequesting(true);
+    if (!confirm("Reset password? ")) {
+      setIsRequesting(false);
+      return false;
+    }
+    exec_reset(data);
+  };
 
   return (
     <>
@@ -84,36 +116,46 @@ export default function ResetPassword() {
               </ul>
             </div>
             <form
-              onSubmit={validateForm}
+              onSubmit={handleSubmit(onSubmit)}
               data-theme="light"
               className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
             >
               <div className="card-body">
-                <PasswordBox
-                  placeholder={"Password"}
+                <PasswordInputShow
                   name={"password"}
-                  disabled={false}
-                  className={`input input-bordered w-full h-10  `}
-                  getter={password}
-                  setter={setPassword}
+                  label={"Password"}
+                  register={register}
+                  errors={errors}
                   required={true}
-                  validation={validatePassword}
-                  setIsValid={setIsPassword}
-                ></PasswordBox>
-                <InputBox
-                  type={"password"}
+                  validationSchema={{
+                    required: "This field is required",
+                    pattern: {
+                      value: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                      message: `A valid password should include one lowercase, one uppercase, one number, and at least eight characters.`,
+                    },
+                  }}
+                ></PasswordInputShow>
+                <NormalInput
+                  name={"repeat_password"}
                   label={"Repeat Password"}
-                  placeholder={"Repeat Password"}
-                  name={"repeatPass"}
-                  disabled={false}
-                  className={`input w-full input-bordered h-10  `}
-                  getter={repeatPassword}
-                  setter={setrepeatPass}
+                  register={register}
+                  errors={errors}
                   required={true}
-                  validation={validatePassword}
-                  setIsValid={setIsRepeatPassword}
-                />
-
+                  type={"password"}
+                  validationSchema={{
+                    required: "This field is required",
+                    validate: validateRepeatPassword,
+                  }}
+                ></NormalInput>
+                <label className="label label-text">
+                  <Link
+                    href="#"
+                    as="/"
+                    className="label-text-alt link link-hover"
+                  >
+                    Remembered your password? Login
+                  </Link>
+                </label>
                 <div className="form-control mt-6">
                   <button
                     onClick={() => {}}

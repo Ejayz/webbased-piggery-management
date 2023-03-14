@@ -18,3 +18,27 @@ export default async function handler(
   });
   return res.send(exported);
 }
+
+async function uploadToNextServer(file: any) {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+  };
+
+  let bodyContent = new FormData();
+  bodyContent.append("reorder_id", "1");
+  bodyContent.append("details", "[]");
+  bodyContent.append("attachment", "c:UsersEjayz-SuperPicturesCapture.PNG");
+
+  let response = await fetch(
+    "http://localhost:3000/api/post/PigManagement/getFormDetail",
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.text();
+  console.log(data);
+}

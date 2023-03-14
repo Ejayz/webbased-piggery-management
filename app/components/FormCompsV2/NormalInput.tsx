@@ -11,6 +11,7 @@ const Input = ({
   type,
   validationSchema,
   readonly = false,
+  id,
 }: any) => (
   <div className="form-control">
     <label className="label">
@@ -21,7 +22,7 @@ const Input = ({
       </span>
     </label>
     <input
-      id={name}
+      id={id}
       name={name}
       type={type}
       readOnly={readonly}
@@ -31,6 +32,7 @@ const Input = ({
         errors[name] != undefined ? "input-error" : ""
       }`}
       {...register(name, validationSchema)}
+      step="any"
     />
     <ErrorMessage
       errors={errors}

@@ -32,6 +32,12 @@ import printJS from "print-js";
 import QrCode from "@/components/QrComponent/qrcodeArrayState";
 import Loading from "@/components/Loading/loading";
 import { useQuery, useQueryClient } from "react-query";
+import { useFieldArray, useForm } from "react-hook-form";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import SelectInputWithOnChange from "@/components/FormCompsV2/SelectInputWithOnChange";
+import PigDataForms from "@/components/PigDataForms/pigDataForms";
+import GeneralPigBatch from "@/components/PigDataForms/GeneralPigBatch";
 interface SelectInter {
   value: number;
   display: string;
@@ -44,109 +50,32 @@ interface PigData {
   cage_id: string;
   pig_tag: string;
   weight: string;
-  error: boolean;
+}
+interface BatchData {
+  batch_id: string;
+  boar_id: string;
+  sow_id: string;
+  pig_type: string;
+  birth_date: string;
+  breed_id: string;
+  batch_name: string;
 }
 export default function Page() {
   const queryClient = useQueryClient();
+
   const [allowed, setIsAllowed] = useState(false);
-
   const [pigData, setPigData] = useState<PigData[]>([]);
-
-  const [batch_id, setBatchId] = useState("1");
-  const [boar_id, setBoardId] = useState("");
-  const [sow_id, setSowId] = useState("");
-  const [pig_type, setPigType] = useState("");
-  const [birth_date, setBirthDate] = useState(new Date());
-  const [breed_id, setBreed] = useState("");
-  const [batch_name, setBatchName] = useState("");
-
-  const [isBatchName, setIsBatchName] = useState(true);
-  const [isBreed, setIsBreed] = useState(true);
-  const [isPigType, setIsPigType] = useState(true);
-  const [isBirthDate, setIsBirthDate] = useState(true);
-  const [isBoar, setIsBoar] = useState(true);
-  const [isSow, setIsSow] = useState();
-
+  const [batchData, setBatchData] = useState<BatchData>();
+  const [showPigData, setShowPigData] = useState(false);
   const qrCodeContainer = useRef<any>();
-
-  const [boarList, setBoarList] = useState<SelectInter[]>([]);
-  const [sowList, setSowList] = useState<SelectInter[]>([]);
-  const [cageList, setCageList] = useState<SelectInter[]>([]);
-  const [breedList, setBreedList] = useState<SelectInter[]>([]);
   const [hideScanner, setHideScanner] = useState({ show: false, index: 0 });
-  const [reset, setReset] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
   const [processing, setProcessing] = useState(false);
   const [doneRender, setDoneRender] = useState(false);
 
-  const { isLoading, error, data, refetch } = useQuery(
-    "formDetails",
-    async () => {
-      const response = await fetch(
-        `${location.origin}/api/post/PigManagement/getFormDetail`
-      );
-      return response.json();
-    }
-  );
+  const [resset, setResset] = useState(false);
 
-  useEffect(() => {
-    if (data !== undefined) {
-      if (data.code == "200") {
-        const breed_list = data.data.BreedList;
-        const cage_list = data.data.PigletCageList;
-        const batchid = data.data.LatestBatchId;
-        const boarlist = data.data.BoarList;
-        const sowlist = data.data.SowList;
-
-        cage_list.map((data: any, key: any) => {
-          cageList.push({
-            value: data.cage_id,
-            display: data.cage_name,
-            disabled: false,
-            max: data.cage_capacity,
-            current_capacity: data.current_caged,
-          });
-        });
-        breed_list.map((data: any, key: any) => {
-          breedList.push({
-            value: data.breed_id,
-            display: data.breed_name,
-            disabled: false,
-          });
-        });
-        setBatchId(batchid[0].batch_id + 1);
-        setBatchName(`Batch ${batchid[0].batch_id + 1}`);
-        sowlist.map((data: any, key: number) => {
-          sowList.push({
-            value: data.pig_id,
-            display: data.pig_id,
-            disabled: false,
-          });
-        });
-        boarlist.map((data: any, key: number) => {
-          setBoarList((prevData) => [
-            ...prevData,
-            {
-              value: data.pig_id,
-              display: data.pig_id,
-              disabled: false,
-            },
-          ]);
-        });
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    console.log(isLoading);
-    if (isLoading) {
-      setCageList([]);
-      setBreedList([]);
-      setSowList([]);
-      setBoarList([]);
-    }
-  }, [isLoading]);
   useEffect(() => {
     async function checkUser() {
       if (!loading.loading) {
@@ -160,199 +89,37 @@ export default function Page() {
     checkUser();
   }, [loading]);
 
-  useEffect(() => {
-    async function readyData() {}
-    readyData().then(() => {
-      setDoneRender(true);
-    });
-  }, []);
-
-  const idSetter = async () => {
-    return await IdGenerator();
-  };
-
-  const createRow = async () => {
-    let pig_id = await idSetter();
-    setPigData((prevData) => [
-      ...prevData,
-      {
-        pig_id: pig_id,
-        cage_id: "",
-        pig_tag: "",
-        weight: "",
-        error: false,
-      },
-    ]);
-  };
-
-  function updateCageCurrentCapacityAdd(id: string): void {
-    setCageList((CageData) => {
-      const updatedCageList = [...CageData];
-      updatedCageList.map((value: any, key: number) => {
-        if (value.value == id) {
-          updatedCageList[key].current_capacity =
-            parseInt(value.current_capacity) + 1;
-          return;
-        }
-      });
-      return updatedCageList;
-    });
-  }
-  function updateCageCurrentCapacitySubtract(id: string): void {
-    setCageList((CageData) => {
-      const updatedCageList = [...CageData];
-      updatedCageList.map((value: any, key: number) => {
-        if (value.value == id) {
-          updatedCageList[key].current_capacity =
-            parseInt(value.current_capacity) - 1;
-          return;
-        }
-      });
-      return updatedCageList;
-    });
-  }
-
-  const processQrCode = async (index: number, id: string) => {
-    let data: any = document.getElementById(`${id}`);
-    console.log(data);
-    let download: any = data.toDataURL();
-    const link = document.createElement("a");
-    link.href = download;
-    link.download = `${id}.png`;
-    link.target = "_blank";
-    link.click();
-    link.remove();
-  };
-  function resetState() {
-    queryClient.invalidateQueries("formDetails");
-    setReset(!reset);
-    setPigData([]);
-    setBoardId("");
-    setSowId("");
-    setPigType("");
-    setBirthDate(new Date());
-    setBreed("");
-    setBatchName(`Batch ${batch_id}`);
-  }
-  function updatePigIdAtIndex(index: number, pigId: string): void {
-    setPigData((prevPigData) => {
-      const updatedPigData = [...prevPigData];
-      updatedPigData[index].pig_id = pigId;
-      return updatedPigData;
-    });
-  }
-  function updateErrorAtIndex(index: number): void {
-    setPigData((prevPigData) => {
-      const updatedPigData = [...prevPigData];
-      updatedPigData[index].error = true;
-      return updatedPigData;
-    });
-  }
-  function updateCageIdAtIndex(index: number, cageId: string): void {
-    setPigData((prevPigData) => {
-      const updatedPigData = [...prevPigData];
-      updatedPigData[index].cage_id = cageId;
-      return updatedPigData;
-    });
-  }
-
-  function updatePigTagAtIndex(index: number, pigTag: string): void {
-    setPigData((prevPigData) => {
-      const updatedPigData = [...prevPigData];
-      updatedPigData[index].pig_tag = pigTag;
-      return updatedPigData;
-    });
-  }
-  function updateWeightAtIndex(index: number, weight: string): void {
-    setPigData((prevPigData) => {
-      const updatedPigData = [...prevPigData];
-      updatedPigData[index].weight = weight;
-      return updatedPigData;
-    });
-  }
-  function removePigDataAtIndex(index: number): void {
-    if (confirm("Are you sure you want to remove this row?")) {
-      setPigData((prevPigData) => {
-        const updatedPigData = [...prevPigData];
-        updatedPigData.splice(index, 1);
-        return updatedPigData;
-      });
-    }
-  }
-
-  const validate = async (e: any) => {
-    e.preventDefault();
-    setProcessing(true);
-    if (
-      batch_name == "" ||
-      sow_id == "default" ||
-      boar_id == "" ||
-      breed_id == "" ||
-      pig_type == "default"
-    ) {
-      toast.error("All fields are required");
-      setProcessing(false);
-      return false;
-    }
-    pigData.forEach((value, index) => {
-      if (
-        value.cage_id == "default" ||
-        value.pig_tag == "" ||
-        value.weight == ""
-      ) {
-        updateErrorAtIndex(index);
-        toast.error(
-          "There are errors in your form. Please review and correct the row(s) created  before submitting."
-        );
-        setProcessing(false);
-        return false;
-      }
-    });
-
-    if (!(isBoar || isBreed || isSow)) {
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      setProcessing(false);
-      return false;
-    }
-    if (pigData.length == 0) {
-      toast.error("Pig detail list is empty.");
-      setProcessing(false);
-      return false;
-    }
-    if (!confirm("Are you sure you want to create?")) {
-      setProcessing(false);
-      return false;
-    }
-    exec_create();
-  };
-
   const exec_create = async () => {
     const returned = await CreatePigs(
-      batch_id,
-      boar_id,
-      sow_id,
-      pig_type,
-      birth_date,
-      breed_id,
+      batchData?.batch_id,
+      batchData?.boar_id,
+      batchData?.sow_id,
+      batchData?.pig_type,
+      batchData?.birth_date,
+      batchData?.breed_id,
       pigData,
-      batch_name
+      batchData?.batch_name
     );
     if (returned.code == 200) {
       toast.success(returned.message);
-      resetState();
       setProcessing(false);
+      setResset(true);
     } else {
       setProcessing(false);
-      toast.error(returned.error);
+      toast.error(returned.message);
+    }
+  };
+
+  const onSubmit = () => {
+    console.log(pigData);
+    if (batchData == undefined || pigData.length == 0) {
+      toast.error("Please complete the forms before creating pig details");
+    } else {
+      exec_create();
     }
   };
 
   if (loading.loading) {
-    return loading.loader;
-  }
-  if (!doneRender) {
     return loading.loader;
   } else if (!allowed) {
     return loading.loader;
@@ -371,32 +138,7 @@ export default function Page() {
           }}
           className="modal-toggle"
         />
-        <div className="modal modal-bottom sm:modal-middle">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg text-base-content">
-              Use custom Qr Code
-            </h3>
-            <QrCode
-              setter={updatePigIdAtIndex}
-              setHide={setHideScanner}
-              index={hideScanner.index}
-              hide={hideScanner}
-            ></QrCode>
-            <div className="modal-action">
-              <button
-                onClick={() => {
-                  setHideScanner({
-                    show: false,
-                    index: 0,
-                  });
-                }}
-                className="btn"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+
         <div className="w-full bg-base-100 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className=" h-auto w-full">
             <div className="w-11/12  mx-auto flex flex-row">
@@ -416,279 +158,50 @@ export default function Page() {
                     <li className="font-bold">Create</li>
                   </ul>
                 </div>
+                <GeneralPigBatch
+                  setShowPigData={setShowPigData}
+                  showPigData={showPigData}
+                  setBatchData={setBatchData}
+                  clear={resset}
+                ></GeneralPigBatch>
 
-                <form
-                  onSubmit={validate}
-                  method="post"
-                  className="flex w-full h-auto py-2 flex-col"
-                >
-                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
-                    <InputBoxNormal
-                      type={"text"}
-                      label={"Batch Name"}
-                      placeholder={"Batch Name"}
-                      name={"BatchName"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={batch_name}
-                      setter={setBatchName}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsBatchName}
-                      reset={reset}
-                      readonly={true}
-                    />
-                    <SelectBoxNormal
-                      label={"Sow"}
-                      name={"Sow Id"}
-                      selected={sow_id}
-                      options={sowList}
-                      disabled={false}
-                      default_option={"Select Sow"}
-                      setter={setSowId}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsSow}
-                      reset={reset}
-                    />
-                    <SelectBoxNormal
-                      label={"Boar"}
-                      name={"Boar"}
-                      selected={boar_id}
-                      options={boarList}
-                      disabled={false}
-                      default_option={"Select Boar"}
-                      setter={setBoardId}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsBoar}
-                      reset={reset}
-                    />
-                    <SelectBoxNormal
-                      label={"Breed"}
-                      name={"Breed"}
-                      selected={breed_id}
-                      options={breedList}
-                      disabled={false}
-                      default_option={"Select Breed"}
-                      setter={setBreed}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsBreed}
-                      reset={reset}
-                    />
-                    <SelectBoxNormal
-                      label={"Pig Type"}
-                      name={"pig_Type"}
-                      selected={pig_type}
-                      options={[
-                        {
-                          value: "Piglet",
-                          display: "Piglet",
-                          disabled: false,
-                        },
-                      ]}
-                      disabled={false}
-                      default_option={"Select Pig Type"}
-                      setter={setPigType}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsPigType}
-                      reset={reset}
-                    />
-                    <InputBoxNormal
-                      type={"date"}
-                      label={"Birth Date"}
-                      placeholder={"Pig Birth Date"}
-                      name={"birthdate"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={birth_date.toISOString().substr(0, 10)}
-                      setter={setBirthDate}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsBirthDate}
-                      reset={reset}
-                      readonly={true}
-                    />
-                  </div>{" "}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      createRow();
-                    }}
-                    className="btn btn-primary my-2 w-1/4"
-                  >
-                    New Pig
-                  </button>
-                  <div className="overflow-x-auto h-auto">
-                    <span></span>
-                    <table className="table table-compact w-full h-auto">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Pig Id</th>
-                          <th>Cage Name*</th>
-                          <th>Pig Tag*</th>
-                          <th>Weight*</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {pigData.map((value: PigData, key: number) => {
-                          return (
-                            <tr key={key}>
-                              <th>{key + 1}</th>
-                              <th className="hidden">
-                                <QRCodeCanvas
-                                  id={value.pig_id}
-                                  value={value.pig_id}
-                                />
-                              </th>
-                              <th>{value.pig_id}</th>
-                              <td>
-                                <SelectBox
-                                  label={"Cage Name"}
-                                  name={"Cage Name"}
-                                  selected={value.cage_id}
-                                  options={cageList}
-                                  disabled={false}
-                                  default_option={"Cage Name"}
-                                  setter={updateCageIdAtIndex}
-                                  required={true}
-                                  validation={validateSelect}
-                                  reset={reset}
-                                  keys={key}
-                                  add={updateCageCurrentCapacityAdd}
-                                  deduct={updateCageCurrentCapacitySubtract}
-                                />
-                              </td>
-                              <td>
-                                <InputBox
-                                  type={"text"}
-                                  label={"Pig Tag"}
-                                  placeholder={"Pig Tag"}
-                                  name={"PigTag"}
-                                  disabled={false}
-                                  getter={value.pig_tag}
-                                  setter={updatePigTagAtIndex}
-                                  required={true}
-                                  validation={validateNormal}
-                                  reset={reset}
-                                  keys={key}
-                                />
-                              </td>
-                              <td>
-                                <InputBox
-                                  type={"number"}
-                                  placeholder={"Weight"}
-                                  name={"Weight"}
-                                  disabled={false}
-                                  getter={value.weight}
-                                  setter={updateWeightAtIndex}
-                                  required={true}
-                                  validation={validateNormal}
-                                  reset={reset}
-                                  keys={key}
-                                />
-                              </td>
-                              <td className="grid my-auto md:grid-cols-2 grid-cols-none grid-rows-4 md:grid-rows-none  gap-2">
-                                <div className="dropdown">
-                                  <label tabIndex={0} className="btn m-1">
-                                    Options
-                                  </label>
-                                  <ul
-                                    tabIndex={0}
-                                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
-                                  >
-                                    <li>
-                                      <button
-                                        type="button"
-                                        className="link"
-                                        onClick={() => {
-                                          setHideScanner({
-                                            show: true,
-                                            index: key,
-                                          });
-                                        }}
-                                      >
-                                        Custom QrCode
-                                      </button>
-                                    </li>
-                                    <li>
-                                      <button
-                                        type="button"
-                                        className="link"
-                                        onClick={() => {
-                                          processQrCode(key, value.pig_id);
-                                        }}
-                                      >
-                                        Download QrCode
-                                      </button>
-                                    </li>
-                                    <li>
-                                      <button
-                                        type="button"
-                                        className="link"
-                                        onClick={() => {
-                                          printJS(`${value.pig_id}`, "html");
-                                        }}
-                                      >
-                                        Print Qr Code
-                                      </button>
-                                    </li>
-                                  </ul>
-                                </div>
-
-                                <button
-                                  type="button"
-                                  className="link"
-                                  onClick={() => {
-                                    removePigDataAtIndex(key);
-                                  }}
-                                >
-                                  Remove
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                      <tfoot
-                        className={`${pigData.length !== 5 ? "hidden" : ""}`}
-                      >
-                        <tr>
-                          <th></th>
-                          <th>Pig Id</th>
-                          <th>Cage Name*</th>
-                          <th>Pig Tag*</th>
-                          <th>Weight*</th>
-                          <th>Action</th>
-                        </tr>
-                      </tfoot>
-                    </table>
+                <div className={`${showPigData ? "" : "hidden"}`}>
+                  <div className="flex flex-col w-full border-opacity-50">
+                    <div className="divider">Pig Details</div>
                   </div>
-                  <div className="card-actions justify-end">
+                  <PigDataForms
+                    pigData={pigData}
+                    setPigData={setPigData}
+                    clear={resset}
+                    setResset={setResset}
+                  ></PigDataForms>
+                </div>
+                <div>
+                  <div
+                    className={`card-actions justify-end ${
+                      showPigData ? "" : "hidden"
+                    }`}
+                  >
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
-                        processing ? "loading" : ""
-                      }`}
+                      onClick={() => {
+                        onSubmit();
+                      }}
+                      type="button"
+                      className="btn btn-primary "
                     >
                       Create
                     </button>
                     <button
-                      type="reset"
-                      onClick={resetState}
-                      className="btn mx-4"
+                      onClick={() => {
+                        setResset(true);
+                      }}
+                      type="button"
+                      className="btn btn-primary "
                     >
                       Reset
                     </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>

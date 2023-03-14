@@ -20,6 +20,7 @@ export default async function handler(
     batch_name,
     pigData,
   } = req.body;
+  console.log(req.body.pigData);
   const data = await Ops(
     batch_id,
     boar_id,
@@ -30,9 +31,15 @@ export default async function handler(
     pigData,
     batch_name
   );
-  if (data == 200) {
-    return res.status(200).json({ code: 200, message: "Pigs Created" });
-  } else {
+  try {
+    if (data == 200) {
+      return res.status(200).json({ code: 200, message: "Pigs Created" });
+    } else {
+      return res
+        .status(500)
+        .json({ code: 500, message: "500 Server error.Something went wrong." });
+    }
+  } catch (error) {
     return res
       .status(500)
       .json({ code: 500, message: "500 Server error.Something went wrong." });

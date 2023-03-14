@@ -1,7 +1,7 @@
 "use client";
 
 import { ErrorMessage } from "@hookform/error-message";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function Input({
   name,
   label,
@@ -12,8 +12,23 @@ export default function Input({
   disabled = false,
   validationSchema,
   id = "0",
+  onChangeAddFunction,
+  onChangeSubtractFunction,
 }: any) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [stores, setStores] = useState({ current: "", prev: "" });
+  useEffect(() => {
+    console.log("asddd")
+    if (stores.current !== "") {
+      onChangeAddFunction(stores.current);
+    }
+  }, [stores.current]);
+  useEffect(() => {
+    console.log("asd")
+    if (stores.prev !== "") {
+      onChangeSubtractFunction(stores.prev);
+    }
+  }, [stores.prev]);
   return (
     <div className="form-control">
       <label className="label">
@@ -24,6 +39,15 @@ export default function Input({
       <div className="input-group">
         <select
           id={id}
+          onChange={(e) => {
+            console.log("hello")
+            console.log(stores);
+            if (stores.current == "") {
+              setStores({ current: e.target.value, prev: "" });
+            } else {
+              setStores({ current: e.target.value, prev: stores.current });
+            }
+          }}
           required={required}
           className={`select text-base-content w-full max-w-xs select-bordered ${
             errors[name] != undefined ? "select-error" : ""
@@ -39,9 +63,7 @@ export default function Input({
                 id={id + key}
                 key={key}
                 disabled={value.disabled}
-                className={`text-base-content ${
-                  value.disabled ? "hidden" : ""
-                }`}
+                className="text-base-content"
                 value={value.value}
               >
                 {value.display}

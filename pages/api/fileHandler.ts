@@ -16,7 +16,6 @@ export default async function fildeHandler(req: NextApiRequest) {
       resolve({ fields, files });
     });
   });
-
   let itemName = "";
   for (let i = 0; i < 10; i++) {
     itemName = randomInt(0, 9).toString() + itemName;

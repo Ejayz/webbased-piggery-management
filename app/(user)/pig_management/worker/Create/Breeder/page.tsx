@@ -30,6 +30,7 @@ import { useForm } from "react-hook-form";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
 import SelectInput from "@/components/FormCompsV2/SelectInput";
 import { useQuery, useQueryClient } from "react-query";
+import Loading from "@/components/Loading/loading";
 
 interface SelectInter {
   value: number;
@@ -51,25 +52,33 @@ export default function Page() {
     defaultValues: {
       pig_id: "",
       cage_id: "",
-      batch_id: "0",
+      batch_id: "1",
       pig_tag: "",
       pig_type: "",
       birth_date: "",
       weight: "",
       breed_id: "",
     },
+    mode: "onChange",
+    criteriaMode: "all",
+    resetOptions: {
+      keepDefaultValues: true,
+    },
   });
+
   const { isLoading, error, data, refetch } = useQuery(
-    "formDetails",
+    "pigBreederForm",
     async () => {
       const response = await fetch(
         `${location.origin}/api/post/PigManagement/getBreederFormDetail`
       );
       return response.json();
+    },
+    {
+      cacheTime: 0,
     }
   );
 
-  console.log(data);
   const pig_id = watch("pig_id");
   const [cage_id, setCageId] = useState("default");
   const [batch_id, setBatchId] = useState("1");
@@ -94,7 +103,8 @@ export default function Page() {
   const [breedList, setBreedList] = useState<SelectInter[]>([]);
   const [scannerLink, setScannerLink] = useState<any>("");
   const [hideScanner, setHideScanner] = useState(false);
-
+  let cageLister: SelectInter[] = [];
+  let breedLister: SelectInter[] = [];
   const router = useRouter();
   const loading = getUserInfo();
   const [processing, setProcessing] = useState(false);
@@ -112,22 +122,33 @@ export default function Page() {
   }, [loading]);
 
   async function resetState() {
-    queryClient.invalidateQueries("formDetails");
-    reset();
+    reset({
+      pig_id: "",
+      cage_id: "",
+      batch_id: "1",
+      pig_tag: "",
+      pig_type: "",
+      birth_date: "",
+      weight: "",
+      breed_id: "",
+    });
+    refetch();
+    const returned = await IdGenerator();
+    setValue("pig_id", returned);
+    setValue("batch_id", "1");
   }
+  console.log(data);
 
   useEffect(() => {
     async function readyData() {
-      if (isLoading) {
-        setCageList([]);
-        setBreedList([]);
-      }
+      cageLister = [];
+      breedLister = [];
       if (data !== undefined || data != undefined) {
         if (data.code == 200) {
           const returned = await IdGenerator();
 
           data.data.CageList.map((data: any, key: any) => {
-            cageList.push({
+            cageLister.push({
               value: data.cage_id,
               display: data.cage_name,
               disabled: false,
@@ -135,20 +156,28 @@ export default function Page() {
           });
 
           data.data.BreedList.map((data: any, key: any) => {
-            breedList.push({
+            breedLister.push({
               value: data.breed_id,
               display: data.breed_name,
               disabled: false,
             });
           });
-
+          setCageList(cageLister);
+          setBreedList(breedLister);
           setValue("pig_id", returned);
+          setValue("batch_id", "1");
         }
       }
     }
     readyData();
   }, [data]);
-
+  useEffect(() => {
+    console.log(isLoading);
+    if (isLoading) {
+      setCageList([]);
+      setBreedList([]);
+    }
+  }, [isLoading]);
   const createDownloadLink = async () => {
     let data: any = document.getElementById("canvasable");
     setScannerLink(data.toDataURL());
@@ -159,57 +188,17 @@ export default function Page() {
       createDownloadLink();
     }
   }, [pig_id]);
-  const validate = async (e: any) => {
-    e.preventDefault();
-    setProcessing(true);
-    if (
-      pig_id == "" ||
-      cage_id == "default" ||
-      batch_id == "" ||
-      pig_tag == "" ||
-      pig_type == "default" ||
-      birth_date == ""
-    ) {
-      setProcessing(false);
-      toast.error("All feilds are required.");
-      return false;
-    }
 
-    if (
-      !(
-        isPigId &&
-        isCageId &&
-        isBatchId &&
-        isPigTag &&
-        isPigType &&
-        isBirthDate &&
-        isWeight
-      )
-    ) {
-      setProcessing(false);
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      return false;
-    }
-
-    if (!confirm("Are you sure you want to create?")) {
-      setProcessing(false);
-      return false;
-    }
-    exec_create();
-  };
-
-  const exec_create = async () => {
+  const exec_create = async (data: any) => {
     const returned = await Create(
-      pig_id,
-      cage_id,
-      batch_id,
-      breed_id,
-      pig_tag,
-      pig_type,
-      birth_date,
-      weight
+      data.pig_id,
+      data.cage_id,
+      data.batch_id,
+      data.breed_id,
+      data.pig_tag,
+      data.pig_type,
+      data.birth_date,
+      data.weight
     );
     if (returned.code == 200) {
       setProcessing(false);
@@ -221,8 +210,19 @@ export default function Page() {
     }
   };
 
+  const onSubmit = (data: any) => {
+    setProcessing(true);
+    if (!confirm("Create pig?")) {
+      setProcessing(false);
+      return false;
+    }
+    exec_create(data);
+  };
+
   if (loading.loading) {
     return loading.loader;
+  } else if (isLoading) {
+    return <Loading></Loading>;
   } else if (!allowed) {
     return loading.loader;
   } else {
@@ -282,7 +282,7 @@ export default function Page() {
                 </div>
 
                 <form
-                  onSubmit={validate}
+                  onSubmit={handleSubmit(onSubmit)}
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
@@ -355,7 +355,10 @@ export default function Page() {
                       required={true}
                       type={"text"}
                       validationSchema={{
-                        required: "This field is required",
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
                       }}
                     ></NormalInput>
                     <SelectInput
@@ -440,7 +443,7 @@ export default function Page() {
                       Create
                     </button>
                     <button
-                      type="reset"
+                      type="button"
                       onClick={resetState}
                       className="btn mx-4"
                     >
