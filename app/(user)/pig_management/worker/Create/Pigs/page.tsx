@@ -155,7 +155,8 @@ export default function Page() {
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Pig</li>
-                    <li className="font-bold">Create</li>
+                    <li>Create</li>
+                    <li className="font-bold">Pigs</li>
                   </ul>
                 </div>
                 <GeneralPigBatch
