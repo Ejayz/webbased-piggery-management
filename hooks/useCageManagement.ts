@@ -120,8 +120,6 @@ export const View = async (cage_id: any) => {
     "Content-Type": "application/json",
   };
 
-  
-
   let response = await fetch(
     `${location.origin}/api/post/CageManagement/ViewCage/${cage_id}`,
     {

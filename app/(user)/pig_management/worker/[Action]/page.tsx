@@ -2,7 +2,7 @@
 
 import InputBox from "@/components/FormComponents/inputbox";
 import SelectBox from "@/components/FormComponents/selectBox";
-import { Remove, Update, View } from "@/hooks/useCageManagement";
+import { Remove, Update, View } from "@/hooks/usePigManagement";
 import {
   validateNormal,
   validatePhone,
@@ -12,12 +12,126 @@ import {
 } from "@/hooks/useValidation";
 import Loading from "@/components/Loading/loading";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import PageNotFound from "@/components/Errors/PageNotFound";
-
+import { useForm } from "react-hook-form";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
+import { useQuery } from "react-query";
+import { IdGenerator } from "@/hooks/usePigManagement";
+interface SelectInter {
+  value: number;
+  display: string;
+  disabled: boolean;
+  max?: string;
+  current_capacity?: any;
+}
+interface SelectedCage {
+  cage_id: string;
+  selected_quantity: number;
+}
 export default function Page({ params }: any) {
+  const [cageList, setCageList] = useState<SelectInter[]>([]);
+  const [cageSelected, setCageSelected] = useState<SelectedCage[]>([]);
+  const id: any = useSearchParams().get("id");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      pig_id: "",
+      cage_id: "",
+      pig_tag: "",
+      status: "",
+      weight: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+  });
+
+  const { isLoading, error, isFetching, data, refetch } = useQuery(
+    "pigDetails",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/post/PigManagement/getFormDetailAction`
+      );
+      const date = new Date();
+      const epochTime = date.getTime() / 1000;
+      const data = await response.json();
+      data.time = epochTime;
+      return data;
+    },
+    {
+      cacheTime: 0,
+      enabled: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  const evaluateCage = async (list: any) => {
+    for (let i = 0; i < cageSelected.length; i++) {
+      cageSelected[i].cage_id == data.cage_id;
+      for (let j = 0; j < list.length; j++) {
+        if (cageSelected[i].cage_id == list[j].cage_id) {
+          if (cageSelected[i].selected_quantity >= list[j].value) {
+            list[j] = {
+              value: data.cage_id,
+              display: "data.cage_name",
+              disabled: Action == "View" || Action == "Remove" ? true : false,
+              max: data.cage_capacity,
+              current_capacity: data.current_caged,
+            };
+          }
+        }
+      }
+    }
+
+    return list;
+  };
+
+  const triggerUpdate = async () => {
+    setCageList([]);
+    const cage_list = data.data.PigletCageList;
+    const listCage: any = [];
+    cage_list.map((data: any, key: any) => {
+      listCage.push({
+        value: data.cage_id,
+        display: data.cage_name,
+        disabled: Action == "View" || Action == "Remove" ? true : false,
+        max: data.cage_capacity,
+        current_capacity: data.current_caged,
+      });
+    });
+    listCage.push({
+      value: pigData.data[0].cage_id,
+      display: pigData.data[0].cage_name,
+      disabled: Action == "View" || Action == "Remove" ? true : false,
+      max: pigData.data[0].cage_capacity,
+      current_capacity: pigData.data[0].current_caged,
+    });
+    const list = await evaluateCage(listCage);
+    setCageList(list);
+    setValue("pig_id", id);
+  };
+
+  useEffect(() => {
+    if (data !== undefined) {
+      if (data.code == 200) {
+        triggerUpdate();
+      }
+    }
+  }, [data]);
+  useEffect(() => {
+    refetch();
+  }, []);
+
   const [cage_name, setCageName] = useState("");
   const [cage_type, setCageType] = useState("default");
   const [cage_capacity, setCageCapacity] = useState<number | string>("");
@@ -39,38 +153,6 @@ export default function Page({ params }: any) {
     setCageCapacity("");
     setCageType("default");
   }
-  const verifyInput = async (e: any) => {
-    e.preventDefault();
-    setProcessing(true)
-    if (cage_type == "default" || cage_name == "" || cage_capacity == "") {
-      setProcessing(false)
-      toast.error("All feilds are required.");
-      return false;
-    }
-
-    if (params.Action == "Update") {
-      if (!(isCageCapacity && isCageType && isCageName)) {
-        setProcessing(false)
-        toast.error("Please correct the inputs indicated in red.");
-        return false;
-      }
-      var isOk = confirm("are you sure you want to update?");
-      setIsSubmitting(true);
-      if (isOk) {
-        updateUser();
-      } else {
-        setProcessing(false)
-        return false;
-      }
-    } else if (params.Action == "Remove") {
-      if (!confirm("Are you sure you want to remove?")) {
-        setProcessing(false)
-        return false;
-      }
-
-      exec_remove();
-    }
-  };
 
   useEffect(() => {
     if (cage_type == "default") {
@@ -92,28 +174,34 @@ export default function Page({ params }: any) {
     }
   }, [cage_type]);
 
-  const exec_remove = async () => {
-    const returned = await Remove(cage_id);
+  const exec_remove = async (data: any) => {
+    const returned = await Remove(data.pig_id, data.cage_id);
     if (returned.code == 200) {
-      setProcessing(false)
+      setProcessing(false);
       callCancel(returned.message, "success");
       setIsSubmitting(false);
     } else {
-      setProcessing(false)
+      setProcessing(false);
       toast.error(returned.message);
       setIsSubmitting(false);
     }
   };
 
-  const updateUser = async () => {
-    const returned = await Update(cage_name, cage_id, cage_type, cage_capacity);
+  const updateUser = async (data: any) => {
+    const returned = await Update(
+      data.pig_id,
+      data.pig_tag,
+      data.status,
+      data.cage_id,
+      data.weight
+    );
     if (returned.code == 200) {
       resetState();
-      setProcessing(false)
+      setProcessing(false);
       callCancel(returned.message, "success");
       setIsSubmitting(false);
     } else {
-      setProcessing(false)
+      setProcessing(false);
       toast.error(returned.message);
       setIsSubmitting(false);
     }
@@ -124,35 +212,84 @@ export default function Page({ params }: any) {
 
   function callCancel(message?: string, status?: string) {
     if (message == undefined) {
-      router.push("/cage_management/worker/List");
+      router.push("/pig_management/worker/List");
     } else {
       router.push(
-        `/cage_management/worker/List?msg=${message}&status=${status}`
+        `/pig_management/worker/List?msg=${message}&status=${status}`
       );
     }
   }
 
+  const {
+    error: errorView,
+    data: dataView,
+    isLoading: loadingView,
+  } = useQuery("View", async () => {}, {});
+
+  const {
+    data: pigData,
+    isLoading: pigLoading,
+    error: pigError,
+    refetch: pigRefetch,
+  } = useQuery(
+    "pigData",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/post/PigManagement/${id}`
+      );
+      const returned = await response.json();
+      return returned;
+    },
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
+      cacheTime: 0,
+    }
+  );
+
   useEffect(() => {
-    const exec = async () => {
-      const returned = await View(Queryid);
-
-      if (returned.code == 200) {
-        setCageName(returned.data[0].cage_name);
-        setCageType(returned.data[0].cage_type);
-        setCageCapacity(returned.data[0].cage_capacity);
-        setCageId(returned.data[0].cage_id);
-      } else {
-        toast.error(returned.message);
-        callCancel();
-      }
-    };
-
     if (Queryid !== null || Queryid !== undefined) {
-      exec().then(() => {
-        setStartValidation(true);
-      });
+      pigRefetch();
     }
   }, [Queryid]);
+  useEffect(() => {
+    if (pigData != undefined) {
+      setValue("pig_id", pigData.data[0].pig_id);
+      setValue("status", pigData.data[0].status);
+      setValue("weight", pigData.data[0].weight);
+      setValue("pig_tag", pigData.data[0].pig_tag);
+      refetch();
+    }
+  }, [pigData]);
+
+  useEffect(() => {
+    if (pigData != undefined) {
+      setValue("cage_id", pigData.data[0].cage_id);
+    }
+  }, [cageList]);
+  const onSubmit = (data: any) => {
+    if (params.Action == "Update") {
+      if (!(isCageCapacity && isCageType && isCageName)) {
+        setProcessing(false);
+        toast.error("Please correct the inputs indicated in red.");
+        return false;
+      }
+      var isOk = confirm("are you sure you want to update?");
+      setIsSubmitting(true);
+      if (isOk) {
+        updateUser(data);
+      } else {
+        setProcessing(false);
+        return false;
+      }
+    } else if (params.Action == "Remove") {
+      if (!confirm("Are you sure you want to remove?")) {
+        setProcessing(false);
+        return false;
+      }
+      exec_remove(data);
+    }
+  };
 
   if (cage_id == "") {
     return (
@@ -189,95 +326,91 @@ export default function Page({ params }: any) {
               </ul>
             </div>
             <form
-              onSubmit={verifyInput}
+              onSubmit={handleSubmit(onSubmit)}
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
-                <InputBox
-                  type={"text"}
-                  label={"Cage Name"}
-                  placeholder={"Cage Name"}
-                  name={"cagename"}
-                  disabled={false}
-                  className={`input text-base-content input-bordered h-10 ${
-                    isCageName ? "" : "input-error"
-                  }`}
-                  getter={cage_name}
-                  setter={setCageName}
-                  autofocus={true}
-                  required={true}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validation={validateNormal}
-                  setIsValid={setIsCageName}
-                  startValidation={startValidation}
-                />
-                <InputBox
-                  type={"number"}
-                  label={"Cage Capacity"}
-                  placeholder={"Cage Capacity"}
-                  name={"cagecapacity"}
-                  disabled={false}
-                  className={"input input-bordered h-10"}
-                  getter={cage_capacity}
-                  setter={setCageCapacity}
-                  required={true}
+              <div className="gap-2 w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
+                <NormalInput
+                  name="pig_id"
+                  label="Pig Id"
+                  register={register}
+                  errors={errors}
                   readonly={true}
-                  validation={validateNormal}
-                  setIsValid={setIsCageCapacity}
-                  startValidation={startValidation}
-                />
+                  required={true}
+                  validationSchema={{ required: "Pig Id is required" }}
+                ></NormalInput>
+                <SelectInput
+                  name={"cage_id"}
+                  label={"Cage"}
+                  register={register}
+                  errors={errors}
+                  options={cageList}
+                  required={true}
+                  disabled={true}
+                  validationSchema={{ required: "This field is required" }}
+                ></SelectInput>
               </div>
-              <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
-                <SelectBox
-                  label={"Cage Type"}
-                  name={"cage_type"}
-                  selected={cage_type}
-                  disabled={false}
-                  default_option={"Cage Type"}
+
+              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
+                <NormalInput
+                  name={"pig_tag"}
+                  label={"Pig Tag"}
+                  register={register}
+                  errors={errors}
+                  required={true}
+                  readonly={
+                    Action == "View" || Action == "Remove" ? true : false
+                  }
+                  validationSchema={{ required: "This field is required" }}
+                ></NormalInput>
+                <NormalInput
+                  name={"weight"}
+                  label={"Weight"}
+                  register={register}
+                  errors={errors}
+                  readonly={
+                    Action == "View" || Action == "Remove" ? true : false
+                  }
+                  validationSchema={{ required: "This field is required" }}
+                ></NormalInput>
+                <SelectInput
+                  name={"status"}
+                  label={"Status"}
+                  register={register}
+                  disabled={true}
                   options={[
                     {
-                      value: "Individual Stalls",
-                      display: "Individual Stalls",
-                      disabled: Action == "View" || Action == "Remove",
+                      value: "active",
+                      display: "Active",
+                      disabled:
+                        Action == "View" || Action == "Remove" ? true : false,
                     },
                     {
-                      value: "Group Housing",
-                      display: "Group Housing",
-                      disabled: Action == "View" || Action == "Remove",
+                      value: "deceased",
+                      display: "Deceased",
+                      disabled:
+                        Action == "View" || Action == "Remove" ? true : false,
                     },
                     {
-                      value: "Forrowing Crates",
-                      display: "Forrowing Crates",
-                      disabled: Action == "View" || Action == "Remove",
+                      value: "quarantined",
+                      display: "Quarantined",
+                      disabled:
+                        Action == "View" || Action == "Remove" ? true : false,
                     },
                     {
-                      value: "Sow Stalls",
-                      display: "Sow Stalls",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Grow Finishing Housing",
-                      display: "Grow Finishing Housing",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Nursery Pens",
-                      display: "Nursery Pens",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
-                      value: "Quarantine Cage",
-                      display: "Quarantine Cage",
-                      disabled: Action == "View" || Action == "Remove",
+                      value: "sold",
+                      display: "Sold",
+                      disabled:
+                        Action == "View" || Action == "Remove" ? true : false,
                     },
                   ]}
-                  setter={setCageType}
+                  errors={errors}
                   required={true}
-                  validation={validateSelect}
-                  setIsValid={setIsCageType}
-                  startValidation={startValidation}
-                ></SelectBox>
+                  validationSchema={{ required: "This field is required" }}
+                >
+                  {" "}
+                </SelectInput>
               </div>
               <div className="card-actions justify-end">
                 {params.Action == "View" ? (
@@ -304,7 +437,7 @@ export default function Page({ params }: any) {
                     callCancel();
                   }}
                   className="btn btn-active btn-primary mx-4"
-                  href={"/cage_management/worker/List"}
+                  href={"/pig_management/worker/List"}
                 >
                   Cancel
                 </Link>

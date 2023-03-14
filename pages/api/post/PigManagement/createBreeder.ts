@@ -88,16 +88,22 @@ async function Ops(
         const updateCage =
           "update tbl_cage set current_caged=? , is_full='true' where is_exist='true' and cage_id=?";
         const [result] = await conn.query(updateCage, [updatedCage, cage_id]);
-        conn.commit();
-        conn.release;
-        return result;
       } else {
         const updateCage =
           "update tbl_cage set current_caged=?  where is_exist='true' and cage_id=?";
         const [result] = await conn.query(updateCage, [updatedCage, cage_id]);
-        conn.commit();
+      }
+      const updateBatch =
+        "update tbl_batch set batch_capacity=`batch_capacity`+1 where batch_id=? and is_exist='true'";
+      const [resultBatch]: any = await conn.query(updateBatch, [batch_id]);
+      if (resultBatch.affectedRows == 0) {
+        conn.rollback();
         conn.release;
-        return result;
+        return { affectedRows: 0 };
+      } else {
+        conn.commit();
+        conn.release();
+        return { affectedRows: 1 };
       }
     } else {
       conn.rollback();

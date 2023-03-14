@@ -16,8 +16,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import PageNotFound from "@/components/Errors/PageNotFound";
+import { useForm } from "react-hook-form";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
 
 export default function Page({ params }: any) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      item_id: "",
+      item_name: "",
+      category_id: "",
+      item_description: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+  });
+
   const [item_id, setItemId] = useState("");
   const [item_name, setItemName] = useState("");
   const [category_id, setCategoryId] = useState("default");
@@ -63,28 +83,6 @@ export default function Page({ params }: any) {
       toast.error("Please correct the inputs indicated in red.");
       return false;
     }
-    if (params.Action == "Update") {
-      if (!(isItemName && isCategoryId && isItemDescription)) {
-        setProcessing(false);
-        toast.error("Please correct the inputs indicated in red.");
-        return false;
-      }
-      var isOk = confirm("are you sure you want to update?");
-      setIsSubmitting(true);
-      if (isOk) {
-        updateUser();
-      } else {
-        setProcessing(false);
-        return false;
-      }
-    } else if (params.Action == "Remove") {
-      if (!confirm("Are you sure you want to remove?")) {
-        setProcessing(false);
-        return false;
-      }
-
-      exec_remove();
-    }
   };
   useEffect(() => {
     async function exec_get() {
@@ -96,7 +94,7 @@ export default function Page({ params }: any) {
           list.push({
             value: data.category_id,
             display: data.category_name,
-            disabled: false,
+            disabled: Action == "View" || Action == "Remove" ? true : false,
           });
         });
         setCategoryList(list);
@@ -104,8 +102,8 @@ export default function Page({ params }: any) {
     }
     exec_get();
   }, []);
-  const exec_remove = async () => {
-    const returned = await Remove(item_id);
+  const exec_remove = async (data: any) => {
+    const returned = await Remove(data.item_id);
     if (returned.code == 200) {
       callCancel(returned.message, "success");
       setProcessing(false);
@@ -117,12 +115,12 @@ export default function Page({ params }: any) {
     }
   };
 
-  const updateUser = async () => {
+  const updateUser = async (data: any) => {
     const returned = await Update(
-      item_id,
-      item_name,
-      category_id,
-      item_description
+      data.item_id,
+      data.item_name,
+      data.category_id,
+      data.item_description
     );
     if (returned.code == 200) {
       resetState();
@@ -154,10 +152,10 @@ export default function Page({ params }: any) {
       const returned = await View(Queryid);
 
       if (returned.code == 200) {
-        setItemId(returned.data[0].item_id);
-        setItemName(returned.data[0].item_name);
-        setItemDescription(returned.data[0].item_description);
-        setCategoryId(returned.data[0].category_id);
+        setValue("item_id", returned.data[0].item_id);
+        setValue("item_name", returned.data[0].item_name);
+        setValue("item_description", returned.data[0].item_description);
+        setValue("category_id", returned.data[0].category_id);
       } else {
         toast.error(returned.message);
         callCancel();
@@ -170,16 +168,27 @@ export default function Page({ params }: any) {
       });
     }
   }, [Queryid]);
+  const onSubmit = (data: any) => {
+    if (params.Action == "Update") {
+      var isOk = confirm("are you sure you want to update?");
+      setIsSubmitting(true);
+      if (isOk) {
+        updateUser(data);
+      } else {
+        setProcessing(false);
+        return false;
+      }
+    } else if (params.Action == "Remove") {
+      if (!confirm("Are you sure you want to remove?")) {
+        setProcessing(false);
+        return false;
+      }
 
-  if (item_id == "") {
-    return (
-      <>
-        <div className="w-full h-1/2 flex">
-          <Loading height={"h-1/2"}></Loading>
-        </div>
-      </>
-    );
-  } else if (Action != "Update" && Action != "Remove" && Action != "View") {
+      exec_remove(data);
+    }
+  };
+
+  if (Action != "Update" && Action != "Remove" && Action != "View") {
     return <PageNotFound></PageNotFound>;
   } else {
     return (
@@ -206,49 +215,52 @@ export default function Page({ params }: any) {
               </ul>
             </div>
             <form
-              onSubmit={verifyInput}
+              onSubmit={handleSubmit(onSubmit)}
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                <InputBox
-                  type={"text"}
+              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
+                <NormalInput
+                  readonly={
+                    Action == "View" || Action == "Remove" ? true : false
+                  }
                   label={"Item Name"}
-                  placeholder={"Item Name"}
-                  name={"ItemName"}
-                  disabled={false}
-                  className={"input input-bordered h-8"}
-                  getter={item_name}
-                  setter={setItemName}
+                  name={"item_name"}
+                  register={register}
+                  errors={errors}
                   required={true}
-                  validation={validateNormal}
-                  setIsValid={setIsItemName}
+                  validationSchema={{
+                    required: "This field is required",
+                  }}
                 />
-                <SelectBox
+                <SelectInput
                   label={"Category"}
-                  name={"category"}
-                  selected={category_id}
+                  name={"category_id"}
+                  register={register}
+                  errors={errors}
                   options={category_list}
-                  disabled={false}
-                  default_option={"Category"}
-                  setter={setCategoryId}
                   required={true}
-                  className={`input input-bordered h-10  `}
-                  validation={validateSelect}
-                  setIsValid={setIsCategoryId}
+                  disabled={
+                    Action == "View" || Action == "Remove" ? true : false
+                  }
+                  validationSchema={{ required: "This field is required" }}
                 />
-                <InputBox
-                  type={"text"}
+                <NormalInput
                   label={"Item Description"}
-                  placeholder={"Item Description"}
-                  name={"Description"}
-                  disabled={false}
-                  className={"input input-bordered h-8"}
-                  getter={item_description}
-                  setter={setItemDescription}
+                  name={"item_description"}
+                  register={register}
+                  errors={errors}
                   required={true}
-                  validation={validateNormal}
-                  setIsValid={setIsItemDescription}
+                  readonly={
+                    Action == "View" || Action == "Remove" ? true : false
+                  }
+                  validationSchema={{
+                    required: "This field is required",
+                    max_length: {
+                      value: 200,
+                      message: "Maximum of 100 characters",
+                    },
+                  }}
                 />
               </div>
 
