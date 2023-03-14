@@ -366,6 +366,53 @@ export default function User({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
                 {/* End of Breed management menu */}
+                {/* Breed Management */}
+                <div
+                  className={`${
+                    loading.data.job == "worker" ? "block" : "hidden"
+                  }`}
+                >
+                  <div className="collapse">
+                    <input type="checkbox" />
+                    <div className="collapse-title text-base flex flex-cols font-medium">
+                      <Image
+                        src={"/assets/icons/user_management.png"}
+                        className="h-6 w-6 mr-2 my-auto hidden"
+                        alt={""}
+                        height={512}
+                        width={512}
+                      ></Image>
+                      Manage Batch
+                    </div>
+                    <div className="collapse-content">
+                      {/* <li>
+                        <Link href="/breed_management/worker/Create">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Create
+                        </Link>
+                      </li> */}
+                      <li>
+                        <Link href="/batch_management/worker/List">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Batch List
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+                {/* End of Breed management menu */}
                 {/* Inventory Management */}
                 <div
                   className={`${

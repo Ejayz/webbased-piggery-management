@@ -178,7 +178,7 @@ export default function Page() {
                       <td>{item.batch_capacity}</td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
-                          <Link
+                          {/* <Link
                             className="btn btn-sm btn-primary"
                             href={{
                               pathname: "/pig_management/worker/Update",
@@ -187,7 +187,7 @@ export default function Page() {
                           >
                             Update
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+                          <div className="divider divider-horizontal"></div> */}
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -197,7 +197,7 @@ export default function Page() {
                           >
                             View
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+                          {/* <div className="divider divider-horizontal"></div>
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -206,7 +206,7 @@ export default function Page() {
                             }}
                           >
                             Remove
-                          </Link>
+                          </Link> */}
                         </div>
                       </td>
                     </tr>
