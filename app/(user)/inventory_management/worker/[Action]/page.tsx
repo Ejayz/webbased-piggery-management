@@ -94,7 +94,8 @@ export default function Page({ params }: any) {
           list.push({
             value: data.category_id,
             display: data.category_name,
-            disabled: Action == "View" || Action == "Remove" ? true : false,
+         disabled: Action == "View" || Action == "Remove" ? true : false,
+
           });
         });
         setCategoryList(list);
@@ -229,9 +230,11 @@ export default function Page({ params }: any) {
                   register={register}
                   errors={errors}
                   required={true}
+
                   validationSchema={{
                     required: "This field is required",
                   }}
+
                 />
                 <SelectInput
                   label={"Category"}
@@ -240,16 +243,20 @@ export default function Page({ params }: any) {
                   errors={errors}
                   options={category_list}
                   required={true}
+
                   disabled={
                     Action == "View" || Action == "Remove" ? true : false
                   }
                   validationSchema={{ required: "This field is required" }}
+
                 />
                 <NormalInput
                   label={"Item Description"}
+
                   name={"item_description"}
                   register={register}
                   errors={errors}
+
                   required={true}
                   readonly={
                     Action == "View" || Action == "Remove" ? true : false
