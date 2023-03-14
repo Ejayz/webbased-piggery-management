@@ -26,6 +26,11 @@ import QRCode from "react-qr-code";
 import Link from "next/link";
 import printJS from "print-js";
 import { QRCodeCanvas } from "qrcode.react";
+import { useForm } from "react-hook-form";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
+import { useQuery, useQueryClient } from "react-query";
+import Loading from "@/components/Loading/loading";
 
 interface SelectInter {
   value: number;
@@ -35,8 +40,46 @@ interface SelectInter {
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
+  const queryClient = useQueryClient();
+  const {
+    reset,
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      pig_id: "",
+      cage_id: "",
+      batch_id: "1",
+      pig_tag: "",
+      pig_type: "",
+      birth_date: "",
+      weight: "",
+      breed_id: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+    resetOptions: {
+      keepDefaultValues: true,
+    },
+  });
 
-  const [pig_id, setPigId] = useState("");
+  const { isLoading, error, data, refetch } = useQuery(
+    "pigBreederForm",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/post/PigManagement/getBreederFormDetail`
+      );
+      return response.json();
+    },
+    {
+      cacheTime: 0,
+    }
+  );
+
+  const pig_id = watch("pig_id");
   const [cage_id, setCageId] = useState("default");
   const [batch_id, setBatchId] = useState("1");
   const [pig_tag, setPigTag] = useState("");
@@ -60,7 +103,8 @@ export default function Page() {
   const [breedList, setBreedList] = useState<SelectInter[]>([]);
   const [scannerLink, setScannerLink] = useState<any>("");
   const [hideScanner, setHideScanner] = useState(false);
-  const [reset, setReset] = useState(false);
+  let cageLister: SelectInter[] = [];
+  let breedLister: SelectInter[] = [];
   const router = useRouter();
   const loading = getUserInfo();
   const [processing, setProcessing] = useState(false);
@@ -78,46 +122,62 @@ export default function Page() {
   }, [loading]);
 
   async function resetState() {
+    reset({
+      pig_id: "",
+      cage_id: "",
+      batch_id: "1",
+      pig_tag: "",
+      pig_type: "",
+      birth_date: "",
+      weight: "",
+      breed_id: "",
+    });
+    refetch();
     const returned = await IdGenerator();
-    setPigId(returned);
-    setCageId("default");
-    setPigTag("");
-    setPigType("default");
-    setBirthDate("");
-    setWeight("");
-    setBreed("default");
-    setCageList([]);
-    setBreedList([]);
-    setReset(!reset);
+    setValue("pig_id", returned);
+    setValue("batch_id", "1");
   }
+  console.log(data);
+
   useEffect(() => {
     async function readyData() {
-      const returned = await IdGenerator();
-      const cage_list: any = await GetCages();
-      const breed_list: any = await getBreedList();
-      if (cage_list.code == 200) {
-        cage_list.data.map((data: any, key: any) => {
-          cageList.push({
-            value: data.cage_id,
-            display: data.cage_name,
-            disabled: false,
+      cageLister = [];
+      breedLister = [];
+      if (data !== undefined || data != undefined) {
+        if (data.code == 200) {
+          const returned = await IdGenerator();
+
+          data.data.CageList.map((data: any, key: any) => {
+            cageLister.push({
+              value: data.cage_id,
+              display: data.cage_name,
+              disabled: false,
+            });
           });
-        });
-      }
-      if (breed_list.code == 200) {
-        breed_list.data.map((data: any, key: any) => {
-          breedList.push({
-            value: data.breed_id,
-            display: data.breed_name,
-            disabled: false,
+
+          data.data.BreedList.map((data: any, key: any) => {
+            breedLister.push({
+              value: data.breed_id,
+              display: data.breed_name,
+              disabled: false,
+            });
           });
-        });
+          setCageList(cageLister);
+          setBreedList(breedLister);
+          setValue("pig_id", returned);
+          setValue("batch_id", "1");
+        }
       }
-      setPigId(returned);
     }
     readyData();
-  }, []);
-
+  }, [data]);
+  useEffect(() => {
+    console.log(isLoading);
+    if (isLoading) {
+      setCageList([]);
+      setBreedList([]);
+    }
+  }, [isLoading]);
   const createDownloadLink = async () => {
     let data: any = document.getElementById("canvasable");
     setScannerLink(data.toDataURL());
@@ -128,57 +188,17 @@ export default function Page() {
       createDownloadLink();
     }
   }, [pig_id]);
-  const validate = async (e: any) => {
-    e.preventDefault();
-    setProcessing(true);
-    if (
-      pig_id == "" ||
-      cage_id == "default" ||
-      batch_id == "" ||
-      pig_tag == "" ||
-      pig_type == "default" ||
-      birth_date == ""
-    ) {
-      setProcessing(false);
-      toast.error("All feilds are required.");
-      return false;
-    }
 
-    if (
-      !(
-        isPigId &&
-        isCageId &&
-        isBatchId &&
-        isPigTag &&
-        isPigType &&
-        isBirthDate &&
-        isWeight
-      )
-    ) {
-      setProcessing(false);
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      return false;
-    }
-
-    if (!confirm("Are you sure you want to create?")) {
-      setProcessing(false);
-      return false;
-    }
-    exec_create();
-  };
-
-  const exec_create = async () => {
+  const exec_create = async (data: any) => {
     const returned = await Create(
-      pig_id,
-      cage_id,
-      batch_id,
-      breed_id,
-      pig_tag,
-      pig_type,
-      birth_date,
-      weight
+      data.pig_id,
+      data.cage_id,
+      data.batch_id,
+      data.breed_id,
+      data.pig_tag,
+      data.pig_type,
+      data.birth_date,
+      data.weight
     );
     if (returned.code == 200) {
       setProcessing(false);
@@ -190,8 +210,19 @@ export default function Page() {
     }
   };
 
+  const onSubmit = (data: any) => {
+    setProcessing(true);
+    if (!confirm("Create pig?")) {
+      setProcessing(false);
+      return false;
+    }
+    exec_create(data);
+  };
+
   if (loading.loading) {
     return loading.loader;
+  } else if (isLoading) {
+    return <Loading></Loading>;
   } else if (!allowed) {
     return loading.loader;
   } else {
@@ -212,9 +243,10 @@ export default function Page() {
               Use custom Qr Code
             </h3>
             <QrCode
-              setter={setPigId}
+              setter={setValue}
               setHide={setHideScanner}
               hide={hideScanner}
+              ActionMaker={"pig_id"}
             ></QrCode>
             <div className="modal-action">
               <button
@@ -250,27 +282,24 @@ export default function Page() {
                 </div>
 
                 <form
-                  onSubmit={validate}
+                  onSubmit={handleSubmit(onSubmit)}
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
+                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4 gap-2">
                     <div className="">
-                      <InputBox
-                        type={"text"}
+                      <NormalInput
+                        name={"pig_id"}
                         label={"Pig Id"}
-                        placeholder={"Pig Id"}
-                        name={"Pig Id"}
-                        disabled={false}
-                        className={"input input-bordered h-8"}
-                        getter={pig_id}
-                        setter={setPigId}
+                        register={register}
+                        errors={errors}
                         required={true}
-                        validation={validateNormal}
-                        setIsValid={setIsPigId}
-                        reset={reset}
+                        type={"text"}
                         readonly={true}
-                      />
+                        validationSchema={{
+                          required: "This field is required",
+                        }}
+                      ></NormalInput>
                       <button
                         type="button"
                         className={" bg-primary  text-primary-content btn"}
@@ -281,70 +310,66 @@ export default function Page() {
                         Scan QR CODE
                       </button>
                     </div>
-                    <SelectBox
+                    <SelectInput
+                      name="cage_id"
                       label={"Cage"}
-                      name={"Cage"}
-                      selected={cage_id}
+                      register={register}
+                      errors={errors}
+                      required={true}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
                       options={cageList}
-                      disabled={false}
-                      default_option={"Select Cage"}
-                      setter={setCageId}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsCageId}
-                      reset={reset}
-                    />
-                    <InputBox
-                      type={"text"}
+                    ></SelectInput>
+
+                    <NormalInput
+                      name={"batch_id"}
                       label={"Batch Number"}
-                      placeholder={"Batch Number"}
-                      name={"BatchNumber"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={batch_id}
-                      setter={setBatchId}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsBatchId}
-                      reset={reset}
-                      readonly={true}
-                    />
-                    <SelectBox
-                      label={"Breed"}
-                      name={"Breed"}
-                      selected={breed_id}
-                      options={breedList}
-                      disabled={false}
-                      default_option={"Select Breed"}
-                      setter={setBreed}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsBreed}
-                      reset={reset}
-                    />
-                  </div>
-                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4">
-                    <InputBox
                       type={"text"}
-                      label={"Pig Tag"}
-                      placeholder={"Pig Tag"}
-                      name={"PigTag"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={pig_tag}
-                      setter={setPigTag}
+                      readonly={true}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></NormalInput>
+                    <SelectInput
+                      name="breed_id"
+                      label={"Breed"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsPigTag}
-                      reset={reset}
-                      readonly={false}
-                    />
-                    <SelectBox
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                      options={breedList}
+                    ></SelectInput>
+                  </div>
+                  <div className="w-full ml-2 grid lg:grid-cols-4 lg:grid-rows-none grid-cols-none grid-rows-4 gap-2">
+                    <NormalInput
+                      name={"pig_tag"}
+                      label={"Pig Tag"}
+                      register={register}
+                      errors={errors}
+                      required={true}
+                      type={"text"}
+                      validationSchema={{
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                      }}
+                    ></NormalInput>
+                    <SelectInput
+                      name="pig_type"
                       label={"Pig Type"}
-                      name={"pig_Type"}
-                      selected={pig_type}
+                      register={register}
+                      errors={errors}
+                      required={true}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
                       options={[
                         {
                           value: "Sow",
@@ -358,45 +383,29 @@ export default function Page() {
                           disabled: false,
                         },
                       ]}
-                      disabled={false}
-                      default_option={"Select Pig Type"}
-                      setter={setPigType}
+                    ></SelectInput>
+                    <NormalInput
+                      name={"birth_date"}
+                      label={"Arrival Date"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsPigType}
-                      reset={reset}
-                    />{" "}
-                    <InputBox
                       type={"date"}
-                      label={"Birth Date"}
-                      placeholder={"Pig Birth Date"}
-                      name={"birthdate"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={birth_date}
-                      setter={setBirthDate}
-                      required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsBirthDate}
-                      reset={reset}
-                      readonly={false}
-                    />{" "}
-                    <InputBox
-                      type={"text"}
-                      label={"Weight"}
-                      placeholder={"Pig Weight"}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></NormalInput>
+                    <NormalInput
                       name={"weight"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={weight}
-                      setter={setWeight}
+                      label={"Weight"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNumber}
-                      setIsValid={setIsWeight}
-                      reset={reset}
-                      readonly={false}
-                    />
+                      type={"number"}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></NormalInput>
                   </div>
                   <div className="flex flex-row " ref={qrCodeContainer}>
                     <div className="w-1/4 h-1/4 ">
@@ -434,7 +443,7 @@ export default function Page() {
                       Create
                     </button>
                     <button
-                      type="reset"
+                      type="button"
                       onClick={resetState}
                       className="btn mx-4"
                     >

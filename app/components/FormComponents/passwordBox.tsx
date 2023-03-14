@@ -21,21 +21,24 @@ export default function passwordBox({
 }: any) {
   const [showPassword, setShowPassword] = useState(false);
   let [errorMessage, setErrorMessage] = useState([]);
+  const [startType, setStartType] = useState(false);
   const validate = async (value: string) => {
     let valid: any = await validation(value);
     if (valid.message.length !== 0) {
       setErrorMessage(valid.message);
-      setter(value);
       setIsValid(false);
     } else {
       setErrorMessage([]);
-      setter(value);
       setIsValid(true);
     }
   };
   useEffect(() => {
-    setErrorMessage([]);
+    setStartType(false);
   }, [reset]);
+  useEffect(() => {
+    console.log("triggered");
+    setErrorMessage([]);
+  }, [startType]);
   useEffect(() => {
     if (startValidation) {
       if (
@@ -50,6 +53,11 @@ export default function passwordBox({
       }
     }
   }, []);
+  useEffect(() => {
+    if (startType) {
+      validate(getter);
+    }
+  }, [getter]);
   return (
     <div className="form-control text-base-content">
       <label className="label">
@@ -63,9 +71,12 @@ export default function passwordBox({
             errorMessage.length == 0 ? "" : "input-error"
           }`}
           name={name}
+          onClick={() => {
+            setStartType(true);
+          }}
           value={getter}
           onChange={(e) => {
-            validate(e.target.value);
+            setter(e.target.value);
           }}
           required={required}
           autoFocus={autofocus}

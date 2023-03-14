@@ -24,12 +24,19 @@ export default async function handler(
 
 async function View(item_id: any) {
   const conn = await connection.getConnection();
-  const sql = `SELECT i.*, c.category_name, ROUND((i.item_quantity * i.item_net_weight), -1) AS item_left
-      FROM tbl_inventory i 
-      JOIN tbl_category c ON i.category_id = c.category_id 
-      WHERE i.is_exist = 'true' AND i.item_id = ? `;
-  const [err, result] = await conn.query(sql, [item_id]);
-  if (err) return err;
-  conn.release()
-  return result;
+  try {
+    const sql = `SELECT i.*, c.category_name
+  FROM tbl_inventory i 
+  JOIN tbl_category c ON i.category_id = c.category_id 
+  WHERE i.is_exist = 'true' AND i.item_id = ? `;
+    const [err, result] = await conn.query(sql, [item_id]);
+    if (err) return err;
+    conn.release();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

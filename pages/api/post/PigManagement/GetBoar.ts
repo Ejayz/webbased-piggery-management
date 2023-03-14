@@ -16,9 +16,15 @@ export default async function handler(
 
 async function Ops() {
   const conn = await connection.getConnection();
-  const sql =
-    "select * from tbl_pig where pig_type='Boar' and is_exist='true' and status='active'";
-  const [result] = await conn.query(sql);
-  conn.release();
-  return result;
+  try {
+    const sql =
+      "select * from tbl_pig where pig_type='Boar' and is_exist='true' and status='active'";
+    const [result] = await conn.query(sql);
+
+    return result;
+  } catch (err) {
+    return err;
+  } finally {
+    conn.release();
+  }
 }

@@ -24,11 +24,17 @@ export default async function handler(
 
 async function RemoveInventory(item_id: any) {
   const conn = await connection.getConnection();
-
-  const sql =
-    "update tbl_inventory set is_exist='false' where item_id=? and is_exist='true'";
-  const [err, result] = await conn.query(sql, [item_id]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql =
+      "update tbl_inventory set is_exist='false' where item_id=? and is_exist='true'";
+    const [err, result] = await conn.query(sql, [item_id]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

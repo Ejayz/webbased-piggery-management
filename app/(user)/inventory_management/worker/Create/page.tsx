@@ -16,9 +16,30 @@ import {
 import PasswordBox from "@/components/FormComponents/passwordBox";
 import SelectBox from "@/components/FormComponents/selectBox";
 import { GetCategory, Create } from "@/hooks/useInventory";
+import { useForm } from "react-hook-form";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      item_id: "",
+      item_name: "",
+      category_id: "",
+      item_description: "",
+      item_unit: "",
+      item_net_weight: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+  });
 
   const [item_id, setItemId] = useState("");
   const [item_name, setItemName] = useState("");
@@ -37,7 +58,7 @@ export default function Page() {
   const [isItemNetWeight, setIsItemNetWeight] = useState(true);
 
   const [processing, setProcessing] = useState(false);
-  const [reset, setReset] = useState(false);
+
   const router = useRouter();
   const loading = getUserInfo();
   let list: any = [];
@@ -55,13 +76,7 @@ export default function Page() {
   }, [loading]);
 
   function resetState() {
-    setReset(!reset);
-    setItemName("");
-    setCategoryId("default");
-    setItemDescription("");
-    setItemQuantity("");
-    setItemUnit("default");
-    setItemNetWeight("");
+    reset();
   }
 
   const validate = async (e: any) => {
@@ -94,22 +109,15 @@ export default function Page() {
       );
       return false;
     }
-
-    if (!confirm("Are you sure you want to create?")) {
-      setProcessing(false);
-      return false;
-    }
-    createUser();
   };
 
-  async function createUser() {
+  async function createUser(data: any) {
     const returned = await Create(
-      item_name,
-      category_id,
-      item_description,
-      item_quantity,
-      item_unit,
-      item_net_weight
+      data.item_name,
+      data.category_id,
+      data.item_description,
+      data.item_unit,
+      data.item_net_weight
     );
     if (returned.code == 200) {
       setProcessing(false);
@@ -140,6 +148,14 @@ export default function Page() {
     exec_get();
   }, []);
 
+  const onSubmit = (data: any) => {
+    if (!confirm("Are you sure you want to create?")) {
+      setProcessing(false);
+      return false;
+    }
+    createUser(data);
+  };
+
   if (loading.loading) {
     return loading.loader;
   } else if (!allowed) {
@@ -168,74 +184,56 @@ export default function Page() {
                 </div>
 
                 <form
-                  onSubmit={validate}
+                  onSubmit={handleSubmit(onSubmit)}
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                    <InputBox
-                      type={"text"}
+                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none gap-2 grid-cols-none grid-rows-3">
+                    <NormalInput
+                      name={"item_name"}
                       label={"Item Name"}
-                      placeholder={"Item Name"}
-                      name={"ItemName"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_name}
-                      setter={setItemName}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemName}
-                      reset={reset}
-                    />
-                    <SelectBox
-                      label={"Category"}
-                      name={"category"}
-                      selected={category_id}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></NormalInput>
+                    <SelectInput
+                      name="category_id"
+                      label={"Item Category"}
+                      register={register}
                       options={category_list}
-                      disabled={false}
-                      default_option={"Category"}
-                      setter={setCategoryId}
+                      errors={errors}
                       required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsCategoryId}
-                      reset={reset}
-                    />
-                    <InputBox
-                      type={"text"}
+                      validationSchema={{
+                        required: "This field is required",
+                      }}
+                    ></SelectInput>
+                    <NormalInput
+                      name={"item_description"}
                       label={"Item Description"}
-                      placeholder={"Item Description"}
-                      name={"Description"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_description}
-                      setter={setItemDescription}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemDescription}
-                      reset={reset}
-                    />
+                      type={"textarea"}
+                      validationSchema={{
+                        required: "This field is required",
+                        maxLength: {
+                          value: 200,
+                          message: "Maximum 100 characters allowed",
+                        },
+                      }}
+                    ></NormalInput>
                   </div>
 
                   <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                    <InputBox
-                      type={"number"}
-                      label={"Item Quantity"}
-                      placeholder={"Item Quantity"}
-                      name={"quantity"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_quantity}
-                      setter={setItemQuantity}
+                    <SelectInput
+                      name="item_unit"
+                      label={"Item Unit"}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemQuantity}
-                      reset={reset}
-                    />{" "}
-                    <SelectBox
-                      label={"Unit"}
-                      name={"Unit"}
-                      selected={item_unit}
                       options={[
                         {
                           value: "sack",
@@ -258,29 +256,17 @@ export default function Page() {
                           disabled: false,
                         },
                       ]}
-                      disabled={false}
-                      default_option={"Units"}
-                      setter={setItemUnit}
-                      required={true}
-                      className={`input input-bordered h-10  `}
-                      validation={validateSelect}
-                      setIsValid={setIsItemUnit}
-                      reset={reset}
-                    />{" "}
-                    <InputBox
-                      type={"number"}
+                      validationSchema={{ required: "This field is required" }}
+                    ></SelectInput>
+                    <NormalInput
+                      name={"item_net_weight"}
                       label={"Item Net Weight"}
-                      placeholder={"Item Net Weight"}
-                      name={"net_weight"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={item_net_weight}
-                      setter={setItemNetWeight}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsItemNetWeight}
-                      reset={reset}
-                    />
+                      register={register}
+                      errors={errors}
+                      type={"number"}
+                      validationSchema={{ required: "This field is required" }}
+                    ></NormalInput>
                   </div>
                   <div className="card-actions justify-end">
                     <button

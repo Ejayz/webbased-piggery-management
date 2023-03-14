@@ -37,23 +37,37 @@ async function AddCage(
   cage_type: String
 ) {
   const conn = await connection.getConnection();
-  const sql =
-    "INSERT INTO `tbl_cage` ( `cage_name`, `cage_type`, `cage_capacity`) VALUES ( ?, ?, ?);";
+  try {
+    const sql =
+      "INSERT INTO `tbl_cage` ( `cage_name`, `cage_type`, `cage_capacity`) VALUES ( ?, ?, ?);";
 
-  const [err, result] = await conn.query(sql, [
-    cage_name,
-    cage_type,
-    cage_capacity,
-  ]);
-  conn.release();
-  if (err) return err;
-  return result;
+    const [err, result] = await conn.query(sql, [
+      cage_name,
+      cage_type,
+      cage_capacity,
+    ]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 async function checkDups(cage_name: string) {
   const conn = await connection.getConnection();
-  const sql = "select * from tbl_cage where cage_name=? and is_exist='true' ";
-  const [err, result] = await conn.query(sql, [cage_name]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql = "select * from tbl_cage where cage_name=? and is_exist='true' ";
+    const [err, result] = await conn.query(sql, [cage_name]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

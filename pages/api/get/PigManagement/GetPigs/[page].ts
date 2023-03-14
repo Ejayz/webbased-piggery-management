@@ -10,44 +10,128 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { page, sortby, sortorder }: any = req.query;
+  const { page, filters }: any = req.query;
+  const { sortby, sortorder, keyword }: any = JSON.parse(filters);
   if (page == "0") {
     return res
       .status(404)
       .json({ code: 404, message: "Page 0 data cannot be found" });
   }
-  const limit: number = 5;
+  const limit: number = 10;
   const offset: number = limit * (parseInt(page) - 1);
-  // try {
-  //   const data: any = await UpdateCage(page, sortby, sortorder, offset, limit);
-  //   if (data.length == 0) {
-  //     return res.status(404).json({ code: 404, message: "Data not found" });
-  //   }
-  //   return res.status(200).json({ code: 200, data: data });
-  // } catch (error) {
-  //   console.log(error);
-  //   return res
-  //     .status(500)
-  //     .json({ code: 500, messenger: "500 Server error. Something went wrong" });
-  // }
+
+  try {
+    let data: any;
+    if (sortby == "" && sortorder == "" && keyword == "") {
+      data = await getPig(limit, offset);
+    } else if (keyword == undefined) {
+      data = await GetCage(offset, limit, sortorder, sortby);
+    } else {
+      data = await SearhGetCage(offset, limit, sortorder, sortby, keyword);
+    }
+    if (data.length != 0) {
+      return res.status(200).json({ code: 200, data: data });
+    } else {
+      if (keyword !== "undefined" || keyword !== "") {
+        return res
+          .status(404)
+          .json({ code: 404, message: "No Data found realated to :" });
+      } else {
+        return res
+          .status(404)
+          .json({ code: 404, message: "This is the last page." });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ code: 500, message: "500 Server Error.Something went wrong." });
+  }
 }
 
-// async function UpdateCage(
-//   page: number,
-//   sortby: string,
-//   sorts: string,
-//   skip: number,
-//   take: number
-// ) {
-//   // const data = await prisma.tbl_pig.findMany({
-//   //   where: { is_exist: "true" },
-//   //   orderBy: [
-//   //     {
-//   //       [sortby]: sorts,
-//   //     },
-//   //   ],
-//   //   skip: skip,
-//   //   take: take,
-//   // });
-//   // return data;
-// }
+async function getPig(limit: any, offset: any) {
+  const conn = await connection.getConnection();
+
+  try {
+    const sql = `SELECT *
+    FROM tbl_pig
+    INNER JOIN tbl_cage ON tbl_pig.cage_id = tbl_cage.cage_id
+    INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
+    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE tbl_pig.is_exist='true' AND tbl_pig.status='active'    
+ ORDER BY  tbl_pig.birthdate asc LIMIT ${limit} OFFSET ${offset} ;`;
+    const result = await conn.query(sql);
+    conn.release();
+    return result[0];
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
+}
+
+async function GetCage(
+  offset: number,
+  limit: number,
+  SortOrder: any,
+  sortby: any
+) {
+  const conn = await connection.getConnection();
+
+  try {
+    const sql = `SELECT *
+    FROM tbl_pig
+    INNER JOIN tbl_cage ON tbl_pig.cage_id = tbl_cage.cage_id
+    INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
+    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE tbl_pig.is_exist='true' AND tbl_pig.status='active'    
+ ORDER BY ${conn.escapeId(
+   sortby
+ )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
+    const [err, result] = await conn.query(sql);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
+}
+
+async function SearhGetCage(
+  offset: number,
+  limit: number,
+  sortorder: any,
+  sortby: any,
+  keyword: string
+) {
+  const conn = await connection.getConnection();
+  try {
+    keyword = `%${keyword}%`;
+    const sql = `SELECT *
+    FROM tbl_pig
+    INNER JOIN tbl_cage ON tbl_pig.cage_id = tbl_cage.cage_id
+    INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
+    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE (tbl_pig.pig_id LIKE ?  OR tbl_pig.pig_tag LIKE ? OR tbl_pig.weight LIKE ? OR tbl_cage.cage_name LIKE ? OR tbl_batch.batch_name LIKE ? OR tbl_breed.breed_name LIKE ?) AND tbl_pig.is_exist='true' AND tbl_pig.status='active'  
+     ORDER BY ${conn.escapeId(
+       sortby
+     )} ${sortorder}  LIMIT ${limit} OFFSET ${offset} ;`;
+    const [result] = await conn.query(sql, [
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+    ]);
+    conn.release();
+    return [result];
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
+}

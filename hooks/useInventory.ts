@@ -17,7 +17,6 @@ export const Create = async (
   item_name: string,
   category_id: any,
   item_description: string,
-  item_quantity: any,
   item_unit: any,
   item_net_weight: any
 ) => {
@@ -31,7 +30,6 @@ export const Create = async (
     item_name: item_name,
     category_id: category_id,
     item_description: item_description,
-    item_quantity: item_quantity,
     item_unit: item_unit,
     item_net_weight: item_net_weight,
   });

@@ -22,8 +22,14 @@ export default async function handler(
 
 async function Ops() {
   const conn = await connection.getConnection();
-  const sql = "select MAX(batch_id) as batch_id from tbl_batch";
-  const [result] = await conn.query(sql);
-  conn.release();
-  return result;
+  try {
+    const sql = "select MAX(batch_id) as batch_id from tbl_batch";
+    const [result] = await conn.query(sql);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

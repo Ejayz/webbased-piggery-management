@@ -39,12 +39,19 @@ async function send_sms(phone: any, username: any) {
 
 async function VerifySms(username: string, phone: string, job: string) {
   const conn = await connection.getConnection();
-  const sql =
-    "select * from tbl_users where username=? and phone=? and job=? and is_exist='true'";
-  const [err, result] = await conn.query(sql, [username, phone, job]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql =
+      "select * from tbl_users where username=? and phone=? and job=? and is_exist='true'";
+    const [err, result] = await conn.query(sql, [username, phone, job]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 
 export default async function handler(

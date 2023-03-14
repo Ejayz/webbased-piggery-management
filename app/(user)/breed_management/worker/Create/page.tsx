@@ -14,15 +14,27 @@ import {
   validateSkip,
 } from "@/hooks/useValidation";
 import PasswordBox from "@/components/FormComponents/passwordBox";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import { useForm } from "react-hook-form";
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
 
-  const [breed_name, setBreedName] = useState("");
+  const {
+    reset,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      cage_name: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+  });
 
-  const [isBreedName, setIsBreedName] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [reset, setReset] = useState(false);
+
   const router = useRouter();
   const loading = getUserInfo();
   useEffect(() => {
@@ -39,36 +51,20 @@ export default function Page() {
   }, [loading]);
 
   function resetState() {
-    setReset(!reset);
-    setBreedName("");
+    reset();
   }
 
-  const validate = async (e: any) => {
-    e.preventDefault();
+  const onSubmit = (data: any) => {
     setProcessing(true);
-    if (breed_name == "") {
-      toast.error("All feilds are required.");
+    if (!confirm("Create breed?")) {
       setProcessing(false);
       return false;
     }
-
-    if (!isBreedName) {
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      setProcessing(false);
-      return false;
-    }
-
-    if (!confirm("Are you sure you want to create?")) {
-      setProcessing(false);
-      return false;
-    }
-    createUser();
+    createBreed(data);
   };
 
-  async function createUser() {
-    const returned = await Create(breed_name);
+  async function createBreed(data: any) {
+    const returned = await Create(data.breed_name);
     if (returned.code == 200) {
       setProcessing(false);
       toast.success(returned.message);
@@ -107,25 +103,20 @@ export default function Page() {
                 </div>
 
                 <form
-                  onSubmit={validate}
+                  onSubmit={handleSubmit(onSubmit)}
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
-                    <InputBox
-                      type={"text"}
+                    <NormalInput
+                      name={"breed_name"}
                       label={"Breed Name"}
-                      placeholder={"Breed Name"}
-                      name={"breedname"}
-                      disabled={false}
-                      className={"input input-bordered h-8"}
-                      getter={breed_name}
-                      setter={setBreedName}
+                      register={register}
+                      errors={errors}
                       required={true}
-                      validation={validateNormal}
-                      setIsValid={setIsBreedName}
-                      reset={reset}
-                    />
+                      type={"text"}
+                      validationSchema={{ required: "This field is required" }}
+                    ></NormalInput>
                   </div>
 
                   <div className="card-actions justify-end">

@@ -1,13 +1,18 @@
 import { randomInt } from "crypto";
 
-export const getData = async (page: number, sortby: String, sorts: string) => {
+export const getData = async (
+  page: number,
+  sortby: String,
+  sorts: string,
+  keyword: string
+) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
   };
 
   let response = await fetch(
-    `${location.origin}/api/get/PigManagement/GetPigs/${page}?sortby=${sortby}&sortorder=${sorts}`,
+    `${location.origin}/api/get/PigManagement/GetPigs/${page}?sortby=${sortby}&sortorder=${sorts}&keyword=${keyword}`,
     {
       method: "GET",
       headers: headersList,
@@ -226,3 +231,61 @@ export const CreatePigs = async (
   let data = await response.json();
   return data;
 };
+export const Remove = async (pig_id: any, cage_id: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    pig_id: pig_id,
+    cage_id: cage_id,
+  });
+
+  let response = await fetch(
+    "http://localhost:3000/api/post/PigManagement/remove",
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
+export const Update = async (
+  pig_id: any,
+  pig_tag: any,
+  status: any,
+  cage_id: any,
+  weight: any
+) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    pig_id: pig_id,
+    pig_tag: pig_tag,
+    status: status,
+    cage_id: cage_id,
+    weight: weight,
+  });
+
+  let response = await fetch(
+    "http://localhost:3000/api/post/PigManagement/updatePig",
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};
+export const View = async () => {};

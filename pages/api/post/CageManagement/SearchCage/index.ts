@@ -38,21 +38,28 @@ export default async function handler(
 
 async function SearchUser({ keyword, user_id, sortby, SortOrder }: any) {
   const conn = await connection.getConnection();
-  keyword = `%${keyword}%`;
-  const sql = `SELECT * FROM tbl_cage WHERE ( cage_name LIKE ? OR cage_type LIKE ? OR cage_capacity LIKE ? ) AND is_exist = 'true'   ORDER BY ${conn.escapeId(
-    sortby
-  )} ${SortOrder};`;
-  const [err, result] = await conn.query(sql, [
-    keyword,
-    keyword,
-    keyword,
-    keyword,
-    keyword,
-    keyword,
-    user_id,
-  ]);
+  try {
+    keyword = `%${keyword}%`;
+    const sql = `SELECT * FROM tbl_cage WHERE ( cage_name LIKE ? OR cage_type LIKE ? OR cage_capacity LIKE ? ) AND is_exist = 'true'   ORDER BY ${conn.escapeId(
+      sortby
+    )} ${SortOrder};`;
+    const [err, result] = await conn.query(sql, [
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+      user_id,
+    ]);
 
-  conn.release();
-  if (err) return err;
-  return result;
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

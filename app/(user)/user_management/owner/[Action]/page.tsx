@@ -18,8 +18,38 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import PageNotFound from "@/components/Errors/PageNotFound";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
+import PhoneInput from "@/components/FormCompsV2/PhoneInput";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import PasswordInputShow from "@/components/FormCompsV2/PasswordInputShow";
+import { useForm } from "react-hook-form";
+import { useQuery } from "react-query";
 
 export default function Page({ params }: any) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      user_id: "",
+      username: "",
+      first_name: "",
+      last_name: "",
+      middle_name: "",
+      phone: "",
+      job: "",
+      password: "",
+      repeat_password: "",
+    },
+    criteriaMode: "all",
+    mode: "onChange",
+  });
+
   const [user_id, setUserid] = useState("");
   const [username, setUsername] = useState("");
   const [first_name, setFirst_name] = useState("");
@@ -46,62 +76,30 @@ export default function Page({ params }: any) {
   const [startValidation, setStartValidation] = useState(false);
   const [requesting, setRequesting] = useState(false);
   let message: any = [];
+
+  const { error, isLoading, data }: any = useQuery(
+    ["getUserinfo", Queryid !== null || Queryid !== undefined],
+    async () => {
+      let headersList = {
+        Accept: "*/*",
+      };
+      const response = await fetch(
+        `${location.origin}/api/post/UserManagement/view_user/${Queryid}`,
+        {
+          method: "POST",
+          headers: headersList,
+        }
+      );
+      return response.json();
+    }
+  );
+
   function resetState() {
-    setUsername("");
-    setFirst_name("");
-    setMiddle_name("");
-    setLast_name("");
-    setPhone("");
-    setJob("default");
-    setPassword("");
-    setrepeatPass("");
+    reset();
   }
-  const verifyInput = async (e: any) => {
-    e.preventDefault();
-    setRequesting(true);
-    if (username == "" || first_name == "" || last_name == "" || phone == "") {
-      toast.error("All feilds are required.");
-      setRequesting(false);
-      return false;
-    }
 
-    if (params.Action == "Update") {
-      if (
-        !(
-          isUsername &&
-          isFirstName &&
-          isMiddleName &&
-          isLastName &&
-          isPhone &&
-          isJob &&
-          isPassword &&
-          isRepeatPassword
-        )
-      ) {
-        setRequesting(false);
-        toast.error("Please correct the inputs indicated in red.");
-        return false;
-      }
-      var isOk = confirm("are you sure you want to update?");
-
-      if (isOk) {
-        updateUser();
-      } else {
-        setRequesting(false);
-        return false;
-      }
-    } else if (params.Action == "Remove") {
-      if (!confirm("Are you sure you want to remove?")) {
-        setRequesting(false);
-        return false;
-      }
-
-      exec_remove();
-    }
-  };
-
-  const exec_remove = async () => {
-    const returned = await Remove(user_id);
+  const exec_remove = async (data: any) => {
+    const returned = await Remove(data.user_id);
     if (returned.code == 200) {
       setRequesting(false);
       callCancel(returned.message, "success");
@@ -111,16 +109,22 @@ export default function Page({ params }: any) {
     }
   };
 
-  const updateUser = async () => {
+  const validateRepeatPassword = (value: string) => {
+    const passwordValue = (
+      document.getElementById("password") as HTMLInputElement
+    )?.value;
+    return value === passwordValue || "Password and Repeat password must match";
+  };
+  const updateUser = async (data: any) => {
     const returned = await Update(
-      username,
-      password,
-      first_name,
-      middle_name,
-      last_name,
-      phone,
-      job,
-      user_id
+      data.username,
+      data.password,
+      data.first_name,
+      data.middle_name,
+      data.last_name,
+      data.phone,
+      data.job,
+      data.user_id
     );
     if (returned.code == 200) {
       resetState();
@@ -146,37 +150,43 @@ export default function Page({ params }: any) {
   }
 
   useEffect(() => {
-    const exec = async () => {
-      const returned = await ViewUser(Queryid);
-
-      if (returned.code == 200) {
-        setUserid(returned.data[0].user_id);
-        setUsername(returned.data[0].username);
-        setJob(returned.data[0].job);
-        setLast_name(returned.data[0].last_name);
-        setMiddle_name(returned.data[0].middle_name);
-        setFirst_name(returned.data[0].first_name);
-        setPhone(returned.data[0].phone);
-        setUserid(returned.data[0].user_id);
+    if (data !== undefined) {
+      if (data.code == 200) {
+        setValue("user_id", data.data[0].user_id);
+        setValue("username", data.data[0].username);
+        setValue("job", data.data[0].job);
+        setValue("last_name", data.data[0].last_name);
+        setValue("middle_name", data.data[0].middle_name);
+        setValue("first_name", data.data[0].first_name);
+        setValue("phone", data.data[0].phone);
       } else {
-        toast.error(returned.message);
+        toast.error(message);
         callCancel();
       }
-    };
-
-    if (Queryid !== null || Queryid !== undefined) {
-      exec();
     }
-  }, [Queryid]);
+  }, [data]);
 
-  if (user_id == "") {
-    return (
-      <>
-        <div className="w-full h-1/2 flex">
-          <Loading height={"h-1/2"}></Loading>
-        </div>
-      </>
-    );
+  const onSubmit = (data: any) => {
+    setRequesting(true);
+    if (params.Action == "Update") {
+      var isOk = confirm("are you sure you want to update?");
+      if (isOk) {
+        updateUser(data);
+      } else {
+        setRequesting(false);
+        return false;
+      }
+    } else if (params.Action == "Remove") {
+      if (!confirm("Are you sure you want to remove?")) {
+        setRequesting(false);
+        return false;
+      }
+      exec_remove(data);
+    }
+  };
+
+  if (isLoading) {
+    return <Loading></Loading>;
   } else if (Action != "Update" && Action != "Remove" && Action != "View") {
     return <PageNotFound></PageNotFound>;
   } else {
@@ -204,123 +214,118 @@ export default function Page({ params }: any) {
               </ul>
             </div>
             <form
-              onSubmit={verifyInput}
+              onSubmit={handleSubmit(onSubmit)}
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
-                <InputBox
-                  type={"text"}
-                  label={"Username"}
-                  placeholder={"Username"}
+              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
+                <NormalInput
                   name={"username"}
-                  disabled={false}
-                  className={`input text-base-content input-bordered h-10 ${
-                    isUsername ? "" : "input-error"
-                  }`}
-                  getter={username}
-                  setter={setUsername}
-                  autofocus={true}
+                  label={"Username"}
+                  register={register}
+                  errors={errors}
                   readonly={Action == "View" || Action == "Remove"}
-                  validation={validateNormal}
-                  setIsValid={setIsUsername}
-                  startValidation={startValidation}
-                />
-                <PasswordBox
-                  placeholder={"Password"}
-                  name={"password"}
-                  disabled={false}
-                  className={`input ${
-                    isPassword ? "" : "input-error"
-                  } input-bordered h-10  `}
-                  getter={password}
-                  setter={setPassword}
-                  required={false}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validation={validateUpdatePassword}
-                  setIsValid={setIsPassword}
-                  startValidation={startValidation}
-                />
-                <InputBox
-                  type={"password"}
-                  label={"Repeat Password"}
-                  placeholder={"Repeat Password"}
-                  name={"repeatPass"}
-                  disabled={false}
-                  className={"input text-base-content input-bordered h-10"}
-                  getter={repeatPassword}
-                  setter={setrepeatPass}
-                  required={false}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validation={validateUpdatePassword}
-                  setIsValid={setIsRepeatPassword}
-                  startValidation={startValidation}
-                />
-              </div>
-              <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2">
-                <InputBox
-                  type={"text"}
-                  label={"First Name"}
-                  placeholder={"first name"}
-                  name={"first_name"}
-                  className={"input text-base-content input-bordered h-10"}
-                  getter={first_name}
-                  setter={setFirst_name}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validation={validateNormal}
-                  setIsValid={setIsFirstName}
-                  startValidation={startValidation}
-                />
-                <InputBox
-                  type={"text"}
-                  label={"Middle Name"}
-                  placeholder={"Middle Name (Optional)"}
-                  name={"first_name"}
-                  className={"input text-base-content input-bordered h-10"}
-                  getter={middle_name}
-                  setter={setMiddle_name}
-                  required={false}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validation={validateSkip}
-                  setIsValid={setIsMiddleName}
-                  startValidation={startValidation}
-                />
-                <InputBox
-                  type={"text"}
-                  label={"Last Name"}
-                  placeholder={"Last Name"}
-                  name={"last_name"}
-                  className={"input text-base-content input-bordered h-10"}
-                  getter={last_name}
-                  setter={setLast_name}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validation={validateNormal}
-                  setIsValid={setIsLastName}
-                  startValidation={startValidation}
-                />
-              </div>
-              <div className="w-full ml-2 grid grid-rows-2 lg:grid-cols-2 lg:grid-rows-none grid-cols-none">
-                <InputBoxLeft
-                  type="text"
-                  label={"Phone"}
-                  placeholder="Phone"
-                  name="phone"
-                  className={`input input-bordered h-10  ${
-                    isPhone ? "" : "input-error"
-                  }`}
-                  getter={phone}
-                  setter={setPhone}
                   required={true}
-                  startingData={"+63"}
+                  type={"text"}
+                  validationSchema={{
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                  }}
+                ></NormalInput>
+                <PasswordInputShow
+                  name={"password"}
+                  label={"Password"}
+                  register={register}
+                  errors={errors}
+                  required={false}
                   readonly={Action == "View" || Action == "Remove"}
-                  validation={validatePhone}
-                  setIsValid={setIsPhone}
-                  startValidation={startValidation}
-                />
-                <SelectBox
+                  validationSchema={{
+                    pattern: {
+                      value: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                      message: `Valid password should contain the following:One LowerCase \n,UpperCase ,Number and atleast 8 character long.`,
+                    },
+                  }}
+                ></PasswordInputShow>
+                <NormalInput
+                  name={"repeat_password"}
+                  label={"Repeat Password"}
+                  register={register}
+                  errors={errors}
+                  required={false}
+                  readonly={Action == "View" || Action == "Remove"}
+                  type={"password"}
+                  validationSchema={{
+                    validate: validateRepeatPassword,
+                  }}
+                ></NormalInput>
+              </div>
+              <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2 gap-2">
+                <NormalInput
+                  name={"first_name"}
+                  label={"First Name"}
+                  register={register}
+                  errors={errors}
+                  readonly={Action == "View" || Action == "Remove"}
+                  required={true}
+                  type={"text"}
+                  validationSchema={{
+                    required: "This field is required",
+                  }}
+                ></NormalInput>
+                <NormalInput
+                  name={"middle_name"}
+                  label={"Middle Name"}
+                  register={register}
+                  readonly={Action == "View" || Action == "Remove"}
+                  errors={errors}
+                  required={false}
+                  type={"text"}
+                  validationSchema={{}}
+                ></NormalInput>
+                <NormalInput
+                  name={"last_name"}
+                  label={"Last Name"}
+                  register={register}
+                  errors={errors}
+                  required={true}
+                  readonly={Action == "View" || Action == "Remove"}
+                  type={"text"}
+                  validationSchema={{
+                    required: "This field is required",
+                  }}
+                ></NormalInput>
+              </div>
+              <div className="w-full ml-2 grid grid-rows-3 lg:grid-cols-3 lg:grid-rows-none grid-cols-none">
+                <PhoneInput
+                  name={"phone"}
+                  label={"Phone Number"}
+                  register={register}
+                  errors={errors}
+                  readonly={Action == "View" || Action == "Remove"}
+                  required={true}
+                  type={"number"}
+                  validationSchema={{
+                    required: {
+                      value: true,
+                      message: "This field is required",
+                    },
+                    pattern: {
+                      value: /^9\d{9}$/,
+                      message:
+                        "Valid password should start with 9,all numbers, and 10 character long.",
+                    },
+                  }}
+                ></PhoneInput>
+                <SelectInput
+                  name={"job"}
                   label={"Job"}
-                  name={"Job"}
-                  selected={job}
+                  register={register}
+                  readonly={Action == "View" || Action == "Remove"}
+                  errors={errors}
+                  required={true}
+                  disabled={true}
                   options={[
                     {
                       value: "worker",
@@ -338,13 +343,8 @@ export default function Page({ params }: any) {
                       disabled: Action == "View" || Action == "Remove",
                     },
                   ]}
-                  disabled={false}
-                  default_option={"Job"}
-                  setter={setJob}
-                  validation={validateSelect}
-                  setIsValid={setIsJob}
-                  startValidation={startValidation}
-                />
+                  validationSchema={{ required: "This field is required" }}
+                ></SelectInput>
               </div>
               <div className="card-actions justify-end">
                 {params.Action == "View" ? (

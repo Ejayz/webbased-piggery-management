@@ -56,7 +56,8 @@ async function GetCage(
   sortby: any
 ) {
   const conn = await connection.getConnection();
-  const sql = `SELECT r.reorder_id, r.reorder_date, r.status, COUNT(d.reorder_details_id) AS total_reorder
+  try {
+    const sql = `SELECT r.reorder_id, r.reorder_date, r.status, COUNT(d.reorder_details_id) AS total_reorder
   FROM tbl_reorder r
   LEFT JOIN tbl_reorder_details d
   ON r.reorder_id = d.reorder_id WHERE r.is_exist='true' and r.status!='confirmed'
@@ -64,10 +65,16 @@ async function GetCage(
  ORDER BY ${conn.escapeId(
    sortby
  )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
-  const [err, result] = await conn.query(sql);
-  conn.release();
-  if (err) return err;
-  return result;
+    const [err, result] = await conn.query(sql);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 
 async function SearhGetCage(
@@ -78,16 +85,23 @@ async function SearhGetCage(
   keyword: string
 ) {
   const conn = await connection.getConnection();
-  keyword = `%${keyword}%`;
-  const sql = `SELECT r.reorder_id, r.reorder_date, r.status, COUNT(d.reorder_details_id) AS total_reorder
+  try {
+    keyword = `%${keyword}%`;
+    const sql = `SELECT r.reorder_id, r.reorder_date, r.status, COUNT(d.reorder_details_id) AS total_reorder
   FROM tbl_reorder r
   LEFT JOIN tbl_reorder_details d
   ON r.reorder_id = d.reorder_id WHERE r.is_exist='true' and r.status!='confirmed'
   GROUP BY r.reorder_id, r.reorder_date, r.status  ORDER BY ${conn.escapeId(
     sortby
   )} ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
-  const [err, result] = await conn.query(sql, [keyword, keyword, keyword]);
-  conn.release();
-  if (err) return err;
-  return result;
+    const [err, result] = await conn.query(sql, [keyword, keyword, keyword]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

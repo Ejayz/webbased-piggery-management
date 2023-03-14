@@ -13,7 +13,28 @@ import InputBox from "@/components/FormComponents/inputbox";
 import { useRouter } from "next/navigation";
 import { setLocal } from "@/hooks/useSetLocal";
 import SelectBox from "@/components/FormComponents/selectBox";
+import { useForm } from "react-hook-form";
+import NormalInput from "@/components/FormCompsV2/NormalInput";
+import PhoneInputShow from "@/components/FormCompsV2/PhoneInputShow";
+import PhoneInput from "@/components/FormCompsV2/PhoneInput";
+import SelectInput from "@/components/FormCompsV2/SelectInput";
 export default function Layout({}: any) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      username: "",
+      phone: "",
+      job: "",
+    },
+    mode: "onChange",
+    criteriaMode: "all",
+  });
+
   const [username, setUsername] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const base_url = getBaseURL();
@@ -39,42 +60,49 @@ export default function Layout({}: any) {
       toast.error("Please check all fields");
       isRequesting(false);
     } else {
-      let headersList = {
-        Accept: "*/*",
-        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-        "Content-Type": "application/json",
-      };
-
-      let bodyContent = JSON.stringify({
-        username: username,
-        phone: phone,
-        job: job,
-      });
-
-      let response = await fetch(`${base_url}/api/post/sms`, {
-        method: "POST",
-        body: bodyContent,
-        headers: headersList,
-      });
-      let data = await response.text();
-      const parsed = JSON.parse(data);
-      if (parsed.code == 200) {
-        toast.success(parsed.message);
-        setUsername("");
-        setPhone("");
-        isRequesting(true);
-        isRequesting(false);
-        console.log(parsed);
-        setLocal(parsed.OTP);
-        router.push(
-          `/forgotpassword/validateotp?username=${username}&phone=${phone}&job=${job}`
-        );
-      } else {
-        toast.error(parsed.message);
-        isRequesting(false);
-      }
     }
   }
+  const exec_otp = async (data: any) => {
+    let headersList = {
+      Accept: "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json",
+    };
+
+    let bodyContent = JSON.stringify({
+      username: data.username,
+      phone: data.phone,
+      job: data.job,
+    });
+
+    let response = await fetch(`${base_url}/api/post/sms`, {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    });
+    let returned = await response.text();
+    const parsed = JSON.parse(returned);
+    if (parsed.code == 200) {
+      toast.success(parsed.message);
+      setUsername("");
+      setPhone("");
+      isRequesting(true);
+      isRequesting(false);
+      console.log(parsed);
+      setLocal(parsed.OTP);
+      router.push(
+        `/forgotpassword/validateotp?username=${data.username}&phone=${data.phone}&job=${data.job}`
+      );
+    } else {
+      toast.error(parsed.message);
+      isRequesting(false);
+    }
+  };
+
+  const onSubmit = (data: any) => {
+    exec_otp(data);
+  };
+
   return (
     <div className="w-full bg-base-100 h-screen">
       <div className="hero h-full bg-base-100">
@@ -98,40 +126,42 @@ export default function Layout({}: any) {
             </ul>
           </div>
           <form
-            onSubmit={getOTP}
+            onSubmit={handleSubmit(onSubmit)}
             className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
           >
             <div className="card-body">
-              <InputBox
+              <NormalInput
+                name="username"
+                label="Username"
+                register={register}
+                errors={errors}
+                required={true}
                 type={"text"}
-                label={"Username"}
-                placeholder={"Username"}
-                name={"username"}
-                disabled={false}
-                className={`input input-bordered h-10  text-base-content w-full`}
-                getter={username}
-                setter={setUsername}
-                required={true}
-                validation={validateNormal}
-                setIsValid={setIsUsername}
-              />
-              <InputBoxLeft
-                type="text"
-                label={"Phone"}
-                placeholder="Phone"
+                validationSchema={{ required: "This field is required" }}
+              ></NormalInput>
+              <PhoneInput
                 name="phone"
-                className={`input input-bordered h-10 text-base-content w-full`}
-                getter={phone}
-                setter={setPhone}
+                label="Phone Number"
+                register={register}
+                errors={errors}
                 required={true}
-                startingData={"+63"}
-                validation={validatePhone}
-                setIsValid={setIsPhone}
-              ></InputBoxLeft>
-              <SelectBox
+                type={"number"}
+                validationSchema={{
+                  required: "This field is required",
+                  pattern: {
+                    value: /^9\d{9}$/,
+                    message:
+                      "Valid password should start with 9,all numbers, and 10 character long.",
+                  },
+                }}
+              ></PhoneInput>
+
+              <SelectInput
+                name={"job"}
                 label={"Job"}
-                name={"Job"}
-                selected={job}
+                register={register}
+                errors={errors}
+                required={true}
                 options={[
                   {
                     value: "worker",
@@ -149,14 +179,9 @@ export default function Layout({}: any) {
                     disabled: false,
                   },
                 ]}
-                disabled={false}
-                default_option={"Job"}
-                setter={setJob}
-                required={true}
-                className={`input input-bordered h-10  `}
-                validation={validateSelect}
-                setIsValid={setIsJob}
-              />
+                validationSchema={{ required: "This field is required" }}
+              ></SelectInput>
+
               <label className="label label-text">
                 <Link
                   href="#"

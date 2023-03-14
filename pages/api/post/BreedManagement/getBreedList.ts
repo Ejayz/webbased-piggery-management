@@ -16,8 +16,15 @@ export default async function handler(
 
 async function GetBreed() {
   const conn = await connection.getConnection();
-  const sql = "select * from tbl_breed where is_exist='true'";
-  const [result] = await conn.query(sql);
-  conn.release();
-  return result;
+  try {
+    const sql = "select * from tbl_breed where is_exist='true'";
+    const [result] = await conn.query(sql);
+    conn.release();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

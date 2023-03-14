@@ -24,13 +24,19 @@ export default async function handler(
 
 async function RemoveUser({ user_id }: any) {
   const conn = await connection.getConnection();
+  try {
+    const sql = "UPDATE `tbl_users` SET  `is_exist`='false' WHERE `user_id`=?;";
 
-  const sql = "UPDATE `tbl_users` SET  `is_exist`='false' WHERE `user_id`=?;";
-
-  const [err, result] = await conn.query(sql, [user_id]);
-  conn.release();
-  if (err) {
-    return err;
+    const [err, result] = await conn.query(sql, [user_id]);
+    conn.release();
+    if (err) {
+      return err;
+    }
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
   }
-  return result;
 }

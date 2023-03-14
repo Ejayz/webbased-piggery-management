@@ -56,13 +56,20 @@ async function GetUsers(
   sortorder: string
 ) {
   const conn = await connection.getConnection();
-  const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) as name, job FROM tbl_users WHERE  is_exist = 'true'  AND user_id != ? ORDER BY ${conn.escapeId(
-    sortby
-  )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
-  const [err, result] = await conn.query(sql, [user_id]);
-  conn.release();
-  if (err) return err;
-  return result;
+  try {
+    const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) as name, job FROM tbl_users WHERE  is_exist = 'true'  AND user_id != ? ORDER BY ${conn.escapeId(
+      sortby
+    )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
+    const [err, result] = await conn.query(sql, [user_id]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }
 
 async function GetUsersWithSearch(
@@ -74,19 +81,26 @@ async function GetUsersWithSearch(
   keyword: string
 ) {
   const conn = await connection.getConnection();
-  keyword = `%${keyword}%`;
-  const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) AS name, job FROM tbl_users WHERE ( username LIKE ? OR CONCAT(first_name,' ',middle_name,' ',last_name) LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
-    sortby
-  )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
+  try {
+    keyword = `%${keyword}%`;
+    const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) AS name, job FROM tbl_users WHERE ( username LIKE ? OR CONCAT(first_name,' ',middle_name,' ',last_name) LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
+      sortby
+    )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
 
-  const [err, result] = await conn.query(sql, [
-    keyword,
-    keyword,
-    keyword,
-    keyword,
-    user_id,
-  ]);
-  conn.release();
-  if (err) return err;
-  return result;
+    const [err, result] = await conn.query(sql, [
+      keyword,
+      keyword,
+      keyword,
+      keyword,
+      user_id,
+    ]);
+    conn.release();
+    if (err) return err;
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

@@ -16,8 +16,15 @@ export default async function handler(
 
 async function GetId() {
   const conn = await connection.getConnection();
-  const sql = "select max(pig_id) from tbl_pig";
-  const [result] = await conn.query(sql);
-  conn.release();
-  return result;
+  try {
+    const sql = "select max(pig_id) from tbl_pig";
+    const [result] = await conn.query(sql);
+    conn.release();
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
 }

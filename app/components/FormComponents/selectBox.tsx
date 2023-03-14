@@ -86,9 +86,7 @@ export default function SelectBox({
           value={selected}
           required={required}
         >
-          <option value={"default"} disabled={true}>
-            {default_option}
-          </option>
+          <option value={""}>{default_option}</option>
           {options.map((item: any, index: number) => {
             return (
               <option key={index} value={item.value} disabled={item.disabled}>
