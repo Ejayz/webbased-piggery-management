@@ -60,7 +60,11 @@ export default function Page() {
   console.log(data);
   useEffect(() => {
     if (data !== undefined) {
-      setParsed(data.data[0]);
+      if (data.data) {
+        setParsed(data.data[0]);
+      } else {
+        setParsed([]);
+      }
     }
   }, [data]);
   useEffect(() => {

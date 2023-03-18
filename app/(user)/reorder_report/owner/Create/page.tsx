@@ -22,7 +22,6 @@ export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
   const [itemList, setItemList] = useState<itemListT[]>([]);
   const [reorderList, setReorderList] = useState<reorderListType[]>([]);
-
   const [requesting, setRequesting] = useState(false);
 
   const { error, data, isLoading } = useQuery("getLowLvl", async () => {
@@ -30,7 +29,13 @@ export default function Page() {
       `${location.origin}/api/post/Stocks/getLowLvl`
     );
     const data = await response.json();
-    setItemList(data.data);
+    if (data.code == 200) {
+      if (data.data) {
+        setItemList(data.data);
+      } else {
+        setItemList([]);
+      }
+    }
   });
 
   const router = useRouter();
@@ -161,17 +166,27 @@ export default function Page() {
                       <thead>
                         <tr>
                           <th>Item Name</th>
+                          <th>Item Description</th>
                         </tr>
                       </thead>
                       <tbody>
                         {/* row 1 */}
-                        {itemList.map((data: any, key: number) => {
-                          return (
-                            <tr key={key}>
-                              <td>{data.item_name}</td>
-                            </tr>
-                          );
-                        })}
+                        {itemList.length == 0 ? (
+                          <tr>
+                            <td colSpan={2}>
+                              No item that is low level at the moment.{" "}
+                            </td>
+                          </tr>
+                        ) : (
+                          itemList.map((data: any, key: number) => {
+                            return (
+                              <tr key={key}>
+                                <td>{data.item_name}</td>
+                                <td>{data.item_description}</td>
+                              </tr>
+                            );
+                          })
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -179,13 +194,18 @@ export default function Page() {
                     <button
                       disabled={requesting}
                       className={`btn btn-active btn-primary mx-4 ${
-                        requesting ? "loading" : ""
-                      }`}
+                        itemList.length == 0 ? "hidden" : ""
+                      } ${requesting ? "loading" : ""}`}
                       onClick={() => {
+                        console.log(itemList);
                         printJS({
                           printable: itemList,
                           properties: [
                             { field: "item_name", displayName: "Item Name" },
+                            {
+                              field: "item_description",
+                              displayName: "Item Description",
+                            },
                           ],
                           type: "json",
                         });
