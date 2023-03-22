@@ -37,6 +37,7 @@ export default async function handler(
         sortorder,
         keyword
       );
+      console.log(data);
     }
     if (data.length == 0) {
       return res.status(404).json({ code: 404, message: "No data found" });
@@ -58,7 +59,10 @@ async function GetUsers(
 ) {
   const conn = await connection.getConnection();
   try {
-    const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) as name, job FROM tbl_users WHERE  is_exist = 'true'  AND user_id != ? ORDER BY ${conn.escapeId(
+    const sql = `SELECT COUNT(DISTINCT tbl_stock_card.stock_id) AS \`item_count\`, tbl_inventory.*,tbl_stock.*
+    FROM tbl_stock_card
+    INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id
+    INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id where and tbl_stock_card.is_exist='true' ORDER BY ${conn.escapeId(
       sortby
     )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
     const [err, result] = await conn.query(sql, [user_id]);
@@ -84,11 +88,14 @@ async function GetUsersWithSearch(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT user_id, username, first_name, middle_name, last_name, phone,CONCAT(first_name,' ',middle_name,' ',last_name) AS name, job FROM tbl_users WHERE ( username LIKE ? OR CONCAT(first_name,' ',middle_name,' ',last_name) LIKE ? OR phone LIKE ? OR job LIKE ? ) AND is_exist = 'true'   AND user_id != ? ORDER BY ${conn.escapeId(
+    const sql = `SELECT COUNT(DISTINCT tbl_stock_card.stock_id) AS \`item_count\`, tbl_inventory.*,tbl_stock.*
+    FROM tbl_stock_card
+    INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id
+    INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id where (item_name LIKE ? or item_description like ? ) and tbl_stock_card.is_exist='true'  HAVING COUNT(DISTINCT tbl_stock_card.stock_id) > 0 ORDER BY ${conn.escapeId(
       sortby
     )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
 
-    const [err, result] = await conn.query(sql, [
+    const [result] = await conn.query(sql, [
       keyword,
       keyword,
       keyword,
@@ -96,7 +103,6 @@ async function GetUsersWithSearch(
       user_id,
     ]);
     conn.release();
-    if (err) return err;
     return result;
   } catch (error) {
     console.log(error);

@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+                                                                                                                                                                                                                                                                                         import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandlerFormData";
 import connection from "pages/api/mysql";
 import fileHandler from "pages/api/fileHandler";

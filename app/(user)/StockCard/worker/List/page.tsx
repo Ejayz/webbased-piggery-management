@@ -21,7 +21,7 @@ export default function Page() {
       const response = await fetch(
         `${
           location.origin
-        }/api/get/InventoryManagement/${page}/?&filter=${JSON.stringify(
+        }/api/get/StockCardManagement/${page}/?&filter=${JSON.stringify(
           filter
         )}`
       );
@@ -36,8 +36,12 @@ export default function Page() {
       keepPreviousData: true,
     }
   );
-  console.log(data);
-
+  console.log(
+    `${
+      location.origin
+    }/api/get/StockCardManagement/${page}/?&filters=${JSON.stringify(filter)}`
+  );
+  console.log(error);
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -64,9 +68,7 @@ export default function Page() {
     <>
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
-          <p className="text-2xl text-base-content my-auto p-4">
-            Inventory List
-          </p>
+          <p className="text-2xl text-base-content my-auto p-4">User List</p>
         </div>
 
         <div className="w-full h-auto flex flex-col">
@@ -92,10 +94,8 @@ export default function Page() {
               value={filter.sortby}
             >
               <option value="item_name">Item Name</option>
-              <option value="item_description">Item Description</option>
-              <option value="category_name">Category Name</option>
+              <option value="item_count">Total Stock Card</option>
               <option value="total_stocks">Total Stocks Available</option>
-              <option value="item_unit">Item Unit</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">
@@ -143,10 +143,8 @@ export default function Page() {
               <tr>
                 <th></th>
                 <th>Item Name</th>
-                <th>Item Description</th>
-                <th>Category Name</th>
+                <th>Total Stock Card</th>
                 <th>Total Stocks Available</th>
-                <th>Item Unit</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -163,17 +161,15 @@ export default function Page() {
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
                       <td>{item.item_name}</td>
-                      <td>{item.item_description}</td>
-                      <td>{item.category_name}</td>
-                      <td>{item.item_left}</td>
-                      <td>{item.item_unit}</td>
+                      <td>{item.item_count}</td>
+                      <td>{item.total_stocks}</td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/inventory_management/worker/Update",
-                              query: { id: item.item_id },
+                              pathname: "/user_management/owner/Update",
+                              query: { id: item.user_id },
                             }}
                           >
                             Update
@@ -182,8 +178,8 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/inventory_management/worker/View",
-                              query: { id: item.item_id },
+                              pathname: "/user_management/owner/View",
+                              query: { id: item.user_id },
                             }}
                           >
                             View
@@ -192,8 +188,8 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/inventory_management/worker/Remove",
-                              query: { id: item.item_id },
+                              pathname: "/user_management/owner/Remove",
+                              query: { id: item.user_id },
                             }}
                           >
                             Remove

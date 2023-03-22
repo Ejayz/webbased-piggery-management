@@ -16,7 +16,7 @@ export default async function handler(
     let addedDate = newDate.plus({ day: days }).toISODate();
     exported.push(addedDate);
   });
-  return res.send(exported);
+  return res.send(newDate.toISODate());
 }
 
 async function uploadToNextServer(file: any) {

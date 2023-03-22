@@ -51,7 +51,7 @@ export default function Page({ params }: any) {
   const [isItemDescription, setIsItemDescription] = useState(true);
   const [isItemQuantity, setIsItemQuantity] = useState(true);
   const [isItemUnit, setIsItemUnit] = useState(true);
-  const [category_list, setCategoryList] = useState([]);
+  const [category_list, setCategoryList] = useState<any>([]);
   const [isItemNetWeight, setIsItemNetWeight] = useState(true);
   let list: any = [];
 
@@ -84,25 +84,23 @@ export default function Page({ params }: any) {
       return false;
     }
   };
-  useEffect(() => {
-    async function exec_get() {
-      const returned = await GetCategory();
+  const exec_get = async () => {
+    const returned = await GetCategory();
 
-      if (returned.code == 200) {
-        console.log(returned);
-        returned.data.map((data: any, key: number) => {
-          list.push({
-            value: data.category_id,
-            display: data.category_name,
-         disabled: Action == "View" || Action == "Remove" ? true : false,
-
-          });
+    if (returned.code == 200) {
+      console.log(returned);
+      returned.data.map((data: any, key: number) => {
+        list.push({
+          value: data.category_id,
+          display: data.category_name,
+          disabled: Action == "View" || Action == "Remove" ? true : false,
         });
-        setCategoryList(list);
-      }
+      });
+
+      setCategoryList(list);
     }
-    exec_get();
-  }, []);
+  };
+
   const exec_remove = async (data: any) => {
     const returned = await Remove(data.item_id);
     if (returned.code == 200) {
@@ -147,16 +145,25 @@ export default function Page({ params }: any) {
       );
     }
   }
-
   useEffect(() => {
     const exec = async () => {
       const returned = await View(Queryid);
-
       if (returned.code == 200) {
         setValue("item_id", returned.data[0].item_id);
         setValue("item_name", returned.data[0].item_name);
         setValue("item_description", returned.data[0].item_description);
         setValue("category_id", returned.data[0].category_id);
+
+        exec_get();
+        setCategoryList((...category_list: any) => {
+          const updatedData = [...category_list];
+          updatedData.map((data: any, key: number) => {
+            if (data.value == returned.data[0].category_id) {
+              data.disabled = false;
+            }
+          });
+          return updatedData;
+        });
       } else {
         toast.error(returned.message);
         callCancel();
@@ -169,6 +176,7 @@ export default function Page({ params }: any) {
       });
     }
   }, [Queryid]);
+
   const onSubmit = (data: any) => {
     if (params.Action == "Update") {
       var isOk = confirm("are you sure you want to update?");
@@ -209,9 +217,7 @@ export default function Page({ params }: any) {
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>Inventory Management</li>
-
                 <li>View</li>
-
                 <li className="font-bold">{Action}</li>
               </ul>
             </div>
@@ -230,11 +236,9 @@ export default function Page({ params }: any) {
                   register={register}
                   errors={errors}
                   required={true}
-
                   validationSchema={{
                     required: "This field is required",
                   }}
-
                 />
                 <SelectInput
                   label={"Category"}
@@ -243,20 +247,16 @@ export default function Page({ params }: any) {
                   errors={errors}
                   options={category_list}
                   required={true}
-
                   disabled={
                     Action == "View" || Action == "Remove" ? true : false
                   }
                   validationSchema={{ required: "This field is required" }}
-
                 />
                 <NormalInput
                   label={"Item Description"}
-
                   name={"item_description"}
                   register={register}
                   errors={errors}
-
                   required={true}
                   readonly={
                     Action == "View" || Action == "Remove" ? true : false

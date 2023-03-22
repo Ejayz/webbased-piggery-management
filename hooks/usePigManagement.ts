@@ -244,7 +244,7 @@ export const Remove = async (pig_id: any, cage_id: any) => {
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/PigManagement/remove",
+    `${location.origin}/api/post/PigManagement/remove`,
     {
       method: "POST",
       body: bodyContent,
@@ -277,7 +277,7 @@ export const Update = async (
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/PigManagement/updatePig",
+    `${location.origin}/api/post/PigManagement/updatePig`,
     {
       method: "POST",
       body: bodyContent,
