@@ -5,12 +5,13 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import fs from "fs";
 import path from "path";
-import { bucket, s3Client } from "./s3";
+import { bucket, s3Client } from "../../s3";
 
 export default async function fildeHandler(req: NextApiRequest) {
   const data: any = await new Promise((resolve, reject) => {
     const form = new IncomingForm();
     form.parse(req, (err, fields, files) => {
+      console.log(fields, files);
       if (err) return reject(err);
       resolve({ fields, files });
     });
@@ -22,11 +23,13 @@ export default async function fildeHandler(req: NextApiRequest) {
   try {
     const imageFile = data.files.attachment; // .image because I named it in client side by that name: // pictureData.append('image', pictureFile);
     const imagePath: any = imageFile.filepath;
+    console.log(imagePath);
     const pathToWriteImage = `public/attachments/${itemName}.${
       imageFile.mimetype.split("/")[1]
     }`;
     // include name and .extention, you can get the name from data.files.image object
     const originalFile = fs.readFileSync(imagePath);
+    console.log(originalFile);
     const bucketParams = {
       Bucket: bucket,
       Key: pathToWriteImage,
@@ -37,12 +40,20 @@ export default async function fildeHandler(req: NextApiRequest) {
     const run = async () => {
       try {
         const data = await s3Client.send(new PutObjectCommand(bucketParams));
+        console.log(
+          "Successfully uploaded object: " +
+            bucketParams.Bucket +
+            "/" +
+            bucketParams.Key
+        );
       } catch (err) {
         console.log("Error", err);
       }
     };
 
     run();
+
+    console.log(data);
     return { filePath: pathToWriteImage, fields: data.fields };
   } catch (error: any) {
     console.log(error);
