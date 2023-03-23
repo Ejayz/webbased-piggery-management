@@ -36,8 +36,7 @@ export default function Page() {
       keepPreviousData: true,
     }
   );
-
-  console.log(data);
+  console.log(parsed);
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -153,7 +152,7 @@ export default function Page() {
                     Please wait while we fetch the data
                   </td>
                 </tr>
-              ) : parsed.length != 0 ? (
+              ) : parsed.length != 0 || parsed !== undefined ? (
                 parsed.map((item: any, key: number) => {
                   return (
                     <tr key={key} className="hover">
