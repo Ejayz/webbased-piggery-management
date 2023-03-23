@@ -36,12 +36,7 @@ export default function Page() {
       keepPreviousData: true,
     }
   );
-  console.log(
-    `${
-      location.origin
-    }/api/get/StockCardManagement/${page}/?&filters=${JSON.stringify(filter)}`
-  );
-  console.log(error);
+  console.log(parsed);
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -68,7 +63,9 @@ export default function Page() {
     <>
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
-          <p className="text-2xl text-base-content my-auto p-4">User List</p>
+          <p className="text-2xl text-base-content my-auto p-4">
+            Stock Card List
+          </p>
         </div>
 
         <div className="w-full h-auto flex flex-col">
@@ -168,31 +165,11 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/user_management/owner/Update",
-                              query: { id: item.user_id },
-                            }}
-                          >
-                            Update
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/user_management/owner/View",
-                              query: { id: item.user_id },
+                              pathname: `/StockCard/${item.item_id}`,
+                              query: { card_num: 1 },
                             }}
                           >
                             View
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/user_management/owner/Remove",
-                              query: { id: item.user_id },
-                            }}
-                          >
-                            Remove
                           </Link>
                         </div>
                       </td>

@@ -64,7 +64,10 @@ async function Ops(
       date,
     ]);
 
-    if (stockCardResult > 0) {
+    console.log(date);
+    console.log(stockCardResult);
+
+    if (stockCardResult.length > 0) {
       stockCardId = stockCardResult[0].stock_card_id;
     } else {
       const createStockCard =
