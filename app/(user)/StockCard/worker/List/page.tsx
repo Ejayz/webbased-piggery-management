@@ -152,7 +152,7 @@ export default function Page() {
                     Please wait while we fetch the data
                   </td>
                 </tr>
-              ) : parsed.length != 0 || parsed !== undefined ? (
+              ) : parsed.length != 0 ? (
                 parsed.map((item: any, key: number) => {
                   return (
                     <tr key={key} className="hover">
