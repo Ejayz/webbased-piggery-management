@@ -142,7 +142,7 @@ export default function Page({ params }: any) {
           </p>
         </div>
 
-        <div className="w-full h-auto flex flex-row">
+        <div className="w-11/12 mx-auto h-auto flex flex-row">
           <div className="flex">
             <button
               onClick={() => {
@@ -153,7 +153,7 @@ export default function Page({ params }: any) {
               className="my-auto"
             >
               <svg
-                className="w-20 h-20 mx-auto"
+                className="w-10 h-10 mx-auto"
                 width="256px"
                 height="256px"
                 viewBox="-2 -2 24.00 24.00"
@@ -176,7 +176,7 @@ export default function Page({ params }: any) {
             </button>
           </div>
           {StockCardData?.data != undefined ? (
-            <div className="card w-11/12 bg-base-200 mx-auto  shadow-xl">
+            <div className="card w-11/12 bg-base-200 my-auto  shadow-xl">
               <div className="card-body">
                 <h2 className="card-title text-base-content">
                   Stock Card #
@@ -328,24 +328,16 @@ export default function Page({ params }: any) {
                             </td>
                             <td>{item.remark == null ? "N/A" : item.remark}</td>
                             <td>
-                              <Link
-                                href={`https://webbasedpiggeryuploaded.sgp1.digitaloceanspaces.com/${item.attachment}`}
-                              >
-                                Attachment
-                              </Link>
-                            </td>
-                            <td className="flex">
-                              <div className="flex flex-row mx-auto">
+                              {item.attachment == null ? (
+                                "N/A"
+                              ) : (
                                 <Link
-                                  className="btn btn-sm btn-primary"
-                                  href={{
-                                    pathname: "/StockCard/worker/List/View",
-                                    query: { id: item.user_id },
-                                  }}
+                                  className="link underline"
+                                  href={`https://webbasedpiggeryuploaded.sgp1.digitaloceanspaces.com/${item.attachment}`}
                                 >
-                                  View
+                                  Attachment
                                 </Link>
-                              </div>
+                              )}
                             </td>
                           </tr>
                         );
@@ -397,10 +389,10 @@ export default function Page({ params }: any) {
                   ? ""
                   : setStockCardPage(stockCardPage + 1);
               }}
-              className="mx-auto"
+              className="my-auto"
             >
               <svg
-                className="w-20 h-20"
+                className="w-10 ml-auto mr-0 h-10"
                 width="256px"
                 height="256px"
                 viewBox="-2 -2 24.00 24.00"
