@@ -179,7 +179,7 @@ export default function Page() {
                 </div>
                 <div>
                   <div
-                    className={`card-actions justify-end ${
+                    className={`card-actions justify-end mt-6 ${
                       showPigData ? "" : "hidden"
                     }`}
                   >

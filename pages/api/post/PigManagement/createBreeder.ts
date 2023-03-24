@@ -64,17 +64,11 @@ async function Ops(
   conn.beginTransaction();
   try {
     const sql =
-      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`, `cage_id`, `batch_id`, `breed_id`,`pig_tag`, `pig_type`, `birthdate`,`weight` ) VALUES (?,?, ?, ?, ?,?, ?, ?);";
-    await conn.query(sql, [
-      pig_id,
-      cage_id,
-      batch_id,
-      breed_id,
-      pig_tag,
-      pig_type,
-      birthdate,
-      weight,
-    ]);
+      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,  `batch_id`, `breed_id` ,`pig_type`, `birthdate` ) VALUES ( ?, ?,?, ?, ?);";
+    await conn.query(sql, [pig_id, batch_id, breed_id, pig_type, birthdate]);
+    const insertPigHistory =
+      "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id) values(?,?,?,?)";
+    await conn.query(insertPigHistory, [pig_id, pig_tag, weight, cage_id]);
     const getCageCapacity =
       "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";
     const [result]: any = await conn.query(getCageCapacity, [cage_id]);

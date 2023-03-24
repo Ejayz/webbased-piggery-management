@@ -22,6 +22,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   const [owner, isOwner] = useState<boolean>(false);
   const [title, setTitle] = useState("RVM Hog Farm");
   const path = usePathname();
+
   const queryClient = new QueryClient();
   useEffect(() => {
     if (path?.includes("user_management")) {
@@ -604,7 +605,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               End of Reorder management menu */}
-                {/* Breed Management */}
+                {/* Stock Card Management Management */}
                 <div
                   className={`${
                     loading.data.job == "worker" ? "block" : "hidden"
@@ -662,8 +663,66 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                 </div>
-                {/* End of Breed management menu */}
-
+                {/* End of Stock Card management menu */}
+                {/*Plan Management Management */}
+                <div
+                  className={`${
+                    loading.data.job == "veterinarian" ? "block" : "hidden"
+                  }`}
+                >
+                  <div className="collapse">
+                    <input type="checkbox" />
+                    <div className="collapse-title text-base flex flex-cols font-medium">
+                      <Image
+                        src={"/assets/icons/user_management.png"}
+                        className="h-6 w-6 mr-2 my-auto hidden"
+                        alt={""}
+                        height={512}
+                        width={512}
+                      ></Image>
+                      Manage Plan
+                    </div>
+                    <div className="collapse-content">
+                      <li>
+                        <Link href="/plans_management/veterinarian/Create">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Create
+                        </Link>
+                      </li>
+                      {/* <li>
+                        <Link href="/StockCard/worker/Destock">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Destock
+                        </Link>
+                      </li> */}
+                      <li>
+                        <Link href="/plans_management/veterinarian/List">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Plans List
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+                {/* End of Plan management menu */}
                 <div className="font-medium text-base">
                   <li>
                     <Link

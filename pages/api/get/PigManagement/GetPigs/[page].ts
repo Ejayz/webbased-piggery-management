@@ -107,16 +107,34 @@ async function SearhGetCage(
   sortby: any,
   keyword: string
 ) {
+  let sortColumn = sortby;
+  if (sortby === "pig_id") {
+    sortColumn = "tbl_pig.pig_id";
+  } else if (sortby === "pig_tag") {
+    sortColumn = "tbl_pig_history.pig_tag";
+  } else if (sortby === "weight") {
+    sortColumn = "tbl_pig_history.weight";
+  } else if (sortby === "cage_name") {
+    sortColumn = "tbl_cage.cage_name";
+  } else if (sortby === "batch_name") {
+    sortColumn = "tbl_batch.batch_name";
+  } else if (sortby === "breed_name") {
+    sortColumn = "tbl_breed.breed_name";
+  } else {
+    sortColumn = "tbl_pig.pig_id";
+  }
+
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
     const sql = `SELECT *
     FROM tbl_pig
-    INNER JOIN tbl_cage ON tbl_pig.cage_id = tbl_cage.cage_id
+    INNER JOIN tbl_pig_history ON tbl_pig.pig_id = tbl_pig_history.pig_id
+    INNER JOIN tbl_cage ON tbl_pig_history.cage_id = tbl_cage.cage_id
     INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
-    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE (tbl_pig.pig_id LIKE ?  OR tbl_pig.pig_tag LIKE ? OR tbl_pig.weight LIKE ? OR tbl_cage.cage_name LIKE ? OR tbl_batch.batch_name LIKE ? OR tbl_breed.breed_name LIKE ?) AND tbl_pig.is_exist='true' AND tbl_pig.status='active'  
+    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE (tbl_pig.pig_id LIKE ?  OR tbl_pig_history.pig_tag LIKE ? OR tbl_pig_history.weight LIKE ? OR tbl_cage.cage_name LIKE ? OR tbl_batch.batch_name LIKE ? OR tbl_breed.breed_name LIKE ?) AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_status='active'  
      ORDER BY ${conn.escapeId(
-       sortby
+       sortColumn
      )} ${sortorder}  LIMIT ${limit} OFFSET ${offset} ;`;
     const [result] = await conn.query(sql, [
       keyword,

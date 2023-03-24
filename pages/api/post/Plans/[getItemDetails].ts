@@ -10,14 +10,15 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { view } = req.query;
+  const { getItemDetails } = req.query;
   try {
-    const data: any = await Ops(view);
-
+    const data = await Ops(getItemDetails);
     if (data.length != 0) {
       return res.status(200).json({ code: 200, data: data });
     } else {
-      return res.status(404).json({ code: 404, message: "Pig Data not found" });
+      return res
+        .status(404)
+        .json({ code: 404, message: "No Data found realated to :" });
     }
   } catch (error) {
     console.log(error);
@@ -27,17 +28,13 @@ export default async function handler(
   }
 }
 
-async function Ops(pig_id: any) {
+async function Ops(objective_item_detail: any) {
   const conn = await connection.getConnection();
   try {
-    const sql = `SELECT *
-  FROM tbl_pig
-  INNER JOIN tbl_pig_history ON tbl_pig.pig_id = tbl_pig_history.pig_id
-  INNER JOIN tbl_cage ON tbl_pig_history.cage_id = tbl_cage.cage_id
-  INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
-  INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE tbl_pig.pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.status='active'`;
-    const result = await conn.query(sql, [pig_id]);
-    return result[0];
+    const sql =
+      "select * from tbl_objective_item_detail where objective_item_detail=? and is_exist='true'";
+    const [sqlResult]: any = await conn.query(sql, [objective_item_detail]);
+    return sqlResult;
   } catch (error) {
     console.log(error);
     return error;
