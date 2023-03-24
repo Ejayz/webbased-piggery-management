@@ -21,6 +21,7 @@ import NormalInput from "@/components/FormCompsV2/NormalInput";
 import SelectInput from "@/components/FormCompsV2/SelectInput";
 import { useQuery } from "react-query";
 import { IdGenerator } from "@/hooks/usePigManagement";
+import { UpdateObjectiveItem } from "@/hooks/usePlan";
 interface SelectInter {
   value: number;
   display: string;
@@ -46,34 +47,13 @@ export default function Page({ params }: any) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      pig_id: "",
-      cage_id: "",
-      pig_tag: "",
-      status: "",
-      weight: "",
+      item_name: "",
+      item_quantity: "",
+      item_id: "",
     },
     mode: "onChange",
     criteriaMode: "all",
   });
-
-  const { isLoading, error, isFetching, data, refetch } = useQuery(
-    "pigDetails",
-    async () => {
-      const response = await fetch(
-        `${location.origin}/api/post/PigManagement/getFormDetailAction`
-      );
-      const date = new Date();
-      const epochTime = date.getTime() / 1000;
-      const data = await response.json();
-      data.time = epochTime;
-      return data;
-    },
-    {
-      cacheTime: 0,
-      enabled: false,
-      refetchOnWindowFocus: false,
-    }
-  );
 
   const evaluateCage = async (list: any) => {
     for (let i = 0; i < cageSelected.length; i++) {
@@ -95,6 +75,21 @@ export default function Page({ params }: any) {
 
     return list;
   };
+  const { error, data, refetch, isLoading } = useQuery(
+    "items",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/get/Plans/getItemList`
+      );
+      const data = await response.json();
+      return data;
+    },
+    {
+      cacheTime: 0,
+      enabled: false,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const triggerUpdate = async () => {
     setCageList([]);
@@ -117,14 +112,20 @@ export default function Page({ params }: any) {
       current_capacity: pigData.data[0].current_caged,
     });
     const list = await evaluateCage(listCage);
-    setCageList(list);
-    setValue("pig_id", id);
   };
 
   useEffect(() => {
     if (data !== undefined) {
-      if (data.code == 200) {
-        triggerUpdate();
+      if (data.data) {
+        setItemList(
+          data.data.map((data: any, key: any) => {
+            return {
+              value: data.item_id,
+              display: data.item_name,
+              disabled: Action == "View" || Action == "Remove" ? true : false,
+            };
+          })
+        );
       }
     }
   }, [data]);
@@ -140,6 +141,7 @@ export default function Page({ params }: any) {
   const [isCageCapacity, setIsCageCapacity] = useState(true);
   const [isCageName, setIsCageName] = useState(true);
   const [isCageType, setIsCageType] = useState(true);
+  const [itemList, setItemList] = useState<any>([]);
 
   const Action = params.Action;
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,12 +190,10 @@ export default function Page({ params }: any) {
   };
 
   const updateUser = async (data: any) => {
-    const returned = await Update(
-      data.pig_id,
-      data.pig_tag,
-      data.status,
-      data.cage_id,
-      data.weight
+    const returned = await UpdateObjectiveItem(
+      Queryid,
+      data.item_id,
+      data.item_quantity
     );
     if (returned.code == 200) {
       resetState();
@@ -212,10 +212,10 @@ export default function Page({ params }: any) {
 
   function callCancel(message?: string, status?: string) {
     if (message == undefined) {
-      router.push("/pig_management/worker/List");
+      router.push("/plans_management/veterinarian/List");
     } else {
       router.push(
-        `/pig_management/worker/List?msg=${message}&status=${status}`
+        `/plans_management/veterinarian/List?msg=${message}&status=${status}`
       );
     }
   }
@@ -234,9 +234,7 @@ export default function Page({ params }: any) {
   } = useQuery(
     "pigData",
     async () => {
-      const response = await fetch(
-        `${location.origin}/api/post/PigManagement/${id}`
-      );
+      const response = await fetch(`${location.origin}/api/post/Plans/${id}`);
       const returned = await response.json();
       return returned;
     },
@@ -254,39 +252,18 @@ export default function Page({ params }: any) {
   }, [Queryid]);
   useEffect(() => {
     if (pigData != undefined) {
-      setValue("pig_id", pigData.data[0].pig_id);
-      setValue("status", pigData.data[0].status);
-      setValue("weight", pigData.data[0].weight);
-      setValue("pig_tag", pigData.data[0].pig_tag);
-      refetch();
+      if (pigData.data) {
+        setValue("item_id", pigData.data[0].item_id);
+        setValue("item_name", pigData.data[0].item_name);
+        setValue("item_quantity", pigData.data[0].item_quantity);
+      }
     }
   }, [pigData]);
 
-  useEffect(() => {
-    if (pigData != undefined) {
-      setValue("cage_id", pigData.data[0].cage_id);
-    }
-  }, [cageList]);
   const onSubmit = (data: any) => {
-    if (params.Action == "Update") {
-      if (!(isCageCapacity && isCageType && isCageName)) {
-        setProcessing(false);
-        toast.error("Please correct the inputs indicated in red.");
-        return false;
-      }
-      var isOk = confirm("are you sure you want to update?");
-      setIsSubmitting(true);
-      if (isOk) {
-        updateUser(data);
-      } else {
-        setProcessing(false);
-        return false;
-      }
-    } else if (params.Action == "Remove") {
-      if (!confirm("Are you sure you want to remove?")) {
-        setProcessing(false);
-        return false;
-      }
+    if (Action == "Update") {
+      updateUser(data);
+    } else if (Action == "Remove") {
       exec_remove(data);
     }
   };
@@ -316,11 +293,11 @@ export default function Page({ params }: any) {
           <div className="card-body">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
-                <li>Pig Management</li>
+                <li>Plan Management</li>
 
                 <li>View</li>
 
-                <li className="font-bold">{Action}</li>
+                <li className="font-bold">Update Objective Item</li>
               </ul>
             </div>
             <form
@@ -329,88 +306,28 @@ export default function Page({ params }: any) {
               className="flex w-full h-auto py-2 flex-col"
             >
               <div className="gap-2 w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
-                <NormalInput
-                  name="pig_id"
-                  label="Pig Id"
-                  register={register}
-                  errors={errors}
-                  readonly={true}
-                  required={true}
-                  validationSchema={{ required: "Pig Id is required" }}
-                ></NormalInput>
                 <SelectInput
-                  name={"cage_id"}
-                  label={"Cage"}
+                  name={"item_id"}
+                  label={"Item"}
                   register={register}
                   errors={errors}
-                  options={cageList}
+                  options={itemList}
                   required={true}
                   disabled={true}
                   validationSchema={{ required: "This field is required" }}
                 ></SelectInput>
+                <NormalInput
+                  name="item_quantity"
+                  label="Item Quantity"
+                  register={register}
+                  errors={errors}
+                  readonly={Action == "View"}
+                  required={true}
+                  validationSchema={{ required: "Item Quantity is required" }}
+                ></NormalInput>
               </div>
 
-              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
-                <NormalInput
-                  name={"pig_tag"}
-                  label={"Pig Tag"}
-                  register={register}
-                  errors={errors}
-                  required={true}
-                  readonly={
-                    Action == "View" || Action == "Remove" ? true : false
-                  }
-                  validationSchema={{ required: "This field is required" }}
-                ></NormalInput>
-                <NormalInput
-                  name={"weight"}
-                  label={"Weight"}
-                  register={register}
-                  errors={errors}
-                  readonly={
-                    Action == "View" || Action == "Remove" ? true : false
-                  }
-                  validationSchema={{ required: "This field is required" }}
-                ></NormalInput>
-                <SelectInput
-                  name={"status"}
-                  label={"Status"}
-                  register={register}
-                  disabled={true}
-                  options={[
-                    {
-                      value: "active",
-                      display: "Active",
-                      disabled:
-                        Action == "View" || Action == "Remove" ? true : false,
-                    },
-                    {
-                      value: "deceased",
-                      display: "Deceased",
-                      disabled:
-                        Action == "View" || Action == "Remove" ? true : false,
-                    },
-                    {
-                      value: "quarantined",
-                      display: "Quarantined",
-                      disabled:
-                        Action == "View" || Action == "Remove" ? true : false,
-                    },
-                    {
-                      value: "sold",
-                      display: "Sold",
-                      disabled:
-                        Action == "View" || Action == "Remove" ? true : false,
-                    },
-                  ]}
-                  errors={errors}
-                  required={true}
-                  validationSchema={{ required: "This field is required" }}
-                >
-                  {" "}
-                </SelectInput>
-              </div>
-              <div className="card-actions justify-end mt-6">
+              <div className="card-actions justify-end">
                 {params.Action == "View" ? (
                   <></>
                 ) : params.Action == "Update" ? (
@@ -435,7 +352,7 @@ export default function Page({ params }: any) {
                     callCancel();
                   }}
                   className="btn btn-active btn-primary mx-4"
-                  href={"/pig_management/worker/List"}
+                  href={"/plans_management/veterinarian/List"}
                 >
                   Cancel
                 </Link>

@@ -434,7 +434,7 @@ export default function Page() {
                       </button>
                     </div>
                   </div>
-                  <div className="card-actions justify-end">
+                  <div className="card-actions justify-end mt-6">
                     <button
                       className={`btn btn-active btn-primary mx-4 ${
                         processing ? "loading" : ""

@@ -40,10 +40,13 @@ async function Ops(
       return "Cage is already full";
     } else {
       const getPigDetails =
-        " SELECT * FROM tbl_pig WHERE pig_id=? AND is_exist='true' AND status='active'";
+        " SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id = tbl_pig.pig_id WHERE pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.status='active'";
       const [pigDetails]: any = await conn.query(getPigDetails, [pig_id]);
+      const inActivateOld =
+        "update tbl_pig_history set status='inactive' where pig_id=? and is_exist='true' and status='active'";
+      const [inActivateOldR]: any = await conn.query(inActivateOld, [pig_id]);
       const setNewPigDetails =
-        " UPDATE tbl_pig SET cage_id=?, pig_tag=?, weight=?, status=? WHERE pig_id=? AND is_exist='true' AND status='active' ";
+        "UPDATE tbl_pig_history SET cage_id=?, pig_tag=?, weight=?, status=? WHERE pig_id=? AND is_exist='true' AND status='active'; ";
       const [updatePig]: any = await conn.query(setNewPigDetails, [
         cage_id,
         pig_tag,

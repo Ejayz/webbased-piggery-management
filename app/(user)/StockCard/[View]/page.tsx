@@ -70,7 +70,7 @@ export default function Page({ params }: any) {
       keepPreviousData: true,
     }
   );
-  console.log(data);
+  console.log(StockCardData);
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -317,8 +317,14 @@ export default function Page({ params }: any) {
                           <tr key={key} className="hover">
                             <th>{key + 1}</th>
                             <td>{item.type}</td>
-                            <td>{item.transaction_quantity}</td>
-                            <td>{item.total_quantity}</td>
+                            <td>
+                              {item.transaction_quantity /
+                                parseInt(StockCardData.data[0].item_net_weight)}
+                            </td>
+                            <td>
+                              {item.total_quantity /
+                                parseInt(StockCardData.data[0].item_net_weight)}
+                            </td>
                             <td>
                               {item.expiration_date == null
                                 ? "N/A"
