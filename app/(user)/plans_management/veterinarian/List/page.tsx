@@ -203,8 +203,7 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: `/plans_management/veterinarian/Create/details/${item.plan_id}}`,
-                              query: { id: item.pig_id },
+                              pathname: `/plans_management/veterinarian/Create/details/${item.plan_id}`,
                             }}
                           >
                             Add Day
