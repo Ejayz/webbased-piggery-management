@@ -94,7 +94,7 @@ export default function Page() {
     <>
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
-          <p className="text-2xl text-base-content my-auto p-4">Pig List</p>
+          <p className="text-2xl text-base-content my-auto p-4">Objective List</p>
         </div>
 
         <div className="w-full h-auto flex flex-col">
