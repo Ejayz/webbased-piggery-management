@@ -202,7 +202,7 @@ export default function Page() {
                           >
                             Edit Items
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+                          {/* <div className="divider divider-horizontal"></div>
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -211,7 +211,7 @@ export default function Page() {
                             }}
                           >
                             View
-                          </Link>
+                          </Link> */}
                           <div className="divider divider-horizontal"></div>
                           <button
                             className="btn btn-sm btn-primary"
