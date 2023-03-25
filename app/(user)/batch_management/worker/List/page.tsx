@@ -44,11 +44,11 @@ export default function Page() {
       keepPreviousData: true,
     }
   );
-  console.log(data);
+  console.log(parsed);
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
-        setParsed(data.data);
+        setParsed(data.data[0]);
       } else {
         setParsed([]);
       }
@@ -161,7 +161,7 @@ export default function Page() {
                 <th>Sow</th>
                 <th>Boar</th>
                 <th>Total Pig</th>
-                <th>Action</th>
+                {/* <th>Action</th> */}
               </tr>
             </thead>
             <tbody>
@@ -180,9 +180,9 @@ export default function Page() {
                       <td>{item.sow_id != null ? item.sow_id : "N/A"}</td>
                       <td>{item.boar_id != null ? item.boar_id : "N/A"}</td>
                       <td>{item.batch_capacity}</td>
-                      <td className="flex">
+                      {/* <td className="flex">
                         <div className="flex flex-row mx-auto">
-                          {/* <Link
+                          <Link
                             className="btn btn-sm btn-primary"
                             href={{
                               pathname: "/pig_management/worker/Update",
@@ -191,7 +191,7 @@ export default function Page() {
                           >
                             Update
                           </Link>
-                          <div className="divider divider-horizontal"></div> */}
+                          <div className="divider divider-horizontal"></div>
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -201,7 +201,7 @@ export default function Page() {
                           >
                             View
                           </Link>
-                          {/* <div className="divider divider-horizontal"></div>
+                          <div className="divider divider-horizontal"></div>
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -210,9 +210,9 @@ export default function Page() {
                             }}
                           >
                             Remove
-                          </Link> */}
+                          </Link>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })
