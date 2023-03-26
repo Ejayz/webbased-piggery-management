@@ -114,6 +114,7 @@ async function Ops(filePath: any, fields: any) {
           total_quantity,
           field.stock_id,
         ]);
+        await conn.commit();
       })
     );
     await conn.commit(); // Release row-level locks by committing the transaction
