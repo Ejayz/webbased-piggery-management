@@ -30,7 +30,7 @@ export default async function fildeHandler(req: NextApiRequest) {
     // include name and .extention, you can get the name from data.files.image object
     const originalFile = fs.readFileSync(imagePath);
     const bucketParams = {
-      Bucket: bucket,
+      Bucket: "webbasedpiggeryuploaded",
       Key: pathToWriteImage,
       Body: originalFile,
       ACL: "public-read",
