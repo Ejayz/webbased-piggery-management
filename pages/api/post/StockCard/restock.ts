@@ -53,8 +53,7 @@ async function Ops(filePath: any, fields: any) {
   await conn.beginTransaction();
   try {
     // Lock the rows that will be updated
-    const getItems =
-      "SELECT * FROM tbl_inventory WHERE is_exist='true' FOR UPDATE";
+    const getItems = "SELECT * FROM tbl_inventory WHERE is_exist='true' ";
     const [itemResult]: any = await conn.query(getItems);
     await Promise.all(
       fields.map(async (field: any, key: number) => {
@@ -77,7 +76,7 @@ async function Ops(filePath: any, fields: any) {
           stockCard_id = stockCardResult[0].stock_card_id;
         } else {
           const createStockCard =
-            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,stock_id,status) VALUES (?,?,?,?,?) FOR UPDATE";
+            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,stock_id,status) VALUES (?,?,?,?,?)";
           const [createStackCardResult]: any = await conn.query(
             createStockCard,
             [date, openingQuantity, openingQuantity, field.stock_id, "Active"]
