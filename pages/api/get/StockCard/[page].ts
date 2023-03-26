@@ -94,7 +94,7 @@ async function GetUsersWithSearch(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT *,tbl_stock.*,tbl_inventory.* FROM tbl_stock_card  INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id = tbl_stock.item_id WHERE  tbl_stock_card.stock_id=? GROUP BY stock_card_id  ASC LIMIT 1 OFFSET ${offset};`;
+    const sql = `SELECT *,tbl_stock.*,tbl_inventory.* FROM tbl_stock_card  INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id = tbl_stock.item_id WHERE  tbl_stock_card.stock_id=? ORDER BY stock_card_id  ASC LIMIT 1 OFFSET ${offset};`;
 
     const [result] = await conn.query(sql, [stock_id]);
     conn.release();
