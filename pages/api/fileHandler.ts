@@ -39,7 +39,7 @@ export default async function fildeHandler(req: NextApiRequest) {
     const run = async () => {
       try {
         const data = await s3Client.send(new PutObjectCommand(bucketParams));\
-        console.log ("data", data);
+        console.log ("data"+ data);
       } catch (err) {
         console.log("Error", err);
       }
