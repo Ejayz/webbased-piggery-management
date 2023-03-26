@@ -5,9 +5,11 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import fs from "fs";
 import path from "path";
-import { bucket, s3Client } from "./s3";
+import { s3Client } from "./s3";
 
 export default async function fildeHandler(req: NextApiRequest) {
+  const bucket: any = process.env.BUCKET_NAME;
+
   const data: any = await new Promise((resolve, reject) => {
     const form = new IncomingForm();
     form.parse(req, (err, fields, files) => {
