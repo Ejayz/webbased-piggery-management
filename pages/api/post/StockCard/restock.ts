@@ -20,6 +20,7 @@ export default async function handler(
   }
 
   const data: any = await fildeHandler(req);
+  console.log(data);
   try {
     if (data !== false) {
       const filePath: any = data.filePath;
