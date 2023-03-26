@@ -45,7 +45,7 @@ export default async function fildeHandler(req: NextApiRequest) {
       }
     };
 
-    const ok = run();
+    const ok = await run();
     return { filePath: pathToWriteImage, fields: data.fields, ok: ok };
   } catch (error: any) {
     console.log(error);
