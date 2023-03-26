@@ -83,6 +83,7 @@ async function Ops(filePath: any, fields: any) {
           field.stock_id,
           "Active",
         ]);
+        await conn.commit();
         stockCard_id = createStackCardResult.insertId;
       }
       const createStockCardDetails =
@@ -117,8 +118,6 @@ async function Ops(filePath: any, fields: any) {
       ]);
       await conn.commit();
     });
-
-    await conn.commit(); // Release row-level locks by committing the transaction
     return 200;
   } catch (error) {
     console.log(error);
