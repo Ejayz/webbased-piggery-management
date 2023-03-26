@@ -83,15 +83,15 @@ async function Ops(filePath: any, fields: any) {
           field.stock_id,
           "Active",
         ]);
-        await conn.commit();
         stockCard_id = createStackCardResult.insertId;
       }
+      await conn.commit();
       const createStockCardDetails =
         "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,expiration_date,attachment) VALUES (?,?,?,?,?,?)";
       let calculated_quantity: number =
         parseInt(field.quantity) * parseInt(field.item_net_weight);
       const total_quantity = calculated_quantity + parseInt(openingQuantity);
-      console.log(total_quantity);
+
       const [createStockCardDetailsResult]: any = await conn.query(
         createStockCardDetails,
         [
