@@ -344,6 +344,12 @@ export default function Page({ params }: any) {
                           </tr>
                         );
                       })
+                    ) : StockCardDataisLoading || StockCardIsFetching ? (
+                      <tr>
+                        <td colSpan={8} className="text-center">
+                          Please wait while we fetch stock card details...
+                        </td>
+                      </tr>
                     ) : (
                       <tr>
                         <td colSpan={8} className="text-center">
