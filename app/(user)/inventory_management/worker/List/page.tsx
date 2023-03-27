@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 export default function Page() {
@@ -31,7 +30,6 @@ export default function Page() {
     },
     {
       cacheTime: 0,
-      enabled: false,
     }
   );
 

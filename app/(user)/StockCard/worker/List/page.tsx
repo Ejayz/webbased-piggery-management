@@ -31,10 +31,9 @@ export default function Page() {
     },
     {
       cacheTime: 0,
-      enabled: false,
     }
   );
-  console.log(parsed);
+
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -44,12 +43,10 @@ export default function Page() {
       }
     }
   }, [data]);
+
   useEffect(() => {
     refetch();
-  }, [filter.sortby]);
-  useEffect(() => {
-    refetch();
-  }, [filter.sortorder]);
+  }, [filter.sortby, filter.sortorder]);
   useEffect(() => {
     if (filter.keyword == "") {
       refetch();
@@ -59,6 +56,9 @@ export default function Page() {
     refetch();
   }, [page]);
 
+  useEffect(() => {
+    refetch();
+  }, []);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
