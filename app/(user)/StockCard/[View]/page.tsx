@@ -197,16 +197,17 @@ export default function Page({ params }: any) {
                     <span className="font-semibold">Stock Opening:</span>
                     <span>
                       {StockCardData?.data != undefined
-                        ? StockCardData.data[0].opening_quantity
+                        ? StockCardData.data[0].opening_quantity /
+                          StockCardData.data[0].item_net_weight
                         : "Undifined"}
                     </span>
                   </div>
                   <div className="flex flex-row">
                     <span className="font-semibold">Stock Closing:</span>
                     <span>
-                      {" "}
                       {StockCardData?.data != undefined
-                        ? StockCardData.data[0].closing_quantity
+                        ? StockCardData.data[0].latest_closing_quantity /
+                          StockCardData.data[0].item_net_weight
                         : "Undifined"}
                     </span>
                   </div>

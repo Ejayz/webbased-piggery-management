@@ -58,10 +58,10 @@ async function GetUsersWithSearch(
   try {
     keyword = `%${keyword}%`;
     const sql = `SELECT * FROM tbl_stock_card_details WHERE (transaction_quantity like ? or total_quantity like  ? or  expiration_date like ? or remark  like ? ) and stock_card_id=? ORDER BY ${conn.escapeId(
-      sortby
-    )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
+        sortby
+      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
     console.log(
-      `SELECT * FROM tbl_stock_card_details WHERE (transaction_quantity like '${keyword}' or total_quantity like  '${keyword}' or  expiration_date like '${keyword}' or remark  like '${keyword}' ) and stock_card_id=${stock_card_id} ORDER BY ${conn.escapeId(
+      `SELECT * INNER JOIN tbl_inventory WHERE (transaction_quantity like '${keyword}' or total_quantity like  '${keyword}' or  expiration_date like '${keyword}' or remark  like '${keyword}' ) and stock_card_id=${stock_card_id} ORDER BY ${conn.escapeId(
         sortby
       )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`
     );
