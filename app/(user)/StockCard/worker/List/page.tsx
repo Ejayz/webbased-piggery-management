@@ -155,7 +155,7 @@ export default function Page() {
                       <td>{item.item_name}</td>
                       <td>{item.item_count}</td>
                       <td>
-                        {parseInt(item.closing_quantity) /
+                        {parseInt(item.latest_closing_quantity) /
                           parseInt(item.item_net_weight)}
                       </td>
                       <td className="flex">

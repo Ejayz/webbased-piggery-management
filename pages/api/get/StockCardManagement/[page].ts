@@ -57,15 +57,12 @@ async function GetUsersWithSearch(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT *,COUNT( tbl_stock_card.item_id) AS item_count, tbl_inventory.* FROM tbl_stock_card  INNER JOIN tbl_inventory ON tbl_stock_card.item_id = tbl_inventory.item_id WHERE (item_name LIKE ? or item_description like ? ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
-      sortby
-    )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
-
-    console.log(
-      `SELECT COUNT( tbl_stock_card.item_id) AS item_count, tbl_inventory.*,* FROM tbl_stock_card  INNER JOIN tbl_inventory ON tbl_stock_card.item_id = tbl_inventory.item_id WHERE (item_name LIKE ${keyword} or item_description like ${keyword} ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
+    const sql = `SELECT *, (SELECT closing_quantity FROM tbl_stock_card AS sc 
+      WHERE sc.item_id = tbl_inventory.item_id
+      ORDER BY sc.transaction_date DESC 
+      LIMIT 1) AS latest_closing_quantity,COUNT( tbl_stock_card.item_id) AS item_count,  tbl_inventory.* FROM tbl_stock_card  INNER JOIN tbl_inventory ON tbl_stock_card.item_id = tbl_inventory.item_id WHERE (item_name LIKE ? or item_description like ? ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
         sortby
-      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`
-    );
+      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
     const [result] = await conn.query(sql, [keyword, keyword, user_id]);
     conn.release();
     return result;
