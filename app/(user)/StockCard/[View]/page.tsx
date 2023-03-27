@@ -187,7 +187,9 @@ export default function Page({ params }: any) {
                       {StockCardData?.data != undefined
                         ? DateTime.fromISO(
                             StockCardData.data[0].transaction_date
-                          ).toFormat("EEEE',' MMM d',' yyyy")
+                          )
+                            .setZone("Asia/Manila")
+                            .toFormat("EEEE',' MMM d',' yyyy")
                         : "Undifined"}
                     </span>
                   </div>
