@@ -44,12 +44,11 @@ export default function Page() {
   }, [data]);
   useEffect(() => {
     refetch();
-  }, [filter.sortby]);
+  }, [filter.sortby, filter.sortorder]);
   useEffect(() => {
-    refetch();
-  }, [filter.sortorder]);
-  useEffect(() => {
-    refetch();
+    if (filter.keyword == "") {
+      refetch();
+    }
   }, [filter.keyword]);
   useEffect(() => {
     refetch();
