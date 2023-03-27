@@ -85,17 +85,16 @@ async function GetUsersWithSearch(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT COUNT( tbl_stock_card.stock_id) AS item_count, tbl_inventory.*, tbl_stock.* FROM tbl_stock_card INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id WHERE (item_name LIKE ? or item_description like ? ) or tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
+    const sql = `SELECT COUNT( tbl_stock_card.stock_id) AS item_count, tbl_inventory.*, tbl_stock.* FROM tbl_stock_card INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id WHERE (item_name LIKE ? or item_description like ? ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
       sortby
     )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
 
-    const [result] = await conn.query(sql, [
-      keyword,
-      keyword,
-      keyword,
-      keyword,
-      user_id,
-    ]);
+    console.log(
+      `SELECT COUNT( tbl_stock_card.stock_id) AS item_count, tbl_inventory.*, tbl_stock.* FROM tbl_stock_card INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id WHERE (item_name LIKE ${keyword} or item_description like ${keyword} ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
+        sortby
+      )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`
+    );
+    const [result] = await conn.query(sql, [keyword, keyword, user_id]);
     conn.release();
     return result;
   } catch (error) {

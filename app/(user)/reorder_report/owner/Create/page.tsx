@@ -161,7 +161,7 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="overflow-x-auto mb-4">
-                    <table className="table w-full">
+                    <table className="table table-compact w-full table-base-content">
                       {/* head*/}
                       <thead>
                         <tr>

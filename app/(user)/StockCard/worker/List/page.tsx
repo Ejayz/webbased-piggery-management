@@ -16,7 +16,7 @@ export default function Page() {
   const status = useSearchParams().get("status");
 
   const { error, isLoading, isFetching, data, refetch } = useQuery(
-    "STOCKcARD",
+    "StockCardList",
     async () => {
       const response = await fetch(
         `${
@@ -30,10 +30,8 @@ export default function Page() {
       return data;
     },
     {
-      refetchOnWindowFocus: false,
       cacheTime: 0,
       enabled: false,
-      keepPreviousData: true,
     }
   );
   console.log(parsed);
@@ -53,7 +51,9 @@ export default function Page() {
     refetch();
   }, [filter.sortorder]);
   useEffect(() => {
-    refetch();
+    if (filter.keyword == "") {
+      refetch();
+    }
   }, [filter.keyword]);
   useEffect(() => {
     refetch();
@@ -132,10 +132,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table
-            data-theme="dark"
-            className="table table-compact w-11/12  mx-auto  text-center"
-          >
+          <table className="table  w-11/12  mx-auto  text-center text-base-content">
             <thead>
               <tr>
                 <th></th>
