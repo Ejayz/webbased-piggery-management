@@ -344,12 +344,6 @@ export default function Page({ params }: any) {
                           </tr>
                         );
                       })
-                    ) : isLoading || isFetching ? (
-                      <tr>
-                        <td colSpan={8} className="text-center">
-                          Please wait while we fetch stock card details...
-                        </td>
-                      </tr>
                     ) : (
                       <tr>
                         <td colSpan={8} className="text-center">
@@ -382,6 +376,12 @@ export default function Page({ params }: any) {
                   </div>
                 </div>
               </div>
+            </div>
+          ) : StockCardDataisLoading || StockCardIsFetching ? (
+            <div className="card w-11/12 bg-base-200 mx-auto flex shadow-xl">
+              <h1 className="text-base-content text-2xl font-bold mx-auto my-auto">
+                Please wait while we fetch more stock card...
+              </h1>
             </div>
           ) : (
             <div className="card w-11/12 bg-base-200 mx-auto flex shadow-xl">
