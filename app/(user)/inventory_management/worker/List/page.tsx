@@ -29,7 +29,7 @@ export default function Page() {
       return data;
     },
     {
-      cacheTime: 0,
+      refetchOnWindowFocus: false,
     }
   );
 

@@ -26,18 +26,14 @@ export default async function handler(
 
   try {
     let data: any;
-    if (keyword == "undefined") {
-      data = await GetUsers(limit, offset, user_id, sortby, sortorder);
-    } else {
-      data = await GetUsersWithSearch(
-        limit,
-        offset,
-        user_id,
-        sortby,
-        sortorder,
-        keyword
-      );
-    }
+    data = await GetUsersWithSearch(
+      limit,
+      offset,
+      user_id,
+      sortby,
+      sortorder,
+      keyword
+    );
     if (data.length == 0) {
       return res.status(404).json({ code: 404, message: "No data found" });
     }
@@ -47,30 +43,6 @@ export default async function handler(
     return res
       .status(500)
       .json({ code: 500, message: "500 Server Error.Something went wrong." });
-  }
-}
-
-async function GetUsers(
-  limit: number,
-  offset: number,
-  user_id: number,
-  sortby: string,
-  sortorder: string
-) {
-  const conn = await connection.getConnection();
-  try {
-    const sql = `SELECT COUNT(DISTINCT tbl_stock_card.stock_id) AS item_count, tbl_inventory.*, tbl_stock.* FROM tbl_stock_card INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id WHERE tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
-      sortby
-    )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
-    const [err, result] = await conn.query(sql, [user_id]);
-    conn.release();
-    if (err) return err;
-    return result;
-  } catch (error) {
-    console.log(error);
-    return error;
-  } finally {
-    conn.release();
   }
 }
 
@@ -85,12 +57,12 @@ async function GetUsersWithSearch(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT COUNT( tbl_stock_card.stock_id) AS item_count, tbl_inventory.*, tbl_stock.* FROM tbl_stock_card INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id WHERE (item_name LIKE ? or item_description like ? ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
+    const sql = `SELECT *,COUNT( tbl_stock_card.item_id) AS item_count, tbl_inventory.* FROM tbl_stock_card  INNER JOIN tbl_inventory ON tbl_stock_card.item_id = tbl_inventory.item_id WHERE (item_name LIKE ? or item_description like ? ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
       sortby
     )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
 
     console.log(
-      `SELECT COUNT( tbl_stock_card.stock_id) AS item_count, tbl_inventory.*, tbl_stock.* FROM tbl_stock_card INNER JOIN tbl_stock ON tbl_stock_card.stock_id = tbl_stock.stock_id INNER JOIN tbl_inventory ON tbl_stock.item_id = tbl_inventory.item_id WHERE (item_name LIKE ${keyword} or item_description like ${keyword} ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
+      `SELECT COUNT( tbl_stock_card.item_id) AS item_count, tbl_inventory.*,* FROM tbl_stock_card  INNER JOIN tbl_inventory ON tbl_stock_card.item_id = tbl_inventory.item_id WHERE (item_name LIKE ${keyword} or item_description like ${keyword} ) AND tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id ORDER BY ${conn.escapeId(
         sortby
       )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`
     );

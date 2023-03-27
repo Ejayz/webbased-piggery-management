@@ -85,14 +85,15 @@ async function SearhGetCage(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT i.*, c.category_name, FORMAT((s.total_stocks / i.item_net_weight), 2) AS item_left
+    const sql = `SELECT i.*, c.category_name,s.* ,FORMAT((s.closing_quantity / i.item_net_weight), 2) AS item_left
     FROM tbl_inventory i
     JOIN tbl_category c ON i.category_id = c.category_id
-    JOIN tbl_stock s ON i.item_id = s.item_id
+    JOIN tbl_stock_card s ON i.item_id = s.item_id
     WHERE (i.item_name LIKE ? OR i.item_description LIKE ?)
       AND i.is_exist = 'true'
     ORDER BY ${conn.escapeId(sortby)} ${SortOrder}
     LIMIT ${limit} OFFSET ${offset};`;
+
     const [err, result] = await conn.query(sql, [keyword, keyword]);
     conn.release();
     if (err) return err;

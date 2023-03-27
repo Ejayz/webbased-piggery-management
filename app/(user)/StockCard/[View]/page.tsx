@@ -12,7 +12,7 @@ export default function Page({ params }: any) {
     sortby: "stock_card_id",
     sortorder: "asc",
     keyword: "",
-    stock_id: "",
+    stock_id: params.View,
   });
   const [stockCardPage, setStockCardPage] = useState(0);
   const [page, setPage] = useState(1);
@@ -22,7 +22,7 @@ export default function Page({ params }: any) {
     sortby: "type",
     sortorder: "asc",
     keyword: "",
-    stock_card_id: "",
+    stock_card_id: params.View,
   });
   const {
     error: StockCardError,
@@ -31,7 +31,7 @@ export default function Page({ params }: any) {
     data: StockCardData,
     refetch: StockCardRefetch,
   } = useQuery(
-    "StockCard",
+    "StockCardData",
     async () => {
       const response = await fetch(
         `${
@@ -46,9 +46,6 @@ export default function Page({ params }: any) {
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
-      keepPreviousData: true,
     }
   );
   const { error, isLoading, isFetching, data, refetch } = useQuery(
@@ -65,9 +62,6 @@ export default function Page({ params }: any) {
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
-      keepPreviousData: true,
     }
   );
   console.log(StockCardData);
@@ -91,10 +85,11 @@ export default function Page({ params }: any) {
     }
   }, [filter.sortorder]);
   useEffect(() => {
-    if (filter.stock_card_id !== "") {
+    if (filter.keyword == "" && filter.stock_card_id !== "") {
       refetch();
     }
   }, [filter.keyword]);
+
   useEffect(() => {
     if (filter.stock_card_id !== "") {
       refetch();
@@ -104,8 +99,9 @@ export default function Page({ params }: any) {
   useEffect(() => {
     setStockCardFilterFilter({ ...StockCardFilter, stock_id: params.View });
   }, [params.View]);
+
   useEffect(() => {
-    if (StockCardFilter.stock_id != "") {
+    if (filter.stock_card_id !== "" && StockCardFilter.stock_id !== "") {
       StockCardRefetch();
     }
   }, [StockCardFilter.stock_id]);
@@ -289,10 +285,7 @@ export default function Page({ params }: any) {
                     </div>
                   </div>
                 </div>
-                <table
-                  data-theme="dark"
-                  className="table table-compact w-11/12  mx-auto  text-center"
-                >
+                <table className="table table-compact w-11/12  mx-auto text-base-content">
                   <thead>
                     <tr>
                       <th></th>

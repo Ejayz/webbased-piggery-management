@@ -120,7 +120,7 @@ export default function Page() {
         toast.success("Restock Success");
         resetState();
       } else {
-        toast.error("Restock Failed");
+        toast.error(returned.message);
       }
     }
   };

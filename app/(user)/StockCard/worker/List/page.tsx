@@ -30,7 +30,7 @@ export default function Page() {
       return data;
     },
     {
-      cacheTime: 0,
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -56,9 +56,6 @@ export default function Page() {
     refetch();
   }, [page]);
 
-  useEffect(() => {
-    refetch();
-  }, []);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -151,12 +148,16 @@ export default function Page() {
                 </tr>
               ) : parsed.length != 0 ? (
                 parsed.map((item: any, key: number) => {
+                  console.log(item);
                   return (
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
                       <td>{item.item_name}</td>
                       <td>{item.item_count}</td>
-                      <td>{item.total_stocks}</td>
+                      <td>
+                        {parseInt(item.closing_quantity) /
+                          parseInt(item.item_net_weight)}
+                      </td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
