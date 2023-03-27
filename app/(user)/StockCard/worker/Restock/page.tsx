@@ -103,6 +103,9 @@ export default function Page() {
     } else if (file != null && !file[0].type.includes("image")) {
       toast.error("Selected file is not an image.");
       return;
+    } else if (file != null && !(file[0].size <= 3145728)) {
+      toast.error("Selected file is too large.");
+      return;
     } else if (parsed.length == 0) {
       toast.error("Please add items to restock");
       return;
@@ -213,6 +216,11 @@ export default function Page() {
                         setFile(e.target.files);
                       }}
                     />
+                    <label className="label">
+                      <span className="label-text-alt">
+                        Maximum file size allowed is 3 MB.
+                      </span>
+                    </label>
                   </div>
                 </div>
                 <form

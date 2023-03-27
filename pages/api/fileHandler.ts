@@ -5,9 +5,11 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import fs from "fs";
 import path from "path";
-import { bucket, s3Client } from "./s3";
+import { s3Client } from "./s3";
 
 export default async function fildeHandler(req: NextApiRequest) {
+  const bucket: any = process.env.BUCKET_NAME;
+
   const data: any = await new Promise((resolve, reject) => {
     const form = new IncomingForm();
     form.parse(req, (err, fields, files) => {
@@ -28,7 +30,7 @@ export default async function fildeHandler(req: NextApiRequest) {
     // include name and .extention, you can get the name from data.files.image object
     const originalFile = fs.readFileSync(imagePath);
     const bucketParams = {
-      Bucket: bucket,
+      Bucket: "webbasedpiggeryuploaded",
       Key: pathToWriteImage,
       Body: originalFile,
       ACL: "public-read",
@@ -37,13 +39,14 @@ export default async function fildeHandler(req: NextApiRequest) {
     const run = async () => {
       try {
         const data = await s3Client.send(new PutObjectCommand(bucketParams));
+        return data;
       } catch (err) {
-        console.log("Error", err);
+        return err;
       }
     };
 
-    run();
-    return { filePath: pathToWriteImage, fields: data.fields };
+    const ok = await run();
+    return { filePath: pathToWriteImage, fields: data.fields, ok: ok };
   } catch (error: any) {
     console.log(error);
     return false;
