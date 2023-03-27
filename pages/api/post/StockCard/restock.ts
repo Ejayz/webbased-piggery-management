@@ -63,7 +63,7 @@ export default async function handler(
 }
 
 async function Ops(conn: any, filePath: any, fields: any) {
-  const date = DateTime.now().toISODate();
+  const date = DateTime.now().setZone("Asia/Manila").toISODate();
   await conn.beginTransaction();
   try {
     await Promise.all(
@@ -104,7 +104,7 @@ async function Ops(conn: any, filePath: any, fields: any) {
 
 async function insertStockCardDetails(conn: any, filePath: any, fields: any) {
   await conn.beginTransaction();
-  const date = DateTime.now().toISODate();
+  const date = DateTime.now().setZone("Asia/Manila").toISODate();
   try {
     await Promise.all(
       fields.map(async (field: any, key: number) => {
