@@ -63,7 +63,7 @@ async function CreateInventory(
   item_net_weight: any
 ) {
   await conn.beginTransaction();
-  const date = DateTime.now().toISODate();
+  const date = DateTime.now().setZone("Asia/Manila").toISODate();
   try {
     const sql =
       "INSERT INTO `piggery_management`.`tbl_inventory` (`item_name`, `category_id`, `item_description`, `item_unit`,`item_net_weight`) VALUES (?, ?, ?, ?,?);";

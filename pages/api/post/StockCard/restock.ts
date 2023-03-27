@@ -26,7 +26,6 @@ export default async function handler(
     const filePath = data.filePath;
     const fields = JSON.parse(data.fields.fields);
 
-    console.log(fields);
     const insertOps = await Ops(conn, filePath, fields);
     if (insertOps == 200) {
       const insertDetails = await insertStockCardDetails(
@@ -64,13 +63,13 @@ export default async function handler(
 
 async function Ops(conn: any, filePath: any, fields: any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
+  console.log(date);
   await conn.beginTransaction();
   try {
     await Promise.all(
       fields.map(async (field: any, key: number) => {
-        let stockCard_id = "";
         const getOpeningQuantity =
-          "select * from tbl_stock_card where item_id=? and is_exist='true' and status='Active' order by stock_card_id desc limit 1";
+          "select * from tbl_stock_card where item_id=?  and is_exist='true' and status='Active' order by stock_card_id desc limit 1";
         const [openingQuantityResult]: any = await conn.query(
           getOpeningQuantity,
           [field.item_id]
@@ -82,9 +81,10 @@ async function Ops(conn: any, filePath: any, fields: any) {
           field.item_id,
           date,
         ]);
-        if (stockCardResult.length < 0) {
+        console.log(stockCardResult);
+        if (stockCardResult.length <= 0) {
           const createStockCard =
-            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item__id) VALUES (?,?,?,?)";
+            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item_id) VALUES (?,?,?,?)";
           const [createStackCardResult]: any = await conn.query(
             createStockCard,
             [date, openingQuantity, openingQuantity, field.item_id]
@@ -92,7 +92,6 @@ async function Ops(conn: any, filePath: any, fields: any) {
         }
       })
     );
-
     await conn.commit();
     return 200;
   } catch (error) {
@@ -114,6 +113,7 @@ async function insertStockCardDetails(conn: any, filePath: any, fields: any) {
           field.item_id,
           date,
         ]);
+        console.log(stockCardIdResult);
         const stockCard_id = stockCardIdResult[0].stock_card_id;
         const closingQuantity = stockCardIdResult[0].closing_quantity;
         const createStockCardDetails =
