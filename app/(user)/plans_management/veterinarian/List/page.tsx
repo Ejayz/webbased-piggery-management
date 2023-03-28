@@ -162,8 +162,7 @@ export default function Page() {
             </div>
           </div>
           <table
-            data-theme="dark"
-            className="table table-compact w-11/12  mx-auto  text-center"
+            className="table table-compact w-11/12  mx-auto  text-center text-base-content"
           >
             <thead>
               <tr>

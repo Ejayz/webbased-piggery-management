@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
 import { useQuery } from "react-query";
 import { ErrorMessage } from "@hookform/error-message";
+import { parse } from "path";
+import RightDisplay from "@/components/FormCompsV2/RightDisplay";
 
 interface RestockList {
   item_id: string;
@@ -47,7 +49,7 @@ export default function Page({ params }: any) {
   const loading = getUserInfo();
   const [item_list, setItemList] = useState<any>([]);
   const id = params.ID;
-  const [total_stock, setTotalStocks] = useState("");
+  const [total_stock, setTotalStocks] = useState(0);
   const { error, isLoading, isFetching, data, refetch } = useQuery(
     "getItemDetails",
     async () => {
@@ -72,9 +74,12 @@ export default function Page({ params }: any) {
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
+        console.log(data.data);
         setValue("item_name", data.data[0].item_name);
         setValue("item_id", data.data[0].item_id);
-        setTotalStocks(data.data[0].total_stocks);
+        setTotalStocks(
+          data.data[0].latest_closing_quantity / data.data[0].item_net_weight
+        );
         setValue("stock_id", data.data[0].stock_id);
         setValue("item_net_weight", data.data[0].item_net_weight);
       } else {
@@ -167,7 +172,7 @@ export default function Page({ params }: any) {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <span className="text-xl font-bold">
-                    Total Stocks:{" "}
+                    Total Stocks:
                     <span className="text-base font-extralight">
                       {total_stock}
                     </span>
@@ -186,7 +191,8 @@ export default function Page({ params }: any) {
                       }}
                     />
 
-                    <NormalInput
+                    <RightDisplay
+                      item_unit={data?.data[0]?.item_unit}
                       label="Quantity"
                       name="quantity"
                       register={register}
@@ -196,7 +202,9 @@ export default function Page({ params }: any) {
                       validationSchema={{
                         required: "Quantity to destock is required",
                         max: {
-                          value: total_stock ? parseInt(total_stock) : 0,
+                          value: total_stock
+                            ? parseInt(total_stock.toString())
+                            : 0,
                           message:
                             "Quantity to destock must not be greater than total stock",
                         },

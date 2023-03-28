@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 export default function Page() {
@@ -16,7 +15,7 @@ export default function Page() {
   const status = useSearchParams().get("status");
 
   const { error, isLoading, isFetching, data, refetch } = useQuery(
-    "STOCKcARD",
+    "InventoryList",
     async () => {
       const response = await fetch(
         `${
@@ -31,12 +30,8 @@ export default function Page() {
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
-      keepPreviousData: true,
     }
   );
-  console.log(data);
 
   useEffect(() => {
     if (data !== undefined) {
@@ -49,12 +44,11 @@ export default function Page() {
   }, [data]);
   useEffect(() => {
     refetch();
-  }, [filter.sortby]);
+  }, [filter.sortby, filter.sortorder]);
   useEffect(() => {
-    refetch();
-  }, [filter.sortorder]);
-  useEffect(() => {
-    refetch();
+    if (filter.keyword == "") {
+      refetch();
+    }
   }, [filter.keyword]);
   useEffect(() => {
     refetch();
@@ -135,10 +129,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table
-            data-theme="dark"
-            className="table table-compact w-11/12  mx-auto  text-center"
-          >
+          <table className="table table-compact w-11/12  mx-auto   text-base-content">
             <thead>
               <tr>
                 <th></th>

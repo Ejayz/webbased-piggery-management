@@ -26,11 +26,14 @@ export default async function handler(
 async function View(item_id: any) {
   const conn = await connection.getConnection();
   try {
-    const sql = `SELECT i.*, c.category_name,s.*
+    const sql = `SELECT i.*,(SELECT closing_quantity FROM tbl_stock_card AS sc 
+      WHERE sc.item_id = i.item_id
+      ORDER BY sc.transaction_date DESC 
+      LIMIT 1) AS latest_closing_quantity, c.category_name,s.*
   FROM tbl_inventory i 
   INNER JOIN tbl_category c ON i.category_id = c.category_id  
-  INNER JOIN tbl_stock s ON s.item_id = i.item_id
-  WHERE i.is_exist = 'true' AND i.item_id = ? `;
+  INNER JOIN tbl_stock_card s ON s.item_id = i.item_id
+  WHERE i.is_exist = 'true' AND i.item_id = ? AND s.transaction_date = (SELECT MAX(transaction_date) FROM tbl_stock_card WHERE item_id = i.item_id)`;
     const [err, result] = await conn.query(sql, [item_id]);
     if (err) return err;
     conn.release();

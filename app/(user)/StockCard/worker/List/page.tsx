@@ -16,7 +16,7 @@ export default function Page() {
   const status = useSearchParams().get("status");
 
   const { error, isLoading, isFetching, data, refetch } = useQuery(
-    "STOCKcARD",
+    "StockCardList",
     async () => {
       const response = await fetch(
         `${
@@ -31,12 +31,9 @@ export default function Page() {
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
-      keepPreviousData: true,
     }
   );
-  console.log(parsed);
+
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -46,14 +43,14 @@ export default function Page() {
       }
     }
   }, [data]);
+
   useEffect(() => {
     refetch();
-  }, [filter.sortby]);
+  }, [filter.sortby, filter.sortorder]);
   useEffect(() => {
-    refetch();
-  }, [filter.sortorder]);
-  useEffect(() => {
-    refetch();
+    if (filter.keyword == "") {
+      refetch();
+    }
   }, [filter.keyword]);
   useEffect(() => {
     refetch();
@@ -132,10 +129,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table
-            data-theme="dark"
-            className="table table-compact w-11/12  mx-auto  text-center"
-          >
+          <table className="table  w-11/12  mx-auto  text-center text-base-content">
             <thead>
               <tr>
                 <th></th>
@@ -154,12 +148,16 @@ export default function Page() {
                 </tr>
               ) : parsed.length != 0 ? (
                 parsed.map((item: any, key: number) => {
+                  console.log(item);
                   return (
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
                       <td>{item.item_name}</td>
                       <td>{item.item_count}</td>
-                      <td>{item.total_stocks}</td>
+                      <td>
+                        {parseInt(item.latest_closing_quantity) /
+                          parseInt(item.item_net_weight)}
+                      </td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link

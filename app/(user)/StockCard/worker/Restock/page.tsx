@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
 import { useQuery } from "react-query";
 import { ErrorMessage } from "@hookform/error-message";
+import RightDisplay from "@/components/FormCompsV2/RightDisplay";
 
 interface RestockList {
   item_id: string;
@@ -67,7 +68,7 @@ export default function Page() {
   useEffect(() => {
     refetch();
   }, []);
-
+  const watchItemName = watch("item_name");
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -120,7 +121,7 @@ export default function Page() {
         toast.success("Restock Success");
         resetState();
       } else {
-        toast.error("Restock Failed");
+        toast.error(returned.message);
       }
     }
   };
@@ -264,7 +265,14 @@ export default function Page() {
                       />
                     </div>
 
-                    <NormalInput
+                    <RightDisplay
+                      item_unit={
+                        watchItemName != ""
+                          ? item_list.find(
+                              (item: any) => item.item_id == watchItemName
+                            ).item_unit
+                          : "N/A"
+                      }
                       label="Quantity"
                       name="quantity"
                       register={register}
@@ -319,7 +327,14 @@ export default function Page() {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{item.item_name}</td>
-                                  <td>{item.quantity}</td>
+                                  <td className="uppercase">{`${
+                                    item.quantity
+                                  } ${
+                                    item_list.find(
+                                      (item: any) =>
+                                        item.item_id == item.item_id
+                                    ).item_unit
+                                  }`}</td>
                                   <td>
                                     {item.expiration_date == ""
                                       ? "N/A"
@@ -343,48 +358,48 @@ export default function Page() {
                                       >
                                         <g
                                           id="SVGRepo_bgCarrier"
-                                          stroke-width="0"
+                                          strokeWidth="0"
                                         ></g>
                                         <g
                                           id="SVGRepo_tracerCarrier"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
                                         ></g>
                                         <g id="SVGRepo_iconCarrier">
                                           <path
                                             d="M10 12V17"
                                             stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                           ></path>
                                           <path
                                             d="M14 12V17"
                                             stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                           ></path>
                                           <path
                                             d="M4 7H20"
                                             stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                           ></path>
                                           <path
                                             d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
                                             stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                           ></path>
                                           <path
                                             d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
                                             stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                           ></path>
                                         </g>
                                       </svg>
