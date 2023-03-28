@@ -218,7 +218,7 @@ export default function Page() {
                       }}
                     />
                     <label className="label">
-                      <span className="label-text-alt text-base font-bold">
+                      <span className="label-text-alt font-extralight font-mono text-sm">
                         Maximum file size allowed is 3 MB.
                       </span>
                     </label>
@@ -295,7 +295,7 @@ export default function Page() {
                   </div>{" "}
                   <div className="w-full h-auto grid grid-cols-4 my-2">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active mx-4 ${
                         requesting ? "loading" : ""
                       }`}
                     >
