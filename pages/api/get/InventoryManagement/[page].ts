@@ -85,12 +85,16 @@ async function SearhGetCage(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT i.*, c.category_name,s.* ,FORMAT((s.closing_quantity / i.item_net_weight), 2) AS item_left
+    const sql = `SELECT i.*,(SELECT closing_quantity FROM tbl_stock_card AS sc 
+      WHERE sc.item_id = i.item_id
+      ORDER BY sc.transaction_date DESC 
+      LIMIT 1) AS latest_closing_quantity, c.category_name, s.*, FORMAT((s.closing_quantity / i.item_net_weight), 2) AS item_left
     FROM tbl_inventory i
     JOIN tbl_category c ON i.category_id = c.category_id
     JOIN tbl_stock_card s ON i.item_id = s.item_id
     WHERE (i.item_name LIKE ? OR i.item_description LIKE ?)
       AND i.is_exist = 'true'
+      AND s.transaction_date = (SELECT MAX(transaction_date) FROM tbl_stock_card)
     ORDER BY ${conn.escapeId(sortby)} ${SortOrder}
     LIMIT ${limit} OFFSET ${offset};`;
 
