@@ -31,8 +31,6 @@ export default function Page() {
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
     }
   );
   console.log(data);
@@ -53,7 +51,9 @@ export default function Page() {
     refetch();
   }, [filter.sortorder]);
   useEffect(() => {
-    refetch();
+    if (filter.keyword == "") {
+      refetch();
+    }
   }, [filter.keyword]);
   useEffect(() => {
     refetch();
@@ -160,8 +160,8 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/inventory_management/worker/Update",
-                              query: { id: item.item_id },
+                              pathname: "/cage_management/worker/Update",
+                              query: { id: item.cage_id },
                             }}
                           >
                             Update
@@ -170,8 +170,8 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/inventory_management/worker/View",
-                              query: { id: item.item_id },
+                              pathname: "/cage_management/worker/View",
+                              query: { id: item.cage_id },
                             }}
                           >
                             View
@@ -180,8 +180,8 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/inventory_management/worker/Remove",
-                              query: { id: item.item_id },
+                              pathname: "/cage_management/worker/Remove",
+                              query: { id: item.cage_id },
                             }}
                           >
                             Remove

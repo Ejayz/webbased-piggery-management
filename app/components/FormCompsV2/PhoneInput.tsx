@@ -14,7 +14,7 @@ const Input = ({
 }: any) => (
   <div className="form-control text-base-content">
     <label className="label">
-      <span className="label-text text-base">
+      <span className="label-text text-lg">
         {label}
         {required && "*"}
       </span>

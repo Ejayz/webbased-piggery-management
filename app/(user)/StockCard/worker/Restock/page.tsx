@@ -207,7 +207,7 @@ export default function Page() {
                 <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
                   <div className="form-control w-full max-w-xs">
                     <label className="label">
-                      <span className="label-text">Pick a receipt</span>
+                      <span className="label-text text-lg">Pick a receipt</span>
                     </label>
                     <input
                       type="file"
@@ -218,7 +218,7 @@ export default function Page() {
                       }}
                     />
                     <label className="label">
-                      <span className="label-text-alt">
+                      <span className="label-text-alt text-base font-bold">
                         Maximum file size allowed is 3 MB.
                       </span>
                     </label>
@@ -230,13 +230,13 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2 gap-2">
-                    <div className="form-control w-full max-w-xs">
+                    <div className="form-control">
                       <label className="label">
-                        <span className="label-text">Item Name*</span>
+                        <span className="label-text text-lg">Item Name*</span>
                       </label>
                       <select
                         required={true}
-                        className={`select select-bordered w-full max-w-xs ${
+                        className={`select select-bordered w-full ${
                           errors.item_name ? "select-error" : ""
                         }`}
                         placeholder="Select item"

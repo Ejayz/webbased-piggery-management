@@ -10,7 +10,9 @@ export default async function handler(
   if (!authorization) {
     return false;
   }
-  const { page, sortby, sortorder, keyword }: any = req.query;
+  const { page, filter }: any = req.query;
+  const { keyword, sortby, sortorder }: any = JSON.parse(filter);
+
   if (page == "0") {
     return res
       .status(404)
