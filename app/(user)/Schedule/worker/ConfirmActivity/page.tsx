@@ -240,7 +240,7 @@ export default function Page() {
       }
     }
   };
-  const router = useRouter();
+
   const loading = getUserInfo();
 
   useEffect(() => {
