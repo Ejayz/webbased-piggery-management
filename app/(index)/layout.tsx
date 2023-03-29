@@ -11,7 +11,6 @@ import Loading from "@/app/components/Loading/loading";
 import getErrorCode from "@/hooks/getErrorCode";
 import { NextUIProvider } from "@nextui-org/react";
 import { themeChange } from "theme-change";
-import ScrollStack from "@components/TechStack/ScollStack"
 export default function RootLayout({
   children,
 }: {
@@ -54,7 +53,6 @@ export default function RootLayout({
           />
           <Navbar></Navbar>
           {children}
-          <ScrollStack></ScrollStack>
           <Footer></Footer>
         </body>
         {/* <Script src="/sw.js"></Script> */}
