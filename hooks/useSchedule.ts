@@ -18,7 +18,7 @@ export const CreateIndividualSchedule = async (
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/Schedule/CreateScheduleIndividual",
+    "/api/post/Schedule/CreateScheduleIndividual",
     {
       method: "POST",
       body: bodyContent,
@@ -42,7 +42,7 @@ export const ConfirmIndividualSchedule = async (operation_id: any) => {
   });
 
   let response = await fetch(
-    "http://localhost:3000/api/post/Schedule/Confirm",
+    "/api/post/Schedule/Confirm",
     {
       method: "POST",
       body: bodyContent,
