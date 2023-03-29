@@ -723,6 +723,65 @@ export default function User({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
                 {/* End of Plan management menu */}
+                {/* Schedule Management */}
+                <div
+                  className={`${
+                    loading.data.job == "worker" ? "block" : "hidden"
+                  }`}
+                >
+                  <div className="collapse">
+                    <input type="checkbox" />
+                    <div className="collapse-title text-base flex flex-cols font-medium">
+                      <Image
+                        src={"/assets/icons/user_management.png"}
+                        className="h-6 w-6 mr-2 my-auto hidden"
+                        alt={""}
+                        height={512}
+                        width={512}
+                      ></Image>
+                      Manage Schedule
+                    </div>
+                    <div className="collapse-content">
+                      <li>
+                        <Link href="/Schedule/worker/Create">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Create
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/Schedule/worker/List">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Schedule List
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/Schedule/worker/Today">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Today Schedule
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+                {/* End of Schedule management menu */}
                 <div className="font-medium text-base">
                   <li>
                     <Link
