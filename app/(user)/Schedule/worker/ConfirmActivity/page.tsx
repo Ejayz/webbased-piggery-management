@@ -24,6 +24,7 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
   const [activity, setActivity] = useState([]);
   const [item_list, setItemList] = useState<any[]>([]);
+  const router=useRouter()
   const [useItem, setUseItem] = useState<
     {
       item_id: string;
@@ -234,6 +235,7 @@ export default function Page() {
         toast.success(returned.message);
         reset();
         setUseItem([]);
+        router.push("/Schedule/worker/Today")
       } else {
         toast.error(returned.message);
       }
