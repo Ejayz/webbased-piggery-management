@@ -235,7 +235,6 @@ export default function Page() {
         toast.success(returned.message);
         reset();
         setUseItem([]);
-        router.push("/Schedule/worker/Today")
       } else {
         toast.error(returned.message);
       }
