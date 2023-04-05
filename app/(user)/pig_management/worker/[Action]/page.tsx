@@ -434,7 +434,7 @@ export default function Page({ params }: any) {
                   onClick={(e) => {
                     callCancel();
                   }}
-                  className="btn btn-active btn-primary mx-4"
+                  className="btn btn-active mx-4"
                   href={"/pig_management/worker/List"}
                 >
                   Cancel

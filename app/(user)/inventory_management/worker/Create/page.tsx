@@ -227,7 +227,7 @@ export default function Page() {
                     ></NormalInput>
                   </div>
 
-                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
+                  <div className="w-full ml-2 grid lg:grid-cols-3 gap-2 lg:grid-rows-none grid-cols-none grid-rows-3">
                     <SelectInput
                       name="item_unit"
                       label={"Item Unit"}

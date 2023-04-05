@@ -17,7 +17,7 @@ export default function Input({
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text">
+        <span className="label-text text-lg">
           {label} {required && "*"}
         </span>
       </label>

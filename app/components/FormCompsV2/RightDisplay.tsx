@@ -17,7 +17,7 @@ const Input = ({
   <div className="form-control">
     <div className="form-control">
       <label className="label">
-        <span className="label-text">Enter amount</span>
+        <span className="label-text text-lg">{label}</span>
       </label>
       <label className="input-group">
         <input

@@ -1,28 +1,10 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
-import InputBox from "@/components/FormComponents/inputbox";
-import SelectBox from "@/components/FormComponents/selectBox";
 import { toast } from "react-toastify";
-import {
-  validateNormal,
-  validateNumber,
-  validatePassword,
-  validatePhone,
-  validateSelect,
-  validateSkip,
-} from "@/hooks/useValidation";
-import PasswordBox from "@/components/FormComponents/passwordBox";
-import {
-  Create,
-  getBreedList,
-  GetCages,
-  IdGenerator,
-} from "@/hooks/usePigManagement";
+import { Create, IdGenerator } from "@/hooks/usePigManagement";
 import QrCode from "@/components/QrComponent/qrcode";
-import QRCode from "react-qr-code";
 import Link from "next/link";
 import printJS from "print-js";
 import { QRCodeCanvas } from "qrcode.react";

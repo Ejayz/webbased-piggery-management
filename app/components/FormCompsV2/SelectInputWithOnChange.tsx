@@ -18,13 +18,13 @@ export default function Input({
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [stores, setStores] = useState({ current: "", prev: "" });
   useEffect(() => {
-    console.log("asddd")
+    console.log("asddd");
     if (stores.current !== "") {
       onChangeAddFunction(stores.current);
     }
   }, [stores.current]);
   useEffect(() => {
-    console.log("asd")
+    console.log("asd");
     if (stores.prev !== "") {
       onChangeSubtractFunction(stores.prev);
     }
@@ -40,8 +40,6 @@ export default function Input({
         <select
           id={id}
           onChange={(e) => {
-            console.log("hello")
-            console.log(stores);
             if (stores.current == "") {
               setStores({ current: e.target.value, prev: "" });
             } else {
@@ -49,7 +47,7 @@ export default function Input({
             }
           }}
           required={required}
-          className={`select text-base-content w-full max-w-xs select-bordered ${
+          className={`select text-base-content w-full select-bordered ${
             errors[name] != undefined ? "select-error" : ""
           }`}
           {...register(name, validationSchema)}
