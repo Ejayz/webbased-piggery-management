@@ -24,6 +24,7 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
   const [activity, setActivity] = useState([]);
   const [item_list, setItemList] = useState<any[]>([]);
+  const router=useRouter()
   const [useItem, setUseItem] = useState<
     {
       item_id: string;
@@ -239,7 +240,7 @@ export default function Page() {
       }
     }
   };
-  const router = useRouter();
+
   const loading = getUserInfo();
 
   useEffect(() => {
@@ -422,29 +423,7 @@ export default function Page() {
                                   <td>{item.item_name}</td>
                                   <td className="uppercase">{`${
                                     item.quantity
-                                  } ${
-                                    ItemDetailsData?.data.find(
-                                      (item: any) =>
-                                        item.item_id == item.item_id
-                                    ).category_id == 1
-                                      ? "Kg"
-                                      : item_list.find(
-                                          (item: any) =>
-                                            item.item_id == item.item_id
-                                        ).category_id == 2
-                                      ? "Mg"
-                                      : item_list.find(
-                                          (item: any) =>
-                                            item.item_id == item.item_id
-                                        ).category_id == 3
-                                      ? "Mg"
-                                      : item_list.find(
-                                          (item: any) =>
-                                            item.item_id == item.item_id
-                                        ).category_id == 4
-                                      ? "Pc/s"
-                                      : "N/A"
-                                  }`}</td>
+                                  } `}</td>
                                 </tr>
                               );
                             }
