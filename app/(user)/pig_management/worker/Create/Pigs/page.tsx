@@ -3,39 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
-import { Create } from "@/hooks/useCageManagement";
-import InputBox from "@/components/FormComponentsForArrayStates/inputbox";
-import SelectBox from "@/components/FormComponentsForArrayStates/selectBoxCustomCage";
-import SelectBoxNormal from "@/components/FormComponents/selectBox";
-import InputBoxNormal from "@/components/FormComponents/inputbox";
 import { toast } from "react-toastify";
 import {
-  validateNormal,
-  validatePassword,
-  validatePhone,
-  validateSelect,
-  validateSkip,
-} from "@/hooks/useValidation";
-import PasswordBox from "@/components/FormComponents/passwordBox";
-import {
   CreatePigs,
-  GetBatchId,
-  GetBoarList,
-  getBreedList,
-  GetCages,
-  GetNurseryCage,
-  GetSowList,
-  IdGenerator,
 } from "@/hooks/usePigManagement";
-import { QRCodeCanvas } from "qrcode.react";
-import printJS from "print-js";
-import QrCode from "@/components/QrComponent/qrcodeArrayState";
-import Loading from "@/components/Loading/loading";
-import { useQuery, useQueryClient } from "react-query";
-import { useFieldArray, useForm } from "react-hook-form";
-import SelectInput from "@/components/FormCompsV2/SelectInput";
-import NormalInput from "@/components/FormCompsV2/NormalInput";
-import SelectInputWithOnChange from "@/components/FormCompsV2/SelectInputWithOnChange";
+import { useQueryClient } from "react-query";
 import PigDataForms from "@/components/PigDataForms/pigDataForms";
 import GeneralPigBatch from "@/components/PigDataForms/GeneralPigBatch";
 interface SelectInter {

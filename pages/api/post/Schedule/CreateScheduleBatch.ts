@@ -10,7 +10,7 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { operation_type_id, pig_id, item_list } = req.body;
+  const { operation_type_id, cage_id, item_list } = req.body;
   console.log(item_list);
   const conn = await connection.getConnection();
   try {
@@ -18,7 +18,7 @@ export default async function handler(
     const data: any = await UpdateCage(
       conn,
       operation_type_id,
-      pig_id,
+      cage_id,
       item_list
     );
     if (data != "") {
@@ -47,7 +47,7 @@ async function UpdateCage(
       item_list.map(async (item: any) => {
         if (item.operation_id == 1) {
           const insertOperation =
-            "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm) values (?,?,?,'AM') ";
+            "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm) values (?,?,?,'AM') ";
           const [sqlInsertResult]: any = await conn.query(insertOperation, [
             item.operation_id,
             item.operation_date,
@@ -56,14 +56,14 @@ async function UpdateCage(
           const lastInsertedData = sqlInsertResult.insertId;
           const data2: any = await InsertOperationItemDetail(
             conn,
-           
+
             item.item_id,
             item.operation_id,
-            lastInsertedData,
+            lastInsertedData
           );
 
           const insertOperationPM =
-            "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm) values (?,?,?,'PM') ";
+            "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm) values (?,?,?,'PM') ";
           const [sqlInsertResultPM]: any = await conn.query(insertOperationPM, [
             item.operation_id,
             item.operation_date,
@@ -78,7 +78,7 @@ async function UpdateCage(
           );
         } else {
           const insertOperation =
-            "insert into tbl_operation (operation_type_id,operation_date,pig_id) values (?,?,?) ";
+            "insert into tbl_operation (operation_type_id,operation_date,batch_id) values (?,?,?) ";
           const [sqlInsertResult]: any = await conn.query(insertOperation, [
             item.operation_id,
             item.operation_date,
@@ -87,7 +87,6 @@ async function UpdateCage(
           const lastInsertedData = sqlInsertResult.insertId;
           const data2: any = await InsertOperationItemDetail(
             conn,
-
             item.item_id,
             item.operation_id,
             lastInsertedData
@@ -103,7 +102,6 @@ async function UpdateCage(
     return error;
   }
 }
-
 async function InsertOperationItemDetail(
   conn: any,
   item_id: any,

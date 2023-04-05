@@ -9,8 +9,6 @@ import { useForm } from "react-hook-form";
 import SelectInput from "@/components/FormCompsV2/SelectInput";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
 import { Individual } from "@/components/Schedule_Component/individual";
-import { Cage } from "@/components/Schedule_Component/cage";
-import { Batch } from "@/components/Schedule_Component/batch";
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
@@ -257,9 +255,9 @@ export default function Page() {
                   {tabs[0].name == "individual" && tabs[0].active ? (
                     <Individual />
                   ) : tabs[0].name == "cage" && tabs[0].active ? (
-                    <Cage />
+                    <></>
                   ) : tabs[0].name == "batch" && tabs[0].active ? (
-                    <Batch />
+                    <></>
                   ) : null}
                 </div>
               </div>

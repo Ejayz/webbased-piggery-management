@@ -1,6 +1,9 @@
 "use client";
 
-import { CreateIndividualSchedule } from "@/hooks/useSchedule";
+import {
+  CreateCageSchedule,
+  CreateIndividualSchedule,
+} from "@/hooks/useSchedule";
 import { ErrorMessage } from "@hookform/error-message";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
@@ -11,7 +14,7 @@ import NormalInput from "../FormCompsV2/NormalInput";
 import RightDisplay from "../FormCompsV2/RightDisplay";
 import SelectInput from "../FormCompsV2/SelectInput";
 
-export function Individual() {
+export function Cage() {
   const [processing, setProcessing] = useState(false);
   const [pig_list, setPigList] = useState<any[]>([]);
   const [keyword, setKeyword] = useState("");
@@ -36,7 +39,8 @@ export function Individual() {
     formState: { errors, isSubmitSuccessful, isSubmitting, isSubmitted },
   } = useForm({
     defaultValues: {
-      pig_id: "",
+      cage_name: "",
+      cage_id: "",
       activity: "",
       item_id: "",
       item_name: "",
@@ -50,9 +54,7 @@ export function Individual() {
     "pig_list",
     async () => {
       const response = await fetch(
-        `/api/post/Schedule/Pigs/getPigs?keyword=${
-          keyword == "" ? "" : keyword
-        }`
+        `/api/post/Schedule/Cage/get?keyword=${keyword == "" ? "" : keyword}`
       );
       return response.json();
     },
@@ -78,7 +80,8 @@ export function Individual() {
   } = useForm({
     defaultValues: {
       plan_id: "",
-      pig_id: "",
+      cage_id: "",
+      cage_name: "",
     },
     criteriaMode: "all",
     mode: "all",
@@ -222,15 +225,16 @@ export function Individual() {
     }
   }, [watchActivity]);
 
-  const watch_pig_id = watch("pig_id");
+  const watch_pig_id = watch("cage_id");
+
   useEffect(() => {
     if (data) {
       if (data.code === 200) {
         if (data.data) {
           setPigList(
             data.data.map((item: any) => ({
-              value: item.pig_id,
-              display: item.pig_id,
+              value: item.cage_id,
+              display: item.cage_name,
               disabled: false,
             }))
           );
@@ -282,10 +286,10 @@ export function Individual() {
     if (!confirm("Are you sure you want to add this schedule?")) {
       return;
     } else {
-      const returned = await CreateIndividualSchedule(
+      const returned = await CreateCageSchedule(
         data.activity,
         data.operation_date,
-        data.pig_id,
+        data.cage_id,
         useItem
       );
       if (returned.code == 200) {
@@ -327,7 +331,7 @@ export function Individual() {
             ✕
           </label>
           <h3 className="font-bold text-lg">
-            Search the pig you want to add schedule
+            Search the cage you want to add schedule
           </h3>
           <div className="form-control">
             <form
@@ -367,7 +371,7 @@ export function Individual() {
               <table className="table table-compact w-full label-text-alt">
                 <thead>
                   <tr>
-                    <th>Pig Id</th>
+                    <th>Cage Name</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -379,11 +383,17 @@ export function Individual() {
                         <label
                           onClick={() => {
                             if (watchScheduleType == "1") {
-                              setValue("pig_id", item.value, {
+                              setValue("cage_name", item.display, {
+                                shouldValidate: true,
+                              });
+                              setValue("cage_id", item.value, {
                                 shouldValidate: true,
                               });
                             } else {
-                              setValuePlan("pig_id", item.value, {
+                              setValuePlan("cage_name", item.display, {
+                                shouldValidate: true,
+                              });
+                              setValuePlan("cage_id", item.value, {
                                 shouldValidate: true,
                               });
                             }
@@ -436,18 +446,19 @@ export function Individual() {
           <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2 gap-2">
             <div className="flex">
               <label htmlFor="my-modal-6" className={`btn my-auto`}>
-                Choose Pig
+                Choose Cage
               </label>
-              <div className="divider divider-horizontal">OR</div>
+              <div className="divider divider-horizontal"></div>
               <NormalInput
-                label={"Enter Pig Id"}
-                name={"pig_id"}
+                label={"Enter Cage Name"}
+                name={"cage_name"}
                 register={register}
                 errors={errors}
                 validationSchema={{
-                  required: "Pig Id is required",
+                  required: "Cage is required",
                 }}
                 required={true}
+                readonly={true}
               />
             </div>
             <SelectInput
@@ -519,7 +530,7 @@ export function Individual() {
                 const result = trigger([
                   "item_id",
                   "operation_date",
-                  "pig_id",
+                  "cage_name",
                   "activity",
                 ]);
                 if (watchItemName != "") {
@@ -575,18 +586,19 @@ export function Individual() {
           <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2 gap-2">
             <div className="flex">
               <label htmlFor="my-modal-6" className={`btn my-auto`}>
-                Choose Pig
+                Choose Cage
               </label>
-              <div className="divider divider-horizontal">OR</div>
+              <div className="divider divider-horizontal"></div>
               <NormalInput
-                label={"Enter Pig Id"}
-                name={"pig_id"}
+                label={"Enter Cage Name"}
+                name={"cage_name"}
                 register={RegisterPlan}
                 errors={errorsPlan}
                 validationSchema={{
-                  required: "Pig Id is required",
+                  required: "Cage is required",
                 }}
                 required={true}
+                readonly={true}
               />
             </div>
             <SelectInput
@@ -612,7 +624,7 @@ export function Individual() {
                 const result = trigger([
                   "item_id",
                   "operation_date",
-                  "pig_id",
+                  "cage_name",
                   "activity",
                 ]);
                 if (watchItemName != "") {

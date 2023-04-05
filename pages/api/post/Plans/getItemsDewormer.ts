@@ -10,24 +10,22 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { plan_id } = req.query;
   try {
-    const result = await UpdateCage(plan_id);
+    const result = await UpdateCage();
     res.status(200).json({ code: 200, data: result });
   } catch (error: any) {
     res.status(500).json({ code: 500, message: error.message });
   }
 }
 
-async function UpdateCage(plan_id: any) {
+async function UpdateCage() {
   const conn = await connection.getConnection();
   try {
-    const getAllData =
-      "select * from tbl_plan_details INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_plan_details.item_id where plan_id=? ORDER BY tbl_plan_details.plan_detail_id ASC";
-    const [resultgetAllData] = await conn.query(getAllData, [plan_id]);
-    return resultgetAllData;
+    const getItems =
+      "select * from tbl_inventory where category_id='2' and is_exist='true'";
+    const [resultgetItems] = await conn.query(getItems);
+    return resultgetItems;
   } catch (error) {
-    console.log(error);
     return error;
   } finally {
     conn.release();

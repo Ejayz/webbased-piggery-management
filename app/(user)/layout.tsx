@@ -14,6 +14,7 @@ import { themeChange } from "theme-change";
 import Footer from "@/components/Footer/footer";
 import { QueryClientProvider } from "react-query";
 import { QueryClient } from "react-query";
+import "react-calendar/dist/Calendar.css";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
@@ -684,7 +685,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/plans_management/veterinarian/Create">
+                        <Link href="/Plan/veterinarian/Create">
                           <Image
                             src={"/assets/icons/create_user.png"}
                             className="h-6 w-6 hidden"
@@ -708,7 +709,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li> */}
                       <li>
-                        <Link href="/plans_management/veterinarian/List">
+                        <Link href="/Plan/veterinarian/List">
                           <Image
                             src={"/assets/icons/user_list.png"}
                             className="h-6 w-6 hidden"
@@ -766,7 +767,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                           Schedule List
                         </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link href="/Schedule/worker/Today">
                           <Image
                             src={"/assets/icons/user_list.png"}
@@ -777,7 +778,90 @@ export default function User({ children }: { children: React.ReactNode }) {
                           ></Image>
                           Today Schedule
                         </Link>
+                      </li> */}
+                    </div>
+                  </div>
+                </div>
+                {/* End of Schedule management menu */}
+                {/* Schedule Management */}
+                <div
+                  className={`${
+                    loading.data.job == "worker" ? "block" : "hidden"
+                  }`}
+                >
+                  <div className="collapse">
+                    <input type="checkbox" />
+                    <div className="collapse-title text-base flex flex-cols font-medium">
+                      <Image
+                        src={"/assets/icons/user_management.png"}
+                        className="h-6 w-6 mr-2 my-auto hidden"
+                        alt={""}
+                        height={512}
+                        width={512}
+                      ></Image>
+                      Manage Operation
+                    </div>
+                    <div className="collapse-content">
+                      <li>
+                        <Link href="/Operation/worker/ListBatch">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Batch Operation List
+                        </Link>
                       </li>
+                      <li>
+                        <Link href="/Operation/worker/ListCage">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Cage Operation List
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/Operation/worker/List">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Individual Operation List
+                        </Link>
+                      </li>
+                      {/* <li>
+                        <Link href="/Schedule/worker/List">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Schedule List
+                        </Link>
+                      </li> */}
+                      {/* <li>
+                        <Link href="/Schedule/worker/Today">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Today Schedule
+                        </Link>
+                      </li> */}
                     </div>
                   </div>
                 </div>

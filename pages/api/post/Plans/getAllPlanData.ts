@@ -22,10 +22,10 @@ export default async function handler(
 async function UpdateCage(plan_id: any) {
   const conn = await connection.getConnection();
   try {
-    const getAllData =
-      "select * from tbl_plan_details INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_plan_details.item_id where plan_id=? ORDER BY tbl_plan_details.plan_detail_id ASC";
-    const [resultgetAllData] = await conn.query(getAllData, [plan_id]);
-    return resultgetAllData;
+    const sql =
+      "select * from tbl_plan INNER JOIN tbl_plan_details ON tbl_plan.plan_id=tbl_plan_details.plan_id INNER JOIN tbl_inventory ON tbl_plan_details.item_id=tbl_inventory.item_id where tbl_plan.is_exist='true' and tbl_plan.plan_id=? ";
+    const [resultSql] = await conn.query(sql, [plan_id]);
+    return resultSql;
   } catch (error) {
     console.log(error);
     return error;

@@ -1,81 +1,85 @@
 "use client";
 import Table from "@/components/TableBody/Table";
-import { getData, Search, sortData } from "@/hooks/usePigManagement";
+import { getData, Search, sortData } from "@/hooks/useUserManagement";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Calendar from "react-calendar";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
-interface Cage {
-  cage_name: String;
-  cage_type: String;
-  cage_capacity: Number;
+interface User {
+  user_id: number;
+  username: string;
+  password: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  phone: string;
+  job: string;
+  is_exist: string;
 }
 
 interface ApiData {
   code: number;
-  data: Cage[];
+  data: User[];
 }
-
 export default function Page() {
-  const [parsed, setParsed] = useState<Cage[]>([]);
-  const [filter, setFilter] = useState({
-    sortby: "plan_name",
-    sortorder: "asc",
-    keyword: "",
-  });
-  const [content, setContent] = useState("");
-  const [page, setPage] = useState(1);
-  const msg = useSearchParams().get("msg");
-  const status = useSearchParams().get("status");
-
-  const { error, isLoading, isFetching, data, refetch } = useQuery(
-    "cage",
+  const { isLoading, isFetching, data, refetch, error } = useQuery(
+    "userData",
     async () => {
-      let headersList = {
-        Accept: "*/*",
-      };
-      let response = await fetch(
-        `${location.origin}/api/get/Plans/${page}/?&filter=${JSON.stringify(
-          filter
-        )}`,
-        {
-          method: "GET",
-          headers: headersList,
-        }
+      const response = await fetch(
+        `${location.origin}/api/get/Operation/getCage`
       );
       const data = await response.json();
-      data.time = new Date().getTime() / 1000;
+      console.log(data);
       return data;
     },
     {
-      refetchOnWindowFocus: false,
       cacheTime: 0,
+      refetchOnWindowFocus: false,
       enabled: false,
       keepPreviousData: true,
     }
   );
-  console.log(data);
+
+  const [filter, setFilter] = useState({
+    sortby: "operation_date",
+    sortorder: "desc",
+    keyword: "",
+  });
+  const [parsed, setParsed] = useState<User[]>([]);
+  const [colsData, setColsData] = ["username", "name", "job", "phone"];
+  const colsName = ["username", "name", "job", "phone"];
+  const [isSorting, setisSorting] = useState(false);
+  const pathname = "/user_management/owner";
+  const [page, setPage] = useState(1);
+  const msg = useSearchParams().get("msg");
+  const status = useSearchParams().get("status");
+
   useEffect(() => {
-    if (data !== undefined) {
+    if (data) {
       if (data.data) {
         setParsed(data.data);
       } else {
         setParsed([]);
       }
     }
-  }, [data]);
+  }, [data, isFetching]);
+
   useEffect(() => {
     refetch();
-  }, [filter.sortby]);
+  }, []);
+
   useEffect(() => {
-    refetch();
-  }, [filter.sortorder]);
+    if (filter.keyword == "") {
+      refetch();
+    }
+  }, [filter.keyword]);
+
   useEffect(() => {
-    refetch();
-  }, [page]);
-  useEffect(() => {
+    console.log(msg);
+    console.log(status);
     if (msg != null) {
       if (status == "success") {
         toast.success(msg);
@@ -84,12 +88,14 @@ export default function Page() {
       }
     }
   }, []);
-  console.log(content);
+  console.log(parsed);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
-          <p className="text-2xl text-base-content my-auto p-4">Plan List</p>
+          <p className="text-2xl text-base-content my-auto p-4">
+            Operation Calendar
+          </p>
         </div>
 
         <div className="w-full h-auto flex flex-col">
@@ -114,8 +120,10 @@ export default function Page() {
               }}
               value={filter.sortby}
             >
-              <option value="pig_id">Plan Name</option>
-              <option value="pig_tag">Total Days</option>
+              <option value="operation_date">Operation Date</option>
+              <option value="name">Name</option>
+              <option value="job">Job</option>
+              <option value="phone">Phone</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">
@@ -123,12 +131,6 @@ export default function Page() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     refetch();
-                  }}
-                  onChange={(e: any) => {
-                    e.preventDefault();
-                    if (e.target.value == "") {
-                      refetch();
-                    }
                   }}
                   className="flex"
                 >
@@ -161,14 +163,11 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table
-            className="table table-compact w-11/12  mx-auto  text-center text-base-content"
-          >
+          <table className="table table-compact w-11/12  mx-auto  text-base-content">
             <thead>
               <tr>
                 <th></th>
-                <th>Plan Name</th>
-                <th>Total Days</th>
+                <th>Pig Id</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -184,38 +183,17 @@ export default function Page() {
                   return (
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
-                      <td>{item.plan_name}</td>
-                      <td>{item.total_day}</td>
+                      <td>{item.pig_id}</td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname:
-                                "/plans_management/veterinarian/ListDays",
-                              query: { id: item.plan_id },
+                              pathname: "/Operation/worker/ListCage/Activity",
+                              query: { id: item.cage_id },
                             }}
                           >
-                            View Days
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: `/plans_management/veterinarian/Create/details/${item.plan_id}`,
-                            }}
-                          >
-                            Add Day
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/Remove",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            Remove
+                            View Activities
                           </Link>
                         </div>
                       </td>
@@ -223,8 +201,8 @@ export default function Page() {
                   );
                 })
               ) : (
-                <tr className="text-center">
-                  <td colSpan={4} className="text-center">
+                <tr>
+                  <td colSpan={8} className="text-center">
                     No data found
                   </td>
                 </tr>

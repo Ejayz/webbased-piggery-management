@@ -15,12 +15,7 @@ export default function Input({
 }: any) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
-    <div className="form-control">
-      <label className="label ">
-        <span className="label-text text-lg">
-          {label} {required && "*"}
-        </span>
-      </label>
+    <div className="form-control text-base-content">
       <label className="input-group">
         <select
           id={id}
@@ -53,11 +48,7 @@ export default function Input({
       <ErrorMessage
         errors={errors}
         name={name}
-        render={({ message }) => (
-          <p className="mt-2 text-sm  text-error">
-            <span className="font-medium">{message}</span>{" "}
-          </p>
-        )}
+        render={({ message }) => <p className="label text-error">{message}</p>}
       />
     </div>
   );

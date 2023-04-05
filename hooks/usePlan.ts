@@ -1,4 +1,4 @@
-export const createPlan = async (plan_name: any) => {
+export const createPlan = async (plan_name: any, activity_list: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -7,6 +7,7 @@ export const createPlan = async (plan_name: any) => {
 
   let bodyContent = JSON.stringify({
     plan_name: plan_name,
+    activity_list: activity_list,
   });
 
   let response = await fetch(`${location.origin}/api/post/Plans/createPlans`, {
@@ -168,6 +169,27 @@ export const RemoveDay = async (plan_detail_id: any) => {
   });
 
   let response = await fetch(`${location.origin}/api/post/Plans/RemoveDay`, {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
+
+  let data = await response.json();
+  return data;
+};
+
+export const RemovePlan = async (plan_id: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    plan_id: plan_id,
+  });
+
+  let response = await fetch(`${location.origin}/api/post/Plans/removePlans`, {
     method: "POST",
     body: bodyContent,
     headers: headersList,
