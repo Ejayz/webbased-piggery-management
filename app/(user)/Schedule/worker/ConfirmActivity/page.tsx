@@ -227,18 +227,18 @@ export default function Page() {
 
   const onSubmit = async (data: any, event: any) => {
     event.preventDefault();
-    if (!confirm("Are you sure you want to add this schedule?")) {
-      return;
-    } else {
-      const returned = await ConfirmIndividualSchedule(id);
-      if (returned.code == 200) {
-        toast.success(returned.message);
-        reset();
-        setUseItem([]);
-      } else {
-        toast.error(returned.message);
-      }
-    }
+    // if (!confirm("Are you sure you want to add this schedule?")) {
+    //   return;
+    // } else {
+    //   const returned = await ConfirmIndividualSchedule(id);
+    //   if (returned.code == 200) {
+    //     toast.success(returned.message);
+    //     reset();
+    //     setUseItem([]);
+    //   } else {
+    //     toast.error(returned.message);
+    //   }
+    // }
   };
 
   const loading = getUserInfo();
