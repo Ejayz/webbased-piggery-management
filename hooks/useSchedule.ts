@@ -26,7 +26,10 @@ export const CreateIndividualSchedule = async (
   return data;
 };
 
-export const ConfirmIndividualSchedule = async (operation_id: any) => {
+export const ConfirmIndividualSchedule = async (
+  operation_id: any,
+  quantity: any
+) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -35,6 +38,7 @@ export const ConfirmIndividualSchedule = async (operation_id: any) => {
 
   let bodyContent = JSON.stringify({
     operation_id: operation_id,
+    quantity: quantity,
   });
 
   let response = await fetch("/api/post/Schedule/Confirm", {

@@ -11,12 +11,14 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { operation_id } = req.body;
+  const { operation_id, quantity } = req.body;
+  console.log(operation_id, quantity);
   const conn = await connection.getConnection();
   try {
     conn.beginTransaction();
-    await Ops(conn, operation_id);
-    await insertStockCardDetails(conn, operation_id);
+    await Ops(conn, operation_id, quantity);
+    await insertStockCardDetails(conn, operation_id, quantity);
+    await updateItem(operation_id, quantity);
     const result = await updateOperation(conn, operation_id);
     console.log(result);
 
@@ -31,7 +33,22 @@ export default async function handler(
   }
 }
 
-async function Ops(conn: any, operation_id: any) {
+async function updateItem(operation_id: any, quantity: any) {
+  const sql =
+    "UPDATE tbl_operation_item_details SET quantity=? WHERE operation_id=?";
+  const conn = await connection.getConnection();
+  try {
+    const [result] = await conn.query(sql, [quantity, operation_id]);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  } finally {
+    conn.release();
+  }
+}
+
+async function Ops(conn: any, operation_id: any, quantity: any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   console.log(date);
   try {
@@ -56,7 +73,6 @@ async function Ops(conn: any, operation_id: any) {
           items.item_id,
           date,
         ]);
-        console.log(stockCardResult);
         if (stockCardResult.length <= 0) {
           const createStockCard =
             "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item_id) VALUES (?,?,?,?)";
@@ -76,7 +92,11 @@ async function Ops(conn: any, operation_id: any) {
   }
 }
 
-async function insertStockCardDetails(conn: any, operation_id: any) {
+async function insertStockCardDetails(
+  conn: any,
+  operation_id: any,
+  quantity: any
+) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   try {
     const getAllItemFromOperation =
@@ -97,9 +117,10 @@ async function insertStockCardDetails(conn: any, operation_id: any) {
         const createStockCardDetails =
           "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,remark) VALUES (?,?,?,?,?)";
         let calculated_quantity: number =
-          parseInt(items.quantity) * parseInt(items.item_net_weight);
-        const total_quantity = parseInt(closingQuantity) - calculated_quantity;
-        console.log(calculated_quantity);
+          parseFloat(quantity) * parseFloat(items.item_net_weight);
+        const total_quantity =
+          parseFloat(closingQuantity) - calculated_quantity;
+        console.log(calculated_quantity, total_quantity);
         const [createStockCardDetailsResult]: any = await conn.query(
           createStockCardDetails,
           [

@@ -1,10 +1,14 @@
 "use client";
+import RightDisplay from "@/components/FormCompsV2/RightDisplay";
 import Table from "@/components/TableBody/Table";
+import { ConfirmIndividualSchedule } from "@/hooks/useSchedule";
 import { getData, Search, sortData } from "@/hooks/useUserManagement";
+import { DateTime } from "luxon";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
+import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
@@ -25,21 +29,20 @@ interface ApiData {
   data: User[];
 }
 export default function Page() {
+  const id = useSearchParams().get("id");
+
   const { isLoading, isFetching, data, refetch, error } = useQuery(
     "userData",
     async () => {
       const response = await fetch(
-        `${location.origin}/api/get/Operation/getCage`
+        `${location.origin}/api/get/Operation/getBatchCheckList/getBatchCheckList/?batch_id=${id}`
       );
       const data = await response.json();
       console.log(data);
       return data;
     },
     {
-      cacheTime: 0,
       refetchOnWindowFocus: false,
-      enabled: false,
-      keepPreviousData: true,
     }
   );
 
@@ -56,6 +59,17 @@ export default function Page() {
   const [page, setPage] = useState(1);
   const msg = useSearchParams().get("msg");
   const status = useSearchParams().get("status");
+
+  const [showForm, setShowForm] = useState(false);
+  const [submitable, getData] = useState<{
+    item_id: string;
+    item_quantity: string;
+    batch_id: string;
+    operation_id: string;
+    item_unit: string;
+  }>();
+
+  console.log(submitable);
 
   useEffect(() => {
     if (data) {
@@ -89,8 +103,81 @@ export default function Page() {
     }
   }, []);
   console.log(parsed);
+  const {
+    register: register,
+    handleSubmit: handleSubmit,
+    formState: { errors },
+    setValue: setValue,
+    watch,
+  } = useForm({
+    defaultValues: {
+      item_quantity: "",
+    },
+    criteriaMode: "all",
+    mode: "all",
+  });
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
+
+  const watchQuantity = watch("item_quantity");
+
   return (
     <>
+      <input
+        type="checkbox"
+        checked={showForm}
+        readOnly={true}
+        id="my-modal"
+        className="modal-toggle"
+      />
+      <div className="modal text-base-content">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">
+            Enter the quantity of the item you have used
+          </h3>
+          <div>
+            <RightDisplay
+              name="item_quantity"
+              label={"Item Quantity"}
+              type={"number"}
+              register={register}
+              errors={errors}
+              item_unit={submitable?.item_unit}
+              validationSchema={{
+                required: "This field is required",
+              }}
+            />
+          </div>
+          <div className="modal-action">
+            <button
+              className={"btn btn-primary btn-sm"}
+              onClick={async () => {
+                const returned = await ConfirmIndividualSchedule(
+                  submitable?.operation_id,
+                  watchQuantity
+                );
+                if (returned.code == 200) {
+                  setShowForm(false);
+                  refetch();
+                  toast.success(returned.message);
+                }
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              className={"btn  btn-sm"}
+              onClick={() => {
+                setShowForm(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <p className="text-2xl text-base-content my-auto p-4">
@@ -99,75 +186,14 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
-            <span className="uppercase text-xl font-bold my-auto">
-              Filters:
-            </span>
-            <select
-              className="select select-bordered my-auto w-full max-w-xs text-base-content mx-2"
-              onChange={(e) => {
-                setFilter({ ...filter, sortorder: e.target.value });
-              }}
-              value={filter.sortorder}
-            >
-              <option value="asc">Ascending</option>
-              <option value="desc">Descending</option>
-            </select>
-            <select
-              className="select select-bordered my-auto w-full max-w-xs text-base-content mx-2"
-              onChange={(e) => {
-                setFilter({ ...filter, sortby: e.target.value });
-              }}
-              value={filter.sortby}
-            >
-              <option value="operation_date">Operation Date</option>
-              <option value="name">Name</option>
-              <option value="job">Job</option>
-              <option value="phone">Phone</option>
-            </select>
-            <div className="form-control my-auto text-base-content mx-2">
-              <div className="input-group">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    refetch();
-                  }}
-                  className="flex"
-                >
-                  <input
-                    type="text"
-                    placeholder="Search…"
-                    className="input input-bordered my-auto"
-                    onChange={(e) => {
-                      setFilter({ ...filter, keyword: e.target.value });
-                    }}
-                    value={filter.keyword}
-                  />
-                  <button className="btn my-auto btn-square">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
           <table className="table table-compact w-11/12  mx-auto  text-base-content">
             <thead>
               <tr>
                 <th></th>
-                <th>Pig Id</th>
+                <th>Date</th>
+                <th>AM/PM</th>
+                <th>Type</th>
+                <th>Item Name</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -183,18 +209,39 @@ export default function Page() {
                   return (
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
-                      <td>{item.pig_id}</td>
+                      <td>
+                        {DateTime.fromISO(item.operation_date)
+                          .setZone("Asia/Manila")
+                          .toFormat("EEEE',' MMM d',' yyyy")}
+                      </td>
+                      <td>{item.am_pm}</td>
+                      <td>{item.type}</td>
+                      <td>{item.item_name}</td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
-                          <Link
+                          <button
                             className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/user_management/owner/Update",
-                              query: { id: item.user_id },
+                            disabled={
+                              DateTime.fromISO(item.operation_date)
+                                .setZone("Asia/Manila")
+                                .toFormat("EEEE',' MMM d',' yyyy") ==
+                              DateTime.now().toFormat("EEEE',' MMM d',' yyyy")
+                                ? false
+                                : true
+                            }
+                            onClick={() => {
+                              setShowForm(true);
+                              getData({
+                                item_id: item.item_id,
+                                item_quantity: "0",
+                                batch_id: item.batch_id,
+                                operation_id: item.operation_id,
+                                item_unit: item.item_unit,
+                              });
                             }}
                           >
-                            View Activities
-                          </Link>
+                            Confirm Activity
+                          </button>
                         </div>
                       </td>
                     </tr>

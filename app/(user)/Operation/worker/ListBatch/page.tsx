@@ -189,7 +189,7 @@ export default function Page() {
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/Operation/worker/ListCage/Activity",
+                              pathname: "/Operation/worker/ListBatch/Activity",
                               query: { id: item.batch_id },
                             }}
                           >
