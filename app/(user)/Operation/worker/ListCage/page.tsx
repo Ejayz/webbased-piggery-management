@@ -167,7 +167,7 @@ export default function Page() {
             <thead>
               <tr>
                 <th></th>
-                <th>Pig Id</th>
+                <th>Cage Id</th>
                 <th>Action</th>
               </tr>
             </thead>

@@ -685,7 +685,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/Plan/veterinarian/Create">
+                        <Link href="/Plan/veterinarian/FeedingPlan">
                           <Image
                             src={"/assets/icons/create_user.png"}
                             className="h-6 w-6 hidden"
@@ -696,18 +696,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                           Create
                         </Link>
                       </li>
-                      {/* <li>
-                        <Link href="/StockCard/worker/Destock">
-                          <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Destock
-                        </Link>
-                      </li> */}
+                      Feeding Plan
                       <li>
                         <Link href="/Plan/veterinarian/List">
                           <Image

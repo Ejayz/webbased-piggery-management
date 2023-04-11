@@ -166,7 +166,6 @@ export default function Page() {
             </div>
 
             <div
-              data-theme="light"
               className="card w-11/12 mx-auto bg-base-200 text-base-content shadow-xl "
             >
               <div className="card-body">
