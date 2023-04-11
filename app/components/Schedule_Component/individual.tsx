@@ -135,21 +135,16 @@ export function Individual() {
             setUseItem([]);
             const newDate = DateTime.now();
             dataPlanData.data.map((item: any) => {
-              console.log(item);
-              const from = item.from;
-              const to = item.to;
-              for (let i = from; i <= to; i++) {
-                let addedDate = newDate.plus({ day: i }).toISODate();
-                setUseItem((prev) => [
-                  ...prev,
-                  {
-                    operation_date: addedDate,
-                    item_id: item.item_id,
-                    item_name: item.item_name,
-                    operation_id: item.type,
-                  },
-                ]);
-              }
+              let addedDate = newDate.plus({ day: item.day }).toISODate();
+              setUseItem((prev) => [
+                ...prev,
+                {
+                  operation_date: addedDate,
+                  item_id: item.item_id,
+                  item_name: item.item_name,
+                  operation_id: item.type,
+                },
+              ]);
             });
           } else {
             setUseItem([]);

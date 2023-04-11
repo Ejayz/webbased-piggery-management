@@ -311,7 +311,7 @@ export default function farrowing() {
                               }
                             }}
                             key={day}
-                            className={` text-center  w-26 bg-base-300 cursor-pointer group ${
+                            className={` text-center  w-26  cursor-pointer group ${
                               parseInt(watchDay) == days
                                 ? "bg-success"
                                 : plans[days - 1]?.day == day &&

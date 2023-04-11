@@ -101,7 +101,6 @@ export default function farrowing() {
       toast.error(returned.message);
     }
   };
-  console.log(parseInt(watchDay) == 1);
   return (
     <div className="w-full text-base-content">
       <input
@@ -294,6 +293,10 @@ export default function farrowing() {
                       {new Array(7).fill(null).map((index: number) => {
                         day++;
                         const days = day;
+                        console.log(
+                          plans[days - 1]?.day == days &&
+                            parseInt(watchDay) != days
+                        );
                         return (
                           <td
                             onClick={() => {
@@ -311,13 +314,13 @@ export default function farrowing() {
                               }
                             }}
                             key={day}
-                            className={` text-center  w-26 bg-base-300 cursor-pointer group ${
+                            className={` text-center  w-26  cursor-pointer group ${
                               parseInt(watchDay) == days
-                                ? "bg-success"
+                                ? " bg-success "
                                 : plans[days - 1]?.day == days &&
                                   parseInt(watchDay) != days
-                                ? "bg-info"
-                                : "bg-base-300"
+                                ? " bg-info "
+                                : " bg-base-300 "
                             }`}
                           >
                             <div className={`flex flex-col w-26 h-auto  `}>
