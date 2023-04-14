@@ -5,29 +5,47 @@ import {
   CreateCageSchedule,
   CreateIndividualSchedule,
 } from "@/hooks/useSchedule";
+import FullCalendar from "@fullcalendar/react";
 import { ErrorMessage } from "@hookform/error-message";
-import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import NormalInput from "../FormCompsV2/NormalInput";
 import RightDisplay from "../FormCompsV2/RightDisplay";
 import SelectInput from "../FormCompsV2/SelectInput";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import SearchInput from "../FormCompsV2/SearchInput";
+import { DateTime } from "luxon";
 
+interface activity_interface {
+  value: string;
+  display: string;
+  disabled: boolean;
+}
 export function Batch() {
   const [processing, setProcessing] = useState(false);
   const [pig_list, setPigList] = useState<any[]>([]);
   const [keyword, setKeyword] = useState("");
-  const [activity, setActivity] = useState([]);
-  const [item_list, setItemList] = useState<any[]>([]);
+  const [activity, setActivity] = useState<activity_interface[]>([]);
   const [plan_list, setPlanList] = useState<any[]>([]);
   const [useItem, setUseItem] = useState<
     {
-      operation_date: string;
+      title: string;
+      start: Date;
+      end?: Date;
+      backgroundColor?: string;
       item_id: string;
-      item_name: string;
-      operation_id: string;
+      activity: string;
+      data_time?: string;
+    }[]
+  >([]);
+  const [show, showModal] = useState(false);
+  const [item_list, setItems] = useState<any[]>([]);
+  const [activity_list, setActivityList] = useState<
+    {
+      pig_id: string;
     }[]
   >([]);
   const {
@@ -40,19 +58,19 @@ export function Batch() {
     formState: { errors, isSubmitSuccessful, isSubmitting, isSubmitted },
   } = useForm({
     defaultValues: {
-      cage_name: "",
-      cage_id: "",
+      pig_id: "",
       activity: "",
       item_id: "",
       item_name: "",
       operation_date: "",
       schedule_option: "1",
+      display: "",
     },
     criteriaMode: "all",
     mode: "all",
   });
   const { isLoading, isError, data, error, refetch } = useQuery(
-    "batch_list",
+    "pig_list",
     async () => {
       const response = await fetch(
         `/api/post/Schedule/Batch/get?keyword=${keyword == "" ? "" : keyword}`
@@ -64,7 +82,6 @@ export function Batch() {
       cacheTime: 0,
     }
   );
-
   const {
     register: RegisterPlan,
     handleSubmit: handleSubmitPlan,
@@ -81,8 +98,8 @@ export function Batch() {
   } = useForm({
     defaultValues: {
       plan_id: "",
-      cage_id: "",
-      cage_name: "",
+      pig_id: "",
+      display: "",
     },
     criteriaMode: "all",
     mode: "all",
@@ -130,7 +147,6 @@ export function Batch() {
       refetchPlanData();
     }
   }, [watchPlanId]);
-
   useEffect(() => {
     if (dataPlanData) {
       if (dataPlanData.data.length > 0) {
@@ -139,21 +155,24 @@ export function Batch() {
             setUseItem([]);
             const newDate = DateTime.now();
             dataPlanData.data.map((item: any) => {
-              console.log(item);
-              const from = item.from;
-              const to = item.to;
-              for (let i = from; i <= to; i++) {
-                let addedDate = newDate.plus({ day: i }).toISODate();
-                setUseItem((prev) => [
-                  ...prev,
-                  {
-                    operation_date: addedDate,
-                    item_id: item.item_id,
-                    item_name: item.item_name,
-                    operation_id: item.type,
-                  },
-                ]);
-              }
+              let addedDate = newDate.plus({ day: item.day }).toISODate();
+              setUseItem((prev) => [
+                ...prev,
+                {
+                  title: `Feeding ${item.item_name} AM`,
+                  start: new Date(addedDate),
+                  item_id: item.item_id,
+                  activity: "1",
+                  data_time: "AM",
+                },
+                {
+                  title: `Feeding ${item.item_name} PM`,
+                  start: new Date(addedDate),
+                  item_id: item.item_id,
+                  activity: "1",
+                  data_time: "PM",
+                },
+              ]);
             });
           } else {
             setUseItem([]);
@@ -162,7 +181,6 @@ export function Batch() {
       }
     }
   }, [dataPlanData, watchPlanId]);
-
   useEffect(() => {
     if (dataPlan) {
       if (dataPlan.data.length > 0) {
@@ -174,8 +192,6 @@ export function Batch() {
               disabled: false,
             }))
           );
-        } else {
-          setPlanList([]);
         }
       }
     }
@@ -199,37 +215,9 @@ export function Batch() {
     }
   );
   const watchItemName = watch("item_id");
-
   const watchActivity = watch("activity");
-  const {
-    isLoading: itemisLoading,
-    isError: itemisError,
-    data: itemdata,
-    error: itemerror,
-    refetch: itemrefetch,
-  } = useQuery(
-    ["item_list", watchActivity != ""],
-    async () => {
-      const response = await fetch(
-        `${location.origin}/api/post/InventoryManagement/getAllItems?type=${watchActivity}`
-      );
-      const data = await response.json();
-      data.time = new Date().getTime() / 1000;
-      return data;
-    },
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
 
-  useEffect(() => {
-    if (watchActivity != "") {
-      itemrefetch();
-    }
-  }, [watchActivity]);
-
-  const watch_pig_id = watch("cage_id");
-
+  const watch_pig_id = watch("pig_id");
   useEffect(() => {
     if (data) {
       if (data.code === 200) {
@@ -242,8 +230,6 @@ export function Batch() {
             }))
           );
         }
-      } else {
-        setPigList([]);
       }
     }
   }, [data]);
@@ -255,6 +241,7 @@ export function Batch() {
           setActivity(
             typedata.data.map((item: any) => ({
               value: item.operation_type_id,
+
               display: item.operation_name,
               disabled: false,
             }))
@@ -265,36 +252,17 @@ export function Batch() {
   }, [typedata]);
 
   useEffect(() => {
-    if (itemdata) {
-      if (itemdata.code === 200) {
-        if (itemdata.data) {
-          setItemList(itemdata.data);
-        } else {
-          setItemList([]);
-        }
-      } else {
-        setItemList([]);
-      }
-    } else {
-      setItemList([]);
-    }
-  }, [itemdata]);
-
-  useEffect(() => {
     if (keyword == "") {
       refetch();
     }
   }, [keyword]);
 
-  const onSubmit = async (data: any, event: any) => {
-    event.preventDefault();
+  const onSubmit = async () => {
     if (!confirm("Are you sure you want to add this schedule?")) {
       return;
     } else {
       const returned = await CreateBatchSchedule(
-        data.activity,
-        data.operation_date,
-        data.cage_id,
+        activity_list[0].pig_id,
         useItem
       );
       if (returned.code == 200) {
@@ -322,8 +290,151 @@ export function Batch() {
     }
   }, [watchScheduleType]);
 
+  const {
+    register: searchItem,
+    handleSubmit: searchItemSubmit,
+    formState: { errors: searchItemErrors },
+    setValue: searchItemSetValue,
+    watch: searchItemWatch,
+    reset: searchItemReset,
+  } = useForm({
+    defaultValues: {
+      keyword: "",
+    },
+    criteriaMode: "all",
+    mode: "onChange",
+  });
+
+  const searchItemWatchKeyword = searchItemWatch("keyword");
+  const {
+    data: ItemsData,
+    error: ItemsError,
+    isLoading: ItemsLoading,
+    refetch: ItemsRefetch,
+  } = useQuery("items", async () => {
+    const res = await fetch(
+      `/api/get/Schedule/getItems?keyword=${searchItemWatchKeyword}&category=${watchActivity}`
+    );
+    const data = await res.json();
+    return data;
+  });
+  useEffect(() => {
+    if (ItemsData) {
+      if (ItemsData.code == 200) {
+        setItems(ItemsData.data);
+      }
+    }
+  }, [ItemsData]);
+  useEffect(() => {
+    if (searchItemWatchKeyword == "") {
+      ItemsRefetch();
+    }
+  }, [searchItemWatchKeyword]);
+  useEffect(() => {
+    ItemsRefetch();
+    setValue("item_id", "");
+    setValue("item_name", "");
+  }, [watchActivity]);
+
   return (
     <>
+      <input
+        type="checkbox"
+        checked={show}
+        readOnly={true}
+        className="modal-toggle"
+      />
+      <div className="modal">
+        <div className="modal-box relative">
+          <label
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+            onClick={() => showModal(false)}
+          >
+            ✕
+          </label>
+          <h3 className="text-lg font-bold">
+            Search for items that will be used in this activity.
+          </h3>
+          <div className="form-control">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                ItemsRefetch();
+              }}
+              className="input-group"
+            >
+              <div className="form-control">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    placeholder="Search…"
+                    className="input input-bordered"
+                    {...searchItem("keyword", {
+                      required: {
+                        value: true,
+                        message: "Keyword is required",
+                      },
+                    })}
+                  />
+                  <button className="btn btn-square">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <label className="label overflow-y-auto">
+              <table className="table table-compact w-full label-text-alt">
+                <thead>
+                  <tr>
+                    <th>Item Name</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item_list.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.item_name}</td>
+                      <td>{item.item_description}</td>
+                      <td>
+                        <label
+                          onClick={() => {
+                            setValue("item_id", item.item_id, {
+                              shouldValidate: true,
+                            });
+                            setValue("item_name", item.item_name),
+                              {
+                                shouldValidate: true,
+                              };
+                            showModal(false);
+                            searchItemReset();
+                          }}
+                          className="link underline hover:text-primary"
+                        >
+                          Select
+                        </label>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </label>
+          </div>
+        </div>
+      </div>
       <input type="checkbox" id="my-modal-6" className="modal-toggle" />
       <div className="modal modal-bottom sm:modal-middle">
         <div className="modal-box relative">
@@ -386,19 +497,15 @@ export function Batch() {
                         <label
                           onClick={() => {
                             if (watchScheduleType == "1") {
-                              setValue("cage_name", item.display, {
+                              setValue("pig_id", item.value, {
                                 shouldValidate: true,
                               });
-                              setValue("cage_id", item.value, {
-                                shouldValidate: true,
-                              });
+                              setValue("display", item.display);
                             } else {
-                              setValuePlan("cage_name", item.display, {
+                              setValuePlan("pig_id", item.value, {
                                 shouldValidate: true,
                               });
-                              setValuePlan("cage_id", item.value, {
-                                shouldValidate: true,
-                              });
+                              setValuePlan("display", item.display);
                             }
                           }}
                           htmlFor="my-modal-6"
@@ -415,7 +522,7 @@ export function Batch() {
           </div>
         </div>
       </div>
-      <div className="className=flex w-full h-auto py-2 flex-col">
+      <div className="flex w-full h-auto py-2 flex-col">
         <SelectInput
           label={"Schedule Option"}
           name={"schedule_option"}
@@ -440,333 +547,307 @@ export function Batch() {
         />
       </div>
 
-      {watchScheduleType == "1" ? (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          method="post"
-          className="flex w-full h-auto py-2 flex-col"
-        >
-          <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2 gap-2">
-            <div className="flex">
-              <label htmlFor="my-modal-6" className={`btn my-auto`}>
-                Choose Batch
-              </label>
-              <div className="divider divider-horizontal"></div>
+      <div className="flex flex-row w-full">
+        {watchScheduleType == "1" ? (
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            method="post"
+            className="flex w-1/4 h-auto py-2 flex-col"
+          >
+            <div className="w-11/12  grid grid-row-3">
+              <div className="flex flex-col">
+                <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                  Choose Batch
+                </label>
+                <div className="divider ">OR</div>
+                <NormalInput
+                  label={"Batch"}
+                  name={"display"}
+                  register={register}
+                  errors={errors}
+                  validationSchema={{
+                    required: "Cage is required",
+                  }}
+                  required={true}
+                  readonly={true}
+                />
+              </div>
+              <SelectInput
+                label={"Activity"}
+                name={"activity"}
+                register={register}
+                errors={errors}
+                options={activity}
+                validationSchema={{
+                  required: "Activity is required",
+                }}
+                required={true}
+              />
               <NormalInput
-                label={"Batch Name"}
-                name={"cage_name"}
+                label={"Activty Date"}
+                name={"operation_date"}
                 register={register}
                 errors={errors}
                 validationSchema={{
-                  required: "Cage is required",
+                  required: "Date is required",
+                  min: {
+                    value: new Date(),
+                    message: "Date must be greater than today",
+                  },
                 }}
+                type={"date"}
                 required={true}
-                readonly={true}
               />
-            </div>
-            <SelectInput
-              label={"Activity"}
-              name={"activity"}
-              register={register}
-              errors={errors}
-              options={activity}
-              validationSchema={{
-                required: "Activity is required",
-              }}
-              required={true}
-            />{" "}
-            <NormalInput
-              label={"Activty Date"}
-              name={"operation_date"}
-              register={register}
-              errors={errors}
-              validationSchema={{
-                required: "Date is required",
-              }}
-              type={"date"}
-              required={true}
-            />
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-lg">Item Name*</span>
-              </label>
-              <select
-                className={`select select-bordered w-full ${
-                  errors.item_id ? "select-error" : ""
-                }`}
-                placeholder="Select item"
-                {...register("item_id", {
-                  required: "Item is required",
-                })}
-              >
-                <option value="">Item</option>
-                {item_list == undefined
-                  ? ""
-                  : item_list?.map((item: any, index: number) => {
-                      return (
-                        <option key={index} value={item.item_id}>
-                          {item.item_name}
-                        </option>
-                      );
-                    })}
-              </select>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-lg">Item Name*</span>
+                </label>
+                <SearchInput
+                  label="Selected Item"
+                  type="text"
+                  register={register}
+                  name="item_name"
+                  errors={errors}
+                  validationSchema={{
+                    required: "Item is required",
+                  }}
+                  required={true}
+                  showModal={showModal}
+                />
 
-              <ErrorMessage
-                errors={errors}
-                name="item_id"
-                render={({ message }) => (
-                  <p className="mt-2 text-sm  text-error">
-                    <span className="font-medium">{message}</span>{" "}
-                  </p>
-                )}
-              />
+                <ErrorMessage
+                  errors={errors}
+                  name="item_id"
+                  render={({ message }) => (
+                    <p className="mt-2 text-sm  text-error">
+                      <span className="font-medium">{message}</span>{" "}
+                    </p>
+                  )}
+                />
+              </div>
             </div>
-          </div>
-          <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2 gap-2"></div>
-          <div className="card-actions mt-4">
-            <button
-              className={`btn btn-active btn-primary mx-4 ${
-                processing ? "loading" : ""
-              }`}
-              type={"button"}
-              onClick={() => {
-                const result = trigger([
-                  "item_id",
-                  "operation_date",
-                  "cage_name",
-                  "activity",
-                ]);
-                if (watchItemName != "") {
-                  setUseItem([
-                    ...useItem,
-                    {
-                      operation_date: watchOperationDate,
-                      item_id: watchItemName,
-                      item_name: item_list.find(
-                        (item: any) => item.item_id == watchItemName
-                      ).item_name,
-                      operation_id: watchActivity,
-                    },
+            <div className="card-actions mt-4">
+              <button
+                className={`btn btn-active btn-primary mx-4 ${
+                  processing ? "loading" : ""
+                }`}
+                type={"button"}
+                onClick={() => {
+                  const result = trigger([
+                    "item_id",
+                    "operation_date",
+                    "pig_id",
+                    "activity",
                   ]);
-                  setValue("item_id", "", {
-                    shouldValidate: false,
-                  });
-                } else {
-                  setValue("item_id", watchItemName, {
-                    shouldValidate: true,
-                  });
-                }
-              }}
-            >
-              Add to list
-            </button>
-          </div>{" "}
-          <div className="card-actions justify-end">
-            <button
-              className={`btn btn-active btn-primary mx-4 ${
-                processing ? "loading" : ""
-              }`}
-            >
-              Create
-            </button>
-            <button
-              type="reset"
-              onClick={() => {
-                reset();
-              }}
-              className="btn mx-4"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      ) : (
-        <form
-          onSubmit={handleSubmitPlan(onSubmit)}
-          method="post"
-          className="flex w-full h-auto py-2 flex-col"
-        >
-          <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2 gap-2">
-            <div className="flex">
-              <label htmlFor="my-modal-6" className={`btn my-auto`}>
-                Choose Batch
-              </label>
-              <div className="divider divider-horizontal"></div>
-              <NormalInput
-                label={"Batch Name"}
-                name={"cage_name"}
+                  const item_id: any = watch("item_id");
+                  const item_name = watch("item_name");
+                  if (watchItemName != "") {
+                    setActivityList([
+                      {
+                        pig_id: watch("pig_id"),
+                      },
+                    ]);
+                    if (watchActivity == "1") {
+                      setUseItem([
+                        ...useItem,
+                        {
+                          title: `${
+                            activity !== undefined
+                              ? activity.find(
+                                  (item: any) => item.value == watchActivity
+                                )?.display
+                              : ""
+                          } of ${item_name} AM`,
+                          start: new Date(watchOperationDate),
+                          item_id: item_id,
+                          activity: watchActivity,
+                          data_time: "AM",
+                        },
+                        {
+                          title: `${
+                            activity !== undefined
+                              ? activity.find(
+                                  (item: any) => item.value == watchActivity
+                                )?.display
+                              : ""
+                          } of ${item_name} PM`,
+                          start: new Date(watchOperationDate),
+                          item_id: item_id,
+                          activity: watchActivity,
+                          data_time: "PM",
+                        },
+                      ]);
+                    } else {
+                      setUseItem([
+                        ...useItem,
+                        {
+                          title: `${
+                            activity !== undefined
+                              ? activity.find(
+                                  (item: any) => item.value == watchActivity
+                                )?.display
+                              : ""
+                          } of ${item_name} `,
+                          start: new Date(watchOperationDate),
+                          item_id: item_id,
+                          activity: watchActivity,
+                          data_time: undefined,
+                        },
+                      ]);
+                    }
+                    setValue("item_id", "", {
+                      shouldValidate: false,
+                    });
+                    setValue("item_name", "", {
+                      shouldValidate: false,
+                    });
+                    setValue("activity", "", {
+                      shouldValidate: false,
+                    });
+                    setValue("operation_date", "", {
+                      shouldValidate: false,
+                    });
+                  } else {
+                    setValue("item_id", "", {
+                      shouldValidate: false,
+                    });
+                    setValue("item_name", "", {
+                      shouldValidate: false,
+                    });
+                    setValue("activity", "", {
+                      shouldValidate: false,
+                    });
+                    setValue("operation_date", "", {
+                      shouldValidate: false,
+                    });
+                  }
+                }}
+              >
+                Add to list
+              </button>
+            </div>
+            <div className="card-actions justify-end">
+              <button
+                onClick={() => {
+                  onSubmit();
+                }}
+                type="button"
+                className={`btn btn-active btn-primary mx-4 ${
+                  processing ? "loading" : ""
+                }`}
+              >
+                Create
+              </button>
+              <button
+                onClick={() => {
+                  reset();
+                }}
+                className="btn mx-4"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+        ) : (
+          <form
+            onSubmit={handleSubmitPlan(onSubmit)}
+            method="post"
+            className="flex w-1/4 h-auto flex-col"
+          >
+            <div className="w-11/12 grid grid-row-2">
+              <div className="flex flex-col">
+                <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                  Choose Cage
+                </label>
+                <div className="divider ">OR</div>
+                <NormalInput
+                  label={"Batch"}
+                  name={"display"}
+                  register={RegisterPlan}
+                  errors={errorsPlan}
+                  validationSchema={{
+                    required: "Cage is required",
+                  }}
+                  required={true}
+                />
+              </div>
+              <SelectInput
+                label={"Plans"}
+                name={"plan_id"}
                 register={RegisterPlan}
-                errors={errorsPlan}
+                errors={errors}
+                options={plan_list}
                 validationSchema={{
-                  required: "Cage is required",
+                  required: "Activity is required",
                 }}
                 required={true}
-                readonly={true}
+                disabled={watchPlan("plan_id") == ""}
               />
             </div>
-            <SelectInput
-              label={"Plans"}
-              name={"plan_id"}
-              register={RegisterPlan}
-              errors={errors}
-              options={plan_list}
-              validationSchema={{
-                required: "Activity is required",
-              }}
-              required={true}
-            />{" "}
-          </div>
-          <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2 gap-2"></div>
-          <div className="card-actions mt-4">
-            <button
-              className={`btn btn-active btn-primary mx-4 ${
-                processing ? "loading" : ""
-              }`}
-              type={"button"}
-              onClick={() => {
-                const result = trigger([
-                  "item_id",
-                  "operation_date",
-                  "cage_name",
-                  "activity",
-                ]);
-                if (watchItemName != "") {
-                  setUseItem([
-                    ...useItem,
+
+            <div className="card-actions justify-end mt-4">
+              <button
+                onClick={() => {
+                  console.log(watchPlan("pig_id"));
+                  setActivityList([
                     {
-                      operation_date: watchOperationDate,
-                      item_id: watchItemName,
-                      item_name: item_list.find(
-                        (item: any) => item.item_id == watchItemName
-                      ).item_name,
-                      operation_id: watchActivity,
+                      pig_id: watchPlan("pig_id"),
                     },
                   ]);
-                  setValue("item_id", "", {
-                    shouldValidate: false,
+                }}
+                className={`btn btn-active btn-primary mx-4 ${
+                  processing ? "loading" : ""
+                }`}
+              >
+                Create
+              </button>
+              <button
+                type="reset"
+                onClick={() => {
+                  reset();
+                }}
+                className="btn mx-4"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+        )}
+        <div className="overflow-x-auto w-3/4 mx-auto">
+          <FullCalendar
+            plugins={[dayGridPlugin, interactionPlugin]}
+            initialDate={new Date("2023-01-01")}
+            initialView="dayGridMonth"
+            eventDisplay="block"
+            fixedWeekCount={false}
+            validRange={{
+              start: new Date(),
+            }}
+            eventClick={(info: any) => {
+              alert(info.event.title);
+            }}
+            dateClick={(info: any) => {
+              if (watchScheduleType == "1") {
+                const allowedSelection =
+                  DateTime.fromISO(info.dateStr).diffNow("days").days > -1;
+                if (allowedSelection) {
+                  var days = document.querySelectorAll(".selectedDate");
+                  days.forEach(function (day) {
+                    day.classList.remove("selectedDate");
                   });
-                } else {
-                  setValue("item_id", watchItemName, {
+                  info.dayEl.classList.add("selectedDate");
+                  setValue("operation_date", info.dateStr, {
                     shouldValidate: true,
                   });
                 }
-              }}
-            >
-              Add to list
-            </button>
-          </div>{" "}
-          <div className="card-actions justify-end">
-            <button
-              className={`btn btn-active btn-primary mx-4 ${
-                processing ? "loading" : ""
-              }`}
-            >
-              Create
-            </button>
-            <button
-              type="reset"
-              onClick={() => {
-                reset();
-              }}
-              className="btn mx-4"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      )}
-      <div className="overflow-x-auto w-11/12 mx-auto">
-        <table className="table table-compact w-full">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Date</th>
-              <th>Item Name</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {useItem.length == 0 ? (
-              <tr>
-                <td className="text-center" colSpan={5}>
-                  <span>No item added yet</span>
-                </td>
-              </tr>
-            ) : (
-              useItem.map((item: any, index: number) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <th>{item.operation_date}</th>
-                    <td>{item.item_name}</td>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-error"
-                        onClick={() => {
-                          useItem.splice(index, 1);
-                          setUseItem([...useItem]);
-                        }}
-                      >
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                          <g
-                            id="SVGRepo_tracerCarrier"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          ></g>
-                          <g id="SVGRepo_iconCarrier">
-                            <path
-                              d="M10 12V17"
-                              stroke="#000000"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            ></path>
-                            <path
-                              d="M14 12V17"
-                              stroke="#000000"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            ></path>
-                            <path
-                              d="M4 7H20"
-                              stroke="#000000"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            ></path>
-                            <path
-                              d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10"
-                              stroke="#000000"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            ></path>
-                            <path
-                              d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z"
-                              stroke="#000000"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            ></path>
-                          </g>
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+              }
+            }}
+            dayHeaders={true}
+            displayEventTime={false}
+            events={useItem}
+            unselectAuto={true}
+          />
+        </div>
       </div>
     </>
   );

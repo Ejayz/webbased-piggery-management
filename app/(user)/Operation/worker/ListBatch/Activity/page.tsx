@@ -2,7 +2,7 @@
 import RightDisplay from "@/components/FormCompsV2/RightDisplay";
 import Table from "@/components/TableBody/Table";
 import { ConfirmIndividualSchedule } from "@/hooks/useSchedule";
-import { getData, Search, sortData } from "@/hooks/useUserManagement";
+import FullCalendar from "@fullcalendar/react";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -11,6 +11,9 @@ import Calendar from "react-calendar";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import { getExtendProps } from "@/hooks/useSched";
 
 interface User {
   user_id: number;
@@ -35,10 +38,9 @@ export default function Page() {
     "userData",
     async () => {
       const response = await fetch(
-        `${location.origin}/api/get/Operation/getBatchCheckList/getBatchCheckList/?batch_id=${id}`
+        `${location.origin}/api/get/Operation/getBatchCheckList/getBatchCheckListFeeding/?batch_id=${id}`
       );
       const data = await response.json();
-      console.log(data);
       return data;
     },
     {
@@ -51,7 +53,7 @@ export default function Page() {
     sortorder: "desc",
     keyword: "",
   });
-  const [parsed, setParsed] = useState<User[]>([]);
+  const [parsed, setParsed] = useState<any[]>([]);
   const [colsData, setColsData] = ["username", "name", "job", "phone"];
   const colsName = ["username", "name", "job", "phone"];
   const [isSorting, setisSorting] = useState(false);
@@ -68,19 +70,47 @@ export default function Page() {
     operation_id: string;
     item_unit: string;
   }>();
-
-  console.log(submitable);
-
+  const [prevInfo, setPrevInfo] = useState<any>();
   useEffect(() => {
     if (data) {
       if (data.data) {
-        setParsed(data.data);
+        setParsed([]);
+        data.data.map((item: any) => {
+          setParsed((prev) => [
+            ...prev,
+            {
+              id: item.operation_id,
+              title: `${item.operation_name} ${item.item_name} ${item.am_pm} `,
+              start: item.operation_date,
+              backgroundColor:
+                DateTime.fromISO(item.operation_date).diffNow("days").days <
+                  -1 &&
+                (item.status == "pending" || item.status == "confirmed")
+                  ? "red"
+                  : DateTime.fromISO(item.operation_date).diffNow("days").days <
+                      0 &&
+                    (item.status == "pending" || item.status != "confirmed")
+                  ? "orange"
+                  : item.status == "pending"
+                  ? "#87CEEB"
+                  : item.status == "confirmed"
+                  ? "#008000"
+                  : "#87CEEB",
+
+              extendedProps: {
+                id: item.operation_id,
+                date_diff: DateTime.fromISO(item.operation_date).diffNow("days")
+                  .days,
+                status: item.status,
+              },
+            },
+          ]);
+        });
       } else {
         setParsed([]);
       }
     }
   }, [data, isFetching]);
-
   useEffect(() => {
     refetch();
   }, []);
@@ -92,8 +122,6 @@ export default function Page() {
   }, [filter.keyword]);
 
   useEffect(() => {
-    console.log(msg);
-    console.log(status);
     if (msg != null) {
       if (status == "success") {
         toast.success(msg);
@@ -102,13 +130,13 @@ export default function Page() {
       }
     }
   }, []);
-  console.log(parsed);
   const {
     register: register,
     handleSubmit: handleSubmit,
     formState: { errors },
     setValue: setValue,
     watch,
+    trigger,
   } = useForm({
     defaultValues: {
       item_quantity: "",
@@ -116,166 +144,231 @@ export default function Page() {
     criteriaMode: "all",
     mode: "all",
   });
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const onSubmit = (data: any) => {};
 
   const watchQuantity = watch("item_quantity");
 
+  const {
+    data: OperationData,
+    isLoading: OperationLoading,
+    refetch: OperationDataRefetch,
+  } = useQuery(
+    [
+      "OperationData",
+      submitable?.operation_id !== undefined ? submitable?.operation_id : "",
+    ],
+    async () => {
+      const response = await fetch(
+        `/api/post/Operation/getOperationDetails/${submitable?.operation_id}`
+      );
+      const data = await response.json();
+      console.log(data);
+      return data;
+    },
+    {
+      enabled: false,
+    }
+  );
+  useEffect(() => {
+    if (submitable?.operation_id !== undefined) {
+      OperationDataRefetch();
+    }
+  }, [submitable?.operation_id]);
   return (
     <>
-      <input
-        type="checkbox"
-        checked={showForm}
-        readOnly={true}
-        id="my-modal"
-        className="modal-toggle"
-      />
-      <div className="modal text-base-content">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            Enter the quantity of the item you have used
-          </h3>
-          <div>
-            <RightDisplay
-              name="item_quantity"
-              label={"Item Quantity"}
-              type={"number"}
-              register={register}
-              errors={errors}
-              item_unit={submitable?.item_unit}
-              validationSchema={{
-                required: "This field is required",
-              }}
-            />
-          </div>
-          <div className="modal-action">
-            <button
-              className={"btn btn-primary btn-sm"}
-              onClick={async () => {
-                const returned = await ConfirmIndividualSchedule(
-                  submitable?.operation_id,
-                  watchQuantity
-                );
-                if (returned.code == 200) {
-                  setShowForm(false);
-                  refetch();
-                  toast.success(returned.message);
-                }
-              }}
-            >
-              Confirm
-            </button>
-            <button
-              className={"btn  btn-sm"}
-              onClick={() => {
-                setShowForm(false);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <p className="text-2xl text-base-content my-auto p-4">
             Operation Calendar
           </p>
         </div>
-
-        <div className="w-full h-auto flex flex-col">
-          <table className="table table-compact w-11/12  mx-auto  text-base-content">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Date</th>
-                <th>AM/PM</th>
-                <th>Type</th>
-                <th>Item Name</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading || isFetching ? (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    Please wait while we fetch the data
-                  </td>
-                </tr>
-              ) : parsed.length != 0 ? (
-                parsed.map((item: any, key: number) => {
-                  return (
-                    <tr key={key} className="hover">
-                      <th>{key + 1}</th>
-                      <td>
-                        {DateTime.fromISO(item.operation_date)
-                          .setZone("Asia/Manila")
-                          .toFormat("EEEE',' MMM d',' yyyy")}
-                      </td>
-                      <td>{item.am_pm}</td>
-                      <td>{item.type}</td>
-                      <td>{item.item_name}</td>
-                      <td className="flex">
-                        <div className="flex flex-row mx-auto">
-                          <button
-                            className="btn btn-sm btn-primary"
-                            disabled={
-                              DateTime.fromISO(item.operation_date)
-                                .setZone("Asia/Manila")
-                                .toFormat("EEEE',' MMM d',' yyyy") ==
-                              DateTime.now().toFormat("EEEE',' MMM d',' yyyy")
-                                ? false
-                                : true
-                            }
-                            onClick={() => {
-                              setShowForm(true);
-                              getData({
-                                item_id: item.item_id,
-                                item_quantity: "0",
-                                batch_id: item.batch_id,
-                                operation_id: item.operation_id,
-                                item_unit: item.item_unit,
-                              });
-                            }}
-                          >
-                            Confirm Activity
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
-              <button
-                onClick={() => {
-                  setPage(page == 1 ? 1 : page - 1);
-                }}
-                className="btn btn-outline"
-              >
-                Previous page
-              </button>
-              <button
-                onClick={() => {
-                  if (parsed.length != 0) {
-                    setPage(page + 1);
+        <div className="w-full h-full flex flex-row text-base-content">
+          <div className="w-1/4 flex h-auto">
+            {OperationData == undefined ? (
+              <div className="flex flex-col w-full">
+                <div className="alert alert-info shadow-lg w-11/12 mx-auto">
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      className="stroke-current flex-shrink-0 w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <span>Select and event in calendar first</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="w-11/12 mx-auto text-base-content">
+                <h3 className="font-bold text-lg">Confirm Operation</h3>
+                <div className="flex flex-col">
+                  <div className="w-full flex flex-row">
+                    <span className="text-md font-bold font-mono w-5/12">
+                      Operation Date:
+                    </span>
+                    <span>
+                      {DateTime.fromISO(OperationData?.data[0].operation_date)
+                        .setZone("Asia/Manila")
+                        .toFormat("EEEE',' MMM d',' yyyy")}
+                    </span>
+                  </div>
+                  <div className="w-full flex flex-row">
+                    <span className="text-md font-bold font-mono w-5/12">
+                      Operation Type:
+                    </span>
+                    <span>{OperationData?.data[0].operation_name}</span>
+                  </div>
+                  <div className="w-full flex flex-row">
+                    <span className="text-md font-bold font-mono w-5/12">
+                      Operation Time:
+                    </span>
+                    <span>{OperationData?.data[0].am_pm}</span>
+                  </div>
+                  <div className="w-full flex flex-row">
+                    <span className="text-md font-bold font-mono w-5/12">
+                      Item:
+                    </span>
+                    <span>{OperationData?.data[0].item_name}</span>
+                  </div>
+                  <RightDisplay
+                    name="item_quantity"
+                    label={"Item Quantity"}
+                    type={"number"}
+                    register={register}
+                    errors={errors}
+                    item_unit={OperationData?.data[0].item_unit}
+                    required={true}
+                    validationSchema={{
+                      required: "This field is required",
+                    }}
+                  />
+                </div>
+                <div className=" justify-end mt-4 ">
+                  <button
+                    className={"btn btn-primary "}
+                    onClick={async () => {
+                      const isAllowed = await trigger("item_quantity");
+                      if (isAllowed) {
+                        const returned = await ConfirmIndividualSchedule(
+                          submitable?.operation_id,
+                          watchQuantity
+                        );
+                        if (returned.code == 200) {
+                          getData(undefined);
+                          setShowForm(false);
+                          refetch();
+                          setValue("item_quantity", "");
+                          toast.success(returned.message);
+                          setPrevInfo(undefined);
+                        } else {
+                          toast.error(returned.message);
+                        }
+                      }
+                    }}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    className={"btn  "}
+                    onClick={() => {
+                      setShowForm(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="w-3/4 flex h-full">
+            <div className="w-11/12 mx-auto h-3/4">
+              <div className="flex flex-row ">
+                <span className="text-md font-bold font-mono">Legends:</span>
+                <div className="flex flex-row">
+                  <div className="h-4 w-4 rounded-md done mx-2"></div>
+                  <span className="text-sm">Done</span>
+                </div>
+                <div className="flex flex-row">
+                  <div className="h-4 w-4 rounded-md past-due mx-2 my-auto"></div>
+                  <span className="text-sm mx-auto">Past Due</span>
+                </div>
+                <div className="flex flex-row">
+                  <div className="h-4 w-4 rounded-md pending mx-2 my-auto"></div>
+                  <span className="text-sm mx-auto">Pending</span>
+                </div>
+                <div className="flex flex-row">
+                  <div className="h-4 w-4 rounded-md canceled mx-2 my-auto"></div>
+                  <span className="text-sm mx-auto">Canceled</span>
+                </div>
+                <div className="flex flex-row">
+                  <div className="h-4 w-4 rounded-md active-selected mx-2 my-auto"></div>
+                  <span className="text-sm mx-auto">Selected</span>
+                </div>
+                <div className="flex flex-row">
+                  <div className="h-4 w-4 rounded-md today mx-2 my-auto"></div>
+                  <span className="text-sm mx-auto">Today</span>
+                </div>
+              </div>
+              <FullCalendar
+                plugins={[dayGridPlugin, interactionPlugin]}
+                initialDate={new Date()}
+                initialView="dayGridMonth"
+                fixedWeekCount={true}
+                eventClick={(info: any) => {
+                  const data = getExtendProps(info);
+                  if (data.date_diff < -1) {
+                    toast.error("Cannot edit past due operation");
+                    return;
                   }
+                  if (data.date_diff > 0) {
+                    toast.error("Cannot edit future pending operation");
+                    return;
+                  }
+                  if (data.status != "pending") {
+                    toast.error(
+                      "Interaction with confirmed operation is not permitted."
+                    );
+                    return;
+                  }
+                  if (prevInfo == null) {
+                    setPrevInfo({
+                      prevColor: info.el.style.backgroundColor,
+                      info: info,
+                    });
+                    data.date_diff < 0 ? console.log(data) : console.log("");
+                    info.el.style.backgroundColor = "#9400D3";
+                  } else {
+                    if (prevInfo.info.event.id != info.event.id) {
+                      setPrevInfo({
+                        prevColor: info.el.style.backgroundColor,
+                        info: info,
+                      });
+                    }
+                    prevInfo.info.el.style.backgroundColor = prevInfo.prevColor;
+                    data.date_diff < 0 ? console.log(data) : console.log("");
+                    info.el.style.backgroundColor = "#9400D3";
+                  }
+                  getData({
+                    item_id: "",
+                    item_quantity: "",
+                    batch_id: "",
+                    operation_id: data.id,
+                    item_unit: "",
+                  });
                 }}
-                className="btn btn-outline"
-              >
-                Next
-              </button>
+                dayHeaders={true}
+                events={parsed}
+                eventDisplay="block"
+                dayMaxEvents={true}
+                displayEventTime={false}
+              />
             </div>
           </div>
         </div>

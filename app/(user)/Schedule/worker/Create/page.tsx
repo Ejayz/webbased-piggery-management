@@ -195,7 +195,7 @@ export default function Page() {
                         },
                       ]);
                     }}
-                    className={`tab tab-lifted ${
+                    className={`tab tab-bordered ${
                       tabs[0].name == "individual" && tabs[0].active
                         ? "tab-active"
                         : ""
@@ -220,7 +220,7 @@ export default function Page() {
                         },
                       ]);
                     }}
-                    className={`tab tab-lifted ${
+                    className={`tab tab-bordered ${
                       tabs[0].name == "cage" && tabs[0].active
                         ? "tab-active"
                         : ""
@@ -245,7 +245,7 @@ export default function Page() {
                         },
                       ]);
                     }}
-                    className={`tab tab-lifted ${
+                    className={`tab tab-bordered ${
                       tabs[0].name == "batch" && tabs[0].active
                         ? "tab-active"
                         : ""

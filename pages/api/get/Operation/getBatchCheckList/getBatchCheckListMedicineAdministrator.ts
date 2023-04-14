@@ -10,10 +10,9 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+  const { batch_id } = req.query;
   try {
-    const { keyword } = req.query;
-
-    const data: any = await UpdateCage(keyword);
+    const data: any = await UpdateCage(batch_id);
     if (data.length != 0) {
       return res.status(200).json({ code: 200, data: data });
     } else {
@@ -27,13 +26,14 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(keyword: any) {
+async function UpdateCage(batch_id: any) {
   const conn = await connection.getConnection();
   try {
-    const keywords = `%${keyword}%`;
-    const sqlSelect = `SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_batch ON tbl_batch.batch_id=tbl_pig.batch_id WHERE (tbl_pig.pig_id LIKE ?) AND tbl_pig_history.pig_status='active' AND tbl_pig_history.status="active" AND tbl_pig_history.is_exist='true' AND tbl_pig.is_exist='true'`;
-    const [sqlSelectResult] = await conn.query(sqlSelect, [keywords]);
-    return sqlSelectResult;
+    const sql =
+      "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch ON tbl_operation.batch_id=tbl_batch.batch_id INNER JOIN tbl_inventory ON tbl_operation_item_details.item_id=tbl_inventory.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id=tbl_operation.operation_type_id WHERE tbl_operation.is_exist='true' and tbl_operation.operation_type_id=1 and tbl_operation.batch_id=? order by tbl_operation.operation_date asc";
+    const [result] = await conn.query(sql, [batch_id]);
+
+    return result;
   } catch (error) {
     console.log(error);
     return error;

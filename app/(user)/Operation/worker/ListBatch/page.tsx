@@ -187,6 +187,7 @@ export default function Page() {
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
+                            target="_blank"
                             className="btn btn-sm btn-primary"
                             href={{
                               pathname: "/Operation/worker/ListBatch/Activity",

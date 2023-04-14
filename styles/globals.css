@@ -140,3 +140,39 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.selectedDate {
+  background-color: #CAFFDC !important;
+  cursor: pointer;
+}
+
+.fc-day {
+  cursor: pointer;
+}
+
+.fc-highlight {
+  background-color: red;
+}
+
+.done {
+  background-color: #008000;
+}
+
+.past-due {
+  background-color: #FF0000;
+}
+
+.pending {
+  background-color: #87CEEB;
+}
+
+.canceled {
+  background-color: #A9A9A9;
+}
+
+.active-selected {
+  background-color: #9400D3;
+}
+.today{
+  background-color: orange;
+}
