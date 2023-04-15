@@ -25,11 +25,21 @@ interface ApiData {
   data: User[];
 }
 export default function Page() {
+  const [parsed, setParsed] = useState<User[]>([]);
+  const [colsData, setColsData] = ["username", "name", "job", "phone"];
+  const colsName = ["username", "name", "job", "phone"];
+  const [isSorting, setisSorting] = useState(false);
+  const pathname = "/user_management/owner";
+  const [page, setPage] = useState(1);
+  const msg = useSearchParams().get("msg");
+  const status = useSearchParams().get("status");
   const { isLoading, isFetching, data, refetch, error } = useQuery(
     "userData",
     async () => {
       const response = await fetch(
-        `${location.origin}/api/get/Operation/getBatch`
+        `${location.origin}/api/get/Operation/${page}?filter=${JSON.stringify(
+          filter
+        )} `
       );
       const data = await response.json();
       console.log(data);
@@ -44,18 +54,10 @@ export default function Page() {
   );
 
   const [filter, setFilter] = useState({
-    sortby: "operation_date",
+    sortby: " batch_name",
     sortorder: "desc",
     keyword: "",
   });
-  const [parsed, setParsed] = useState<User[]>([]);
-  const [colsData, setColsData] = ["username", "name", "job", "phone"];
-  const colsName = ["username", "name", "job", "phone"];
-  const [isSorting, setisSorting] = useState(false);
-  const pathname = "/user_management/owner";
-  const [page, setPage] = useState(1);
-  const msg = useSearchParams().get("msg");
-  const status = useSearchParams().get("status");
 
   useEffect(() => {
     if (data) {
@@ -76,6 +78,16 @@ export default function Page() {
       refetch();
     }
   }, [filter.keyword]);
+  useEffect(() => {
+    if (filter.sortby != "" && filter.sortorder != "") {
+      refetch();
+    }
+  }, [filter.sortby, filter.sortorder]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
+
 
   useEffect(() => {
     console.log(msg);
@@ -112,18 +124,6 @@ export default function Page() {
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
-            </select>
-            <select
-              className="select select-bordered my-auto w-full max-w-xs text-base-content mx-2"
-              onChange={(e) => {
-                setFilter({ ...filter, sortby: e.target.value });
-              }}
-              value={filter.sortby}
-            >
-              <option value="operation_date">Operation Date</option>
-              <option value="name">Name</option>
-              <option value="job">Job</option>
-              <option value="phone">Phone</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">
@@ -167,7 +167,7 @@ export default function Page() {
             <thead>
               <tr>
                 <th></th>
-                <th>Batch Id</th>
+                <th>Batch Name</th>
                 <th>Action</th>
               </tr>
             </thead>

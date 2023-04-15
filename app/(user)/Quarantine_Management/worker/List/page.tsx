@@ -1,85 +1,80 @@
 "use client";
 import Table from "@/components/TableBody/Table";
-import { getData, Search, sortData } from "@/hooks/useUserManagement";
+import { getData, Search, sortData } from "@/hooks/usePigManagement";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Calendar from "react-calendar";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
-interface User {
-  user_id: number;
-  username: string;
-  password: string;
-  first_name: string;
-  middle_name: string;
-  last_name: string;
-  phone: string;
-  job: string;
-  is_exist: string;
+interface Cage {
+  cage_name: String;
+  cage_type: String;
+  cage_capacity: Number;
 }
 
 interface ApiData {
   code: number;
-  data: User[];
+  data: Cage[];
 }
-export default function Page() {
-  const { isLoading, isFetching, data, refetch, error } = useQuery(
-    "userData",
-    async () => {
-      const response = await fetch(
-        `${location.origin}/api/get/Operation/getPatients`
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
-    },
-    {
-      cacheTime: 0,
-      refetchOnWindowFocus: false,
-      enabled: false,
-      keepPreviousData: true,
-    }
-  );
 
+export default function Page() {
+  const [parsed, setParsed] = useState<Cage[]>([]);
   const [filter, setFilter] = useState({
-    sortby: "operation_date",
-    sortorder: "desc",
+    sortby: "pig_id",
+    sortorder: "asc",
     keyword: "",
   });
-  const [parsed, setParsed] = useState<User[]>([]);
-  const [colsData, setColsData] = ["username", "name", "job", "phone"];
-  const colsName = ["username", "name", "job", "phone"];
-  const [isSorting, setisSorting] = useState(false);
-  const pathname = "/user_management/owner";
   const [page, setPage] = useState(1);
   const msg = useSearchParams().get("msg");
   const status = useSearchParams().get("status");
 
+  const { error, isLoading, isFetching, data, refetch } = useQuery(
+    "cage",
+    async () => {
+      let headersList = {
+        Accept: "*/*",
+      };
+      let response = await fetch(
+        `${
+          location.origin
+        }/api/get/Quarantine/${page}/?&filters=${JSON.stringify(filter)}`,
+        {
+          method: "GET",
+          headers: headersList,
+        }
+      );
+      const data = await response.json();
+      data.time = new Date().getTime() / 1000;
+      return data;
+    },
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: 0,
+      enabled: false,
+      keepPreviousData: true,
+    }
+  );
+  console.log(data);
   useEffect(() => {
-    if (data) {
+    if (data !== undefined) {
       if (data.data) {
-        setParsed(data.data);
+        setParsed(data.data[0]);
       } else {
         setParsed([]);
       }
     }
-  }, [data, isFetching]);
-
+  }, [data]);
   useEffect(() => {
     refetch();
-  }, []);
-
+  }, [filter.sortby]);
   useEffect(() => {
-    if (filter.keyword == "") {
-      refetch();
-    }
-  }, [filter.keyword]);
-
+    refetch();
+  }, [filter.sortorder]);
   useEffect(() => {
-    console.log(msg);
-    console.log(status);
+    refetch();
+  }, [page]);
+  useEffect(() => {
     if (msg != null) {
       if (status == "success") {
         toast.success(msg);
@@ -88,13 +83,12 @@ export default function Page() {
       }
     }
   }, []);
-  console.log(parsed);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <p className="text-2xl text-base-content my-auto p-4">
-            Operation Calendar
+            Quarantine List
           </p>
         </div>
 
@@ -120,10 +114,10 @@ export default function Page() {
               }}
               value={filter.sortby}
             >
-              <option value="operation_date">Operation Date</option>
-              <option value="name">Name</option>
-              <option value="job">Job</option>
-              <option value="phone">Phone</option>
+              <option value="pig_id">Pig Id</option>
+              <option value="pig_tag">Pig Tag</option>
+              <option value="cage_name">Cage Name</option>
+              <option value="remarks">Remarks</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">
@@ -131,6 +125,12 @@ export default function Page() {
                   onSubmit={(e) => {
                     e.preventDefault();
                     refetch();
+                  }}
+                  onChange={(e: any) => {
+                    e.preventDefault();
+                    if (e.target.value == "") {
+                      refetch();
+                    }
                   }}
                   className="flex"
                 >
@@ -163,12 +163,17 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table className="table table-compact w-11/12  mx-auto text-base-content">
+          <table
+            data-theme="dark"
+            className="table table-compact w-11/12  mx-auto  text-center"
+          >
             <thead>
               <tr>
                 <th></th>
                 <th>Pig Id</th>
-                <th>Action</th>
+                <th>Pig Tag</th>
+                <th>Cage Name</th>
+                <th>Remarks</th>
               </tr>
             </thead>
             <tbody>
@@ -184,19 +189,42 @@ export default function Page() {
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
                       <td>{item.pig_id}</td>
-                      <td className="flex">
+                      <td>{item.pig_tag}</td>
+                      <td>{item.cage_name}</td>
+                      <td>{item.remarks}</td>
+                      {/* <td className="flex">
                         <div className="flex flex-row mx-auto">
-                        <Link
+                          <Link
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/Operation/worker/List/Activity",
-                              query: { id: item.cage_id },
+                              pathname: "/pig_management/worker/Update",
+                              query: { id: item.pig_id },
                             }}
                           >
-                            View Activities
+                            Update
+                          </Link>
+                          <div className="divider divider-horizontal"></div>
+                          <Link
+                            className="btn btn-sm btn-primary"
+                            href={{
+                              pathname: "/pig_management/worker/View",
+                              query: { id: item.pig_id },
+                            }}
+                          >
+                            View
+                          </Link>
+                          <div className="divider divider-horizontal"></div>
+                          <Link
+                            className="btn btn-sm btn-primary"
+                            href={{
+                              pathname: "/pig_management/worker/Remove",
+                              query: { id: item.pig_id },
+                            }}
+                          >
+                            Remove
                           </Link>
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })

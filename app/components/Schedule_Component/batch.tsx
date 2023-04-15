@@ -603,7 +603,7 @@ export function Batch() {
                   <span className="label-text text-lg">Item Name*</span>
                 </label>
                 <SearchInput
-                  label="Selected Item"
+                  label="Select Item"
                   type="text"
                   register={register}
                   name="item_name"

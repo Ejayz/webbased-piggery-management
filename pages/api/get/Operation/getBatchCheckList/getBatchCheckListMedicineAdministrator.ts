@@ -30,7 +30,7 @@ async function UpdateCage(batch_id: any) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch ON tbl_operation.batch_id=tbl_batch.batch_id INNER JOIN tbl_inventory ON tbl_operation_item_details.item_id=tbl_inventory.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id=tbl_operation.operation_type_id WHERE tbl_operation.is_exist='true' and tbl_operation.operation_type_id=1 and tbl_operation.batch_id=? order by tbl_operation.operation_date asc";
+      "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch ON tbl_operation.batch_id=tbl_batch.batch_id INNER JOIN tbl_inventory ON tbl_operation_item_details.item_id=tbl_inventory.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id=tbl_operation.operation_type_id WHERE tbl_operation.is_exist='true' and tbl_operation.operation_type_id!=1 and tbl_operation.batch_id=? order by tbl_operation.operation_date asc";
     const [result] = await conn.query(sql, [batch_id]);
 
     return result;

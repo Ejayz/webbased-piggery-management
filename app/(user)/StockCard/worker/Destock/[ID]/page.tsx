@@ -146,7 +146,7 @@ export default function Page({ params }: any) {
   } else {
     return (
       <>
-        <div className="w-full bg-base-100 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
+        <div className="w-full  h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className=" h-auto w-full">
             <div className="w-11/12  mx-auto flex flex-row">
               <p className="text-2xl text-base-content my-auto p-4">
@@ -154,11 +154,8 @@ export default function Page({ params }: any) {
               </p>
             </div>
 
-            <div
-              data-theme="light"
-              className="card w-11/12 mx-auto bg-base-200 text-base-content shadow-xl "
-            >
-              <div className="card-body">
+            <div className="card w-11/12 mx-auto text-base-content  ">
+              <div className="">
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Stock Card</li>

@@ -176,3 +176,44 @@ input[type=number] {
 .today{
   background-color: orange;
 }
+.bg-pig{
+  background-image: url("/assets/pig_bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#child{
+  z-index: 0;
+}
+
+
+.ptmono {
+  font-family: "ptmono";
+}
+.cartone {
+  font-family: "cartone";
+}
+.home{
+  font-family: "home";
+}
+.frickleface{
+  font-family: "FrickleFace";
+}
+
+@font-face {
+  font-family: "ptmono";
+  src: url("/fonts/PTMono/PTMono.ttf");
+}
+@font-face {
+  font-family: "cartone";
+  src: url("/fonts/CarterOne/CarterOne.ttf");
+}
+
+@font-face{
+  font-family:"home" ;
+  src:url("/fonts/Home/Home.ttf");
+}
+@font-face {
+  font-family: "FrickleFace";
+  src: url("/fonts/FreckleFace/FreckleFace.ttf");
+}

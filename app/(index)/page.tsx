@@ -13,6 +13,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
 import SelectInput from "@/components/FormCompsV2/SelectInput";
 import PasswordInput from "@/components/FormCompsV2/PasswordInput";
+import ScrollStack from "@/components/TechStack/ScollStack";
 
 export default function Page() {
   //Create states for username password and remember me
@@ -63,92 +64,73 @@ export default function Page() {
 
   return (
     <>
-      <div className="hero bg-base-100 h-screen">
-        <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="text-center lg:text-left">
-            <h1 className="text-5xl text-base-content font-bold">Login Now!</h1>
-            <p className="py-6 text-base-content">
-              Piggery Management System that is easy to use
-            </p>
-            <h1 className="text-5xl text-base-content font-bold">
-              No account?{" "}
-            </h1>
-            <p className="py-6 text-base-content">
-              Contact server administrator for your account!
-            </p>
+      <div className=" h-screen w-screen  text-base-content flex flex-col">
+        <div className="mx-auto">
+          <span className="text-4xl cartone text-base-content p-4 ml-4">
+            Piggery Management System
+          </span>
+          <br />
+          <span className="frickleface text-xl ml-8">
+            for your growing hog farm!
+          </span>
+        </div>
+        <div className="flex flex-col w-1/2 mx-auto p-12">
+          <div className="grid  mx-auto w-full">
+            <Image
+              className="w-12 h-12 mx-auto"
+              src={"/assets/index/inventory.png"}
+              height={500}
+              width={500}
+              alt={""}
+            ></Image>
+            <span className="text-2xl my-auto font-bold px-4 text-center">
+              Manage Inventory
+            </span>
           </div>
+          <span className="text-center ">
+            Accurately track inventory usage with auto deduction in every
+            operation!Get the list of low level items instantly
+          </span>
+        </div>
+        <div className="flex flex-col w-1/2 mx-auto p-12 uppercase">
+          <div className="grid mx-auto">
+            <Image
+              className="w-12 h-12 mx-auto"
+              src={"/assets/index/record.png"}
+              height={500}
+              width={500}
+              alt={""}
+            ></Image>
+            <span className="text-2xl my-auto font-bold px-4 text-center">
+              Manage Pig Record
+            </span>
+          </div>
+          <span className="text-center ">
+            Easily record,find and secure pig records. Keep track recent
+            operations and feeding schedules.
+          </span>
+        </div>
+        <div className="flex flex-col w-1/2 mx-auto p-12">
+          <div className="grid  mx-auto w-full">
+            <Image
+              className="w-12 h-12 mx-auto"
+              src={"/assets/index/schedule.png"}
+              height={500}
+              width={500}
+              alt={""}
+            ></Image>
+            <span className="text-2xl my-auto font-bold px-4 text-center">
+              Manage Schedules And Plans
+            </span>
+          </div>
+          <span className="text-center ">
+            Create plan and schedule for pigs to ensure that they are healthy
+            and well fed.
+          </span>
+        </div>
 
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="card flex-shrink-0 w-full bg-primary-content max-w-sm shadow-2xl"
-          >
-            <div className="card-body">
-              <NormalInput
-                name={"username"}
-                label={"Username"}
-                register={register}
-                errors={errors}
-                required={true}
-                type={"text"}
-                validationSchema={{
-                  required: "This field is required",
-                }}
-              ></NormalInput>
-              <PasswordInput
-                name={"password"}
-                label={"Password"}
-                register={register}
-                errors={errors}
-                required={true}
-                validationSchema={{
-                  required: "This field is required",
-                }}
-              ></PasswordInput>
-              <SelectInput
-                name={"job"}
-                label={"Job"}
-                register={register}
-                errors={errors}
-                required={true}
-                options={job_option}
-                validationSchema={{
-                  required: "This field is required",
-                }}
-              ></SelectInput>
-              <div className="form-control">
-                <label className="label label-text">
-                  <Link href="#" as={"/forgotpassword/verifysms"}>
-                    Forgot password?
-                  </Link>
-                </label>
-                <div
-                  className="form-control  tooltip"
-                  data-tip="You will not be logged out for 30 days."
-                >
-                  <label className="label justify-start flex cursor-pointer">
-                    <span className="label-text">Remember me</span>
-                    <input
-                      type="checkbox"
-                      className="checkbox ml-4 checkbox-primary"
-                      {...register("remember_me")}
-                    />
-                  </label>
-                </div>
-              </div>
-              <div className="form-control mt-6 ">
-                <button
-                  type="submit"
-                  disabled={requesting}
-                  className={`btn btn-primary  ${
-                    requesting ? "loading btn-seconday" : ""
-                  }`}
-                  aria-label="submit"
-                >
-                  Login
-                </button>
-              </div>
-            </div>
-          </form>
+        <div className="mx-12">
+          <ScrollStack></ScrollStack>
         </div>
       </div>
     </>

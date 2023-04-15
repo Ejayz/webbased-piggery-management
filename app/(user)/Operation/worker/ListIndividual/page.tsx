@@ -1,69 +1,112 @@
 "use client";
+import Table from "@/components/TableBody/Table";
+import { getData, Search, sortData } from "@/hooks/useUserManagement";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Calendar from "react-calendar";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { DateTime } from "luxon";
+
+interface User {
+  user_id: number;
+  username: string;
+  password: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  phone: string;
+  job: string;
+  is_exist: string;
+}
+
+interface ApiData {
+  code: number;
+  data: User[];
+}
 export default function Page() {
-  const [parsed, setParsed] = useState<any[]>([]);
-  const [filter, setFilter] = useState({
-    sortby: "operation_date",
-    sortorder: "desc",
-    keyword: "",
-  });
+  const [parsed, setParsed] = useState<User[]>([]);
+  const [colsData, setColsData] = ["username", "name", "job", "phone"];
+  const colsName = ["username", "name", "job", "phone"];
+  const [isSorting, setisSorting] = useState(false);
+  const pathname = "/user_management/owner";
   const [page, setPage] = useState(1);
   const msg = useSearchParams().get("msg");
   const status = useSearchParams().get("status");
-
-  const { error, isLoading, isFetching, data, refetch } = useQuery(
-    "cage_list",
+  const { isLoading, isFetching, data, refetch, error } = useQuery(
+    "individual_data",
     async () => {
       const response = await fetch(
-        `${location.origin}/api/get/Today/${page}/?&filter=${JSON.stringify(
+        `${
+          location.origin
+        }/api/get/Operation/Individual/${page}?filter=${JSON.stringify(
           filter
-        )}`
+        )} `
       );
       const data = await response.json();
-      data.time = new Date().getTime() / 1000;
+      console.log(data);
       return data;
     },
     {
-      refetchOnWindowFocus: false,
+      cacheTime: 0,
+
+      keepPreviousData: true,
     }
   );
-  console.log(data);
+
+  const [filter, setFilter] = useState({
+    sortby: " batch_name",
+    sortorder: "desc",
+    keyword: "",
+  });
 
   useEffect(() => {
-    if (data !== undefined) {
+    if (data) {
       if (data.data) {
         setParsed(data.data);
       } else {
         setParsed([]);
       }
     }
-  }, [data]);
+  }, [data, isFetching]);
+
   useEffect(() => {
     refetch();
-  }, [filter.sortby]);
-  useEffect(() => {
-    refetch();
-  }, [filter.sortorder]);
+  }, []);
+
   useEffect(() => {
     if (filter.keyword == "") {
       refetch();
     }
   }, [filter.keyword]);
   useEffect(() => {
+    if (filter.sortby != "" && filter.sortorder != "") {
+      refetch();
+    }
+  }, [filter.sortby, filter.sortorder]);
+
+  useEffect(() => {
     refetch();
   }, [page]);
 
+  useEffect(() => {
+    console.log(msg);
+    console.log(status);
+    if (msg != null) {
+      if (status == "success") {
+        toast.success(msg);
+      } else {
+        toast.error(msg);
+      }
+    }
+  }, []);
+  console.log(parsed);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <p className="text-2xl text-base-content my-auto p-4">
-            Today`s Schedule List
+            Operation Calendar
           </p>
         </div>
 
@@ -81,17 +124,6 @@ export default function Page() {
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
-            </select>
-            <select
-              className="select select-bordered my-auto w-full max-w-xs text-base-content mx-2"
-              onChange={(e) => {
-                setFilter({ ...filter, sortby: e.target.value });
-              }}
-              value={filter.sortby}
-            >
-              <option value="operation_type">Operation Type</option>
-              <option value="operation_date">Operation Date</option>
-              <option value="pig_id">Pig Id</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">
@@ -131,12 +163,10 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table className="table table-compact w-11/12  mx-auto   text-base-content">
+          <table className="table table-compact w-11/12  mx-auto  text-base-content">
             <thead>
               <tr>
                 <th></th>
-                <th>Activity</th>
-                <th>Operation Date</th>
                 <th>Pig Id</th>
                 <th>Action</th>
               </tr>
@@ -153,23 +183,18 @@ export default function Page() {
                   return (
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
-                      <td>{item.operation_name}</td>
-                      <td>
-                        {DateTime.fromISO(item.operation_date)
-                          .setZone("Asia/Manila")
-                          .toFormat("EEEE',' MMM d',' yyyy")}
-                      </td>
                       <td>{item.pig_id}</td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
+                            target="_blank"
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/Schedule/worker/ConfirmActivity",
-                              query: { id: item.operation_id },
+                              pathname: "/Operation/worker/ListIndividual/Activity",
+                              query: { id: item.pig_id },
                             }}
                           >
-                            Confirm
+                            View Activities
                           </Link>
                         </div>
                       </td>

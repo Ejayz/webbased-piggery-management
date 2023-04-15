@@ -23,18 +23,9 @@ export default async function handler(
 
   try {
     let data: any;
-    if (keyword == "undefined") {
-      data = await GetCage(offset, limit, sortorder, sortby);
-    } else {
-      data = await SearhGetCage(
-        offset,
-        limit,
-        sortorder,
-        sortby,
-        keyword,
-        date
-      );
-    }
+
+    data = await SearhGetCage(offset, limit, sortorder, sortby, keyword, date);
+
     if (data.length != 0) {
       return res.status(200).json({ code: 200, data: data });
     } else {
@@ -56,36 +47,10 @@ export default async function handler(
   }
 }
 
-async function GetCage(
-  offset: number,
-  limit: number,
-  SortOrder: any,
-  sortby: any
-) {
-  const conn = await connection.getConnection();
-  try {
-    const sql = `SELECT i.*, c.category_name
-  FROM tbl_inventory i 
-  JOIN tbl_category c ON i.category_id = c.category_id 
-  WHERE i.is_exist = 'true' 
-  ORDER BY ${conn.escapeId(sortby)} ${SortOrder} 
-  LIMIT ${limit} OFFSET ${offset};`;
-    const [err, result] = await conn.query(sql, []);
-    conn.release();
-    if (err) return err;
-    return err;
-  } catch (error) {
-    console.log(error);
-    return error;
-  } finally {
-    conn.release();
-  }
-}
-
 async function SearhGetCage(
   offset: number,
   limit: number,
-  SortOrder: any,
+  sortorder: any,
   sortby: any,
   keyword: string,
   date: string
@@ -93,13 +58,8 @@ async function SearhGetCage(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id WHERE operation_date=? AND tbl_operation.is_exist='true' AND tbl_operation.status='pending'
-    ORDER BY ${conn.escapeId(sortby)} ${SortOrder}
-    LIMIT ${limit} OFFSET ${offset};`;
-
-    const [err, result] = await conn.query(sql, [date]);
-    conn.release();
-    if (err) return err;
+    const sql = `SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch  ON tbl_operation.batch_id=tbl_batch.batch_id WHERE tbl_operation.is_exist='true' AND tbl_operation.status='pending' and tbl_operation.batch_id!='Null' AND (tbl_batch.batch_name like ?) GROUP BY tbl_operation.batch_id ORDER BY tbl_batch.batch_name ${sortorder}  LIMIT ${limit} OFFSET ${offset}`;
+    const [result] = await conn.query(sql, [keyword]);
     return result;
   } catch (error) {
     console.log(error);

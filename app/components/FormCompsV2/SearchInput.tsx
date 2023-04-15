@@ -42,7 +42,7 @@ const Input = ({
           }}
           className="btn"
         >
-          Find Feeds
+          {label}
         </button>
       </label>
     </div>
