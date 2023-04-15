@@ -140,3 +140,80 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.selectedDate {
+  background-color: #CAFFDC !important;
+  cursor: pointer;
+}
+
+.fc-day {
+  cursor: pointer;
+}
+
+.fc-highlight {
+  background-color: red;
+}
+
+.done {
+  background-color: #008000;
+}
+
+.past-due {
+  background-color: #FF0000;
+}
+
+.pending {
+  background-color: #87CEEB;
+}
+
+.canceled {
+  background-color: #A9A9A9;
+}
+
+.active-selected {
+  background-color: #9400D3;
+}
+.today{
+  background-color: orange;
+}
+.bg-pig{
+  background-image: url("/assets/pig_bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#child{
+  z-index: 0;
+}
+
+
+.ptmono {
+  font-family: "ptmono";
+}
+.cartone {
+  font-family: "cartone";
+}
+.home{
+  font-family: "home";
+}
+.frickleface{
+  font-family: "FrickleFace";
+}
+
+@font-face {
+  font-family: "ptmono";
+  src: url("/fonts/PTMono/PTMono.ttf");
+}
+@font-face {
+  font-family: "cartone";
+  src: url("/fonts/CarterOne/CarterOne.ttf");
+}
+
+@font-face{
+  font-family:"home" ;
+  src:url("/fonts/Home/Home.ttf");
+}
+@font-face {
+  font-family: "FrickleFace";
+  src: url("/fonts/FreckleFace/FreckleFace.ttf");
+}

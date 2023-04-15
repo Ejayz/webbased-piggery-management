@@ -7,7 +7,7 @@ export default function ScollStack() {
     return <>
         <div className='my-12'>
             <div className='text-center mb-4 mt-10'>
-                <p className='text-4xl font-bold text-primary uppercase '>Technology Stack behind this web application</p>
+                <p className='text-4xl font-bold text-primary uppercase '>Software Stack behind this web application</p>
             </div>
             <div className='w-full h-auto'>
                 <Marquee gradient={false} speed={50} direction={"right"}>
@@ -33,7 +33,7 @@ export default function ScollStack() {
                     </div>
                     <div className="mx-4 w-full h-full flex  rounder-md ">
                         <div className="w-3/4  bg-opacity-70 mx-auto my-auto flex h-full px-4   rounded-md bg-base-300">
-                            <Image className=' my-auto mx-auto ' src="/assets/icons/clickup.png" width="200" height="120" alt="vercel" priority />
+                            <Image className=' my-auto mx-auto ' src="/assets/icons/twilio.svg" width="200" height="120" alt="vercel" priority />
                         </div>
                     </div>
                     <div className="mx-4 w-full h-full flex  rounder-md ">

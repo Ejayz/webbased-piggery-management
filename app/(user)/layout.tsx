@@ -112,23 +112,14 @@ export default function User({ children }: { children: React.ReactNode }) {
               <a className="btn btn-ghost normal-case text-xl">RVM Hog Farm</a>
             </div>
             {/* Theme Changer */}
-            <div className=" w-full flex">
-              <select
-                data-choose-theme
-                className="select select-bordered bg-neutral hidden max-w-xs ml-auto mr-4"
-              >
-                <option disabled>Theme</option>
-                <option value="">Default</option>
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-              </select>
-            </div>
+            <div className=" w-full flex"></div>
           </div>
           <div className="drawer">
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content h-full w-full overflow-x-hidden bg-base-100">
+            <div className="drawer-content h-full w-full overflow-x-hidden ">
               {/* Content */}
-              <div className="h-auto overflow-y-auto overflow-x-hidden lg:overflow-hidden bg-base-100 w-screen">
+
+              <div className="min-h-screen h-auto overflow-y-auto overflow-x-hidden  lg:overflow-hidden  w-screen bg-white ">
                 {children}
               </div>
             </div>
@@ -232,6 +223,18 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Reorder List
+                          </Link>
+                        </li>{" "}
+                        <li>
+                          <Link href="/reports/InventoryReport">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Inventory Report
                           </Link>
                         </li>
                         {/* <li>
@@ -685,7 +688,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/Plan/veterinarian/Create">
+                        <Link href="/Plan/veterinarian/FeedingPlan">
                           <Image
                             src={"/assets/icons/create_user.png"}
                             className="h-6 w-6 hidden"
@@ -694,30 +697,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
-                      </li>
-                      {/* <li>
-                        <Link href="/StockCard/worker/Destock">
-                          <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Destock
-                        </Link>
-                      </li> */}
-                      <li>
-                        <Link href="/Plan/veterinarian/List">
-                          <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Plans List
                         </Link>
                       </li>
                     </div>
@@ -756,7 +735,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                       <li>
-                        <Link href="/Schedule/worker/List">
+                        <Link href="/Schedule/worker/Modify">
                           <Image
                             src={"/assets/icons/user_list.png"}
                             className="h-6 w-6 hidden"
@@ -827,7 +806,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                       <li>
-                        <Link href="/Operation/worker/List">
+                        <Link href="/Operation/worker/ListIndividual">
                           <Image
                             src={"/assets/icons/create_user.png"}
                             className="h-6 w-6 hidden"
@@ -838,34 +817,57 @@ export default function User({ children }: { children: React.ReactNode }) {
                           Individual Operation List
                         </Link>
                       </li>
-                      {/* <li>
-                        <Link href="/Schedule/worker/List">
-                          <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Schedule List
-                        </Link>
-                      </li> */}
-                      {/* <li>
-                        <Link href="/Schedule/worker/Today">
-                          <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Today Schedule
-                        </Link>
-                      </li> */}
                     </div>
                   </div>
                 </div>
                 {/* End of Schedule management menu */}
+                {/* Quarantine Management */}
+                <div
+                  className={`${
+                    loading.data.job == "worker" ? "block" : "hidden"
+                  }`}
+                >
+                  <div className="collapse">
+                    <input type="checkbox" />
+                    <div className="collapse-title text-base flex flex-cols font-medium">
+                      <Image
+                        src={"/assets/icons/user_management.png"}
+                        className="h-6 w-6 mr-2 my-auto hidden"
+                        alt={""}
+                        height={512}
+                        width={512}
+                      ></Image>
+                      Manage Quarantine
+                    </div>
+                    <div className="collapse-content">
+                      <li>
+                        <Link href="/Quarantine_Management/worker/Create">
+                          <Image
+                            src={"/assets/icons/create_user.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Create
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/Quarantine_Management/worker/List">
+                          <Image
+                            src={"/assets/icons/user_list.png"}
+                            className="h-6 w-6 hidden"
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Quarantine List
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                </div>
+                {/* End of Qurantine management menu */}
                 <div className="font-medium text-base">
                   <li>
                     <Link

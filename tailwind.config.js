@@ -1,20 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   daisyui: {
-    themes: ["light", "dark"],
+    themes: ["light"],
   },
   content: [
-    "./app/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.tsx",
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    colors: {
-      primary: "#ffffff",
-      secondary: "#191645",
-      accent: "#43C6AC",
-      neutral: "#3D4451",
-    },
     extend: {
       keyframes: {
         marquee: {

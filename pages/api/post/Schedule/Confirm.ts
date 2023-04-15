@@ -1,3 +1,4 @@
+import { throws } from "assert";
 import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
@@ -20,14 +21,12 @@ export default async function handler(
     await insertStockCardDetails(conn, operation_id, quantity);
     await updateItem(operation_id, quantity);
     const result = await updateOperation(conn, operation_id);
-    console.log(result);
-
     conn.commit();
     return res.status(200).json({ code: 200, message: "Updated successfully" });
   } catch (error) {
-    console.log(error);
+    console.log("From catch main", error);
     conn.rollback();
-    return res.status(500).json({ code: 500, message: "Something went wrong" });
+    return res.status(500).json({ code: 500, message: error });
   } finally {
     conn.release();
   }
@@ -121,6 +120,10 @@ async function insertStockCardDetails(
         const total_quantity =
           parseFloat(closingQuantity) - calculated_quantity;
         console.log(calculated_quantity, total_quantity);
+        if (total_quantity < 0) {
+          throw "Current stocks for this item is not enough.";
+        }
+
         const [createStockCardDetailsResult]: any = await conn.query(
           createStockCardDetails,
           [
@@ -131,7 +134,6 @@ async function insertStockCardDetails(
             "Scheduled Activity",
           ]
         );
-        console.log(createStockCardDetailsResult);
         const updateStockCard =
           "UPDATE tbl_stock_card SET closing_quantity=? WHERE stock_card_id=? AND is_exist='true'";
         const [updateStockCardResult]: any = await conn.query(updateStockCard, [
@@ -144,8 +146,8 @@ async function insertStockCardDetails(
     return 200;
   } catch (error) {
     conn.rollback();
-    console.log(error);
-    return error;
+    console.log("Error From updating Stock Card", error);
+    throw error;
   }
 }
 

@@ -10,17 +10,12 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const { operation_type_id, cage_id, item_list } = req.body;
+  const { cage_id, item_list } = req.body;
   console.log(item_list);
   const conn = await connection.getConnection();
   try {
     conn.beginTransaction();
-    const data: any = await UpdateCage(
-      conn,
-      operation_type_id,
-      cage_id,
-      item_list
-    );
+    const data: any = await UpdateCage(conn, cage_id, item_list);
     if (data != "") {
       return res.status(200).json({ code: 200, message: "Success" });
     } else {
@@ -36,62 +31,24 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(
-  conn: any,
-  operation_type_id: any,
-  pig_id: any,
-  item_list: any
-) {
+async function UpdateCage(conn: any, pig_id: any, item_list: any) {
   try {
     await Promise.all(
       item_list.map(async (item: any) => {
-        if (item.operation_id == 1) {
-          const insertOperation =
-            "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm) values (?,?,?,'AM') ";
-          const [sqlInsertResult]: any = await conn.query(insertOperation, [
-            item.operation_id,
-            item.operation_date,
-            pig_id,
-          ]);
-          const lastInsertedData = sqlInsertResult.insertId;
-          const data2: any = await InsertOperationItemDetail(
-            conn,
-
-            item.item_id,
-            item.operation_id,
-            lastInsertedData
-          );
-
-          const insertOperationPM =
-            "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm) values (?,?,?,'PM') ";
-          const [sqlInsertResultPM]: any = await conn.query(insertOperationPM, [
-            item.operation_id,
-            item.operation_date,
-            pig_id,
-          ]);
-          const lastInsertedDataPM = sqlInsertResultPM.insertId;
-          const data2PM: any = await InsertOperationItemDetail(
-            conn,
-            item.item_id,
-            item.operation_id,
-            lastInsertedDataPM
-          );
-        } else {
-          const insertOperation =
-            "insert into tbl_operation (operation_type_id,operation_date,batch_id) values (?,?,?) ";
-          const [sqlInsertResult]: any = await conn.query(insertOperation, [
-            item.operation_id,
-            item.operation_date,
-            pig_id,
-          ]);
-          const lastInsertedData = sqlInsertResult.insertId;
-          const data2: any = await InsertOperationItemDetail(
-            conn,
-            item.item_id,
-            item.operation_id,
-            lastInsertedData
-          );
-        }
+        const insertOperation =
+          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm) values (?,?,?,?) ";
+        const [sqlInsertResult]: any = await conn.query(insertOperation, [
+          item.activity,
+          item.start,
+          pig_id,
+          item.data_time,
+        ]);
+        const lastInsertedData = sqlInsertResult.insertId;
+        const data2: any = await InsertOperationItemDetail(
+          conn,
+          item.item_id,
+          lastInsertedData
+        );
       })
     );
     conn.commit();
@@ -102,10 +59,10 @@ async function UpdateCage(
     return error;
   }
 }
+
 async function InsertOperationItemDetail(
   conn: any,
   item_id: any,
-  item_quantity: any,
   operation_id: any
 ) {
   try {
@@ -114,7 +71,6 @@ async function InsertOperationItemDetail(
     const [sqlInsertResult]: any = await conn.query(insertOperationItemDetail, [
       operation_id,
       item_id,
-      item_quantity,
     ]);
     return 200;
   } catch (error) {

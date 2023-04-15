@@ -1,9 +1,4 @@
-export const CreateIndividualSchedule = async (
-  operation_type_id: any,
-  operation_date: any,
-  pig_id: any,
-  item_list: any
-) => {
+export const CreateIndividualSchedule = async (pig_id: any, item_list: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -11,7 +6,6 @@ export const CreateIndividualSchedule = async (
   };
 
   let bodyContent = JSON.stringify({
-    operation_type_id: operation_type_id,
     pig_id: pig_id,
     item_list: item_list,
   });
@@ -51,12 +45,7 @@ export const ConfirmIndividualSchedule = async (
   return data;
 };
 
-export const CreateCageSchedule = async (
-  operation_type_id: any,
-  operation_date: any,
-  cage_id: any,
-  item_list: any
-) => {
+export const CreateCageSchedule = async (cage_id: any, item_list: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -64,7 +53,6 @@ export const CreateCageSchedule = async (
   };
 
   let bodyContent = JSON.stringify({
-    operation_type_id: operation_type_id,
     cage_id: cage_id,
     item_list: item_list,
   });
@@ -79,12 +67,7 @@ export const CreateCageSchedule = async (
   return data;
 };
 
-export const CreateBatchSchedule = async (
-  operation_type_id: any,
-  operation_date: any,
-  cage_id: any,
-  item_list: any
-) => {
+export const CreateBatchSchedule = async (cage_id: any, item_list: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -92,7 +75,6 @@ export const CreateBatchSchedule = async (
   };
 
   let bodyContent = JSON.stringify({
-    operation_type_id: operation_type_id,
     cage_id: cage_id,
     item_list: item_list,
   });

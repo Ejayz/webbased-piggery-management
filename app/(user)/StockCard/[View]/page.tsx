@@ -172,8 +172,8 @@ export default function Page({ params }: any) {
             </button>
           </div>
           {StockCardData?.data != undefined ? (
-            <div className="card w-11/12 bg-base-200 my-auto  shadow-xl">
-              <div className="card-body">
+            <div className="card w-11/12  my-auto  shadow-xl">
+              <div className="">
                 <h2 className="card-title text-base-content">
                   Stock Card #
                   {StockCardData?.data != undefined

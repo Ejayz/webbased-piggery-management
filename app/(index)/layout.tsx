@@ -34,26 +34,27 @@ export default function RootLayout({
   return (
     <>
       <html
-        data-theme="light"
         className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base"
       >
         <Head title={"Login"}></Head>
         <body>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-          <Navbar></Navbar>
-          {children}
-          <Footer></Footer>
+          <div className="w-screen h-screen overflow-y-scroll overflow-x-hidden bg-pig  flex flex-col">
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
+            <Navbar></Navbar>
+            {children}
+            <Footer></Footer>
+          </div>
         </body>
         {/* <Script src="/sw.js"></Script> */}
       </html>

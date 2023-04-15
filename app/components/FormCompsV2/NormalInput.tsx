@@ -33,6 +33,7 @@ const Input = ({
       }`}
       {...register(name, validationSchema)}
       step="any"
+      min={type == "date" ? new Date().toISOString().split("T")[0] : undefined}
     />
     <ErrorMessage
       errors={errors}

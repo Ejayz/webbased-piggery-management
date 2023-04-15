@@ -25,29 +25,6 @@ interface ApiData {
   data: User[];
 }
 export default function Page() {
-  const { isLoading, isFetching, data, refetch, error } = useQuery(
-    "userData",
-    async () => {
-      const response = await fetch(
-        `${location.origin}/api/get/Operation/getCage`
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
-    },
-    {
-      cacheTime: 0,
-      refetchOnWindowFocus: false,
-      enabled: false,
-      keepPreviousData: true,
-    }
-  );
-
-  const [filter, setFilter] = useState({
-    sortby: "operation_date",
-    sortorder: "desc",
-    keyword: "",
-  });
   const [parsed, setParsed] = useState<User[]>([]);
   const [colsData, setColsData] = ["username", "name", "job", "phone"];
   const colsName = ["username", "name", "job", "phone"];
@@ -56,6 +33,32 @@ export default function Page() {
   const [page, setPage] = useState(1);
   const msg = useSearchParams().get("msg");
   const status = useSearchParams().get("status");
+  const { isLoading, isFetching, data, refetch, error } = useQuery(
+    "individual_data",
+    async () => {
+      const response = await fetch(
+        `${
+          location.origin
+        }/api/get/Operation/Cage/${page}?filter=${JSON.stringify(
+          filter
+        )} `
+      );
+      const data = await response.json();
+      console.log(data);
+      return data;
+    },
+    {
+      cacheTime: 0,
+
+      keepPreviousData: true,
+    }
+  );
+
+  const [filter, setFilter] = useState({
+    sortby: " batch_name",
+    sortorder: "desc",
+    keyword: "",
+  });
 
   useEffect(() => {
     if (data) {
@@ -76,6 +79,15 @@ export default function Page() {
       refetch();
     }
   }, [filter.keyword]);
+  useEffect(() => {
+    if (filter.sortby != "" && filter.sortorder != "") {
+      refetch();
+    }
+  }, [filter.sortby, filter.sortorder]);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   useEffect(() => {
     console.log(msg);
@@ -112,18 +124,6 @@ export default function Page() {
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
-            </select>
-            <select
-              className="select select-bordered my-auto w-full max-w-xs text-base-content mx-2"
-              onChange={(e) => {
-                setFilter({ ...filter, sortby: e.target.value });
-              }}
-              value={filter.sortby}
-            >
-              <option value="operation_date">Operation Date</option>
-              <option value="name">Name</option>
-              <option value="job">Job</option>
-              <option value="phone">Phone</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">
@@ -167,7 +167,7 @@ export default function Page() {
             <thead>
               <tr>
                 <th></th>
-                <th>Pig Id</th>
+                <th>Cage Name</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -183,10 +183,11 @@ export default function Page() {
                   return (
                     <tr key={key} className="hover">
                       <th>{key + 1}</th>
-                      <td>{item.pig_id}</td>
+                      <td>{item.cage_name}</td>
                       <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
+                            target="_blank"
                             className="btn btn-sm btn-primary"
                             href={{
                               pathname: "/Operation/worker/ListCage/Activity",
