@@ -23,7 +23,7 @@ async function UpdateCage() {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_inventory INNER JOIN tbl_stock ON tbl_inventory.item_id=tbl_stock.item_id where tbl_inventory.is_exist='true'";
+      "select * from tbl_inventory INNER JOIN tbl_stock_card ON tbl_inventory.item_id=tbl_stock_card.item_id where tbl_inventory.is_exist='true'";
     const [result] = await conn.query(sql, []);
     return result;
   } catch (error) {
