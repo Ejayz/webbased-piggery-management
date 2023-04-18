@@ -46,15 +46,13 @@ export default function Page() {
           headers: headersList,
         }
       );
+      console.log(filter);
       const data = await response.json();
       data.time = new Date().getTime() / 1000;
       return data;
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
-      keepPreviousData: true,
     }
   );
   console.log(data);
@@ -119,7 +117,6 @@ export default function Page() {
               <option value="cage_name">Cage Name</option>
               <option value="batch_name">Batch Name</option>
               <option value="breed_name">Breed Name</option>
-              <option value="pig_type">Pig Type</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">

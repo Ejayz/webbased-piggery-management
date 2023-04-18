@@ -25,12 +25,51 @@ import { QuarantinePig } from "@/hooks/useQuarantine";
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
-
+  const [pig_list, setPigList] = useState<any[]>([]);
+  const [keyword, setKeyword] = useState("");
   const {
     register,
     handleSubmit,
-    formState: { errors },
     reset,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors, isSubmitSuccessful, isSubmitting, isSubmitted },
+  } = useForm({
+    defaultValues: {
+      pig_id: "",
+      activity: "",
+      item_id: "",
+      item_name: "",
+      operation_date: "",
+      schedule_option: "1",
+    },
+    criteriaMode: "all",
+    mode: "all",
+  });
+  const {
+    isLoading: isLoading2,
+    isError,
+    data: data2,
+    error: error2,
+    refetch: refetch2,
+  } = useQuery(
+    "pig_list",
+    async () => {
+      const response = await fetch(
+        `/api/post/Schedule/Pigs/getPigs?keyword=${
+          keyword == "" ? "" : keyword
+        }`
+      );
+      return response.json();
+    },
+    {}
+  );
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+    reset: reset2,
   } = useForm({
     defaultValues: {
       pig_id: "",
@@ -40,6 +79,32 @@ export default function Page() {
     mode: "onChange",
     criteriaMode: "all",
   });
+
+  useEffect(() => {
+    if (data2) {
+      if (data2.code === 200) {
+        if (data2.data) {
+          setPigList(
+            data2.data.map((item: any) => ({
+              value: item.pig_id,
+              display: item.pig_id,
+              cage_name: item.cage_name,
+              batch_name: item.batch_name,
+              disabled: false,
+            }))
+          );
+        }
+      } else {
+        setPigList([]);
+      }
+    }
+  }, [data2]);
+
+  useEffect(() => {
+    if (keyword == "") {
+      refetch2();
+    }
+  }, [keyword]);
 
   const [item_id, setItemId] = useState("");
   const [item_name, setItemName] = useState("");
@@ -169,6 +234,7 @@ export default function Page() {
         setProcessing(false);
         toast.success(returned.message);
         resetState();
+        refetch2();
       } else {
         setProcessing(false);
         toast.error(returned.message);
@@ -214,6 +280,97 @@ export default function Page() {
   } else {
     return (
       <>
+        <input type="checkbox" id="my-modal-6" className="modal-toggle" />
+        <div className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box relative">
+            <label
+              htmlFor="my-modal-6"
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+            >
+              ✕
+            </label>
+            <h3 className="font-bold text-lg">
+              Search the pig you want to add schedule
+            </h3>
+            <div className="form-control">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  refetch2();
+                }}
+                className="input-group"
+              >
+                <input
+                  type="text"
+                  placeholder="Search…"
+                  className="input input-bordered w-full"
+                  value={keyword}
+                  onChange={(e) => {
+                    setKeyword(e.target.value);
+                  }}
+                />
+                <button type="submit" className="btn btn-square">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </form>
+              <label className="label overflow-y-auto">
+                <table className="table table-compact w-full label-text-alt">
+                  <thead>
+                    <tr>
+                      <th>Pig Id</th>
+                      <th>Batch</th>
+                      <th>Cage</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pig_list.length == 0 ? (
+                      <tr className="text-center">
+                        <td colSpan={4}>
+                          No pig available that can be quarantined
+                        </td>
+                      </tr>
+                    ) : (
+                      pig_list.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.display}</td>
+                          <td>{item.batch_name}</td>
+                          <td>{item.cage_name}</td>
+                          <td>
+                            <label
+                              onClick={() => {
+                                setValue("pig_id", item.value, {
+                                  shouldValidate: true,
+                                });
+                              }}
+                              htmlFor="my-modal-6"
+                              className="link underline hover:text-primary"
+                            >
+                              Select
+                            </label>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </label>
+            </div>
+          </div>
+        </div>
         <div className="w-full h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className=" h-auto w-full">
             <div className="w-11/12  mx-auto flex flex-row">
@@ -236,18 +393,24 @@ export default function Page() {
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none gap-2 grid-cols-none grid-rows-3">
-                    <NormalInput
-                      name="pig_id"
-                      label="Pig ID"
-                      register={register}
-                      required={true}
-                      errors={errors}
-                      type="text"
-                      validationSchema={{
-                        required: "Pig ID is required",
-                      }}
-                    />
+                  <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none gap-2 grid-cols-none grid-rows-2">
+                    <div>
+                      <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                        Choose Pig
+                      </label>
+                      <div className="divider ">OR</div>
+                      <NormalInput
+                        name="pig_id"
+                        label="Pig ID"
+                        register={register}
+                        required={true}
+                        errors={errors}
+                        type="text"
+                        validationSchema={{
+                          required: "Pig ID is required",
+                        }}
+                      />
+                    </div>
                     <SelectInput
                       name="cage_id"
                       label="Cage"

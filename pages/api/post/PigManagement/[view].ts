@@ -35,7 +35,7 @@ async function Ops(pig_id: any) {
   INNER JOIN tbl_pig_history ON tbl_pig.pig_id = tbl_pig_history.pig_id
   INNER JOIN tbl_cage ON tbl_pig_history.cage_id = tbl_cage.cage_id
   INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
-  INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE tbl_pig.pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.status='active'`;
+  INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE tbl_pig.pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_history_status='active'`;
     const result = await conn.query(sql, [pig_id]);
     return result[0];
   } catch (error) {

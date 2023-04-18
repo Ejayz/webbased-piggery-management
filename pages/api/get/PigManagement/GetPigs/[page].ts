@@ -132,7 +132,7 @@ async function SearhGetCage(
     INNER JOIN tbl_pig_history ON tbl_pig.pig_id = tbl_pig_history.pig_id
     INNER JOIN tbl_cage ON tbl_pig_history.cage_id = tbl_cage.cage_id
     INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
-    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE (tbl_pig.pig_id LIKE ?  OR tbl_pig_history.pig_tag LIKE ? OR tbl_pig_history.weight LIKE ? OR tbl_cage.cage_name LIKE ? OR tbl_batch.batch_name LIKE ? OR tbl_breed.breed_name LIKE ?) AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_status='active'  
+    INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE (tbl_pig.pig_id LIKE ?  OR tbl_pig_history.pig_tag LIKE ? OR tbl_pig_history.weight LIKE ? OR tbl_cage.cage_name LIKE ? OR tbl_batch.batch_name LIKE ? OR tbl_breed.breed_name LIKE ?) AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_history_status='active'  
      ORDER BY ${conn.escapeId(
        sortColumn
      )} ${sortorder}  LIMIT ${limit} OFFSET ${offset} ;`;

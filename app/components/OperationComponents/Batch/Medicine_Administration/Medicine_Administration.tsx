@@ -85,9 +85,9 @@ export default function MedicineAdministration() {
               } `,
               start: item.operation_date,
               backgroundColor:
-                DateTime.fromISO(item.operation_date).diffNow("days").days <
+              DateTime.fromISO(item.operation_date).diffNow("days").days <
                   -1 &&
-                (item.status == "pending" || item.status == "confirmed")
+                (item.status == "pending" || item.status != "confirmed")
                   ? "red"
                   : DateTime.fromISO(item.operation_date).diffNow("days").days <
                       0 &&

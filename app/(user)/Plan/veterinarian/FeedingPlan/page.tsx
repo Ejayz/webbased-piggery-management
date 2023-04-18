@@ -184,72 +184,65 @@ export default function Page() {
     return loading.loader;
   } else {
     return (
-      <>
-        <div className="w-full bg-base-100 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
-          <div className=" h-auto w-full">
-            <div className="w-11/12  mx-auto flex flex-row">
-              <p className="text-2xl text-base-content my-auto p-4">
-                Manage Plans
-              </p>
-            </div>
+      <div className="w-screen  h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
+        <div className=" h-auto w-full">
+          <div className="w-11/12  mx-auto flex flex-row">
+            <p className="text-2xl text-base-content my-auto p-4">
+              Manage Plans
+            </p>
+          </div>
 
-            <div
-              data-theme="light"
-              className="card w-11/12 mx-auto bg-base-200 text-base-content shadow-xl "
-            >
-              <div className="card-body">
-                <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
-                  <ul className="card-title">
-                    <li>Manage Plan</li>
-                    <li className="font-bold">Feeding Plans</li>
-                  </ul>
-                </div>
-                <div className={`flex w-11/12 h-full py-2 flex-col`}>
-                  <div className="tabs">
-                    <button
-                      onClick={() => {
-                        setTab("Weaner");
-                      }}
-                      className={`tab tab-bordered ${
-                        tab == "Weaner" ? "tab-active" : ""
-                      }`}
-                    >
-                      Weaner
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTab("Grower");
-                      }}
-                      className={`tab tab-bordered ${
-                        tab == "Grower" ? "tab-active" : ""
-                      }`}
-                    >
-                      Grower
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTab("Finisher");
-                      }}
-                      className={`tab tab-bordered ${
-                        tab == "Finisher" ? "tab-active" : ""
-                      }`}
-                    >
-                      Finisher
-                    </button>
-                  </div>
-                  {tab == "Weaner" ? (
-                    <Weaner />
-                  ) : tab == "Grower" ? (
-                    <Grower />
-                  ) : (
-                    <Finisher />
-                  )}
-                </div>
+          <div className=" w-full px-2 mx-auto  text-base-content  ">
+            <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
+              <ul className="card-title">
+                <li>Manage Plan</li>
+                <li className="font-bold">Feeding Plans</li>
+              </ul>
+            </div>
+            <div className={`flex w-full h-full py-2 flex-col`}>
+              <div className="tabs">
+                <button
+                  onClick={() => {
+                    setTab("Weaner");
+                  }}
+                  className={`tab tab-bordered ${
+                    tab == "Weaner" ? "tab-active" : ""
+                  }`}
+                >
+                  Weaner
+                </button>
+                <button
+                  onClick={() => {
+                    setTab("Grower");
+                  }}
+                  className={`tab tab-bordered ${
+                    tab == "Grower" ? "tab-active" : ""
+                  }`}
+                >
+                  Grower
+                </button>
+                <button
+                  onClick={() => {
+                    setTab("Finisher");
+                  }}
+                  className={`tab tab-bordered ${
+                    tab == "Finisher" ? "tab-active" : ""
+                  }`}
+                >
+                  Finisher
+                </button>
               </div>
+              {tab == "Weaner" ? (
+                <Weaner />
+              ) : tab == "Grower" ? (
+                <Grower />
+              ) : (
+                <Finisher />
+              )}
             </div>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }

@@ -151,17 +151,12 @@ export default function Page({ params }: any) {
             </p>
           </div>
         </div>
-        <div
-          data-theme="light"
-          className="card mx-auto text-base-content w-11/12 bg-base-100 shadow-xl"
-        >
-          <div className="card-body">
+        <div className=" mx-auto text-base-content w-11/12">
+          <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>Breed Management</li>
-
                 <li>View</li>
-
                 <li className="font-bold">{Action}</li>
               </ul>
             </div>
@@ -185,7 +180,7 @@ export default function Page({ params }: any) {
                 ></NormalInput>
               </div>
 
-              <div className="card-actions justify-end">
+              <div className="card-actions justify-end mt-6">
                 {params.Action == "View" ? (
                   <></>
                 ) : params.Action == "Update" ? (

@@ -199,7 +199,11 @@ export const RemovePlan = async (plan_id: any) => {
   return data;
 };
 
-export const processWeaner = async (day: any, item_id: any) => {
+export const processWeaner = async (
+  from_day: any,
+  to_day: any,
+  item_id: any
+) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -207,23 +211,25 @@ export const processWeaner = async (day: any, item_id: any) => {
   };
 
   let bodyContent = JSON.stringify({
-    day: day,
+    from_day: from_day,
+    to_day: to_day,
     item_id: item_id,
   });
 
-  let response = await fetch(
-    `${location.origin}/api/post/Plans/processWeaner`,
-    {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    }
-  );
+  let response = await fetch(`/api/post/Plans/processWeaner`, {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
 
   let data = await response.json();
   return data;
 };
-export const processGrower = async (day: any, item_id: any) => {
+export const processGrower = async (
+  from_day: any,
+  to_day: any,
+  item_id: any
+) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -231,24 +237,26 @@ export const processGrower = async (day: any, item_id: any) => {
   };
 
   let bodyContent = JSON.stringify({
-    day: day,
+    from_day: from_day,
+    to_day: to_day,
     item_id: item_id,
   });
 
-  let response = await fetch(
-    `${location.origin}/api/post/Plans/processGrower`,
-    {
-      method: "POST",
-      body: bodyContent,
-      headers: headersList,
-    }
-  );
+  let response = await fetch(`/api/post/Plans/processGrower`, {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
 
   let data = await response.json();
   return data;
 };
 
-export const processFinisher = async (day: any, item_id: any) => {
+export const processFinisher = async (
+  from_day: any,
+  to_day: any,
+  item_id: any
+) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -256,7 +264,8 @@ export const processFinisher = async (day: any, item_id: any) => {
   };
 
   let bodyContent = JSON.stringify({
-    day: day,
+    from_day: from_day,
+    to_day: to_day,
     item_id: item_id,
   });
 

@@ -29,13 +29,15 @@ export default async function handler(
 
 async function UpdateCage(cage_id: any, pig_id: any, remarks: any) {
   const conn = await connection.getConnection();
+  conn.beginTransaction();
   try {
     const getPigInfo =
-      "select * from tbl_pig_history where pig_id=? and is_exist='true' order by pig_history_id desc limit 1";
+      "select * from tbl_pig_history where pig_id=? and is_exist='true' and pig_history_status='active'";
     const [pigInfo]: any = await conn.query(getPigInfo, [pig_id]);
-    console.log(pigInfo);
     const pig_tag = pigInfo[0].pig_tag;
     const weight = pigInfo[0].weight;
+    const pig_old_cage = pigInfo[0].cage_id;
+    const history_id = pigInfo[0].pig_history_id;
     const insertPigHistory =
       "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks) values (?,?,?,?,?,?)";
     const [insertPigHistoryResult]: any = await conn.query(insertPigHistory, [
@@ -46,13 +48,62 @@ async function UpdateCage(cage_id: any, pig_id: any, remarks: any) {
       "Quarantined",
       remarks,
     ]);
-    if (insertPigHistoryResult.affectedRows == 1) {
-      return true;
-    }
+
+    const updateOldPigHistory =
+      "update tbl_pig_history set pig_history_status='inactive' where pig_history_id=?";
+    const [updateOldPigHistoryResult]: any = await conn.query(
+      updateOldPigHistory,
+      [history_id]
+    );
+    UpdateNewCage(conn, cage_id);
+    UpdateOldCage(conn, pig_old_cage);
+
+    conn.commit();
+    return true;
   } catch (error) {
     console.log(error);
+    conn.rollback();
     throw error;
   } finally {
     conn.release();
   }
 }
+
+const UpdateNewCage = async (conn: any, cage_id: any) => {
+  try {
+    const selectCage = "select * from tbl_cage where cage_id=?";
+    const [cage]: any = await conn.query(selectCage, [cage_id]);
+    const cage_capacity = cage[0].cage_capacity;
+    const current_caged = cage[0].current_caged;
+    const updatedCurrentCaged = parseInt(current_caged) + 1;
+    if (updatedCurrentCaged <= cage_capacity) {
+      const updateCage =
+        "update tbl_cage set current_caged=?,is_full='false' where cage_id=?";
+      const [updateCageResult]: any = await conn.query(updateCage, [
+        updatedCurrentCaged,
+        cage_id,
+      ]);
+    } else if (updatedCurrentCaged >= cage_capacity) {
+      const updateCage =
+        "update tbl_cage set current_caged=?,is_full='true' where cage_id=?";
+      const [updateCageResult]: any = await conn.query(updateCage, [
+        updatedCurrentCaged,
+        cage_id,
+      ]);
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const UpdateOldCage = async (conn: any, cage_id: any) => {
+  try {
+    const updateCage =
+      "update tbl_cage set current_caged=`current_caged`-1,is_full='false' where cage_id=?";
+    const [updateCageResult]: any = await conn.query(updateCage, [cage_id]);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

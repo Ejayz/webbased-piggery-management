@@ -11,8 +11,8 @@ export default async function handler(
     return false;
   }
   try {
-    const { from, to } = req.query;
-    const result = await UpdateCage(from, to);
+    const { from, to, type } = req.query;
+    const result = await UpdateCage(from, to, type);
     console.log(result);
     res.status(200).json({ code: 200, data: result });
   } catch (error) {
@@ -20,13 +20,27 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(from: any, to: any) {
+async function UpdateCage(from: any, to: any, type: any) {
   const conn = await connection.getConnection();
   try {
-    const [rows, fields] = await conn.query(
-      "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='2' AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
-      [from, to]
-    );
+    let rows: any = [];
+    if (type == "cage") {
+      [rows] = await conn.query(
+        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id  INNER JOIN tbl_cage ON tbl_cage.cage_id=tbl_operation.cage_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='2'  AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
+        [from, to]
+      );
+    } else if (type == "batch") {
+      [rows] = await conn.query(
+        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch ON tbl_operation.batch_id=tbl_batch.batch_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='2'  AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
+        [from, to]
+      );
+    } else if (type == "individual") {
+      [rows] = await conn.query(
+        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_pig ON tbl_pig.pig_id=tbl_operation.pig_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='2'  AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
+        [from, to]
+      );
+    }
+
     return rows;
   } catch (error) {
     console.log(error);

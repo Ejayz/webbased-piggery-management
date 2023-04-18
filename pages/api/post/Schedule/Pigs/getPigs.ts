@@ -31,7 +31,7 @@ async function UpdateCage(keyword: any) {
   const conn = await connection.getConnection();
   try {
     const keywords = `%${keyword}%`;
-    const sqlSelect = `SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_batch ON tbl_batch.batch_id=tbl_pig.batch_id WHERE (tbl_pig.pig_id LIKE ?) AND tbl_pig_history.pig_status='active' AND tbl_pig_history.status="active" AND tbl_pig_history.is_exist='true' AND tbl_pig.is_exist='true'`;
+    const sqlSelect = `SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_batch ON tbl_batch.batch_id=tbl_pig.batch_id INNER JOIN tbl_cage ON tbl_cage.cage_id=tbl_pig_history.cage_id WHERE (tbl_pig.pig_id LIKE ?) AND tbl_pig_history.pig_status='active' AND tbl_pig_history.status="active" AND tbl_pig_history.is_exist='true' AND tbl_pig_history.pig_history_status='active' AND tbl_pig.is_exist='true'`;
     const [sqlSelectResult] = await conn.query(sqlSelect, [keywords]);
     return sqlSelectResult;
   } catch (error) {

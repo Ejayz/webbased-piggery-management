@@ -68,11 +68,7 @@ export default function Page({ params }: any) {
       data.time = epochTime;
       return data;
     },
-    {
-      cacheTime: 0,
-      enabled: false,
-      refetchOnWindowFocus: false,
-    }
+    {}
   );
 
   const evaluateCage = async (list: any) => {
@@ -99,6 +95,7 @@ export default function Page({ params }: any) {
   const triggerUpdate = async () => {
     setCageList([]);
     const cage_list = data.data.PigletCageList;
+    console.log(cage_list);
     const listCage: any = [];
     cage_list.map((data: any, key: any) => {
       listCage.push({
@@ -109,13 +106,22 @@ export default function Page({ params }: any) {
         current_capacity: data.current_caged,
       });
     });
-    listCage.push({
-      value: pigData.data[0].cage_id,
-      display: pigData.data[0].cage_name,
-      disabled: Action == "View" || Action == "Remove" ? true : false,
-      max: pigData.data[0].cage_capacity,
-      current_capacity: pigData.data[0].current_caged,
-    });
+
+    console.log(
+      listCage.find((item: any) => item.value == pigData.data[0].cage_id).value
+    );
+    if (
+      listCage.find((item: any) => item.value == pigData.data[0].cage_id)
+        .value == undefined
+    ) {
+      listCage.push({
+        value: pigData.data[0].cage_id,
+        display: pigData.data[0].cage_name,
+        disabled: Action == "View" || Action == "Remove" ? true : false,
+        max: pigData.data[0].cage_capacity,
+        current_capacity: pigData.data[0].current_caged,
+      });
+    }
     const list = await evaluateCage(listCage);
     setCageList(list);
     setValue("pig_id", id);
@@ -240,11 +246,7 @@ export default function Page({ params }: any) {
       const returned = await response.json();
       return returned;
     },
-    {
-      refetchOnWindowFocus: false,
-      enabled: false,
-      cacheTime: 0,
-    }
+    {}
   );
 
   useEffect(() => {
@@ -309,17 +311,12 @@ export default function Page({ params }: any) {
             <p className="text-2xl text-base-content my-auto p-4">Manage Pig</p>
           </div>
         </div>
-        <div
-          data-theme="light"
-          className="card mx-auto text-base-content w-11/12 bg-base-100 shadow-xl"
-        >
-          <div className="card-body">
+        <div className=" mx-auto text-base-content w-11/12 ">
+          <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>Pig Management</li>
-
                 <li>View</li>
-
                 <li className="font-bold">{Action}</li>
               </ul>
             </div>

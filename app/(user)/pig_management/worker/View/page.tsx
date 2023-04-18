@@ -47,6 +47,7 @@ export default function Page({ params }: any) {
   const [batch, setBatch] = useState<any[]>([]);
   const [cage, setCage] = useState<any[]>([]);
   const [tabs, setTabs] = useState<any>(0);
+  const [page, setPage] = useState<any>(1);
   const {
     register,
     handleSubmit,
@@ -79,11 +80,7 @@ export default function Page({ params }: any) {
       data.time = epochTime;
       return data;
     },
-    {
-      cacheTime: 0,
-      enabled: false,
-      refetchOnWindowFocus: false,
-    }
+    {}
   );
 
   const [cage_name, setCageName] = useState("");
@@ -137,24 +134,24 @@ export default function Page({ params }: any) {
     "pigDatas",
     async () => {
       const response = await fetch(
-        `/api/get/PigManagement/getAllPigInfor?pig_id=${id}`
+        `/api/get/PigManagement/getAllPigInfor?pig_id=${id}&page=${page}`
       );
       const returned = await response.json();
       console.log(returned);
       return returned;
     },
-    {
-      cacheTime: 0,
-      enabled: false,
-      refetchOnWindowFocus: false,
-    }
+    {}
   );
+  useEffect(() => {
+    pigRefetch();
+  }, [page]);
 
   useEffect(() => {
     if (pigData?.code == 200) {
       if (pigData.data) {
         setPigHistory(pigData.data.pig_history);
         pigData.data.individual.map((item: any) => {
+          console.log(item);
           setIndividual((prev) => [
             ...prev,
             {
@@ -166,7 +163,7 @@ export default function Page({ params }: any) {
               backgroundColor:
                 DateTime.fromISO(item.operation_date).diffNow("days").days <
                   -1 &&
-                (item.status == "pending" || item.status == "confirmed")
+                (item.status == "pending" || item.status != "confirmed")
                   ? "red"
                   : DateTime.fromISO(item.operation_date).diffNow("days").days <
                       0 &&
@@ -176,7 +173,7 @@ export default function Page({ params }: any) {
                   ? "#87CEEB"
                   : item.status == "confirmed"
                   ? "#008000"
-                  : "#87CEEB",
+                  : "red",
 
               extendedProps: {
                 id: item.operation_id,
@@ -199,7 +196,7 @@ export default function Page({ params }: any) {
               backgroundColor:
                 DateTime.fromISO(item.operation_date).diffNow("days").days <
                   -1 &&
-                (item.status == "pending" || item.status == "confirmed")
+                (item.status == "pending" || item.status != "confirmed")
                   ? "red"
                   : DateTime.fromISO(item.operation_date).diffNow("days").days <
                       0 &&
@@ -232,7 +229,7 @@ export default function Page({ params }: any) {
               backgroundColor:
                 DateTime.fromISO(item.operation_date).diffNow("days").days <
                   -1 &&
-                (item.status == "pending" || item.status == "confirmed")
+                (item.status == "pending" || item.status != "confirmed")
                   ? "red"
                   : DateTime.fromISO(item.operation_date).diffNow("days").days <
                       0 &&
@@ -279,15 +276,11 @@ export default function Page({ params }: any) {
             <p className="text-2xl text-base-content my-auto p-4">Manage Pig</p>
           </div>
         </div>
-        <div
-          data-theme="light"
-          className="card mx-auto text-base-content w-11/12 bg-base-100 shadow-xl"
-        >
-          <div className="card-body">
+        <div className=" mx-auto text-base-content w-11/12">
+          <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>Pig Management</li>
-
                 <li>View</li>
               </ul>
             </div>
@@ -354,8 +347,8 @@ export default function Page({ params }: any) {
                   </div>
                 </div>
 
-                <div className="w-full h-auto ">
-                  <div className="tabs tab-lg mt-4">
+                <div className="w-full min-h-screen  ">
+                  <div className="tabs tab-lg mt-4 mb-4">
                     <button
                       onClick={() => {
                         setTabs(0);
@@ -400,7 +393,7 @@ export default function Page({ params }: any) {
                   {tabs == 0 ? (
                     <div className="w-full h-auto">
                       <div className="overflow-x-auto">
-                        <table className="table table-compact w-full">
+                        <table className="table table-compact w-full overflow-y-scroll">
                           <thead>
                             <tr>
                               <th></th>
@@ -408,17 +401,67 @@ export default function Page({ params }: any) {
                               <th>Pig Tag</th>
                               <th>Weight</th>
                               <th>Remarks</th>
+                              <th>History Status</th>
                             </tr>
                           </thead>
                           <tbody>
                             {pig_history.map((item, index) => {
                               return (
                                 <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{item.cage_name}</td>
-                                  <td>{item.pig_id}</td>
-                                  <td>{item.weight}</td>
-                                  <td>{item.remarks}</td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {index + 1}
+                                  </td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {item.cage_name}
+                                  </td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {item.pig_id}
+                                  </td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {item.weight}
+                                  </td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {item.remarks}
+                                  </td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {item.pig_history_status}
+                                  </td>
                                 </tr>
                               );
                             })}
@@ -426,42 +469,149 @@ export default function Page({ params }: any) {
                         </table>
                       </div>
                     </div>
+                  ) : tabs == 1 ? (
+                    <>
+                      <div className="w-11/12 mx-auto h-3/4">
+                        <div className="flex flex-row ">
+                          <span className="text-md font-bold font-mono">
+                            Legends:
+                          </span>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md done mx-2"></div>
+                            <span className="text-sm">Done</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md past-due mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Past Due</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md pending mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Pending</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md canceled mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Canceled</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md active-selected mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Selected</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md today mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Today</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="h-1/2  w-full pb-12">
+                        <FullCalendar
+                          plugins={[dayGridPlugin, interactionPlugin]}
+                          initialDate={new Date()}
+                          initialView="dayGridMonth"
+                          fixedWeekCount={true}
+                          dayHeaders={true}
+                          events={Individual}
+                          eventDisplay="block"
+                          dayMaxEvents={true}
+                          displayEventTime={false}
+                        />
+                      </div>
+                    </>
                   ) : tabs == 2 ? (
-                    <FullCalendar
-                      plugins={[dayGridPlugin, interactionPlugin]}
-                      initialDate={new Date()}
-                      initialView="dayGridMonth"
-                      fixedWeekCount={true}
-                      dayHeaders={true}
-                      events={Individual}
-                      eventDisplay="block"
-                      dayMaxEvents={true}
-                      displayEventTime={false}
-                    />
+                    <>
+                      <div className="w-11/12 mx-auto h-3/4">
+                        <div className="flex flex-row ">
+                          <span className="text-md font-bold font-mono">
+                            Legends:
+                          </span>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md done mx-2"></div>
+                            <span className="text-sm">Done</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md past-due mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Past Due</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md pending mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Pending</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md canceled mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Canceled</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md active-selected mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Selected</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md today mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Today</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="h-1/2  w-full pb-12">
+                        <FullCalendar
+                          plugins={[dayGridPlugin, interactionPlugin]}
+                          initialDate={new Date()}
+                          initialView="dayGridMonth"
+                          fixedWeekCount={true}
+                          dayHeaders={true}
+                          events={cage}
+                          eventDisplay="block"
+                          dayMaxEvents={true}
+                          displayEventTime={false}
+                        />
+                      </div>
+                    </>
                   ) : tabs == 3 ? (
-                    <FullCalendar
-                      plugins={[dayGridPlugin, interactionPlugin]}
-                      initialDate={new Date()}
-                      initialView="dayGridMonth"
-                      fixedWeekCount={true}
-                      dayHeaders={true}
-                      events={cage}
-                      eventDisplay="block"
-                      dayMaxEvents={true}
-                      displayEventTime={false}
-                    />
+                    <>
+                      <div className="w-11/12 mx-auto h-3/4">
+                        <div className="flex flex-row ">
+                          <span className="text-md font-bold font-mono">
+                            Legends:
+                          </span>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md done mx-2"></div>
+                            <span className="text-sm">Done</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md past-due mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Past Due</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md pending mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Pending</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md canceled mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Canceled</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md active-selected mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Selected</span>
+                          </div>
+                          <div className="flex flex-row">
+                            <div className="h-4 w-4 rounded-md today mx-2 my-auto"></div>
+                            <span className="text-sm mx-auto">Today</span>
+                          </div>
+                        </div>
+                        <div className="h-1/2  w-full pb-12">
+                          <FullCalendar
+                            plugins={[dayGridPlugin, interactionPlugin]}
+                            initialDate={new Date()}
+                            initialView="dayGridMonth"
+                            fixedWeekCount={true}
+                            dayHeaders={true}
+                            events={batch}
+                            eventDisplay="block"
+                            dayMaxEvents={true}
+                            displayEventTime={false}
+                          />
+                        </div>
+                      </div>
+                    </>
                   ) : (
-                    <FullCalendar
-                      plugins={[dayGridPlugin, interactionPlugin]}
-                      initialDate={new Date()}
-                      initialView="dayGridMonth"
-                      fixedWeekCount={true}
-                      dayHeaders={true}
-                      events={batch}
-                      eventDisplay="block"
-                      dayMaxEvents={true}
-                      displayEventTime={false}
-                    />
+                    <></>
                   )}
                 </div>
               </div>

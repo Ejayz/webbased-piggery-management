@@ -12,8 +12,14 @@ export default async function handler(
   }
   try {
     const { cage_id, pig_id, pig_tag, weight, status } = req.body;
+    console.log(cage_id, pig_id, pig_tag, weight, status);
     const data: any = await Ops(cage_id, pig_id, pig_tag, weight, status);
-    return res.status(200).json({ code: 200, message: data });
+    if (data == 900) {
+      return res
+        .status(500)
+        .json({ code: 500, message: "Cage is already full" });
+    }
+    return res.status(200).json({ code: 200, message: "Updated successfully" });
   } catch (error) {
     console.log(error);
     return res
@@ -37,24 +43,28 @@ async function Ops(
     const [CageData]: any = await conn.query(getCage, [cage_id]);
     if (CageData[0].is_full == "true") {
       await conn.rollback();
-      return "Cage is already full";
+      return 900;
     } else {
       const getPigDetails =
-        " SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id = tbl_pig.pig_id WHERE pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.status='active'";
+        " SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id = tbl_pig.pig_id WHERE tbl_pig.pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_history_status='active'";
       const [pigDetails]: any = await conn.query(getPigDetails, [pig_id]);
       const inActivateOld =
-        "update tbl_pig_history set status='inactive' where pig_id=? and is_exist='true' and status='active'";
+        "update tbl_pig_history set pig_history_status='inactive' where pig_id=? and is_exist='true' and pig_history_status='active'";
       const [inActivateOldR]: any = await conn.query(inActivateOld, [pig_id]);
-      const setNewPigDetails =
-        "UPDATE tbl_pig_history SET cage_id=?, pig_tag=?, weight=?, status=? WHERE pig_id=? AND is_exist='true' AND status='active'; ";
-      const [updatePig]: any = await conn.query(setNewPigDetails, [
+      const insertNewPigDetails =
+        "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks) values (?,?,?,?,?,?)";
+      const remarks = "Updated information of pig.";
+      const [updatePig]: any = await conn.query(insertNewPigDetails, [
+        pig_id,
         cage_id,
         pig_tag,
         weight,
         status,
-        pig_id,
+        remarks,
       ]);
+
       if (updatePig.affectedRows == 1) {
+        console.log(pigDetails[0].cage_id);
         const deductOldCage =
           "Update tbl_cage set is_full='false'  ,current_caged=`current_caged`-1 where cage_id=? and is_exist='true'";
         const [deductOldCageR]: any = await conn.query(deductOldCage, [
@@ -91,7 +101,7 @@ async function Ops(
   } catch (error) {
     console.log(error);
     await conn.rollback();
-    return error;
+    throw error;
   } finally {
     conn.release();
   }

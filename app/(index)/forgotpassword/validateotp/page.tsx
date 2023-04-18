@@ -27,7 +27,6 @@ export default function Layout() {
       setOTP(returned);
     };
     getOtp();
-    console.log(OTP);
     if (OTP !== "") {
       removeLocal();
     }
