@@ -4,9 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
 import { toast } from "react-toastify";
-import {
-  CreatePigs,
-} from "@/hooks/usePigManagement";
+import { CreatePigs } from "@/hooks/usePigManagement";
 import { useQueryClient } from "react-query";
 import PigDataForms from "@/components/PigDataForms/pigDataForms";
 import GeneralPigBatch from "@/components/PigDataForms/GeneralPigBatch";
@@ -83,7 +81,7 @@ export default function Page() {
   };
 
   const onSubmit = () => {
-    console.log(pigData);
+    setProcessing(true);
     if (batchData == undefined || pigData.length == 0) {
       toast.error("Please complete the forms before creating pig details");
     } else {
@@ -111,7 +109,7 @@ export default function Page() {
           className="modal-toggle"
         />
 
-        <div className="w-full bg-base-100 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
+        <div className="w-full  h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className=" h-auto w-full">
             <div className="w-11/12  mx-auto flex flex-row">
               <p className="text-2xl text-base-content my-auto p-4">
@@ -119,11 +117,8 @@ export default function Page() {
               </p>
             </div>
 
-            <div
-              data-theme="light"
-              className="card w-11/12 mx-auto h-auto bg-base-200 text-base-content shadow-xl "
-            >
-              <div className="card-body">
+            <div className="w-11/12 mx-auto h-auto text-base-content  ">
+              <div className="">
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Pig</li>
@@ -160,7 +155,9 @@ export default function Page() {
                         onSubmit();
                       }}
                       type="button"
-                      className="btn btn-primary "
+                      className={`btn btn-primary ${
+                        processing ? "loading" : ""
+                      }}`}
                     >
                       Create
                     </button>

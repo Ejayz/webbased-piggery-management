@@ -54,9 +54,6 @@ export default function Layout({}: any) {
       isRequesting(false);
     }
     if (!(isPhone && isUsername)) {
-      console.log(isPhone || isUsername);
-      console.log(isPhone);
-      console.log(isUsername);
       toast.error("Please check all fields");
       isRequesting(false);
     } else {
@@ -88,7 +85,6 @@ export default function Layout({}: any) {
       setPhone("");
       isRequesting(true);
       isRequesting(false);
-      console.log(parsed);
       setLocal(parsed.OTP);
       router.push(
         `/forgotpassword/validateotp?username=${data.username}&phone=${data.phone}&job=${data.job}`

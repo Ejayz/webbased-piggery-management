@@ -38,8 +38,8 @@ export default function Page() {
 
   const cage_option = [
     {
-      value: "Individual Stalls",
-      display: "Individual Stalls",
+      value: "Forrowing Crates",
+      display: "Forrowing Crates",
       disabled: false,
     },
     {
@@ -48,18 +48,13 @@ export default function Page() {
       disabled: false,
     },
     {
-      value: "Forrowing Crates",
-      display: "Forrowing Crates",
-      disabled: false,
-    },
-    {
-      value: "Sow Stalls",
-      display: "Sow Stalls",
-      disabled: false,
-    },
-    {
       value: "Grow Finishing Housing",
       display: "Grow Finishing Housing",
+      disabled: false,
+    },
+    {
+      value: "Individual Stalls",
+      display: "Individual Stalls",
       disabled: false,
     },
     {
@@ -70,6 +65,11 @@ export default function Page() {
     {
       value: "Quarantine Cage",
       display: "Quarantine Cage",
+      disabled: false,
+    },
+    {
+      value: "Sow Stalls",
+      display: "Sow Stalls",
       disabled: false,
     },
   ];
@@ -139,7 +139,7 @@ export default function Page() {
   } else {
     return (
       <>
-        <div className="w-full bg-base-100 h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
+        <div className="w-full  h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className=" h-auto w-full">
             <div className="w-11/12  mx-auto flex flex-row">
               <p className="text-2xl text-base-content my-auto p-4">
@@ -147,11 +147,8 @@ export default function Page() {
               </p>
             </div>
 
-            <div
-              data-theme="light"
-              className="card w-11/12 mx-auto bg-base-200 text-base-content shadow-xl "
-            >
-              <div className="card-body">
+            <div className=" w-11/12 mx-auto  text-base-content  ">
+              <div className="">
                 <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
                   <ul className="card-title">
                     <li>Manage Cage</li>

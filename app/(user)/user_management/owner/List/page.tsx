@@ -77,7 +77,7 @@ export default function Page() {
     if (filter.keyword == "") {
       refetch();
     }
-  }, [filter.keyword]);
+  }, [filter]);
 
   useEffect(() => {
     console.log(msg);

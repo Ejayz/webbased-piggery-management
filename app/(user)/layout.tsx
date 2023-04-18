@@ -15,6 +15,10 @@ import Footer from "@/components/Footer/footer";
 import { QueryClientProvider } from "react-query";
 import { QueryClient } from "react-query";
 import "react-calendar/dist/Calendar.css";
+import { useCallback } from "react";
+import Particles from "react-tsparticles";
+import type { Container, Engine } from "tsparticles-engine";
+import { loadFull } from "tsparticles";
 
 export default function User({ children }: { children: React.ReactNode }) {
   const loading = getUserInfo();
@@ -23,6 +27,22 @@ export default function User({ children }: { children: React.ReactNode }) {
   const [owner, isOwner] = useState<boolean>(false);
   const [title, setTitle] = useState("RVM Hog Farm");
   const path = usePathname();
+
+  const particlesInit = useCallback(async (engine: Engine) => {
+    console.log(engine);
+
+    // you can initialize the tsParticles instance (engine) here, adding custom shapes or presets
+    // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
+    // starting from v2 you can add only the features you need reducing the bundle size
+    await loadFull(engine);
+  }, []);
+
+  const particlesLoaded = useCallback(
+    async (container: Container | undefined) => {
+      await console.log(container);
+    },
+    []
+  );
 
   const queryClient = new QueryClient();
   useEffect(() => {
@@ -61,7 +81,7 @@ export default function User({ children }: { children: React.ReactNode }) {
   if (loading.loading) {
     return (
       <>
-        <html data-theme="light">
+        <html>
           <Head title={"Please wait..."}></Head>
           <body>{loading.loader}</body>
         </html>
@@ -70,9 +90,96 @@ export default function User({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <html data-theme="light" className="overflow-x-hidden overflow-y-auto">
+    <html className="overflow-x-hidden overflow-y-auto">
       <Head title={title}></Head>
       <body>
+        <Particles
+          id="tsparticles"
+          init={particlesInit}
+          loaded={particlesLoaded}
+          canvasClassName={"z-0"}
+          options={{
+            background: {
+              color: {
+                value: "#ffffff",
+              },
+            },
+            backgroundMask: {
+              cover: {
+                color: {
+                  value: "#000000",
+                },
+                opacity: 0.5,
+              },
+            },
+
+            fpsLimit: 60,
+            interactivity: {
+              events: {
+                onClick: {
+                  enable: false,
+                  mode: "push",
+                },
+                onHover: {
+                  enable: false,
+                  mode: "repulse",
+                },
+                resize: true,
+              },
+              modes: {
+                push: {
+                  quantity: 0,
+                },
+                repulse: {
+                  distance: 200,
+                  duration: 0.4,
+                },
+              },
+            },
+            particles: {
+              color: {
+                value: "#00ffff",
+              },
+              links: {
+                color: "#0000ff",
+                distance: 150,
+                enable: true,
+                opacity: 0.3,
+                width: 1.5,
+              },
+              collisions: {
+                enable: false,
+              },
+              move: {
+                direction: "none",
+                enable: true,
+                outModes: {
+                  default: "bounce",
+                },
+                random: false,
+                speed: 1,
+                straight: true,
+              },
+              number: {
+                density: {
+                  enable: true,
+                  area: 800,
+                },
+                value: 80,
+              },
+              opacity: {
+                value: 0.3,
+              },
+              shape: {
+                type: "circle",
+              },
+              size: {
+                value: { min: 1, max: 10 },
+              },
+            },
+            detectRetina: false,
+          }}
+        />
         <QueryClientProvider client={queryClient}>
           <ToastContainer
             position="top-right"
@@ -86,7 +193,8 @@ export default function User({ children }: { children: React.ReactNode }) {
             pauseOnHover
             theme="light"
           />
-          <div className="navbar bg-neutral text-neutral-content">
+
+          <div className="navbar text-primary-content bg-primary relative">
             <div className="flex-none">
               <label
                 onClick={() => setToggleMenu(!toggleMenu)}
@@ -108,18 +216,14 @@ export default function User({ children }: { children: React.ReactNode }) {
                 </svg>
               </label>
             </div>
-            <div className="flex-1">
-              <a className="btn btn-ghost normal-case text-xl">RVM Hog Farm</a>
+            <div className="flex-1 z-5">
+              <a className="btn btn-ghost normal-case text-xl ">RVM Hog Farm</a>
             </div>
-            {/* Theme Changer */}
-            <div className=" w-full flex"></div>
           </div>
           <div className="drawer">
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content h-full w-full overflow-x-hidden ">
-              {/* Content */}
-
-              <div className="min-h-screen h-auto overflow-y-auto overflow-x-hidden  lg:overflow-hidden  w-screen bg-white ">
+              <div className="min-h-screen h-auto overflow-y-auto overflow-x-hidden  lg:overflow-hidden  w-screen  text-base-content">
                 {children}
               </div>
             </div>
@@ -237,6 +341,54 @@ export default function User({ children }: { children: React.ReactNode }) {
                             Inventory Report
                           </Link>
                         </li>
+                        <li>
+                          <Link href="/reports/MedicineAdministrationReport">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Medicine Adminstration Report
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/reports/VaccinationReport">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Vaccination Report
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/reports/FeedingReport">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Feeding Report
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/reports/DewormingReport">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Deworming Report
+                          </Link>
+                        </li>
                         {/* <li>
                           <Link href="/user_management/owner/List">
                             <Image
@@ -253,7 +405,60 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                 </div>
+
+                <div
+                  className={`${
+                    loading.data.job == "owner" ? "block" : "hidden"
+                  }`}
+                >
+                  <div
+                    tabIndex={0}
+                    className="collapse collapse-plus rounded-md bg-base-100"
+                  >
+                    <div className="collapse">
+                      <input type="checkbox" />
+                      <div className="collapse-title text-base flex flex-cols font-medium">
+                        <Image
+                          src={"/assets/icons/user_management.png"}
+                          className="h-6 w-6 mr-2 my-auto hidden"
+                          alt={""}
+                          height={512}
+                          width={512}
+                        ></Image>
+                        Back Up And Restore
+                      </div>
+                      <div className="collapse-content">
+                        <li>
+                          <Link target={"_blank"} href="/api/post/backup">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Back Up
+                          </Link>
+                        </li>{" "}
+                        <li>
+                          <Link href="/BackUpAndRestore/Restore">
+                            <Image
+                              src={"/assets/icons/create_user.png"}
+                              className="h-6 w-6 hidden"
+                              alt={""}
+                              height={512}
+                              width={512}
+                            ></Image>
+                            Restore
+                          </Link>
+                        </li>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Cage Management */}
+
                 <div
                   className={`${
                     loading.data.job == "worker" ? "block" : "hidden"

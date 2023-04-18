@@ -45,7 +45,6 @@ export default function Page({ params }: any) {
       return data;
     },
     {
-      refetchOnWindowFocus: false,
     }
   );
   const { error, isLoading, isFetching, data, refetch } = useQuery(
@@ -61,7 +60,6 @@ export default function Page({ params }: any) {
       return data;
     },
     {
-      refetchOnWindowFocus: false,
     }
   );
   console.log(StockCardData);
@@ -172,7 +170,7 @@ export default function Page({ params }: any) {
             </button>
           </div>
           {StockCardData?.data != undefined ? (
-            <div className="card w-11/12  my-auto  shadow-xl">
+            <div className="w-11/12  my-auto ">
               <div className="">
                 <h2 className="card-title text-base-content">
                   Stock Card #
@@ -378,13 +376,13 @@ export default function Page({ params }: any) {
               </div>
             </div>
           ) : StockCardDataisLoading || StockCardIsFetching ? (
-            <div className="card w-11/12 bg-base-200 mx-auto flex shadow-xl">
+            <div className=" w-11/12  mx-auto flex ">
               <h1 className="text-base-content text-2xl font-bold mx-auto my-auto">
                 Please wait while we fetch more stock card...
               </h1>
             </div>
           ) : (
-            <div className="card w-11/12 bg-base-200 mx-auto flex shadow-xl">
+            <div className=" w-11/12  mx-auto flex">
               <h1 className="text-base-content text-2xl font-bold mx-auto my-auto">
                 NO MORE STOCK CARD TO DISPLAY
               </h1>

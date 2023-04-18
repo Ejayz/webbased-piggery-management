@@ -37,7 +37,6 @@ export default function Page() {
   const router = useRouter();
 
   const exec_login = async (data: any) => {
-    console.log(data);
     const returned = await VerifyUser(
       data.username,
       data.password,

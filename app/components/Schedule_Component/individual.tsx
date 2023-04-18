@@ -76,7 +76,6 @@ export function Individual() {
     },
     {
       refetchOnWindowFocus: false,
-      cacheTime: 0,
     }
   );
   const {
@@ -804,7 +803,7 @@ export function Individual() {
             </div>
           </form>
         )}
-        <div className="overflow-x-auto w-3/4 mx-auto">
+        <div className="overflow-x-auto w-3/4 min-h-screen mx-auto">
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialDate={new Date("2023-01-01")}

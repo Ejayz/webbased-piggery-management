@@ -27,7 +27,13 @@ export default function farrowing() {
     criteriaMode: "all",
     mode: "onChange",
   });
-
+  const [range, setRange] = useState<{
+    from: string;
+    to: string;
+  }>({
+    from: "",
+    to: "",
+  });
   const {
     register,
     handleSubmit,
@@ -38,17 +44,19 @@ export default function farrowing() {
   } = useForm({
     defaultValues: {
       item_id: "",
-      day: "",
+      from_day: "",
+      to_day: "",
       item_name: "",
     },
     criteriaMode: "all",
     mode: "onChange",
   });
   const { data, error, isLoading, refetch, isFetching } = useQuery(
-    "farrowing",
+    "Weaner",
     async () => {
       const res = await fetch("/api/post/Plans/getWeaner");
       const data = await res.json();
+      console.log(data);
       return data;
     }
   );
@@ -60,7 +68,26 @@ export default function farrowing() {
       }
     }
   }, [data]);
-  const watchDay = watch("day");
+  const watchDay = watch("from_day");
+  const watchTo = watch("to_day");
+
+  useEffect(() => {
+    if (watchDay !== "") {
+      setRange({
+        from: watchDay,
+        to: range.to,
+      });
+    }
+  }, [watchDay]);
+
+  useEffect(() => {
+    if (watchDay !== "") {
+      setRange({
+        from: range.from,
+        to: watchTo,
+      });
+    }
+  }, [watchTo]);
 
   const searchItemWatchKeyword = searchItemWatch("keyword");
 
@@ -92,15 +119,24 @@ export default function farrowing() {
   }, [searchItemWatchKeyword]);
 
   const onsubmit = async (data: any) => {
-    const returned = await processWeaner(data.day, data.item_id);
+    const returned = await processWeaner(
+      data.from_day,
+      data.to_day,
+      data.item_id
+    );
     if (returned.code == 200) {
       toast.success(returned.message);
       refetch();
       reset();
+      setRange({
+        from: "",
+        to: "",
+      });
     } else {
       toast.error(returned.message);
     }
   };
+
   return (
     <div className="w-full text-base-content">
       <input
@@ -201,31 +237,71 @@ export default function farrowing() {
         <div className="flex flex-row">
           <div className="flex flex-row my-2 mx-2">
             <div className="h-4 my-auto w-4 rounded-md bg-info mr-2"></div>
-            <span className="my-auto"> Already had set an item.</span>
+            <span className="my-auto"> Created</span>
           </div>
           <div className="flex flex-row my-2 mx-2">
             <div className="h-4 my-auto w-4 rounded-md bg-success mr-2"></div>
-            <span className="my-auto"> To be updated </span>
+            <span className="my-auto"> Selected</span>
           </div>
           <div className="flex flex-row my-2 mx-2">
             <div className="h-4 my-auto w-4 rounded-md bg-base-300 mr-2"></div>
-            <span className="my-auto"> No item set.</span>
+            <span className="my-auto"> Empty</span>
           </div>
         </div>
       </div>
-      <div className="w-11/12 h-auto mx-auto gap-x-4 grid grid-cols-3">
+      <div className="w-full h-auto mx-auto gap-x-4 grid grid-cols-3">
         <div className="col-span-1">
           <p className="text-xl font-bold">Update Weaner</p>
           <form onSubmit={handleSubmit(onsubmit)}>
             <div className="w-11/12 mx-auto">
               <NormalInput
-                label="Day"
+                label="From Day"
                 type="text"
                 register={register}
-                name="day"
+                name="from_day"
                 errors={errors}
                 validationSchema={{
                   required: "Day is required",
+                  min: {
+                    value: 1,
+                    message: "Day must be greater than 0",
+                  },
+                  max: {
+                    value: 56,
+                    message: "Day must be less than 56",
+                  },
+                  validate: {
+                    isReal: (value: any) =>
+                      value > parseInt(watchTo)
+                        ? "Day must be less than To Day"
+                        : true,
+                  },
+                }}
+                required={true}
+                disabled={watchDay == ""}
+              />{" "}
+              <NormalInput
+                label="To Day"
+                type="text"
+                register={register}
+                name="to_day"
+                errors={errors}
+                validationSchema={{
+                  required: "Day is required",
+                  min: {
+                    value: 1,
+                    message: "Day must be greater than 0",
+                  },
+                  max: {
+                    value: 56,
+                    message: "Day must be less than 56",
+                  },
+                  validate: {
+                    isReal: (value: any) =>
+                      value < parseInt(watchDay)
+                        ? "Day must be greater than From Day"
+                        : true,
+                  },
                 }}
                 required={true}
                 disabled={watchDay == ""}
@@ -248,28 +324,30 @@ export default function farrowing() {
               <button
                 type="submit"
                 className="btn btn-primary"
-                disabled={watchDay == ""}
+                disabled={range.from == "" || range.to == ""}
               >
                 Submit
               </button>
               <button
-                onClick={() => reset()}
+                onClick={() => {
+                  reset();
+                  setRange({ from: "", to: "" });
+                }}
                 type="button"
                 className="btn  mx-2"
-                disabled={watchDay == ""}
               >
                 Reset
               </button>
             </div>
           </form>
         </div>
-        <div className="w-11/12  col-span-2">
+        <div className="w-full  col-span-2">
           {isFetching ? (
             <div className="flex justify-center">
               <div className="spinner"></div>
             </div>
           ) : (
-            <table className=" table w-11/12 text-center">
+            <table className=" table table-fixed w-11/12 text-center">
               <thead className="">
                 <tr>
                   <th className="text-xl uppercase" colSpan={1}>
@@ -284,7 +362,7 @@ export default function farrowing() {
                 {new Array(8).fill(null).map((data, index: number) => {
                   return (
                     <tr key={index}>
-                      <td className="font-bold">
+                      <td className="font-bold w-24">
                         <div className="mx-auto my-auto flex flex-col p-2">
                           <span className="mx-auto">WEEK </span>
                           <span className="mx-auto">{index + 1}</span>
@@ -300,45 +378,103 @@ export default function farrowing() {
                         return (
                           <td
                             onClick={() => {
-                              if (plans[days - 1]?.day == days) {
-                                setValue("day", plans[days - 1]?.day);
-                                setValue("item_id", plans[days - 1]?.item_id);
-                                setValue(
-                                  "item_name",
-                                  plans[days - 1]?.item_name
-                                );
-                              } else {
-                                setValue("day", `${days}`);
+                              if (
+                                parseInt(range.from) == days &&
+                                range.to == ""
+                              ) {
+                                setValue("to_day", `${days}`);
+                                setRange({ from: range.from, to: `${days}` });
+                              } else if (
+                                parseInt(range.from) == days &&
+                                range.to == ""
+                              ) {
+                                setValue("to_day", ``);
+                                setValue("from_day", ``);
+                                setValue("item_name", "");
+                                setRange({ from: "", to: "" });
+                              } else if (range.from == "" || range.to == "") {
+                                if (
+                                  range.from !== "" &&
+                                  days < parseInt(range.from)
+                                ) {
+                                  toast.error(
+                                    "Invalid Range.Pick a day greater than from day"
+                                  );
+                                } else if (range.from == "" && range.to == "") {
+                                  if (plans[days - 1]?.day == days) {
+                                    setValue("from_day", plans[days - 1]?.day);
+                                    setValue(
+                                      "item_id",
+                                      plans[days - 1]?.item_id
+                                    );
+                                    setValue(
+                                      "item_name",
+                                      plans[days - 1]?.item_name
+                                    );
+                                  } else {
+                                    setValue("from_day", `${days}`);
+                                    setValue("item_id", "");
+                                    setValue("item_name", "");
+                                  }
+                                  setRange({ from: `${days}`, to: "" });
+                                } else {
+                                  if (plans[days - 1]?.day == days) {
+                                    setValue("to_day", plans[days - 1]?.day);
+                                    setValue(
+                                      "item_id",
+                                      plans[days - 1]?.item_id
+                                    );
+                                    setValue(
+                                      "item_name",
+                                      plans[days - 1]?.item_name
+                                    );
+                                  } else {
+                                    setValue("to_day", `${days}`);
+                                    setValue("item_id", "");
+                                    setValue("item_name", "");
+                                  }
+                                  setRange({ from: range.from, to: `${days}` });
+                                }
+                              } else if (parseInt(range.to) == days) {
+                                setValue("to_day", ``);
                                 setValue("item_id", "");
                                 setValue("item_name", "");
+                                setRange({ from: range.from, to: `` });
+                              } else if (range.from != "" && range.to != "") {
+                                setValue("to_day", ``);
+                                setValue("from_day", ``);
+                                setValue("item_name", "");
+                                setRange({ from: "", to: "" });
                               }
                             }}
                             key={day}
-                            className={` text-center  w-26  cursor-pointer group ${
-                              parseInt(watchDay) == days
-                                ? " bg-success "
+                            className={`text-center relative cursor-pointer ${
+                              days >= parseInt(range.from) &&
+                              days <= parseInt(range.to)
+                                ? "bg-success"
                                 : plans[days - 1]?.day == days &&
                                   parseInt(watchDay) != days
-                                ? " bg-info "
-                                : " bg-base-300 "
+                                ? "bg-info"
+                                : days == parseInt(range.from)
+                                ? "bg-success"
+                                : days == parseInt(range.to)
+                                ? "bg-success"
+                                : "bg-base-300"
                             }`}
                           >
-                            <div className={`flex flex-col w-26 h-auto  `}>
+                            {" "}
+                            <div
+                              data-tip={
+                                plans[day - 1]?.day == day
+                                  ? `Using ${
+                                      plans[day - 1]?.item_name
+                                    } on this day`
+                                  : "This day is empty"
+                              }
+                              className={` flex flex-row  tooltip  `}
+                            >
                               <p className="mx-auto my-auto font-bold">
                                 Day {day}
-                              </p>
-                              <p
-                                className={`text-sm hidden   break-words ${
-                                  plans[day - 1]?.day == day
-                                    ? "group-hover:block"
-                                    : "hidden"
-                                }`}
-                              >
-                                Using
-                                <span className="font-bold ">
-                                  {` ${plans[day - 1]?.item_name} `}
-                                </span>
-                                on this day
                               </p>
                             </div>
                           </td>

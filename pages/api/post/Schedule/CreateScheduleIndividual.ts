@@ -59,7 +59,6 @@ async function UpdateCage(conn: any, pig_id: any, item_list: any) {
     return error;
   }
 }
-
 async function InsertOperationItemDetail(
   conn: any,
   item_id: any,

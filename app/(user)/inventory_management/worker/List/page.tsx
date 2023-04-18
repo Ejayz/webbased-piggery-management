@@ -129,7 +129,7 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table className="table table-compact w-11/12  mx-auto   text-base-content">
+          <table className="table table-compact w-11/12  mx-auto  text-base-content">
             <thead>
               <tr>
                 <th></th>

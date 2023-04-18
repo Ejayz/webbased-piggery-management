@@ -68,39 +68,39 @@ export default function Page({ params }: any) {
 
   const cage_option = [
     {
-      value: "Individual Stalls",
-      display: "Individual Stalls",
-      disabled: Action === "View" || Action === "Remove",
+      value: "Forrowing Crates",
+      display: "Forrowing Crates",
+      disabled: false,
     },
     {
       value: "Group Housing",
       display: "Group Housing",
-      disabled: Action === "View" || Action === "Remove",
-    },
-    {
-      value: "Forrowing Crates",
-      display: "Forrowing Crates",
-      disabled: Action === "View" || Action === "Remove",
-    },
-    {
-      value: "Sow Stalls",
-      display: "Sow Stalls",
-      disabled: Action === "View" || Action === "Remove",
+      disabled: false,
     },
     {
       value: "Grow Finishing Housing",
       display: "Grow Finishing Housing",
-      disabled: Action === "View" || Action === "Remove",
+      disabled: false,
+    },
+    {
+      value: "Individual Stalls",
+      display: "Individual Stalls",
+      disabled: false,
     },
     {
       value: "Nursery Pens",
       display: "Nursery Pens",
-      disabled: Action === "View" || Action === "Remove",
+      disabled: false,
     },
     {
       value: "Quarantine Cage",
       display: "Quarantine Cage",
-      disabled: Action === "View" || Action === "Remove",
+      disabled: false,
+    },
+    {
+      value: "Sow Stalls",
+      display: "Sow Stalls",
+      disabled: false,
     },
   ];
 
@@ -160,6 +160,7 @@ export default function Page({ params }: any) {
   };
 
   const updateUser = async (data: any) => {
+    setProcessing(true);
     const returned = await Update(
       data.cage_name,
       data.cage_id,
@@ -169,8 +170,10 @@ export default function Page({ params }: any) {
     if (returned.code == 200) {
       resetState();
       callCancel(returned.message, "success");
+      setProcessing(false);
     } else {
       toast.error(returned.message);
+      setProcessing(false);
     }
   };
 
@@ -221,17 +224,12 @@ export default function Page({ params }: any) {
             </p>
           </div>
         </div>
-        <div
-          data-theme="light"
-          className="card mx-auto text-base-content w-11/12 bg-base-100 shadow-xl"
-        >
-          <div className="card-body">
+        <div className=" mx-auto text-base-content w-11/12 ">
+          <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>Cage Management</li>
-
                 <li>View</li>
-
                 <li className="font-bold">{Action}</li>
               </ul>
             </div>
@@ -292,7 +290,7 @@ export default function Page({ params }: any) {
                   }}
                 ></SelectInput>
               </div>
-              <div className="card-actions justify-end">
+              <div className="card-actions justify-end mt-4">
                 {params.Action == "View" ? (
                   <></>
                 ) : params.Action == "Update" ? (
@@ -316,7 +314,7 @@ export default function Page({ params }: any) {
                   onClick={(e) => {
                     callCancel();
                   }}
-                  className="btn btn-active btn-primary mx-4"
+                  className="btn btn-active  mx-4"
                   href={"/cage_management/worker/List"}
                 >
                   Cancel

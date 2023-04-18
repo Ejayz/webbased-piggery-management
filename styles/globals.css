@@ -217,3 +217,9 @@ input[type=number] {
   font-family: "FrickleFace";
   src: url("/fonts/FreckleFace/FreckleFace.ttf");
 }
+.bg-react{
+  background-image: url("/assets/bg-react.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

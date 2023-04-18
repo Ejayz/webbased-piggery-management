@@ -83,11 +83,11 @@ export default function FeedingActivity() {
               title: `${item.operation_name} ${item.item_name} ${item.am_pm} `,
               start: item.operation_date,
               backgroundColor:
-                DateTime.fromISO(item.operation_date).diffNow("days").days <
-                  -1 &&
-                (item.status == "pending" || item.status == "confirmed")
-                  ? "red"
-                  : DateTime.fromISO(item.operation_date).diffNow("days").days <
+              DateTime.fromISO(item.operation_date).diffNow("days").days <
+              -1 &&
+            (item.status == "pending" || item.status != "confirmed")
+              ? "red"
+              : DateTime.fromISO(item.operation_date).diffNow("days").days <
                       0 &&
                     (item.status == "pending" || item.status != "confirmed")
                   ? "orange"

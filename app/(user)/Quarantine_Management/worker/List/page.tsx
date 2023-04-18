@@ -48,12 +48,7 @@ export default function Page() {
       data.time = new Date().getTime() / 1000;
       return data;
     },
-    {
-      refetchOnWindowFocus: false,
-      cacheTime: 0,
-      enabled: false,
-      keepPreviousData: true,
-    }
+    {}
   );
   console.log(data);
   useEffect(() => {

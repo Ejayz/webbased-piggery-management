@@ -16,14 +16,14 @@ async function verifyJWT(token: any) {
   }
 }
 
-async function decodeJWT(token: any) {
+const decodeJWT: any = async (token: any) => {
   return new Promise((resolve, rejects) => {
     jwt.verify(token, secret, (err: any, decoded: any) => {
       if (err) rejects(err);
       resolve(decoded);
     });
   });
-}
+};
 async function signJWT(signables: Object) {
   return jwt.sign(signables, secret);
 }

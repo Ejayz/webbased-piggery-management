@@ -22,6 +22,7 @@ interface SelectedCage {
 export default function ({ pigData, setPigData, clear, setResset }: any) {
   const [cageList, setCageList] = useState<SelectInter[]>([]);
   const [cageSelected, setCageSelected] = useState<SelectedCage[]>([]);
+  const [hideScanner, setHideScanner] = useState(false);
   const {
     handleSubmit,
     register,
@@ -206,13 +207,26 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
 
   return (
     <div className="w-full h-auto overflow-y-hidden">
-      {" "}
+      <input
+        type="checkbox"
+        id="my-modal-6"
+        checked={hideScanner}
+        onChange={() => {
+          setHideScanner(!hideScanner);
+        }}
+        className="modal-toggle"
+      />
       <div className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <h3 className="font-bold text-lg text-base-content">
             Use custom Qr Code
           </h3>
-          <QrCode></QrCode>
+          <QrCode
+            setter={setValue}
+            setHide={setHideScanner}
+            hide={hideScanner}
+            ActionMaker={"pig_id"}
+          ></QrCode>
           <div className="modal-action">
             <button onClick={() => {}} className="btn">
               Close
@@ -222,21 +236,31 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
       </div>
       <span></span>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {" "}
         <div className="gap-2 grid-cols-2 grid-rows-2 grid">
-          <NormalInput
-            type={"text"}
-            label={"Pig Id"}
-            name={`pig_id`}
-            required={true}
-            register={register}
-            errors={errors}
-            validationSchema={{
-              required: "This field is required",
-            }}
-            id={"pig_tag"}
-            readonly={true}
-          />
+          <div className="flex flex-row">
+            <NormalInput
+              type={"text"}
+              label={"Pig Id"}
+              name={`pig_id`}
+              required={true}
+              register={register}
+              errors={errors}
+              validationSchema={{
+                required: "This field is required",
+              }}
+              id={"pig_tag"}
+              readonly={true}
+            />
+            <button
+              type="button"
+              className={" text-primary-content btn mt-auto mx-2"}
+              onClick={() => {
+                setHideScanner(true);
+              }}
+            >
+              Scan QR CODE
+            </button>
+          </div>
           <SelectInput
             name={`cage_id`}
             label={"Cage"}
@@ -249,6 +273,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
             }}
             id={"cage_id"}
           />
+
           <NormalInput
             type={"text"}
             label={"Pig Tag"}
@@ -274,7 +299,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
             id={"weight"}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary my-4">
           Add to list
         </button>
       </form>
@@ -290,54 +315,60 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
           </tr>
         </thead>
         <tbody className="w-full h-auto">
-          {pigData.map((value: any, key: number) => {
-            return (
-              <tr key={key}>
-                <th>{key + 1}</th>
-                <th className="hidden">
-                  <QRCodeCanvas id={value.pig_id} value={value.pig_id} />
-                </th>
-                <th>{value.pig_id}</th>
-                <td>{value.cage_id}</td>
-                <td>{value.pig_tag}</td>
-                <td>{value.weight}</td>
-                <td className="flex flex-row">
-                  <button
-                    type="button"
-                    className="link "
-                    onClick={() => {
-                      printJS(`${value.pig_id}`, "html");
-                    }}
-                  >
-                    Print Qr Code
-                  </button>
-                  <div className="divider divider-horizontal"></div>
-                  <button
-                    className="link"
-                    type="button"
-                    onClick={() => {
-                      processQrCode(key, value.pig_id);
-                    }}
-                  >
-                    Download{" "}
-                  </button>
-                  <div className="divider divider-horizontal"></div>
-                  <button
-                    type="button"
-                    className="link"
-                    onClick={() => {
-                      removePig(key);
-                      subtractSelectedQuantity(value.cage_id);
-                      refetch();
-                    }}
-                  >
-                    Remove
-                  </button>
-                  <div className="divider divider-horizontal"></div>
-                </td>
-              </tr>
-            );
-          })}
+          {pigData.length == 0 ? (
+            <tr className="text-center">
+              <td colSpan={6}>No data added to list yet.</td>
+            </tr>
+          ) : (
+            pigData.map((value: any, key: number) => {
+              return (
+                <tr key={key}>
+                  <th>{key + 1}</th>
+                  <th className="hidden">
+                    <QRCodeCanvas id={value.pig_id} value={value.pig_id} />
+                  </th>
+                  <th>{value.pig_id}</th>
+                  <td>{value.cage_id}</td>
+                  <td>{value.pig_tag}</td>
+                  <td>{value.weight}</td>
+                  <td className="flex flex-row">
+                    <button
+                      type="button"
+                      className="link "
+                      onClick={() => {
+                        printJS(`${value.pig_id}`, "html");
+                      }}
+                    >
+                      Print Qr Code
+                    </button>
+                    <div className="divider divider-horizontal"></div>
+                    <button
+                      className="link"
+                      type="button"
+                      onClick={() => {
+                        processQrCode(key, value.pig_id);
+                      }}
+                    >
+                      Download{" "}
+                    </button>
+                    <div className="divider divider-horizontal"></div>
+                    <button
+                      type="button"
+                      className="link"
+                      onClick={() => {
+                        removePig(key);
+                        subtractSelectedQuantity(value.cage_id);
+                        refetch();
+                      }}
+                    >
+                      Remove
+                    </button>
+                    <div className="divider divider-horizontal"></div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
     </div>
