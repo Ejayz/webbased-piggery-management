@@ -50,7 +50,7 @@ export default async function handler(
             const token = jwt.sign(userInfo, jwt_key);
             if (rememberme) {
               return res
-                .status("200")
+                .status(200)
                 .setHeader(
                   "Set-Cookie",
                   `auth=${token}; path=/; max-age=2592000;"`
