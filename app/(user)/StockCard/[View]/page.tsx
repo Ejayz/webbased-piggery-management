@@ -44,8 +44,7 @@ export default function Page({ params }: any) {
       data.time = new Date().getTime() / 1000;
       return data;
     },
-    {
-    }
+    {}
   );
   const { error, isLoading, isFetching, data, refetch } = useQuery(
     "stockCardDetails",
@@ -59,10 +58,8 @@ export default function Page({ params }: any) {
       data.time = new Date().getTime() / 1000;
       return data;
     },
-    {
-    }
+    {}
   );
-  console.log(StockCardData);
   useEffect(() => {
     if (data !== undefined) {
       if (data.data) {
@@ -204,7 +201,7 @@ export default function Page({ params }: any) {
                     <span className="font-semibold">Stock Closing:</span>
                     <span>
                       {StockCardData?.data != undefined
-                        ? StockCardData.data[0].latest_closing_quantity /
+                        ? StockCardData.data[0].closing_quantity /
                           StockCardData.data[0].item_net_weight
                         : "Undifined"}
                     </span>

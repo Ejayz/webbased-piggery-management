@@ -88,3 +88,46 @@ export const CreateBatchSchedule = async (cage_id: any, item_list: any) => {
   let data = await response.json();
   return data;
 };
+
+export const UpdateOperationItem = async (item_id: any, operation_id: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    item_id: item_id,
+    operation_id: operation_id,
+  });
+
+  let response = await fetch("/api/post/Schedule/updateItem", {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
+
+  let data = await response.json();
+  return data;
+};
+
+export const CancelSchedule = async (operation_id: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    operation_id: operation_id,
+  });
+
+  let response = await fetch("/api/post/Schedule/cancelSchedule", {
+    method: "POST",
+    body: bodyContent,
+    headers: headersList,
+  });
+
+  let data = await response.json();
+  return data;
+};

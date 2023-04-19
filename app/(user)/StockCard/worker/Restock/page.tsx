@@ -9,6 +9,8 @@ import NormalInput from "@/components/FormCompsV2/NormalInput";
 import { useQuery } from "react-query";
 import { ErrorMessage } from "@hookform/error-message";
 import RightDisplay from "@/components/FormCompsV2/RightDisplay";
+import { DateTime } from "luxon";
+import SearchInput from "@/components/FormCompsV2/SearchInput";
 
 interface RestockList {
   item_id: string;
@@ -35,6 +37,7 @@ export default function Page() {
       expiration_date: "",
       attachment: "",
       stock_id: "",
+      item_id: "",
     },
     criteriaMode: "all",
     mode: "onChange",
@@ -46,7 +49,10 @@ export default function Page() {
   const [requesting, setRequesting] = useState(false);
   const router = useRouter();
   const loading = getUserInfo();
-  const [item_list, setItemList] = useState<any>([]);
+  const [item_lists, setItemList] = useState<any>([]);
+  const [item_list, setItems] = useState<any[]>([]);
+  const [show, showModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const { error, isLoading, isFetching, data, refetch } = useQuery(
     "getItems",
     async () => {
@@ -134,19 +140,19 @@ export default function Page() {
 
   const onSubmit = (data: any) => {
     const item_name = item_list.find(
-      (item: any) => item.item_id == data.item_name
+      (item: any) => item.item_id == data.item_id
     ).item_name;
     const stock_id = item_list.find(
-      (item: any) => item.item_id == data.item_name
+      (item: any) => item.item_id == data.item_id
     ).stock_id;
     const item_net_weight = item_list.find(
-      (item: any) => item.item_id == data.item_name
+      (item: any) => item.item_id == data.item_id
     ).item_net_weight;
 
     setParsed([
       ...parsed,
       {
-        item_id: data.item_name,
+        item_id: data.item_id,
         item_name: item_name,
         quantity: data.quantity,
         expiration_date: data.expiration_date,
@@ -156,9 +162,41 @@ export default function Page() {
     ]);
     reset();
   };
-
+  const {
+    register: searchItem,
+    handleSubmit: searchItemSubmit,
+    formState: { errors: searchItemErrors },
+    setValue: searchItemSetValue,
+    watch: searchItemWatch,
+    reset: searchItemReset,
+  } = useForm({
+    defaultValues: {
+      keyword: "",
+    },
+    criteriaMode: "all",
+    mode: "onChange",
+  });
   console.log(file);
-
+  const searchItemWatchKeyword = searchItemWatch("keyword");
+  const {
+    data: ItemsData,
+    error: ItemsError,
+    isLoading: ItemsLoading,
+    refetch: ItemsRefetch,
+  } = useQuery("items", async () => {
+    const res = await fetch(
+      `/api/get/Schedule/getItem?keyword=${searchItemWatchKeyword}`
+    );
+    const data = await res.json();
+    return data;
+  });
+  useEffect(() => {
+    if (ItemsData) {
+      if (ItemsData.code == 200) {
+        setItems(ItemsData.data);
+      }
+    }
+  }, [ItemsData]);
   if (loading.loading) {
     return loading.loader;
   } else if (!allowed) {
@@ -166,6 +204,103 @@ export default function Page() {
   } else {
     return (
       <>
+        <input
+          type="checkbox"
+          checked={show}
+          readOnly={true}
+          className="modal-toggle"
+        />
+        <div className="modal">
+          <div className="modal-box relative">
+            <label
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+              onClick={() => showModal(false)}
+            >
+              ✕
+            </label>
+            <h3 className="text-lg font-bold">
+              Search for items that will be used in this activity.
+            </h3>
+            <div className="form-control">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  ItemsRefetch();
+                }}
+                className="input-group"
+              >
+                <div className="form-control">
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      placeholder="Search…"
+                      className="input input-bordered"
+                      {...searchItem("keyword", {
+                        required: {
+                          value: true,
+                          message: "Keyword is required",
+                        },
+                      })}
+                    />
+                    <button className="btn btn-square">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </form>
+              <label className="label overflow-y-auto">
+                <table className="table table-compact w-full label-text-alt">
+                  <thead>
+                    <tr>
+                      <th>Item Name</th>
+                      <th>Description</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {item_list.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.item_name}</td>
+                        <td>{item.item_description}</td>
+                        <td>
+                          <label
+                            onClick={() => {
+                              setValue("item_id", item.item_id, {
+                                shouldValidate: true,
+                              });
+                              setValue("item_name", item.item_name),
+                                {
+                                  shouldValidate: true,
+                                };
+                              showModal(false);
+                              searchItemReset();
+                            }}
+                            className="link underline hover:text-primary"
+                          >
+                            Select
+                          </label>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </label>
+            </div>
+          </div>
+        </div>
         <div className="w-full  h-full oveflow-y-scroll flex flex-col overflow-x-hidden">
           <div className=" h-auto w-full">
             <div className="w-11/12  mx-auto flex flex-row">
@@ -226,7 +361,7 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2 gap-2">
-                    <div className="form-control">
+                    {/* <div className="form-control">
                       <label className="label">
                         <span className="label-text text-lg">Item Name*</span>
                       </label>
@@ -259,13 +394,34 @@ export default function Page() {
                           </p>
                         )}
                       />
-                    </div>
-
+                    
+                    </div> */}
+                    <SearchInput
+                      label="Selected Item"
+                      type="text"
+                      register={register}
+                      name="item_name"
+                      errors={errors}
+                      validationSchema={{
+                        required: "Item is required",
+                      }}
+                      required={true}
+                      showModal={showModal}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      name="item_id"
+                      render={({ message }) => (
+                        <p className="mt-2 text-sm  text-error">
+                          <span className="font-medium">{message}</span>{" "}
+                        </p>
+                      )}
+                    />
                     <RightDisplay
                       item_unit={
                         watchItemName != ""
                           ? item_list.find(
-                              (item: any) => item.item_id == watchItemName
+                              (item: any) => item.item_name == watchItemName
                             ).item_unit
                           : "N/A"
                       }
@@ -277,6 +433,10 @@ export default function Page() {
                       type="number"
                       validationSchema={{
                         required: "Total quantity is required",
+                        min: {
+                          value: 1,
+                          message: "Quantity must be greater than 0",
+                        },
                       }}
                     />
                     <NormalInput
@@ -285,7 +445,17 @@ export default function Page() {
                       register={register}
                       required={false}
                       errors={errors}
-                      validationSchema={{}}
+                      validationSchema={{
+                        min: {
+                          value: new Date(),
+                          message: "Expiration date must be greater than today",
+                        },
+                        max: {
+                          value: DateTime.now().plus({ year: 5 }).toISO(),
+                          message:
+                            "Expiration date must be less than 6 year from today",
+                        },
+                      }}
                       type="date"
                     />
                   </div>{" "}
@@ -327,8 +497,8 @@ export default function Page() {
                                     item.quantity
                                   } ${
                                     item_list.find(
-                                      (item: any) =>
-                                        item.item_id == item.item_id
+                                      (items: any) =>
+                                        items.item_id == item.item_id
                                     ).item_unit
                                   }`}</td>
                                   <td>

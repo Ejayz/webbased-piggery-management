@@ -464,11 +464,11 @@ export function Individual() {
           </div>
         </div>
       </div>
-      <input type="checkbox" id="my-modal-6" className="modal-toggle" />
+      <input type="checkbox" id="search_pig" className="modal-toggle" />
       <div className="modal modal-bottom sm:modal-middle">
         <div className="modal-box relative">
           <label
-            htmlFor="my-modal-6"
+            htmlFor="search_pig"
             className="btn btn-sm btn-circle absolute right-2 top-2"
           >
             ✕
@@ -537,7 +537,7 @@ export function Individual() {
                               });
                             }
                           }}
-                          htmlFor="my-modal-6"
+                          htmlFor="search_pig"
                           className="link underline hover:text-primary"
                         >
                           Select
@@ -585,7 +585,7 @@ export function Individual() {
           >
             <div className="w-11/12  grid grid-row-3">
               <div className="flex flex-col">
-                <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                <label htmlFor="search_pig" className={`btn my-auto`}>
                   Choose Pig
                 </label>{" "}
                 <div className="divider-horizontal"></div>{" "}
@@ -888,7 +888,6 @@ export function Individual() {
             dayHeaders={true}
             displayEventTime={false}
             events={useItem}
-            
           />
         </div>
       </div>

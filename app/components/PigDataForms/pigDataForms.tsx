@@ -36,6 +36,8 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
       weight: "",
       cage_id: "",
     },
+    mode: "onChange",
+    criteriaMode: "all",
   });
 
   const { isLoading, error, data, refetch } = useQuery(
@@ -295,6 +297,10 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
             errors={errors}
             validationSchema={{
               required: "This field is required",
+              min: {
+                value: 1,
+                message: "Weight must be greater than 0",
+              },
             }}
             id={"weight"}
           />

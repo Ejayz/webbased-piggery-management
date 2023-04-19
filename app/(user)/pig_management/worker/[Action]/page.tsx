@@ -21,6 +21,7 @@ import NormalInput from "@/components/FormCompsV2/NormalInput";
 import SelectInput from "@/components/FormCompsV2/SelectInput";
 import { useQuery } from "react-query";
 import { IdGenerator } from "@/hooks/usePigManagement";
+import TextArea from "@/components/FormCompsV2/TextArea";
 interface SelectInter {
   value: number;
   display: string;
@@ -51,6 +52,7 @@ export default function Page({ params }: any) {
       pig_tag: "",
       status: "",
       weight: "",
+      remarks: "",
     },
     mode: "onChange",
     criteriaMode: "all",
@@ -92,7 +94,7 @@ export default function Page({ params }: any) {
     return list;
   };
 
-  const triggerUpdate = async () => {
+  const triggerUpdate = async (data: any) => {
     setCageList([]);
     const cage_list = data.data.PigletCageList;
     console.log(cage_list);
@@ -107,13 +109,7 @@ export default function Page({ params }: any) {
       });
     });
 
-    console.log(
-      listCage.find((item: any) => item.value == pigData.data[0].cage_id).value
-    );
-    if (
-      listCage.find((item: any) => item.value == pigData.data[0].cage_id)
-        .value == undefined
-    ) {
+    if (listCage.find((item: any) => item.value == data.cage_id) == undefined) {
       listCage.push({
         value: pigData.data[0].cage_id,
         display: pigData.data[0].cage_name,
@@ -130,7 +126,7 @@ export default function Page({ params }: any) {
   useEffect(() => {
     if (data !== undefined) {
       if (data.code == 200) {
-        triggerUpdate();
+        triggerUpdate(data);
       }
     }
   }, [data]);
@@ -199,7 +195,8 @@ export default function Page({ params }: any) {
       data.pig_tag,
       data.status,
       data.cage_id,
-      data.weight
+      data.weight,
+      data.remarks
     );
     if (returned.code == 200) {
       resetState();
@@ -367,7 +364,13 @@ export default function Page({ params }: any) {
                   readonly={
                     Action == "View" || Action == "Remove" ? true : false
                   }
-                  validationSchema={{ required: "This field is required" }}
+                  validationSchema={{
+                    required: "This field is required",
+                    min: {
+                      value: 0.1,
+                      message: "Weight must be greater than 0.1",
+                    },
+                  }}
                 ></NormalInput>
                 <SelectInput
                   name={"status"}
@@ -406,6 +409,15 @@ export default function Page({ params }: any) {
                 >
                   {" "}
                 </SelectInput>
+                <TextArea
+                  name={"remark"}
+                  label={"Remarks"}
+                  register={register}
+                  disabled={true}
+                  errors={errors}
+                  required={true}
+                  validationSchema={{ required: "This field is required" }}
+                />
               </div>
               <div className="card-actions justify-end mt-6">
                 {params.Action == "View" ? (

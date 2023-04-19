@@ -627,7 +627,7 @@ export function Cage() {
             </div>
             <div className="card-actions mt-4">
               <button
-                className={`btn btn-active btn-primary mx-4 ${
+                className={`btn btn-active  mx-4 my-4 ${
                   processing ? "loading" : ""
                 }`}
                 type={"button"}

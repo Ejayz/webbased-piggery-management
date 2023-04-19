@@ -82,13 +82,12 @@ async function insertStockCardDetails(
     const closingQuantity = stockCardIdResult[0].closing_quantity;
     const createStockCardDetails =
       "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,remark) VALUES (?,?,?,?,?)";
-    let calculated_quantity: number =
-      parseInt(quantity) * parseInt(item_net_weight);
-    const total_quantity = parseInt(closingQuantity) - calculated_quantity;
+
+    const total_quantity = parseFloat(closingQuantity) - parseFloat(quantity);
 
     const [createStockCardDetailsResult]: any = await conn.query(
       createStockCardDetails,
-      [stockCard_id, calculated_quantity, total_quantity, "OUT", remarks]
+      [stockCard_id, total_quantity, total_quantity, "OUT", remarks]
     );
 
     const updateStockCard =

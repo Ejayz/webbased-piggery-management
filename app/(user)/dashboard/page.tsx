@@ -102,13 +102,17 @@ export default function Page() {
               ></path>
             </svg>
             <span>
-              Currently there are{" "}
+              There is currently{" "}
               {isFetching ? "..." : data.data.totalPendingOperation} pending
               operation today.
             </span>
           </div>
         </div>
-        <div className="alert alert-warning shadow-lg w-11/12 mx-auto my-2">
+        <div
+          className={`alert alert-warning shadow-lg w-11/12 mx-auto my-2 ${
+            !isFetching ? (data.data.totalLowLvl == 0 ? "hidden" : "") : ""
+          }`}
+        >
           <div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -125,8 +129,8 @@ export default function Page() {
             </svg>
             <span>
               Warning: There are {isFetching ? "..." : data.data.totalLowLvl}{" "}
-              item(s) . Please check Reorder List Report to generate the list of
-              item.
+              low level item(s) . Please check Reorder List Report to generate
+              the list of item.
             </span>
           </div>
         </div>
