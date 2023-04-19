@@ -17,17 +17,9 @@ export default async function handler(
     return false;
   }
   try {
-    const { pig_id, page }: any = req.query;
-    if (page == "0") {
-      return res
-        .status(404)
-        .json({ code: 404, message: "Page 0 data cannot be found" });
-    }
+    const { pig_id }: any = req.query;
 
-    const limit: number = 5;
-    const offset: number = limit * (parseInt(page) - 1);
-
-    const rows = await UpdateCage(pig_id, limit, offset);
+    const rows = await UpdateCage(pig_id);
 
     res.status(200).json({ code: 200, data: rows });
   } catch (error) {
@@ -36,7 +28,7 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(pig_id: any, limit: any, offset: any) {
+async function UpdateCage(pig_id: any) {
   const conn = await connection.getConnection();
   try {
     let datas: any = {
