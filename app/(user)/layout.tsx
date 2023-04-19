@@ -230,12 +230,12 @@ export default function User({ children }: { children: React.ReactNode }) {
             <div className="drawer-side">
               <label htmlFor="my-drawer" className="drawer-overlay"></label>
               <ul className="menu p-4 w-80 bg-base-100 text-base-content">
-                <div className="text-base font-medium">
+                <div className="text-base font-medium hover:bg-base-300 rounded-md">
                   <li>
                     <Link href="/dashboard">
                       <Image
-                        src={"/assets/icons/dashboard.png"}
-                        className="h-5 w-5 hidden"
+                        src={"/assets/icons/dashboard.svg"}
+                        className="h-5 w-5 "
                         alt={""}
                         width={512}
                         height={512}
@@ -252,14 +252,14 @@ export default function User({ children }: { children: React.ReactNode }) {
                 >
                   <div
                     tabIndex={0}
-                    className="collapse collapse-plus rounded-md bg-base-100"
+                    className="collapse collapse-plus rounded-md bg-base-100 hover:bg-base-300"
                   >
                     <div className="collapse">
                       <input type="checkbox" />
                       <div className="collapse-title text-base flex flex-cols font-medium">
                         <Image
-                          src={"/assets/icons/user_management.png"}
-                          className="h-6 w-6 mr-2 my-auto hidden"
+                          src={"/assets/icons/manage_user.svg"}
+                          className="h-6 w-6 mr-2 my-auto"
                           alt={""}
                           height={512}
                           width={512}
@@ -270,8 +270,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/user_management/owner/Create">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/create.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -282,8 +282,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/user_management/owner/List">
                             <Image
-                              src={"/assets/icons/user_list.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/list.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -302,14 +302,14 @@ export default function User({ children }: { children: React.ReactNode }) {
                 >
                   <div
                     tabIndex={0}
-                    className="collapse collapse-plus rounded-md bg-base-100"
+                    className="collapse collapse-plus rounded-md bg-base-100 hover:bg-base-300"
                   >
                     <div className="collapse">
                       <input type="checkbox" />
                       <div className="collapse-title text-base flex flex-cols font-medium">
                         <Image
-                          src={"/assets/icons/user_management.png"}
-                          className="h-6 w-6 mr-2 my-auto hidden"
+                          src={"/assets/icons/reports.svg"}
+                          className="h-6 w-6 mr-2 my-auto "
                           alt={""}
                           height={512}
                           width={512}
@@ -320,8 +320,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/reorder_report/owner/Create">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/reorder_list.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -332,8 +332,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/reports/InventoryReport">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/inventory_report.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -344,8 +344,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/reports/MedicineAdministrationReport">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/medicine_administration.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -356,8 +356,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/reports/VaccinationReport">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/vaccine_report.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -368,8 +368,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/reports/FeedingReport">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/feeding_report.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -380,8 +380,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/reports/DewormingReport">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/deworm.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -389,18 +389,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                             Deworming Report
                           </Link>
                         </li>
-                        {/* <li>
-                          <Link href="/user_management/owner/List">
-                            <Image
-                              src={"/assets/icons/user_list.png"}
-                              className="h-6 w-6 hidden"
-                              alt={""}
-                              height={512}
-                              width={512}
-                            ></Image>
-                            User List
-                          </Link>
-                        </li> */}
                       </div>
                     </div>
                   </div>
@@ -413,14 +401,14 @@ export default function User({ children }: { children: React.ReactNode }) {
                 >
                   <div
                     tabIndex={0}
-                    className="collapse collapse-plus rounded-md bg-base-100"
+                    className="collapse collapse-plus rounded-md bg-base-100 hover:bg-base-300"
                   >
                     <div className="collapse">
                       <input type="checkbox" />
                       <div className="collapse-title text-base flex flex-cols font-medium">
                         <Image
-                          src={"/assets/icons/user_management.png"}
-                          className="h-6 w-6 mr-2 my-auto hidden"
+                          src={"/assets/icons/backup_and_restore.svg"}
+                          className="h-6 w-6 mr-2 my-auto "
                           alt={""}
                           height={512}
                           width={512}
@@ -431,8 +419,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link target={"_blank"} href="/api/post/backup">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/backup.svg"}
+                              className="h-6 w-6 "
                               alt={""}
                               height={512}
                               width={512}
@@ -443,8 +431,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <li>
                           <Link href="/BackUpAndRestore/Restore">
                             <Image
-                              src={"/assets/icons/create_user.png"}
-                              className="h-6 w-6 hidden"
+                              src={"/assets/icons/restore.svg"}
+                              className="h-6 w-6"
                               alt={""}
                               height={512}
                               width={512}
@@ -464,12 +452,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
-                    <div className="collapse-title text-base flex flex-cols font-medium">
+                    <div className="collapse-title text-base flex flex-cols font-medium ">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/cage.svg"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
@@ -480,8 +468,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/cage_management/worker/Create">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -492,8 +480,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/cage_management/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -511,25 +499,25 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/pig.svg"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
                       ></Image>
-                      Manage Pig
+                      Manage Pig Record
                     </div>
                     <div className="collapse-content">
                       <div className="collapse">
                         <input type="checkbox" />
                         <div className="collapse-title text-base flex flex-cols font-medium">
                           <Image
-                            src={"/assets/icons/user_management.png"}
-                            className="h-6 w-6 mr-2 my-auto hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 mr-2 my-auto "
                             alt={""}
                             height={512}
                             width={512}
@@ -540,20 +528,20 @@ export default function User({ children }: { children: React.ReactNode }) {
                           <li>
                             <Link href="/pig_management/worker/Create/Pigs">
                               <Image
-                                src={"/assets/icons/create_user.png"}
-                                className="h-6 w-6 hidden"
+                                src={"/assets/icons/piglet.svg"}
+                                className="h-6 w-6 "
                                 alt={""}
                                 height={512}
                                 width={512}
                               ></Image>
-                              Pigs
+                              Piglets
                             </Link>
                           </li>
                           <li>
                             <Link href="/pig_management/worker/Create/Breeder">
                               <Image
-                                src={"/assets/icons/user_list.png"}
-                                className="h-6 w-6 hidden"
+                                src={"/assets/icons/breeder.svg"}
+                                className="h-6 w-6 "
                                 alt={""}
                                 height={512}
                                 width={512}
@@ -566,8 +554,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/pig_management/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -585,12 +573,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/breed.png"}
+                        className="h-6 w-6 mr-2 my-auto"
                         alt={""}
                         height={512}
                         width={512}
@@ -601,8 +589,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/breed_management/worker/Create">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -613,8 +601,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/breed_management/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -632,12 +620,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 hover:rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/batch.png"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
@@ -645,23 +633,11 @@ export default function User({ children }: { children: React.ReactNode }) {
                       Manage Batch
                     </div>
                     <div className="collapse-content">
-                      {/* <li>
-                        <Link href="/breed_management/worker/Create">
-                          <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Create
-                        </Link>
-                      </li> */}
                       <li>
                         <Link href="/batch_management/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -679,12 +655,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/inventory.svg"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
@@ -695,8 +671,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/inventory_management/worker/Create">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -707,8 +683,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/inventory_management/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -720,112 +696,19 @@ export default function User({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
                 {/* End of Inventory management menu */}
-                {/* Reorder Management */}
-                {/* <div
-                className={`${
-                  loading.data.job == "worker" ? "block" : "hidden"
-                }`}
-              >
-                <div className="collapse">
-                  <input type="checkbox" />
-                  <div className="collapse-title text-base flex flex-cols font-medium">
-                    <Image
-                      src={"/assets/icons/user_management.png"}
-                      className="h-6 w-6 mr-2 my-auto hidden"
-                      alt={""}
-                      height={512}
-                      width={512}
-                    ></Image>
-                    Manage Reorder
-                  </div>
-                  <div className="collapse-content">
-                    <li>
-                      <Link href="/reorder_management/worker/Create">
-                        <Image
-                          src={"/assets/icons/create_user.png"}
-                          className="h-6 w-6 hidden"
-                          alt={""}
-                          height={512}
-                          width={512}
-                        ></Image>
-                        Create
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/reorder_management/worker/List">
-                        <Image
-                          src={"/assets/icons/user_list.png"}
-                          className="h-6 w-6 hidden"
-                          alt={""}
-                          height={512}
-                          width={512}
-                        ></Image>
-                        Reorder List
-                      </Link>
-                    </li>
-                  </div>
-                </div>
-              </div>
-              {/* End of Reorder management menu */}
-                {/* Reorder Management */}
-                {/* <div
-                className={`${
-                  loading.data.job == "owner" ? "block" : "hidden"
-                }`}
-              >
-                <div className="collapse">
-                  <input type="checkbox" />
-                  <div className="collapse-title text-base flex flex-cols font-medium">
-                    <Image
-                      src={"/assets/icons/user_management.png"}
-                      className="h-6 w-6 mr-2 my-auto hidden"
-                      alt={""}
-                      height={512}
-                      width={512}
-                    ></Image>
-                    Manage Reorder
-                  </div>
-                  <div className="collapse-content">
-                    <li>
-                      <Link href="/reorder_management/owner/Create">
-                        <Image
-                          src={"/assets/icons/create_user.png"}
-                          className="h-6 w-6 hidden"
-                          alt={""}
-                          height={512}
-                          width={512}
-                        ></Image>
-                        Create
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/reorder_management/owner/List">
-                        <Image
-                          src={"/assets/icons/user_list.png"}
-                          className="h-6 w-6 hidden"
-                          alt={""}
-                          height={512}
-                          width={512}
-                        ></Image>
-                        Reorder List
-                      </Link>
-                    </li>
-                  </div>
-                </div>
-              </div>
-              End of Reorder management menu */}
+
                 {/* Stock Card Management Management */}
                 <div
                   className={`${
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/stack_card.png"}
+                        className="h-6 w-6 mr-2 my-auto"
                         alt={""}
                         height={512}
                         width={512}
@@ -836,8 +719,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/StockCard/worker/Restock">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/restock.png"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -848,8 +731,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/StockCard/worker/Destock">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/destock.png"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -860,8 +743,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/StockCard/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -879,12 +762,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "veterinarian" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300">
                     <input type="checkbox" />
-                    <div className="collapse-title text-base flex flex-cols font-medium">
+                    <div className="collapse-title text-base flex flex-cols font-medium ">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/plan.svg"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
@@ -895,8 +778,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Plan/veterinarian/FeedingPlan">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -914,12 +797,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/schedule.svg"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
@@ -930,8 +813,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Schedule/worker/Create">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -942,8 +825,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Schedule/worker/Modify">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -951,18 +834,6 @@ export default function User({ children }: { children: React.ReactNode }) {
                           Schedule List
                         </Link>
                       </li>
-                      {/* <li>
-                        <Link href="/Schedule/worker/Today">
-                          <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
-                            alt={""}
-                            height={512}
-                            width={512}
-                          ></Image>
-                          Today Schedule
-                        </Link>
-                      </li> */}
                     </div>
                   </div>
                 </div>
@@ -973,12 +844,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/operation.png"}
+                        className="h-6 w-6 mr-2 my-auto"
                         alt={""}
                         height={512}
                         width={512}
@@ -989,8 +860,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Operation/worker/ListBatch">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -1001,8 +872,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Operation/worker/ListCage">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -1013,8 +884,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Operation/worker/ListIndividual">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -1032,12 +903,12 @@ export default function User({ children }: { children: React.ReactNode }) {
                     loading.data.job == "worker" ? "block" : "hidden"
                   }`}
                 >
-                  <div className="collapse">
+                  <div className="collapse hover:bg-base-300 rounded-md">
                     <input type="checkbox" />
                     <div className="collapse-title text-base flex flex-cols font-medium">
                       <Image
-                        src={"/assets/icons/user_management.png"}
-                        className="h-6 w-6 mr-2 my-auto hidden"
+                        src={"/assets/icons/quarantine.png"}
+                        className="h-6 w-6 mr-2 my-auto "
                         alt={""}
                         height={512}
                         width={512}
@@ -1048,8 +919,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Quarantine_Management/worker/Create">
                           <Image
-                            src={"/assets/icons/create_user.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/create.svg"}
+                            className="h-6 w-6 ="
                             alt={""}
                             height={512}
                             width={512}
@@ -1060,8 +931,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       <li>
                         <Link href="/Quarantine_Management/worker/List">
                           <Image
-                            src={"/assets/icons/user_list.png"}
-                            className="h-6 w-6 hidden"
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
                             alt={""}
                             height={512}
                             width={512}
@@ -1082,8 +953,8 @@ export default function User({ children }: { children: React.ReactNode }) {
                       }}
                     >
                       <Image
-                        src={"/assets/icons/pig.png"}
-                        className="h-5 w-5 hidden"
+                        src={"/assets/icons/logout.svg"}
+                        className="h-6 w-6 "
                         alt={""}
                         height={512}
                         width={512}
