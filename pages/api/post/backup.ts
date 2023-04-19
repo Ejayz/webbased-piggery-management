@@ -25,13 +25,10 @@ export default async function handler(
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
     START TRANSACTION;
     SET time_zone = "+00:00";
-    
-    
     /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
     /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
     /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
     /*!40101 SET NAMES utf8mb4 */;
-    
     --
     -- Database: \`piggery_management\`
     --
@@ -42,7 +39,6 @@ export default async function handler(
     const zip = new AdmZip();
 
     zip.addFile(`${DateTime.now()}.sql`, Buffer.from(`${buildDb}`, `utf8`), ``);
-
     return res.send(zip.toBuffer());
   } catch (error) {
     console.log(error);
@@ -55,7 +51,7 @@ async function UpdateCage() {
     connection: {
       host: process.env.DB_HOST ? process.env.DB_HOST : "localhost",
       user: process.env.DB_USER ? process.env.DB_USER : "root",
-      password: process.env.DB_PASSWORD ? process.env.DB_PASSWORD : "",
+      password: process.env.DB_PASSWORD ? process.env.DB_PASSWORD : "randomDdos1.com",
       database: process.env.DB_DATABASE
         ? process.env.DB_DATABASE
         : "piggery_management",
