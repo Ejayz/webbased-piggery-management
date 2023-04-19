@@ -14,6 +14,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
+import QrCode from "../QrComponent/qrcode";
 
 interface activity_interface {
   value: string;
@@ -26,6 +27,7 @@ export function Individual() {
   const [keyword, setKeyword] = useState("");
   const [activity, setActivity] = useState<activity_interface[]>([]);
   const [plan_list, setPlanList] = useState<any[]>([]);
+  const [hideScanner, setHideScanner] = useState(false);
   const [useItem, setUseItem] = useState<
     {
       title: string;
@@ -335,6 +337,38 @@ export function Individual() {
     <>
       <input
         type="checkbox"
+        id="my-modal-6"
+        checked={hideScanner}
+        onChange={() => {
+          setHideScanner(!hideScanner);
+        }}
+        className="modal-toggle"
+      />
+      <div className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg text-base-content">
+            Use custom Qr Code
+          </h3>
+          <QrCode
+            setter={setValue}
+            setHide={setHideScanner}
+            hide={hideScanner}
+            ActionMaker={"pig_id"}
+          ></QrCode>
+          <div className="modal-action">
+            <button
+              onClick={() => {
+                setHideScanner(false);
+              }}
+              className="btn"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+      <input
+        type="checkbox"
         checked={show}
         readOnly={true}
         className="modal-toggle"
@@ -553,7 +587,17 @@ export function Individual() {
               <div className="flex flex-col">
                 <label htmlFor="my-modal-6" className={`btn my-auto`}>
                   Choose Pig
-                </label>
+                </label>{" "}
+                <div className="divider-horizontal"></div>{" "}
+                <button
+                  type="button"
+                  className={" mt-2 text-primary-content btn"}
+                  onClick={() => {
+                    setHideScanner(true);
+                  }}
+                >
+                  Scan QR CODE
+                </button>
                 <div className="divider ">OR</div>
                 <NormalInput
                   label={"Enter Pig Id"}
@@ -619,7 +663,7 @@ export function Individual() {
             </div>
             <div className="card-actions mt-4">
               <button
-                className={`btn btn-active btn-primary mx-4 ${
+                className={`btn btn-active  mx-4 my-4 ${
                   processing ? "loading" : ""
                 }`}
                 type={"button"}
@@ -750,6 +794,15 @@ export function Individual() {
                 <label htmlFor="my-modal-6" className={`btn my-auto`}>
                   Choose Pig
                 </label>
+                <button
+                  type="button"
+                  className={" mt-2 text-primary-content btn"}
+                  onClick={() => {
+                    setHideScanner(true);
+                  }}
+                >
+                  Scan QR CODE
+                </button>
                 <div className="divider ">OR</div>
                 <NormalInput
                   label={"Enter Pig Id"}
@@ -835,6 +888,7 @@ export function Individual() {
             dayHeaders={true}
             displayEventTime={false}
             events={useItem}
+            
           />
         </div>
       </div>

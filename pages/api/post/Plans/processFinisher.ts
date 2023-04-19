@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import { decodeJWT } from "pages/api/jwtProcessor";
 import connection from "pages/api/mysql";
 
@@ -11,20 +12,19 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+
   const conn = await connection.getConnection();
   const { from_day, to_day, item_id } = req.body;
   const old_day = 0;
-  const user = decodeJWT(authorized.cookie);
-  const user_id = user.user_id;
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
   conn.beginTransaction();
   try {
     for (let i = from_day; i <= to_day; i++) {
       const is_exist = await CheckWeaner(conn, i);
-      if (is_exist.length == 0) {
-        const result = await Ops(conn, is_exist, i, item_id, old_day, user_id);
-      } else {
-        const result = await Ops(conn, is_exist, i, item_id, old_day, user_id);
-      }
+
+      const result = await Ops(conn, is_exist, i, item_id, old_day, user_id);
+      console.log(result.affectedRows, is_exist, i, item_id, old_day, user_id);
     }
     conn.commit();
     return res
@@ -50,16 +50,16 @@ async function Ops(
   const insertWeaningDay =
     "INSERT INTO tbl_plan_details (plan_id,day,item_id,type,user_id) VALUES (4,?,?,'feeding',?)";
   const updateWeaningDay =
-    "UPDATE tbl_plan_details SET day=?,user_id=? , item_id=? WHERE plan_id=4 and day=? and is_exist='true'";
+    "UPDATE tbl_plan_details SET `day`=?,user_id=? , item_id=? WHERE plan_id=4 and `day`=? and is_exist='true'";
   if (is_exist.length != 0) {
     try {
       const [result] = await conn.query(updateWeaningDay, [
         day,
         user_id,
         item_id,
-        old_day,
+        day,
       ]);
-      console.log(result);
+
       return result;
     } catch (error) {
       console.log(error);
@@ -72,7 +72,6 @@ async function Ops(
         item_id,
         user_id,
       ]);
-      console.log(result);
       return result;
     } catch (error) {
       console.log(error);
@@ -86,7 +85,6 @@ async function CheckWeaner(conn: any, day: any) {
     "SELECT * FROM tbl_plan_details WHERE plan_id=4 and day=? and is_exist='true'";
   try {
     const [result] = await conn.query(checkWeaner, day);
-    console.log(result);
     return result;
   } catch (error) {
     console.log(error);
