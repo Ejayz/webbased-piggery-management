@@ -49,7 +49,7 @@ export default async function handler(
 async function UpdateCage() {
   const result = await mysqldump({
     connection: {
-      host: "localhost",
+      host: "127.0.0.1",
       user: "root",
       password: "randomDdos1.com",
       database: "piggery_management",
