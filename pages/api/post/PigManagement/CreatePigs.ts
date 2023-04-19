@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import connection from "pages/api/mysql";
 
 export default async function handler(
@@ -20,7 +21,9 @@ export default async function handler(
     batch_name,
     pigData,
   } = req.body;
-  console.log(req.body.pigData);
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
+
   const data = await Ops(
     batch_id,
     boar_id,
@@ -29,7 +32,8 @@ export default async function handler(
     birth_date,
     breed_id,
     pigData,
-    batch_name
+    batch_name,
+    user_id
   );
   try {
     if (data == 200) {
@@ -54,20 +58,22 @@ async function Ops(
   birth_date: any,
   breed_id: any,
   pigData: any,
-  batch_name: any
+  batch_name: any,
+  user_id: any
 ) {
   const conn = await connection.getConnection();
   conn.beginTransaction();
   try {
     let batch_capacity = pigData.length;
     const insertBatch =
-      "insert into tbl_batch (batch_id,batch_name,boar_id,sow_id,batch_capacity) values(?,?,?,?,?)";
+      "insert into tbl_batch (batch_id,batch_name,boar_id,sow_id,batch_capacity,user_id) values(?,?,?,?,?,?)";
     await conn.query(insertBatch, [
       batch_id,
       batch_name,
       boar_id,
       sow_id,
       batch_capacity,
+      user_id,
     ]);
     pigData.map(async (value: any, key: number) => {
       const getCageCapacity =
@@ -96,21 +102,23 @@ async function Ops(
         }
       }
       const insertPig =
-        "insert into tbl_pig (pig_id,batch_id,breed_id,pig_type,birthdate) values(?,?,?,?,?)";
+        "insert into tbl_pig (pig_id,batch_id,breed_id,pig_type,birthdate,user_id) values(?,?,?,?,?,?)";
       await conn.query(insertPig, [
         value.pig_id,
         batch_id,
         breed_id,
         pig_type,
         birth_date,
+        user_id,
       ]);
       const insertPigHistory =
-        "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id) values(?,?,?,?)";
+        "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id) values(?,?,?,?,?)";
       await conn.query(insertPigHistory, [
         value.pig_id,
         value.pig_tag,
         value.pig_weight,
         value.cage_id,
+        user_id,
       ]);
     });
 

@@ -25,7 +25,6 @@ async function Ops() {
     "select * from tbl_plan INNER JOIN tbl_plan_details ON tbl_plan.plan_id=tbl_plan_details.plan_id INNER JOIN tbl_inventory ON tbl_inventory.item_id = tbl_plan_details.item_id where plan_name='Grower' and tbl_plan.is_exist='true' and tbl_plan_details.is_exist='true' ORDER BY tbl_plan_details.day ASC";
   try {
     const [result] = await conn.query(getFarrowing);
-    console.log(result);
     return result;
   } catch (error) {
     console.log(error);

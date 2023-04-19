@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import { decodeJWT } from "pages/api/jwtProcessor";
 import connection from "pages/api/mysql";
 
@@ -11,22 +12,17 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
-  const user = decodeJWT(authorized.cookie);
-  const user_id = user.user_id;
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
+
   const conn = await connection.getConnection();
   const { from_day, to_day, item_id } = req.body;
-  console.log(from_day, to_day, item_id);
   const old_day = 0;
   conn.beginTransaction();
   try {
     for (let i = from_day; i <= to_day; i++) {
       const is_exist = await CheckWeaner(conn, i);
-      console.log(is_exist);
-      if (is_exist.length == 0) {
-        const result = await Ops(conn, is_exist, i, item_id, old_day, user_id);
-      } else {
-        const result = await Ops(conn, is_exist, i, item_id, old_day, user_id);
-      }
+      const result = await Ops(conn, is_exist, i, item_id, old_day, user_id);
     }
     conn.commit();
     return res
@@ -53,13 +49,14 @@ async function Ops(
     "INSERT INTO tbl_plan_details (plan_id,day,item_id,type,user_id) VALUES (3,?,?,'feeding',?)";
   const updateWeaningDay =
     "UPDATE tbl_plan_details SET day=? , user_id=?, item_id=? WHERE plan_id=3 and day=? and is_exist='true'";
-  if (is_exist.lenght != 0) {
+
+  if (is_exist.length !== 0) {
     try {
       const [result] = await conn.query(updateWeaningDay, [
         day,
         user_id,
         item_id,
-        old_day,
+        day,
       ]);
       return result;
     } catch (error) {
@@ -89,6 +86,6 @@ async function CheckWeaner(conn: any, day: any) {
     return result;
   } catch (error) {
     console.log(error);
-    return error;
+    throw error;
   }
 }

@@ -59,7 +59,7 @@ async function Ops(
         day,
         user_id,
         item_id,
-        old_day,
+        day,
    
       ]);
       return result;

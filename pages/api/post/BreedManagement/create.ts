@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import connection from "pages/api/mysql";
 
 export default async function handler(
@@ -11,6 +12,8 @@ export default async function handler(
     return false;
   }
   const { breed_name } = req.body;
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
 
   const dups: any = await checkDups(breed_name);
   if (dups.length != 0) {
@@ -19,7 +22,7 @@ export default async function handler(
       .json({ code: 409, message: "Breed name already exist" });
   }
 
-  const data: any = await CreateBreed(breed_name);
+  const data: any = await CreateBreed(breed_name, user_id);
   if (data.affectedRows != 0) {
     return res.status(200).json({ code: 200, message: "New breed created" });
   } else {
@@ -29,11 +32,11 @@ export default async function handler(
   }
 }
 
-async function CreateBreed(breed_name: string) {
+async function CreateBreed(breed_name: string, user_id: any) {
   const conn = await connection.getConnection();
   try {
     const sql = "insert into tbl_breed  (`breed_name`) values (?)";
-    const [err, result] = await conn.query(sql, [breed_name]);
+    const [err, result] = await conn.query(sql, [breed_name, user_id]);
     conn.release();
     if (err) return err;
     return err;
@@ -48,7 +51,7 @@ async function checkDups(breed_name: string) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_breed where breed_name=? and is_exist='true'";
+      "select * from tbl_breed where breed_name=? and is_exist='true',user_id=?";
     const [err, result] = await conn.query(sql, [breed_name]);
     conn.release();
     if (err) return err;

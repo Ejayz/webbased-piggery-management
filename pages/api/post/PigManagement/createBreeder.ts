@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import connection from "pages/api/mysql";
 
 export default async function handler(
@@ -10,6 +11,8 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
   const {
     pig_id,
     cage_id,
@@ -29,7 +32,8 @@ export default async function handler(
       pig_tag,
       pig_type,
       birthdate,
-      weight
+      weight,
+      user_id
     );
     console.log(data);
     if (data.affectedRows >= 1) {
@@ -58,17 +62,31 @@ async function Ops(
   pig_tag: any,
   pig_type: any,
   birthdate: any,
-  weight: any
+  weight: any,
+  user_id: any
 ) {
   const conn = await connection.getConnection();
   conn.beginTransaction();
   try {
     const sql =
-      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,  `batch_id`, `breed_id` ,`pig_type`, `birthdate` ) VALUES ( ?, ?,?, ?, ?);";
-    await conn.query(sql, [pig_id, batch_id, breed_id, pig_type, birthdate]);
+      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,  `batch_id`, `breed_id` ,`pig_type`, `birthdate`,user_id ) VALUES ( ?, ?,?, ?, ?,?);";
+    await conn.query(sql, [
+      pig_id,
+      batch_id,
+      breed_id,
+      pig_type,
+      birthdate,
+      user_id,
+    ]);
     const insertPigHistory =
-      "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id) values(?,?,?,?)";
-    await conn.query(insertPigHistory, [pig_id, pig_tag, weight, cage_id]);
+      "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id) values(?,?,?,?,?)";
+    await conn.query(insertPigHistory, [
+      pig_id,
+      pig_tag,
+      weight,
+      cage_id,
+      user_id,
+    ]);
     const getCageCapacity =
       "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";
     const [result]: any = await conn.query(getCageCapacity, [cage_id]);
