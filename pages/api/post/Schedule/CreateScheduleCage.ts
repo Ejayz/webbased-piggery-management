@@ -36,13 +36,19 @@ async function UpdateCage(conn: any, pig_id: any, item_list: any) {
   try {
     await Promise.all(
       item_list.map(async (item: any) => {
+        const selectCageData = "select * from tbl_cage where cage_id=?";
+        const [sqlSelectCageResult]: any = await conn.query(selectCageData, [
+          pig_id,
+        ]);
+        const getCageCapacity = sqlSelectCageResult[0].cage_capacity;
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,cage_id,am_pm) values (?,?,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,cage_id,am_pm,total_patient) values (?,?,?,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
           pig_id,
           item.data_time,
+          getCageCapacity,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
         const data2: any = await InsertOperationItemDetail(

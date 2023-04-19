@@ -35,13 +35,17 @@ async function UpdateCage(conn: any, pig_id: any, item_list: any) {
   try {
     await Promise.all(
       item_list.map(async (item: any) => {
+        const selectData = "select * from tbl_batch where batch_id=?";
+        const [sqlSelectResult]: any = await conn.query(selectData, [pig_id]);
+        const getBatchCapacity = sqlSelectResult[0].batch_capacity;
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm) values (?,?,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm,total_patient) values (?,?,?,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
           pig_id,
           item.data_time,
+          getBatchCapacity,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
         const data2: any = await InsertOperationItemDetail(

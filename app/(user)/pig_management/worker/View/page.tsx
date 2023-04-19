@@ -134,7 +134,7 @@ export default function Page({ params }: any) {
     "pigDatas",
     async () => {
       const response = await fetch(
-        `/api/get/PigManagement/getAllPigInfor?pig_id=${id}&page=${page}`
+        `/api/get/PigManagement/getAllPigInfor?pig_id=${id}`
       );
       const returned = await response.json();
       console.log(returned);

@@ -382,6 +382,10 @@ export default function Page() {
                       type={"number"}
                       validationSchema={{
                         required: "This field is required",
+                        min: {
+                          value: 1,
+                          message: "Weight must be greater than 0",
+                        },
                       }}
                     ></NormalInput>
                   </div>

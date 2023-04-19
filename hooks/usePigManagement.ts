@@ -260,7 +260,8 @@ export const Update = async (
   pig_tag: any,
   status: any,
   cage_id: any,
-  weight: any
+  weight: any,
+  remarks: any
 ) => {
   let headersList = {
     Accept: "*/*",
@@ -274,6 +275,7 @@ export const Update = async (
     status: status,
     cage_id: cage_id,
     weight: weight,
+    remarks,
   });
 
   let response = await fetch(

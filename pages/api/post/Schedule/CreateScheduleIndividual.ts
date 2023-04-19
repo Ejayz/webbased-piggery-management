@@ -36,7 +36,7 @@ async function UpdateCage(conn: any, pig_id: any, item_list: any) {
     await Promise.all(
       item_list.map(async (item: any) => {
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm) values (?,?,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm,total_patient) values (?,?,?,?,1) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,

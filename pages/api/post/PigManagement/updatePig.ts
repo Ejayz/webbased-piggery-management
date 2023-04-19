@@ -11,9 +11,15 @@ export default async function handler(
     return false;
   }
   try {
-    const { cage_id, pig_id, pig_tag, weight, status } = req.body;
-    console.log(cage_id, pig_id, pig_tag, weight, status);
-    const data: any = await Ops(cage_id, pig_id, pig_tag, weight, status);
+    const { cage_id, pig_id, pig_tag, weight, status, remarks } = req.body;
+    const data: any = await Ops(
+      cage_id,
+      pig_id,
+      pig_tag,
+      weight,
+      status,
+      remarks
+    );
     if (data == 900) {
       return res
         .status(500)
@@ -33,15 +39,20 @@ async function Ops(
   pig_id: any,
   pig_tag: any,
   weight: any,
-  status: any
+  status: any,
+  remarks: any
 ) {
   const conn = await connection.getConnection();
   await conn.beginTransaction();
   try {
+    const getPigDetails =
+      " SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id = tbl_pig.pig_id WHERE tbl_pig.pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_history_status='active'";
+    const [pigDetails]: any = await conn.query(getPigDetails, [pig_id]);
+    console.log(pigDetails);
     const getCage =
       "select * from tbl_cage where is_exist='true' and cage_id=?";
     const [CageData]: any = await conn.query(getCage, [cage_id]);
-    if (CageData[0].is_full == "true") {
+    if (CageData[0].is_full == "true" && cage_id != pigDetails[0].cage_id) {
       await conn.rollback();
       return 900;
     } else {
@@ -53,7 +64,7 @@ async function Ops(
       const [inActivateOldR]: any = await conn.query(inActivateOld, [pig_id]);
       const insertNewPigDetails =
         "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks) values (?,?,?,?,?,?)";
-      const remarks = "Updated information of pig.";
+
       const [updatePig]: any = await conn.query(insertNewPigDetails, [
         pig_id,
         cage_id,
