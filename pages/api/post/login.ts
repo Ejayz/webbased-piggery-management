@@ -26,7 +26,7 @@ export default async function handler(
 
   if (req.method !== "POST") {
     return res.status(405).json({
-      code: 405,
+      code: "405",
       message: "Invalid method. This endpoint only accept POST method",
     });
     return 0;
@@ -50,7 +50,7 @@ export default async function handler(
             const token = jwt.sign(userInfo, jwt_key);
             if (rememberme) {
               return res
-                .status(200)
+                .status("200")
                 .setHeader(
                   "Set-Cookie",
                   `auth=${token}; path=/; max-age=2592000;"`
@@ -70,7 +70,7 @@ export default async function handler(
             }
           } else {
             return res.status(401).json({
-              code: 401,
+              code: "401",
               message:
                 "Username/Password do not match from our system. Please try again!",
             });
@@ -78,7 +78,7 @@ export default async function handler(
         });
       } else {
         return res.status(401).json({
-          code: 401,
+          code: "401",
           message:
             "Username/Password do not match from our system. Please try again!",
         });
@@ -86,7 +86,7 @@ export default async function handler(
     })
     .catch((e) => {
       return res.status(500).json({
-        code: 500,
+        code: "500",
         message: `Internal server error:${e.code}`,
       });
     });
