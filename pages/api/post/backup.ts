@@ -51,7 +51,7 @@ async function UpdateCage() {
     connection: {
       host: "127.0.0.1",
       user: "root",
-      password: "randomDdos1.com",
+      password: "",
       database: "piggery_management",
     },
     dump: { schema: { table: { dropIfExist: true } } },

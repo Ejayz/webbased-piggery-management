@@ -2,13 +2,10 @@
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
     START TRANSACTION;
     SET time_zone = "+00:00";
-    
-    
     /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
     /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
     /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
     /*!40101 SET NAMES utf8mb4 */;
-    
     --
     -- Database: `piggery_management`
     --
@@ -50,7 +47,7 @@ CREATE TABLE `tbl_breed` (
   PRIMARY KEY (`breed_id`),
   KEY `FK_tbl_breed_tbl_users` (`user_id`),
   CONSTRAINT `FK_tbl_breed_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_cage
@@ -102,7 +99,7 @@ CREATE TABLE `tbl_inventory` (
   KEY `FK_tbl_inventory_tbl_users` (`user_id`),
   CONSTRAINT `FK_tbl_inventory_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FKtblinventorytblcategory` FOREIGN KEY (`category_id`) REFERENCES `tbl_category` (`category_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 6 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_operation
@@ -132,7 +129,7 @@ CREATE TABLE `tbl_operation` (
   CONSTRAINT `FK_tbl_operation_tbl_operation_type` FOREIGN KEY (`operation_type_id`) REFERENCES `tbl_operation_type` (`operation_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_operation_tbl_pig` FOREIGN KEY (`pig_id`) REFERENCES `tbl_pig` (`pig_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_operation_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 9 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_operation_item_details
@@ -150,7 +147,7 @@ CREATE TABLE `tbl_operation_item_details` (
   KEY `FK__ tbl_inventory_item` (`item_id`),
   CONSTRAINT `FKtblinventoryitem` FOREIGN KEY (`item_id`) REFERENCES `tbl_inventory` (`item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FKtbloperationitem` FOREIGN KEY (`operation_id`) REFERENCES `tbl_operation` (`operation_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 8 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_operation_type
@@ -212,7 +209,7 @@ CREATE TABLE `tbl_pig_history` (
   CONSTRAINT `FK_tbl_pig_history_tbl_cage` FOREIGN KEY (`cage_id`) REFERENCES `tbl_cage` (`cage_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_pig_history_tbl_pig` FOREIGN KEY (`pig_id`) REFERENCES `tbl_pig` (`pig_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_pig_history_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 36 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 37 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_plan
@@ -246,7 +243,7 @@ CREATE TABLE `tbl_plan_details` (
   CONSTRAINT `FK_tbl_plan_details_tbl_inventory` FOREIGN KEY (`item_id`) REFERENCES `tbl_inventory` (`item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_plan_details_tbl_plan` FOREIGN KEY (`plan_id`) REFERENCES `tbl_plan` (`plan_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_plan_details_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 284 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 169 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_quarantine
@@ -303,7 +300,7 @@ CREATE TABLE `tbl_stock_card` (
   KEY `FK_tbl_stock_card_tbl_users` (`user_id`),
   CONSTRAINT `FK_tbl_stock_card_tbl_inventory` FOREIGN KEY (`item_id`) REFERENCES `tbl_inventory` (`item_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_stock_card_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_stock_card_details
@@ -326,7 +323,7 @@ CREATE TABLE `tbl_stock_card_details` (
   KEY `FK_tbl_stock_card_details_tbl_users` (`user_id`),
   CONSTRAINT `FK__tbl_stock_card` FOREIGN KEY (`stock_card_id`) REFERENCES `tbl_stock_card` (`stock_card_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_tbl_stock_card_details_tbl_users` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 11 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: tbl_users
@@ -413,6 +410,10 @@ INSERT INTO
   `tbl_breed` (`breed_id`, `breed_name`, `is_exist`, `user_id`)
 VALUES
   (2, 'Duroc', 'true', NULL);
+INSERT INTO
+  `tbl_breed` (`breed_id`, `breed_name`, `is_exist`, `user_id`)
+VALUES
+  (3, 'Chinese Swine', 'true', NULL);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_cage
@@ -664,6 +665,28 @@ VALUES
     'true',
     NULL
   );
+INSERT INTO
+  `tbl_inventory` (
+    `item_id`,
+    `item_name`,
+    `category_id`,
+    `item_description`,
+    `item_unit`,
+    `item_net_weight`,
+    `is_exist`,
+    `user_id`
+  )
+VALUES
+  (
+    6,
+    'BRMEG 600',
+    1,
+    'VIEPro Premium Fattening Pig Feed – Starter – 50kg.',
+    'sack',
+    12,
+    'true',
+    2
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_operation
@@ -715,7 +738,7 @@ VALUES
   (
     2,
     1,
-    '2023-04-17',
+    '2023-04-19',
     'pig_c32cb41ril',
     NULL,
     NULL,
@@ -865,6 +888,90 @@ VALUES
     NULL,
     NULL
   );
+INSERT INTO
+  `tbl_operation` (
+    `operation_id`,
+    `operation_type_id`,
+    `operation_date`,
+    `pig_id`,
+    `batch_id`,
+    `cage_id`,
+    `status`,
+    `is_exist`,
+    `am_pm`,
+    `total_patient`,
+    `user_id`
+  )
+VALUES
+  (
+    11,
+    2,
+    '2023-04-19',
+    'pig_51czvqigek',
+    NULL,
+    NULL,
+    'pending',
+    'true',
+    NULL,
+    NULL,
+    NULL
+  );
+INSERT INTO
+  `tbl_operation` (
+    `operation_id`,
+    `operation_type_id`,
+    `operation_date`,
+    `pig_id`,
+    `batch_id`,
+    `cage_id`,
+    `status`,
+    `is_exist`,
+    `am_pm`,
+    `total_patient`,
+    `user_id`
+  )
+VALUES
+  (
+    12,
+    3,
+    '2023-04-20',
+    'pig_5enujtw0h0',
+    NULL,
+    NULL,
+    'confirmed',
+    'true',
+    NULL,
+    1,
+    NULL
+  );
+INSERT INTO
+  `tbl_operation` (
+    `operation_id`,
+    `operation_type_id`,
+    `operation_date`,
+    `pig_id`,
+    `batch_id`,
+    `cage_id`,
+    `status`,
+    `is_exist`,
+    `am_pm`,
+    `total_patient`,
+    `user_id`
+  )
+VALUES
+  (
+    13,
+    3,
+    '2023-04-21',
+    NULL,
+    NULL,
+    1,
+    'canceled',
+    'true',
+    NULL,
+    1,
+    NULL
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_operation_item_details
@@ -940,6 +1047,36 @@ INSERT INTO
   )
 VALUES
   (7, 8, 3, NULL, 'true');
+INSERT INTO
+  `tbl_operation_item_details` (
+    `operation_item_details_id`,
+    `operation_id`,
+    `item_id`,
+    `quantity`,
+    `is_exist`
+  )
+VALUES
+  (8, 11, 3, NULL, 'true');
+INSERT INTO
+  `tbl_operation_item_details` (
+    `operation_item_details_id`,
+    `operation_id`,
+    `item_id`,
+    `quantity`,
+    `is_exist`
+  )
+VALUES
+  (9, 12, 3, 7, 'true');
+INSERT INTO
+  `tbl_operation_item_details` (
+    `operation_item_details_id`,
+    `operation_id`,
+    `item_id`,
+    `quantity`,
+    `is_exist`
+  )
+VALUES
+  (10, 13, NULL, NULL, 'true');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_operation_type
@@ -2059,7 +2196,7 @@ VALUES
     'active',
     'true',
     'Updated information of pig.',
-    'active',
+    'inactive',
     '2023-04-18 19:09:07',
     NULL
   );
@@ -2123,6 +2260,36 @@ VALUES
     '2023-04-18 19:34:55',
     NULL
   );
+INSERT INTO
+  `tbl_pig_history` (
+    `pig_history_id`,
+    `pig_id`,
+    `cage_id`,
+    `pig_tag`,
+    `weight`,
+    `pig_status`,
+    `status`,
+    `is_exist`,
+    `remarks`,
+    `pig_history_status`,
+    `created_at`,
+    `user_id`
+  )
+VALUES
+  (
+    36,
+    'pig_5enujtw0h0',
+    2,
+    'SW-324',
+    50.54,
+    'active',
+    'active',
+    'true',
+    '',
+    'active',
+    '2023-04-20 02:53:40',
+    NULL
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_plan
@@ -2160,7 +2327,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (1, 2, 1, 1, 'feeding', 'true', 1);
+  (1, 2, 1, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2172,7 +2339,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (2, 2, 3, 1, 'feeding', 'true', 1);
+  (2, 2, 2, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2184,7 +2351,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (3, 2, 1, 1, 'feeding', 'false', 3);
+  (3, 2, 3, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2196,7 +2363,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (4, 2, 3, 1, 'feeding', 'false', 3);
+  (4, 2, 4, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2208,7 +2375,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (5, 2, 2, 1, 'feeding', 'true', 3);
+  (5, 2, 5, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2220,7 +2387,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (6, 2, 4, 1, 'feeding', 'true', 3);
+  (6, 2, 6, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2232,7 +2399,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (7, 2, 5, 1, 'feeding', 'true', 3);
+  (7, 2, 7, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2244,7 +2411,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (8, 2, 6, 1, 'feeding', 'true', 3);
+  (8, 2, 8, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2256,7 +2423,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (9, 2, 7, 1, 'feeding', 'true', 3);
+  (9, 2, 9, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2268,7 +2435,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (10, 2, 8, 1, 'feeding', 'true', 3);
+  (10, 2, 10, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2280,7 +2447,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (11, 2, 9, 1, 'feeding', 'true', 3);
+  (11, 2, 11, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2292,7 +2459,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (12, 2, 10, 1, 'feeding', 'true', 3);
+  (12, 2, 12, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2304,7 +2471,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (13, 2, 11, 1, 'feeding', 'true', 3);
+  (13, 2, 13, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2316,7 +2483,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (14, 2, 12, 1, 'feeding', 'true', 3);
+  (14, 2, 14, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2328,7 +2495,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (15, 2, 13, 1, 'feeding', 'true', 3);
+  (15, 2, 15, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2340,7 +2507,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (16, 2, 14, 1, 'feeding', 'true', 3);
+  (16, 2, 16, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2352,7 +2519,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (17, 2, 15, 1, 'feeding', 'true', 3);
+  (17, 2, 17, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2364,7 +2531,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (18, 2, 16, 1, 'feeding', 'true', 3);
+  (18, 2, 18, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2376,7 +2543,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (19, 2, 17, 1, 'feeding', 'true', 3);
+  (19, 2, 19, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2388,7 +2555,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (20, 2, 18, 1, 'feeding', 'true', 3);
+  (20, 2, 20, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2400,7 +2567,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (21, 2, 19, 4, 'feeding', 'true', 3);
+  (21, 2, 21, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2412,7 +2579,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (22, 2, 20, 4, 'feeding', 'true', 3);
+  (22, 2, 22, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2424,7 +2591,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (23, 2, 21, 4, 'feeding', 'true', 3);
+  (23, 2, 23, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2436,7 +2603,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (24, 2, 22, 4, 'feeding', 'true', 3);
+  (24, 2, 24, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2448,7 +2615,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (25, 2, 23, 4, 'feeding', 'true', 3);
+  (25, 2, 25, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2460,7 +2627,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (26, 2, 24, 4, 'feeding', 'true', 3);
+  (26, 2, 26, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2472,7 +2639,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (27, 2, 25, 4, 'feeding', 'true', 3);
+  (27, 2, 27, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2484,7 +2651,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (28, 2, 26, 4, 'feeding', 'true', 3);
+  (28, 2, 28, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2496,7 +2663,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (29, 2, 27, 4, 'feeding', 'true', 3);
+  (29, 2, 29, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2508,7 +2675,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (30, 2, 28, 4, 'feeding', 'true', 3);
+  (30, 2, 30, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2520,7 +2687,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (31, 2, 29, 4, 'feeding', 'true', 3);
+  (31, 2, 31, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2532,7 +2699,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (32, 2, 30, 4, 'feeding', 'true', 3);
+  (32, 2, 32, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2544,7 +2711,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (33, 2, 31, 4, 'feeding', 'true', 3);
+  (33, 2, 33, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2556,7 +2723,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (34, 2, 32, 4, 'feeding', 'true', 3);
+  (34, 2, 34, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2568,7 +2735,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (35, 2, 33, 4, 'feeding', 'true', 3);
+  (35, 2, 35, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2580,7 +2747,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (36, 2, 34, 4, 'feeding', 'true', 3);
+  (36, 2, 36, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2592,7 +2759,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (37, 2, 35, 4, 'feeding', 'true', 3);
+  (37, 2, 37, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2604,7 +2771,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (38, 2, 36, 4, 'feeding', 'true', 3);
+  (38, 2, 38, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2616,7 +2783,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (39, 2, 37, 4, 'feeding', 'true', 3);
+  (39, 2, 39, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2628,7 +2795,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (40, 2, 38, 4, 'feeding', 'true', 3);
+  (40, 2, 40, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2640,7 +2807,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (41, 2, 39, 4, 'feeding', 'true', 3);
+  (41, 2, 41, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2652,7 +2819,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (42, 2, 40, 4, 'feeding', 'true', 3);
+  (42, 2, 42, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2664,7 +2831,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (43, 2, 41, 4, 'feeding', 'true', 3);
+  (43, 2, 43, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2676,7 +2843,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (44, 2, 42, 4, 'feeding', 'true', 3);
+  (44, 2, 44, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2688,7 +2855,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (45, 2, 43, 4, 'feeding', 'true', 3);
+  (45, 2, 45, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2700,7 +2867,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (46, 2, 44, 4, 'feeding', 'true', 3);
+  (46, 2, 46, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2712,7 +2879,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (47, 2, 45, 4, 'feeding', 'true', 3);
+  (47, 2, 47, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2724,7 +2891,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (48, 2, 46, 4, 'feeding', 'true', 3);
+  (48, 2, 48, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2736,7 +2903,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (49, 2, 47, 4, 'feeding', 'true', 3);
+  (49, 2, 49, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2748,7 +2915,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (50, 2, 48, 4, 'feeding', 'true', 3);
+  (50, 2, 50, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2760,7 +2927,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (51, 2, 49, 4, 'feeding', 'true', 3);
+  (51, 2, 51, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2772,7 +2939,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (52, 2, 50, 4, 'feeding', 'true', 3);
+  (52, 2, 52, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2784,7 +2951,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (53, 2, 51, 4, 'feeding', 'true', 3);
+  (53, 2, 53, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2796,7 +2963,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (54, 2, 52, 4, 'feeding', 'true', 3);
+  (54, 2, 54, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2808,7 +2975,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (55, 2, 53, 4, 'feeding', 'true', 3);
+  (55, 2, 55, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2820,7 +2987,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (56, 2, 54, 4, 'feeding', 'true', 3);
+  (56, 2, 56, 4, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2832,7 +2999,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (57, 2, 55, 4, 'feeding', 'true', 3);
+  (57, 3, 1, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2844,7 +3011,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (58, 2, 56, 4, 'feeding', 'true', 3);
+  (58, 3, 2, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2856,7 +3023,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (59, 3, 1, NULL, 'feeding', 'true', 1);
+  (59, 3, 3, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2868,7 +3035,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (60, 3, 2, NULL, 'feeding', 'true', 1);
+  (60, 3, 4, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2880,7 +3047,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (61, 3, 3, NULL, 'feeding', 'true', 1);
+  (61, 3, 5, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2892,7 +3059,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (62, 3, 4, NULL, 'feeding', 'true', 1);
+  (62, 3, 6, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2904,7 +3071,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (63, 3, 5, NULL, 'feeding', 'true', 1);
+  (63, 3, 7, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2916,7 +3083,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (64, 3, 6, NULL, 'feeding', 'true', 1);
+  (64, 3, 8, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2928,7 +3095,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (65, 3, 7, NULL, 'feeding', 'true', 1);
+  (65, 3, 9, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2940,7 +3107,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (66, 3, 8, NULL, 'feeding', 'true', 1);
+  (66, 3, 10, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2952,7 +3119,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (67, 3, 9, NULL, 'feeding', 'true', 1);
+  (67, 3, 11, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2964,7 +3131,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (68, 3, 10, NULL, 'feeding', 'true', 1);
+  (68, 3, 12, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2976,7 +3143,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (69, 3, 11, NULL, 'feeding', 'true', 1);
+  (69, 3, 13, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -2988,7 +3155,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (70, 3, 12, NULL, 'feeding', 'true', 1);
+  (70, 3, 14, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3000,7 +3167,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (71, 3, 13, NULL, 'feeding', 'true', 1);
+  (71, 3, 15, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3012,7 +3179,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (72, 3, 14, NULL, 'feeding', 'true', 1);
+  (72, 3, 16, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3024,7 +3191,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (73, 3, 15, NULL, 'feeding', 'true', 1);
+  (73, 3, 17, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3036,7 +3203,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (74, 3, 16, NULL, 'feeding', 'true', 1);
+  (74, 3, 18, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3048,7 +3215,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (75, 3, 17, NULL, 'feeding', 'true', 1);
+  (75, 3, 19, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3060,7 +3227,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (76, 3, 18, NULL, 'feeding', 'true', 1);
+  (76, 3, 20, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3072,7 +3239,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (77, 3, 19, NULL, 'feeding', 'true', 1);
+  (77, 3, 21, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3084,7 +3251,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (78, 3, 20, NULL, 'feeding', 'true', 1);
+  (78, 3, 22, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3096,7 +3263,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (79, 3, 21, NULL, 'feeding', 'true', 1);
+  (79, 3, 23, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3108,7 +3275,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (80, 3, 22, NULL, 'feeding', 'true', 1);
+  (80, 3, 24, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3120,7 +3287,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (81, 3, 23, NULL, 'feeding', 'true', 1);
+  (81, 3, 25, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3132,7 +3299,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (82, 3, 24, NULL, 'feeding', 'true', 1);
+  (82, 3, 26, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3144,7 +3311,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (83, 3, 25, NULL, 'feeding', 'true', 1);
+  (83, 3, 27, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3156,7 +3323,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (84, 3, 26, NULL, 'feeding', 'true', 1);
+  (84, 3, 28, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3168,7 +3335,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (85, 3, 27, NULL, 'feeding', 'true', 1);
+  (85, 3, 29, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3180,7 +3347,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (86, 3, 28, NULL, 'feeding', 'true', 1);
+  (86, 3, 30, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3192,7 +3359,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (87, 3, 29, NULL, 'feeding', 'true', 1);
+  (87, 3, 31, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3204,7 +3371,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (88, 3, 30, NULL, 'feeding', 'true', 1);
+  (88, 3, 32, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3216,7 +3383,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (89, 3, 31, NULL, 'feeding', 'true', 1);
+  (89, 3, 33, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3228,7 +3395,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (90, 3, 32, NULL, 'feeding', 'true', 1);
+  (90, 3, 34, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3240,7 +3407,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (91, 3, 33, NULL, 'feeding', 'true', 1);
+  (91, 3, 35, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3252,7 +3419,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (92, 3, 34, NULL, 'feeding', 'true', 1);
+  (92, 3, 36, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3264,7 +3431,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (93, 3, 35, NULL, 'feeding', 'true', 1);
+  (93, 3, 37, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3276,7 +3443,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (94, 3, 36, NULL, 'feeding', 'true', 1);
+  (94, 3, 38, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3288,7 +3455,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (95, 3, 37, NULL, 'feeding', 'true', 1);
+  (95, 3, 39, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3300,7 +3467,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (96, 3, 38, NULL, 'feeding', 'true', 1);
+  (96, 3, 40, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3312,7 +3479,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (97, 3, 39, NULL, 'feeding', 'true', 1);
+  (97, 3, 41, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3324,7 +3491,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (98, 3, 40, NULL, 'feeding', 'true', 1);
+  (98, 3, 42, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3336,7 +3503,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (99, 3, 41, NULL, 'feeding', 'true', 1);
+  (99, 3, 43, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3348,7 +3515,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (100, 3, 42, NULL, 'feeding', 'true', 1);
+  (100, 3, 44, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3360,7 +3527,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (101, 3, 43, NULL, 'feeding', 'true', 1);
+  (101, 3, 45, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3372,7 +3539,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (102, 3, 44, NULL, 'feeding', 'true', 1);
+  (102, 3, 46, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3384,7 +3551,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (103, 3, 45, NULL, 'feeding', 'true', 1);
+  (103, 3, 47, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3396,7 +3563,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (104, 3, 46, NULL, 'feeding', 'true', 1);
+  (104, 3, 48, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3408,7 +3575,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (105, 3, 47, NULL, 'feeding', 'true', 1);
+  (105, 3, 49, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3420,7 +3587,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (106, 3, 48, NULL, 'feeding', 'true', 1);
+  (106, 3, 50, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3432,7 +3599,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (107, 3, 49, NULL, 'feeding', 'true', 1);
+  (107, 3, 51, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3444,7 +3611,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (108, 3, 50, NULL, 'feeding', 'true', 1);
+  (108, 3, 52, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3456,7 +3623,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (109, 3, 51, NULL, 'feeding', 'true', 1);
+  (109, 3, 53, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3468,7 +3635,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (110, 3, 52, NULL, 'feeding', 'true', 1);
+  (110, 3, 54, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3480,7 +3647,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (111, 3, 53, NULL, 'feeding', 'true', 1);
+  (111, 3, 55, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3492,7 +3659,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (112, 3, 54, NULL, 'feeding', 'true', 1);
+  (112, 3, 56, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3504,7 +3671,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (113, 3, 55, NULL, 'feeding', 'true', 1);
+  (113, 4, 1, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3516,7 +3683,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (114, 3, 56, NULL, 'feeding', 'true', 1);
+  (114, 4, 2, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3528,7 +3695,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (115, 3, 1, NULL, 'feeding', 'true', 1);
+  (115, 4, 3, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3540,7 +3707,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (116, 3, 2, NULL, 'feeding', 'true', 1);
+  (116, 4, 4, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3552,7 +3719,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (117, 3, 3, NULL, 'feeding', 'true', 1);
+  (117, 4, 5, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3564,7 +3731,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (118, 3, 4, NULL, 'feeding', 'true', 1);
+  (118, 4, 6, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3576,7 +3743,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (119, 3, 5, NULL, 'feeding', 'true', 1);
+  (119, 4, 7, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3588,7 +3755,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (120, 3, 6, NULL, 'feeding', 'true', 1);
+  (120, 4, 8, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3600,7 +3767,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (121, 3, 7, NULL, 'feeding', 'true', 1);
+  (121, 4, 9, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3612,7 +3779,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (122, 3, 8, NULL, 'feeding', 'true', 1);
+  (122, 4, 10, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3624,7 +3791,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (123, 3, 9, NULL, 'feeding', 'true', 1);
+  (123, 4, 11, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3636,7 +3803,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (124, 3, 10, NULL, 'feeding', 'true', 1);
+  (124, 4, 12, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3648,7 +3815,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (125, 3, 11, NULL, 'feeding', 'true', 1);
+  (125, 4, 13, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3660,7 +3827,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (126, 3, 12, NULL, 'feeding', 'true', 1);
+  (126, 4, 14, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3672,7 +3839,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (127, 3, 13, NULL, 'feeding', 'true', 1);
+  (127, 4, 15, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3684,7 +3851,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (128, 3, 14, NULL, 'feeding', 'true', 1);
+  (128, 4, 16, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3696,7 +3863,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (129, 3, 15, NULL, 'feeding', 'true', 1);
+  (129, 4, 17, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3708,7 +3875,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (130, 3, 16, NULL, 'feeding', 'true', 1);
+  (130, 4, 18, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3720,7 +3887,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (131, 3, 17, NULL, 'feeding', 'true', 1);
+  (131, 4, 19, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3732,7 +3899,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (132, 3, 18, NULL, 'feeding', 'true', 1);
+  (132, 4, 20, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3744,7 +3911,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (133, 3, 19, NULL, 'feeding', 'true', 1);
+  (133, 4, 21, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3756,7 +3923,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (134, 3, 20, NULL, 'feeding', 'true', 1);
+  (134, 4, 22, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3768,7 +3935,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (135, 3, 21, NULL, 'feeding', 'true', 1);
+  (135, 4, 23, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3780,7 +3947,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (136, 3, 22, NULL, 'feeding', 'true', 1);
+  (136, 4, 24, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3792,7 +3959,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (137, 3, 23, NULL, 'feeding', 'true', 1);
+  (137, 4, 25, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3804,7 +3971,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (138, 3, 24, NULL, 'feeding', 'true', 1);
+  (138, 4, 26, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3816,7 +3983,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (139, 3, 25, NULL, 'feeding', 'true', 1);
+  (139, 4, 27, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3828,7 +3995,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (140, 3, 26, NULL, 'feeding', 'true', 1);
+  (140, 4, 28, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3840,7 +4007,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (141, 3, 27, NULL, 'feeding', 'true', 1);
+  (141, 4, 29, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3852,7 +4019,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (142, 3, 28, NULL, 'feeding', 'true', 1);
+  (142, 4, 30, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3864,7 +4031,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (143, 3, 29, NULL, 'feeding', 'true', 1);
+  (143, 4, 31, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3876,7 +4043,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (144, 3, 30, NULL, 'feeding', 'true', 1);
+  (144, 4, 32, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3888,7 +4055,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (145, 3, 31, NULL, 'feeding', 'true', 1);
+  (145, 4, 33, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3900,7 +4067,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (146, 3, 32, NULL, 'feeding', 'true', 1);
+  (146, 4, 34, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3912,7 +4079,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (147, 3, 33, NULL, 'feeding', 'true', 1);
+  (147, 4, 35, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3924,7 +4091,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (148, 3, 34, NULL, 'feeding', 'true', 1);
+  (148, 4, 36, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3936,7 +4103,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (149, 3, 35, NULL, 'feeding', 'true', 1);
+  (149, 4, 37, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3948,7 +4115,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (150, 3, 36, NULL, 'feeding', 'true', 1);
+  (150, 4, 38, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3960,7 +4127,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (151, 3, 37, NULL, 'feeding', 'true', 1);
+  (151, 4, 39, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3972,7 +4139,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (152, 3, 38, NULL, 'feeding', 'true', 1);
+  (152, 4, 40, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3984,7 +4151,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (153, 3, 39, NULL, 'feeding', 'true', 1);
+  (153, 4, 41, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -3996,7 +4163,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (154, 3, 40, NULL, 'feeding', 'true', 1);
+  (154, 4, 42, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4008,7 +4175,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (155, 3, 41, NULL, 'feeding', 'true', 1);
+  (155, 4, 43, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4020,7 +4187,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (156, 3, 42, NULL, 'feeding', 'true', 1);
+  (156, 4, 44, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4032,7 +4199,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (157, 3, 43, NULL, 'feeding', 'true', 1);
+  (157, 4, 45, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4044,7 +4211,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (158, 3, 44, NULL, 'feeding', 'true', 1);
+  (158, 4, 46, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4056,7 +4223,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (159, 3, 45, NULL, 'feeding', 'true', 1);
+  (159, 4, 47, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4068,7 +4235,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (160, 3, 46, NULL, 'feeding', 'true', 1);
+  (160, 4, 48, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4080,7 +4247,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (161, 3, 47, NULL, 'feeding', 'true', 1);
+  (161, 4, 49, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4092,7 +4259,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (162, 3, 48, NULL, 'feeding', 'true', 1);
+  (162, 4, 50, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4104,7 +4271,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (163, 3, 49, NULL, 'feeding', 'true', 1);
+  (163, 4, 51, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4116,7 +4283,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (164, 3, 50, NULL, 'feeding', 'true', 1);
+  (164, 4, 52, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4128,7 +4295,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (165, 3, 51, NULL, 'feeding', 'true', 1);
+  (165, 4, 53, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4140,7 +4307,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (166, 3, 52, NULL, 'feeding', 'true', 1);
+  (166, 4, 54, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4152,7 +4319,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (167, 3, 53, NULL, 'feeding', 'true', 1);
+  (167, 4, 55, 6, 'feeding', 'true', 3);
 INSERT INTO
   `tbl_plan_details` (
     `plan_detail_id`,
@@ -4164,1387 +4331,7 @@ INSERT INTO
     `user_id`
   )
 VALUES
-  (168, 3, 54, NULL, 'feeding', 'true', 1);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (169, 3, 55, NULL, 'feeding', 'true', 1);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (170, 3, 56, NULL, 'feeding', 'true', 1);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (171, 3, 1, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (172, 3, 2, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (173, 3, 3, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (174, 3, 4, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (175, 3, 5, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (176, 3, 6, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (177, 3, 7, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (178, 3, 8, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (179, 3, 9, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (180, 3, 10, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (181, 3, 11, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (182, 3, 12, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (183, 3, 13, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (184, 3, 14, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (185, 3, 15, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (186, 3, 16, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (187, 3, 17, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (188, 3, 18, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (189, 3, 19, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (190, 3, 20, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (191, 3, 21, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (192, 3, 22, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (193, 3, 23, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (194, 3, 24, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (195, 3, 25, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (196, 3, 26, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (197, 3, 27, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (198, 3, 28, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (199, 3, 29, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (200, 3, 30, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (201, 3, 31, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (202, 3, 32, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (203, 3, 33, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (204, 3, 34, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (205, 3, 35, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (206, 3, 36, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (207, 3, 37, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (208, 3, 38, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (209, 3, 39, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (210, 3, 40, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (211, 3, 41, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (212, 3, 42, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (213, 3, 43, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (214, 3, 44, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (215, 3, 45, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (216, 3, 46, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (217, 3, 47, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (218, 3, 48, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (219, 3, 49, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (220, 3, 50, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (221, 3, 51, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (222, 3, 52, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (223, 3, 53, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (224, 3, 54, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (225, 3, 55, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (226, 3, 56, 1, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (227, 4, NULL, 1, 'feeding', 'false', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (228, 4, 1, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (229, 4, 2, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (230, 4, 3, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (231, 4, 4, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (232, 4, 5, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (233, 4, 6, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (234, 4, 7, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (235, 4, 8, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (236, 4, 9, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (237, 4, 10, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (238, 4, 11, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (239, 4, 12, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (240, 4, 13, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (241, 4, 14, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (242, 4, 15, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (243, 4, 16, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (244, 4, 17, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (245, 4, 18, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (246, 4, 19, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (247, 4, 20, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (248, 4, 21, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (249, 4, 22, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (250, 4, 23, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (251, 4, 24, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (252, 4, 25, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (253, 4, 26, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (254, 4, 27, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (255, 4, 28, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (256, 4, 29, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (257, 4, 30, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (258, 4, 31, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (259, 4, 32, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (260, 4, 33, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (261, 4, 34, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (262, 4, 35, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (263, 4, 36, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (264, 4, 37, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (265, 4, 38, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (266, 4, 39, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (267, 4, 40, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (268, 4, 41, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (269, 4, 42, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (270, 4, 43, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (271, 4, 44, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (272, 4, 45, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (273, 4, 46, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (274, 4, 47, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (275, 4, 48, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (276, 4, 49, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (277, 4, 50, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (278, 4, 51, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (279, 4, 52, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (280, 4, 53, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (281, 4, 54, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (282, 4, 55, 4, 'feeding', 'true', NULL);
-INSERT INTO
-  `tbl_plan_details` (
-    `plan_detail_id`,
-    `plan_id`,
-    `day`,
-    `item_id`,
-    `type`,
-    `is_exist`,
-    `user_id`
-  )
-VALUES
-  (283, 4, 56, 4, 'feeding', 'true', NULL);
+  (168, 4, 56, 6, 'feeding', 'true', 3);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_quarantine
@@ -5664,6 +4451,32 @@ INSERT INTO
   )
 VALUES
   (9, 0, 4200, 3, '2023-04-17', 'active', 'true', NULL);
+INSERT INTO
+  `tbl_stock_card` (
+    `stock_card_id`,
+    `opening_quantity`,
+    `closing_quantity`,
+    `item_id`,
+    `transaction_date`,
+    `status`,
+    `is_exist`,
+    `user_id`
+  )
+VALUES
+  (10, 0, 0, 6, '2023-04-19', 'active', 'true', 2);
+INSERT INTO
+  `tbl_stock_card` (
+    `stock_card_id`,
+    `opening_quantity`,
+    `closing_quantity`,
+    `item_id`,
+    `transaction_date`,
+    `status`,
+    `is_exist`,
+    `user_id`
+  )
+VALUES
+  (11, 4200, 3000, 3, '2023-04-20', 'active', 'true', NULL);
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: tbl_stock_card_details
@@ -5924,6 +4737,58 @@ VALUES
     'OUT',
     NULL,
     9,
+    NULL,
+    'Scheduled Activity',
+    'true',
+    NULL
+  );
+INSERT INTO
+  `tbl_stock_card_details` (
+    `transaction_detail_id`,
+    `transaction_quantity`,
+    `total_quantity`,
+    `type`,
+    `expiration_date`,
+    `stock_card_id`,
+    `attachment`,
+    `remark`,
+    `is_exist`,
+    `user_id`
+  )
+VALUES
+  (
+    11,
+    500,
+    3700,
+    'OUT',
+    NULL,
+    11,
+    NULL,
+    'Scheduled Activity',
+    'true',
+    NULL
+  );
+INSERT INTO
+  `tbl_stock_card_details` (
+    `transaction_detail_id`,
+    `transaction_quantity`,
+    `total_quantity`,
+    `type`,
+    `expiration_date`,
+    `stock_card_id`,
+    `attachment`,
+    `remark`,
+    `is_exist`,
+    `user_id`
+  )
+VALUES
+  (
+    12,
+    700,
+    3000,
+    'OUT',
+    NULL,
+    11,
     NULL,
     'Scheduled Activity',
     'true',
