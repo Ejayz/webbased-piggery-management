@@ -221,6 +221,8 @@ export function Individual() {
         if (data.data) {
           setPigList(
             data.data.map((item: any) => ({
+              batch:item.batch_name,
+              cage:item.cage_name,
               value: item.pig_id,
               display: item.pig_id,
               disabled: false,
@@ -524,6 +526,8 @@ export function Individual() {
                   {pig_list.map((item, index) => (
                     <tr key={index}>
                       <td>{item.display}</td>
+                      <td>{item.batch}</td>
+                      <td>{item.cage}</td>
                       <td>
                         <label
                           onClick={() => {
@@ -791,7 +795,7 @@ export function Individual() {
           >
             <div className="w-11/12 grid grid-row-2">
               <div className="flex flex-col">
-                <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                <label htmlFor="search_pig" className={`btn my-auto`}>
                   Choose Pig
                 </label>
                 <button
