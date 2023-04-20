@@ -19,7 +19,11 @@ export default async function handler(
     `Content-Disposition`,
     `attachment; filename=${DateTime.now()}.zip`
   );
-  const db = await UpdateCage();
+  const host: any = process.env.HOST;
+  const port: any = process.env.PORT;
+  const user: any = process.env.USERS;
+  const password: any = process.env.PASSWORD;
+  const db = await UpdateCage(host, port, user, password);
   try {
     const buildDb = ` SET FOREIGN_KEY_CHECKS=0;
     SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -46,12 +50,13 @@ export default async function handler(
   }
 }
 
-async function UpdateCage() {
+async function UpdateCage(host: any, port: any, user: any, password: any) {
+  console.log(host, port, user, password);
   const result = await mysqldump({
     connection: {
-      host: "127.0.0.1",
-      user: "root",
-      password: "",
+      host: host,
+      user: user,
+      password: password,
       database: "piggery_management",
     },
     dump: { schema: { table: { dropIfExist: true } } },
