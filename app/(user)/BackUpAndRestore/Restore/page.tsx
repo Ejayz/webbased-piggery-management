@@ -53,6 +53,7 @@ export default function Page() {
               if (data.code == 200) {
                 toast.success(data.message);
                 setProcessing(false);
+                e.target.reset();
               } else {
                 toast.error(data.message);
                 setProcessing(false);

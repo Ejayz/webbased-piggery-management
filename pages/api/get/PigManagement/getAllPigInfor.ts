@@ -54,7 +54,7 @@ async function UpdateCage(pig_id: any) {
     console.log(age);
 
     const [rows, fields]: any = await conn.query(
-      `SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_breed ON tbl_breed.breed_id=tbl_pig.breed_id INNER JOIN tbl_cage ON tbl_cage.cage_id = tbl_pig_history.cage_id INNER JOIN tbl_batch ON tbl_batch.batch_id = tbl_pig.batch_id WHERE tbl_pig.pig_id=? ORDER BY tbl_pig_history.pig_history_id DESC `,
+      `SELECT *, FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_breed ON tbl_breed.breed_id=tbl_pig.breed_id INNER JOIN tbl_cage ON tbl_cage.cage_id = tbl_pig_history.cage_id INNER JOIN tbl_batch ON tbl_batch.batch_id = tbl_pig.batch_id WHERE tbl_pig.pig_id=? ORDER BY tbl_pig_history.pig_history_id DESC `,
       [pig_id]
     );
     const batch_name = rows[0].batch_name;
