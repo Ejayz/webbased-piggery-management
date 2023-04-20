@@ -38,10 +38,25 @@ async function UpdateCage(pig_id: any) {
       batch: [],
     };
 
+    const [pig]: any = await conn.query(
+      "select * from tbl_pig where pig_id=?",
+      [pig_id]
+    );
+    const birthday = DateTime.fromJSDate(pig[0].birthdate)
+      .setZone("Asia/Manila")
+      .toFormat("EEEE',' MMM d',' yyyy");
+    const age = Math.ceil(
+      DateTime.now().diff(DateTime.fromJSDate(pig[0].birthdate), "days").days
+    );
+
+    console.log(birthday);
+    console.log(age);
+
     const [rows, fields]: any = await conn.query(
       `SELECT * FROM tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_breed ON tbl_breed.breed_id=tbl_pig.breed_id INNER JOIN tbl_cage ON tbl_cage.cage_id = tbl_pig_history.cage_id INNER JOIN tbl_batch ON tbl_batch.batch_id = tbl_pig.batch_id WHERE tbl_pig.pig_id=? ORDER BY tbl_pig_history.pig_history_id DESC `,
       [pig_id]
     );
+
     const [rows2] = await conn.query(
       "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation.operation_id = tbl_operation_item_details.operation_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id = tbl_operation.operation_type_id WHERE tbl_operation.pig_id=?",
       [pig_id]
@@ -71,7 +86,6 @@ async function UpdateCage(pig_id: any) {
       }
     });
 
-    console.log(getCage);
     const [rows3] = await conn.query(getCage);
 
     const [rows4] = await conn.query(
@@ -84,15 +98,8 @@ async function UpdateCage(pig_id: any) {
       individual: rows2,
       cage: rows3,
       batch: rows4,
-      birthday: DateTime.fromISO(rows[2]?.birthdate)
-        .setZone("Asia/Manila")
-        .toFormat("EEEE',' MMM d',' yyyy"),
-      age: `${Math.ceil(
-        DateTime.now().diff(
-          DateTime.fromISO(rows.length != 0 ? rows[0]?.birthdate : ""),
-          "days"
-        ).days
-      )} Days Old`,
+      birthday: birthday,
+      age: age,
     };
 
     return datas;
