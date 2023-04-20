@@ -42,7 +42,7 @@ async function UpdateCage(pig_id: any) {
       "select * from tbl_pig where pig_id=?",
       [pig_id]
     );
-    const batch_name= pig[0].batch_name;
+    const batch_name = pig[0].batch_name;
     const birthday = DateTime.fromJSDate(pig[0].birthdate)
       .setZone("Asia/Manila")
       .toFormat("EEEE',' MMM d',' yyyy");
@@ -95,13 +95,13 @@ async function UpdateCage(pig_id: any) {
     );
 
     datas = {
+      birthday: birthday,
+      age: age,
+      batch_name: batch_name,
       pig_history: rows,
       individual: rows2,
       cage: rows3,
       batch: rows4,
-      birthday: birthday,
-      age: age,
-      batch_name: batch_name
     };
 
     return datas;
