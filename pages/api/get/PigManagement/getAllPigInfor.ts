@@ -84,6 +84,15 @@ async function UpdateCage(pig_id: any) {
       individual: rows2,
       cage: rows3,
       batch: rows4,
+      birthday: DateTime.fromISO(rows[2]?.birthdate)
+        .setZone("Asia/Manila")
+        .toFormat("EEEE',' MMM d',' yyyy"),
+      age: `${Math.ceil(
+        DateTime.now().diff(
+          DateTime.fromISO(rows.length != 0 ? rows[0]?.birthdate : ""),
+          "days"
+        ).days
+      )} Days Old`,
     };
 
     return datas;
