@@ -823,7 +823,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </Link>
                       </li>
                       <li>
-                        <Link href="/Schedule/worker/Modify">
+                        <Link href="/Schedule/worker/List">
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
