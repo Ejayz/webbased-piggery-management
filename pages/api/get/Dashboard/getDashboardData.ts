@@ -30,8 +30,8 @@ async function UpdateCage() {
   const TotalQuarantine =
     "SELECT COUNT(quarantine_id) AS total_quarantine FROM tbl_quarantine WHERE is_exist = 'true'";
   const getTotalPendingOperation = `SELECT COUNT(operation_id) AS totalPendingOperation FROM tbl_operation WHERE tbl_operation.operation_date='2023-04-19' AND tbl_operation.\`status\`='pending'`;
-  const TotalUser = "select max(user_id) as total_user from tbl_users";
-  const getTotalLowLvl="SELECT COUNT(*) AS totalLowLvl, s.*, i.*, (s.closing_quantity / i.item_net_weight) AS stock_density FROM tbl_stock_card s INNER JOIN tbl_inventory i ON s.item_id = i.item_id WHERE (s.closing_quantity / i.item_net_weight) <= 5 AND s.transaction_date = ( SELECT MAX(transaction_date) FROM tbl_stock_card WHERE item_id = s.item_id ) GROUP BY s.item_id ORDER BY s.stock_card_id DESC LIMIT 1000 OFFSET 0"
+  const TotalUser = "select max(user_id) as total_user from tbl_users where is_exist='true'";
+  const getTotalLowLvl="SELECT COUNT(*) AS totalLowLvl, s.*, i.*, (s.closing_quantity / i.item_net_weight) AS stock_density FROM tbl_stock_card s INNER JOIN tbl_inventory i ON s.item_id = i.item_id WHERE i.is_exist='true' and (s.closing_quantity / i.item_net_weight) <= 5 AND s.transaction_date = ( SELECT MAX(transaction_date) FROM tbl_stock_card WHERE item_id = s.item_id )  GROUP BY s.item_id ORDER BY s.stock_card_id DESC LIMIT 1000 OFFSET 0"
   const [sows]: any = await conn.query(getSows);
   const [boars]: any = await conn.query(getBoars);
   const [piglets]: any = await conn.query(getPiglets);
@@ -49,7 +49,7 @@ async function UpdateCage() {
   const [totalQuarantine]: any = await conn.query(TotalQuarantine);
   const [totalUser]: any = await conn.query(TotalUser);
   const [totalLowLvl]: any = await conn.query(getTotalLowLvl);
-
+console.log(totalLowLvl)
   const data = {
     sows: sows[0].total_pig,
     boars: boars[0].total_pig,

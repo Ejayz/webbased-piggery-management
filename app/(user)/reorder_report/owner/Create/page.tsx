@@ -58,33 +58,6 @@ export default function Page() {
     }
     checkUser();
   }, [loading]);
-  const handleQuantity = async (quantity: any, item_id: number) => {
-    setReorderList((prevList) => {
-      const updatedList = prevList.map((item) => {
-        if (item.item_id === item_id) {
-          return { ...item, quantity: quantity };
-        } else {
-          return item;
-        }
-      });
-      console.log(updatedList);
-      return updatedList;
-    });
-  };
-
-  const handleConfirm = async (item_id: number) => {
-    setReorderList((prevList) => {
-      const updatedList = prevList.map((item) => {
-        if (item.item_id === item_id) {
-          return { ...item, confirmed: true };
-        } else {
-          return item;
-        }
-      });
-      console.log(updatedList);
-      return updatedList;
-    });
-  };
 
   function resetState() {}
 
