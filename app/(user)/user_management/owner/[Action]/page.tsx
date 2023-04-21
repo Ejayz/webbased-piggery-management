@@ -200,10 +200,9 @@ export default function Page({ params }: any) {
           </div>
         </div>
         <div
-          data-theme="light"
-          className="card mx-auto text-base-content w-11/12 bg-base-100 shadow-xl"
+          className=" mx-auto text-base-content w-11/12 "
         >
-          <div className="card-body">
+          <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>User Management</li>
