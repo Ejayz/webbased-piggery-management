@@ -152,7 +152,7 @@ export default function User({ children }: { children: React.ReactNode }) {
               },
               move: {
                 direction: "none",
-                enable: true,
+                enable: false,
                 outModes: {
                   default: "bounce",
                 },

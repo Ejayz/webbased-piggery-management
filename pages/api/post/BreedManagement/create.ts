@@ -35,7 +35,7 @@ export default async function handler(
 async function CreateBreed(breed_name: string, user_id: any) {
   const conn = await connection.getConnection();
   try {
-    const sql = "insert into tbl_breed  (`breed_name`) values (?)";
+    const sql = "insert into tbl_breed  (`breed_name`,user_id) values (?,?)";
     const [err, result] = await conn.query(sql, [breed_name, user_id]);
     conn.release();
     if (err) return err;
@@ -51,7 +51,7 @@ async function checkDups(breed_name: string) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_breed where breed_name=? and is_exist='true',user_id=?";
+      "select * from tbl_breed where breed_name=? and is_exist='true'";
     const [err, result] = await conn.query(sql, [breed_name]);
     conn.release();
     if (err) return err;

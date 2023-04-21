@@ -186,7 +186,7 @@ export default function Page() {
                       }}
                     ></NormalInput>
                   </div>
-                  <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
+                  <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
                     <SelectInput
                       name={"cage_type"}
                       label={"Cage Type"}
@@ -200,7 +200,7 @@ export default function Page() {
                     ></SelectInput>
                   </div>
 
-                  <div className="card-actions justify-end">
+                  <div className="card-actions justify-end mt-6">
                     <button
                       className={`btn btn-active btn-primary mx-4 ${
                         processing ? "loading" : ""
