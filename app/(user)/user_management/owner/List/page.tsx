@@ -75,10 +75,13 @@ export default function Page() {
 
   useEffect(() => {
     if (filter.keyword == "") {
+      setPage(1);
       refetch();
     }
   }, [filter]);
-
+  useEffect(() => {
+    refetch();
+  }, [page]);
   useEffect(() => {
     console.log(msg);
     console.log(status);

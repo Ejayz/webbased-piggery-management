@@ -14,6 +14,7 @@ export default async function handler(
   }
   const { page, filter }: any = req.query;
   const { sortby, sortorder, keyword }: any = JSON.parse(filter);
+  console.log(page, filter)
   if (page == "0") {
     return res
       .status(404)
@@ -88,15 +89,14 @@ async function GetUsersWithSearch(
       sortby
     )} ${sortorder} LIMIT ${limit} OFFSET ${offset};`;
 
-    const [err, result] = await conn.query(sql, [
+    const [ result] = await conn.query(sql, [
       keyword,
       keyword,
       keyword,
       keyword,
       user_id,
     ]);
-    conn.release();
-    if (err) return err;
+    console.log(result);
     return result;
   } catch (error) {
     console.log(error);
