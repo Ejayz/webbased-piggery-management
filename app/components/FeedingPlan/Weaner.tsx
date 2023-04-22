@@ -232,7 +232,7 @@ export default function farrowing() {
           </div>
         </div>
       </div>
-      <div className="ml-auto mr-4 w-1/2">
+      <div className="ml-auto lg:mr-4 mr-auto w-1/2">
         <p className="text-xl font-bold">Legends</p>
         <div className="flex flex-row">
           <div className="flex flex-row my-2 mx-2">
@@ -249,7 +249,7 @@ export default function farrowing() {
           </div>
         </div>
       </div>
-      <div className="w-full h-auto mx-auto gap-x-4 grid grid-cols-3">
+      <div className="w-full h-auto mx-auto gap-x-4 lg:grid lg:grid-cols-3 grid-cols-0 flex flex-col">
         <div className="col-span-1">
           <p className="text-xl font-bold">Update Weaner</p>
           <form onSubmit={handleSubmit(onsubmit)}>
@@ -334,7 +334,7 @@ export default function farrowing() {
                   setRange({ from: "", to: "" });
                 }}
                 type="button"
-                className="btn  mx-2"
+                className="btn btn-success  mx-2"
               >
                 Reset
               </button>
@@ -347,7 +347,7 @@ export default function farrowing() {
               <div className="spinner"></div>
             </div>
           ) : (
-            <table className=" table table-fixed w-11/12 text-center">
+            <table className=" mt-4 lg:mt-0 table table-fixed  w-full lg:w-11/12 text-center">
               <thead className="">
                 <tr>
                   <th className="text-xl uppercase" colSpan={1}>
@@ -362,9 +362,11 @@ export default function farrowing() {
                 {new Array(8).fill(null).map((data, index: number) => {
                   return (
                     <tr key={index}>
-                      <td className="font-bold w-24">
+                      <td className=" text-sm w-24 lg:font-bold font-normal">
                         <div className="mx-auto my-auto flex flex-col p-2">
-                          <span className="mx-auto">WEEK </span>
+                          <span className="lg:mx-auto mr-0 ml-auto text-sm">
+                            WEEK{" "}
+                          </span>
                           <span className="mx-auto">{index + 1}</span>
                         </div>
                       </td>
@@ -473,7 +475,7 @@ export default function farrowing() {
                               }
                               className={` flex flex-row  tooltip  `}
                             >
-                              <p className="mx-auto my-auto font-bold">
+                              <p className="mx-auto my-auto font-normal text-sm lg:text-base lg:font-bold">
                                 Day {day}
                               </p>
                             </div>

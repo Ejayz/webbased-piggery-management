@@ -32,6 +32,7 @@ export default function Page() {
     const data = await response.json();
     if (data.code == 200) {
       if (data.data) {
+        console.log(data.data);
         setItemList(data.data);
       } else {
         setItemList([]);
@@ -138,6 +139,7 @@ export default function Page() {
                         <tr>
                           <th>Item Name</th>
                           <th>Item Description</th>
+                          <th>Item Category</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -154,6 +156,7 @@ export default function Page() {
                               <tr key={key}>
                                 <td>{data.item_name}</td>
                                 <td>{data.item_description}</td>
+                                <td>{data.category_name}</td>
                               </tr>
                             );
                           })
@@ -176,6 +179,14 @@ export default function Page() {
                             {
                               field: "item_description",
                               displayName: "Item Description",
+                            },
+                            {
+                              field: "category_name",
+                              displayName: "Item Category",
+                            },
+                            {
+                              field: "quantity",
+                              displayName: "Quantity",
                             },
                           ],
                           header: `

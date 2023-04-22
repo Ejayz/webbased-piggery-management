@@ -111,7 +111,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 mx-auto flex flex-col gap-2 lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -132,7 +132,7 @@ export default function Page() {
                     e.preventDefault();
                     refetch();
                   }}
-                  className="flex"
+                  className="flex input-group"
                 >
                   <input
                     type="text"
@@ -190,7 +190,8 @@ export default function Page() {
                             target="_blank"
                             className="btn btn-sm btn-primary"
                             href={{
-                              pathname: "/Operation/worker/ListIndividual/Activity",
+                              pathname:
+                                "/Operation/worker/ListIndividual/Activity",
                               query: { id: item.pig_id },
                             }}
                           >
@@ -211,24 +212,25 @@ export default function Page() {
             </tbody>
           </table>
           <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
+            <div className="btn-group grid grid-cols-3 mx-auto">
               <button
                 onClick={() => {
                   setPage(page == 1 ? 1 : page - 1);
                 }}
-                className="btn btn-outline"
+                className="btn"
               >
-                Previous page
+                «
               </button>
+              <button className="btn">Page {page}</button>
               <button
                 onClick={() => {
                   if (parsed.length != 0) {
                     setPage(page + 1);
                   }
                 }}
-                className="btn btn-outline"
+                className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
               >
-                Next
+                »
               </button>
             </div>
           </div>

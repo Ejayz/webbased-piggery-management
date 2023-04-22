@@ -57,7 +57,7 @@ export default function Page() {
                       parseInt(item.transaction_quantity) /
                       parseInt(item.item_net_weight)
                     } ${item.item_unit}`,
-                  remark: item.remark,
+                  remark: item.remark == null ? "N/A" : item.remark,
                 },
               ];
             });
@@ -194,7 +194,7 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="overflow-x-auto mb-4">
-                    <div className="flex flex-row gap-2 mb-4">
+                    <div className="flex flex-col lg:flex-row gap-2 mb-4">
                       <span className="text-xl font-bold font-mono mt-auto mb-auto">
                         Filter:
                       </span>
@@ -325,9 +325,7 @@ export default function Page() {
                                 <td>{data.type}</td>
                                 <td>{data.transaction_date}</td>
                                 <td className="uppercase">{`${data.transaction_quantity}`}</td>
-                                <td>
-                                  {data.remark == null ? "N/A" : data.remark}
-                                </td>
+                                <td>{data.remark}</td>
                               </tr>
                             );
                           })

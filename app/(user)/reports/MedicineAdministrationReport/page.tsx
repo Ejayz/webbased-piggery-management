@@ -209,7 +209,7 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="overflow-x-auto mb-4">
-                    <div className="flex flex-row gap-2 mb-4">
+                    <div className="flex flex-col lg:flex-row gap-2 mb-4">
                       <span className="text-xl font-bold font-mono mt-auto mb-auto">
                         Filter:
                       </span>
@@ -352,52 +352,55 @@ export default function Page() {
                         {itemList.length}
                       </span>
                     </div>
-                    <table className="table table-compact w-full table-base-content">
-                      {/* head*/}
-                      <thead>
-                        <tr>
-                          <th>Pateint</th>
-                          <th>Item Name</th>
-                          <th>Item Description</th>
-                          <th>Type</th>
-                          <th>Operation Date</th>
-                          <th>Quantity</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {/* row 1 */}
-                        {range.type == "" &&
-                        range.to == "" &&
-                        range.from == "" ? (
+                    <div className="overflow-x-auto">
+                      <table className="table table-compact w-full table-base-content">
+                        {/* head*/}
+                        <thead>
                           <tr>
-                            <td colSpan={7}>
-                              Choose a date range to view the deworming report.
-                            </td>
+                            <th>Patient</th>
+                            <th>Item Name</th>
+                            <th>Item Description</th>
+                            <th>Type</th>
+                            <th>Operation Date</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
                           </tr>
-                        ) : itemList.length == 0 ? (
-                          <tr>
-                            <td colSpan={7}>
-                              No data found for the selected date range.
-                            </td>
-                          </tr>
-                        ) : (
-                          itemList.map((data: any, key: number) => {
-                            return (
-                              <tr key={key}>
-                                <td>{data.patient}</td>
-                                <td>{data.item_name}</td>
-                                <td>{data.item_description}</td>
-                                <td>{data.type}</td>
-                                <td>{data.operation_date}</td>
-                                <td className="uppercase">{`${data.quantity}`}</td>
-                                <td>{data.status}</td>
-                              </tr>
-                            );
-                          })
-                        )}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {/* row 1 */}
+                          {range.type == "" &&
+                          range.to == "" &&
+                          range.from == "" ? (
+                            <tr>
+                              <td colSpan={7}>
+                                Choose a date range to view the deworming
+                                report.
+                              </td>
+                            </tr>
+                          ) : itemList.length == 0 ? (
+                            <tr>
+                              <td colSpan={7}>
+                                No data found for the selected date range.
+                              </td>
+                            </tr>
+                          ) : (
+                            itemList.map((data: any, key: number) => {
+                              return (
+                                <tr key={key}>
+                                  <td>{data.patient}</td>
+                                  <td>{data.item_name}</td>
+                                  <td>{data.item_description}</td>
+                                  <td>{data.type}</td>
+                                  <td>{data.operation_date}</td>
+                                  <td className="uppercase">{`${data.quantity}`}</td>
+                                  <td>{data.status}</td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <div className="card-actions justify-end"></div>
                 </form>

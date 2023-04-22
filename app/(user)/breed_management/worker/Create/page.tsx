@@ -104,7 +104,7 @@ export default function Page() {
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-1 lg:grid-rows-none grid-cols-none grid-rows-1">
+                  <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-1">
                     <NormalInput
                       name={"breed_name"}
                       label={"Breed Name"}
@@ -116,9 +116,9 @@ export default function Page() {
                     ></NormalInput>
                   </div>
 
-                  <div className="card-actions justify-end mt-6">
+                  <div className="card-actions justify-end mt-2 lg:mt-6">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         processing ? "loading" : ""
                       }`}
                     >

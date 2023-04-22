@@ -335,7 +335,7 @@ export default function Page() {
                     <span>Restock items based on one receipt at a time.</span>
                   </div>
                 </div>
-                <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
+                <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-1 gap-2">
                   <div className="form-control w-full max-w-xs">
                     <label className="label">
                       <span className="label-text text-lg">Pick a receipt</span>
@@ -361,41 +361,6 @@ export default function Page() {
                   className="flex w-full h-auto py-2 flex-col"
                 >
                   <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2 gap-2">
-                    {/* <div className="form-control">
-                      <label className="label">
-                        <span className="label-text text-lg">Item Name*</span>
-                      </label>
-                      <select
-                        required={true}
-                        className={`select select-bordered w-full ${
-                          errors.item_name ? "select-error" : ""
-                        }`}
-                        placeholder="Select item"
-                        {...register("item_name", {
-                          required: "This field is required",
-                        })}
-                      >
-                        <option value="">Item</option>
-                        {item_list.map((item: any, index: number) => {
-                          return (
-                            <option key={index} value={item.item_id}>
-                              {item.item_name}
-                            </option>
-                          );
-                        })}
-                      </select>
-
-                      <ErrorMessage
-                        errors={errors}
-                        name="item_name"
-                        render={({ message }) => (
-                          <p className="mt-2 text-sm  text-error">
-                            <span className="font-medium">{message}</span>{" "}
-                          </p>
-                        )}
-                      />
-                    
-                    </div> */}
                     <SearchInput
                       label="Selected Item"
                       type="text"
@@ -459,9 +424,9 @@ export default function Page() {
                       type="date"
                     />
                   </div>{" "}
-                  <div className="w-full h-auto grid grid-cols-4 my-2">
+                  <div className="w-full h-auto grid grid-cols-2 lg:grid-cols-4 my-2">
                     <button
-                      className={`btn btn-active mx-4 ${
+                      className={`btn btn-info mx-4 ${
                         requesting ? "loading" : ""
                       }`}
                     >
@@ -582,7 +547,7 @@ export default function Page() {
                   <div className="card-actions justify-end my-2">
                     <button
                       type="button"
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         requesting ? "loading" : ""
                       }`}
                       onClick={restock}

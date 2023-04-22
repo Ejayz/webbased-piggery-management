@@ -259,6 +259,36 @@ export default function Page() {
                     <li className="font-bold">Breeder</li>
                   </ul>
                 </div>
+                {cageList.length <= 0 ? (
+                  <div className="alert alert-info shadow-lg">
+                    <div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="stroke-current flex-shrink-0 w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      <span>
+                        No cage listed ? Create individual cage on{" "}
+                        <Link
+                          className="underline"
+                          href="/cage_management/worker/Create"
+                        >
+                          Cage Management Module
+                        </Link>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   method="post"
@@ -398,7 +428,7 @@ export default function Page() {
                     </div>
                     <div className="flex flex-col">
                       <Link
-                        className="my-auto btn btn-primary"
+                        className="my-auto btn btn-info"
                         download={`${pig_id}.png`}
                         target="_blank"
                         href={scannerLink}
@@ -406,7 +436,7 @@ export default function Page() {
                         Download
                       </Link>
                       <button
-                        className="btn btn-primary"
+                        className="btn btn-info"
                         onClick={() => {
                           printJS("canvasable", "html");
                         }}
@@ -418,7 +448,7 @@ export default function Page() {
                   </div>
                   <div className="card-actions justify-end mt-6">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         processing ? "loading" : ""
                       }`}
                     >

@@ -17,6 +17,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
+import { setuid } from "process";
 
 interface activity_interface {
   value: string;
@@ -546,7 +547,7 @@ export function Cage() {
         />
       </div>
 
-      <div className="flex flex-row w-full">
+      <div className="flex flex-col gap-2 lg:flex-row w-full">
         {watchScheduleType == "1" ? (
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -627,7 +628,7 @@ export function Cage() {
             </div>
             <div className="card-actions mt-4">
               <button
-                className={`btn btn-active  mx-4 my-4 ${
+                className={`btn btn-active btn-info  mx-4 my-4 ${
                   processing ? "loading" : ""
                 }`}
                 type={"button"}
@@ -731,15 +732,17 @@ export function Cage() {
                   onSubmit();
                 }}
                 type="button"
-                className={`btn btn-active btn-primary mx-4 ${
+                className={`btn btn-active btn-success mx-4 ${
                   processing ? "loading" : ""
                 }`}
               >
                 Create
               </button>
               <button
+                type="button"
                 onClick={() => {
                   reset();
+                  setUseItem([]);
                 }}
                 className="btn mx-4"
               >
@@ -794,16 +797,17 @@ export function Cage() {
                     },
                   ]);
                 }}
-                className={`btn btn-active btn-primary mx-4 ${
+                className={`btn btn-active btn-success mx-4 ${
                   processing ? "loading" : ""
                 }`}
               >
                 Create
               </button>
               <button
-                type="reset"
+                type="button"
                 onClick={() => {
                   reset();
+                  setUseItem([]);
                 }}
                 className="btn mx-4"
               >
@@ -812,9 +816,10 @@ export function Cage() {
             </div>
           </form>
         )}
-        <div className="overflow-x-auto w-3/4 mx-auto">
+        <div className="overflow-x-auto w-3/4 mx-auto min-h-screen">
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
+            height={"auto"}
             initialDate={new Date("2023-01-01")}
             initialView="dayGridMonth"
             eventDisplay="block"

@@ -80,7 +80,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 mx-auto flex flex-col gap-2 lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -119,7 +119,7 @@ export default function Page() {
                       refetch();
                     }
                   }}
-                  className="flex"
+                  className="flex input-group"
                 >
                   <input
                     type="text"
@@ -150,34 +150,35 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table className="table table-compact w-11/12  mx-auto  text-base-content">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Batch Name</th>
-                <th>Sow</th>
-                <th>Boar</th>
-                <th>Total Pig</th>
-                {/* <th>Action</th> */}
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading || isFetching ? (
+          <div className="overflow-x-auto mx-auto w-11/12">
+            <table className="table table-compact w-11/12  mx-auto  text-base-content">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="text-center">
-                    Please wait while we fetch the data
-                  </td>
+                  <th></th>
+                  <th>Batch Name</th>
+                  <th>Sow</th>
+                  <th>Boar</th>
+                  <th>Total Pig</th>
+                  {/* <th>Action</th> */}
                 </tr>
-              ) : parsed.length != 0 ? (
-                parsed.map((item: any, key: number) => {
-                  return (
-                    <tr key={key} className="hover">
-                      <th>{key + 1}</th>
-                      <td>{item.batch_name}</td>
-                      <td>{item.sow_id != null ? item.sow_id : "N/A"}</td>
-                      <td>{item.boar_id != null ? item.boar_id : "N/A"}</td>
-                      <td>{item.batch_capacity}</td>
-                      {/* <td className="flex">
+              </thead>
+              <tbody>
+                {isLoading || isFetching ? (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      Please wait while we fetch the data
+                    </td>
+                  </tr>
+                ) : parsed.length != 0 ? (
+                  parsed.map((item: any, key: number) => {
+                    return (
+                      <tr key={key} className="hover">
+                        <th>{key + 1}</th>
+                        <td>{item.batch_name}</td>
+                        <td>{item.sow_id != null ? item.sow_id : "N/A"}</td>
+                        <td>{item.boar_id != null ? item.boar_id : "N/A"}</td>
+                        <td>{item.batch_capacity}</td>
+                        {/* <td className="flex">
                         <div className="flex flex-row mx-auto">
                           <Link
                             className="btn btn-sm btn-primary"
@@ -210,37 +211,39 @@ export default function Page() {
                           </Link>
                         </div>
                       </td> */}
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
           <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
+            <div className="btn-group grid grid-cols-3 mx-auto">
               <button
                 onClick={() => {
                   setPage(page == 1 ? 1 : page - 1);
                 }}
-                className="btn btn-outline"
+                className="btn"
               >
-                Previous page
+                «
               </button>
+              <button className="btn">Page {page}</button>
               <button
                 onClick={() => {
                   if (parsed.length != 0) {
                     setPage(page + 1);
                   }
                 }}
-                className="btn btn-outline"
+                className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
               >
-                Next
+                »
               </button>
             </div>
           </div>

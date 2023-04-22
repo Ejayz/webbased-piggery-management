@@ -185,7 +185,7 @@ export default function Page({ params }: any) {
                   <></>
                 ) : params.Action == "Update" ? (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-active btn-warning mx-4 ${
                       processing ? "loading" : ""
                     }`}
                   >
@@ -193,7 +193,7 @@ export default function Page({ params }: any) {
                   </button>
                 ) : (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-error btn-primary mx-4 ${
                       processing ? "loading" : ""
                     }`}
                   >
@@ -204,7 +204,7 @@ export default function Page({ params }: any) {
                   onClick={(e) => {
                     callCancel();
                   }}
-                  className="btn btn-active btn-primary mx-4"
+                  className="btn btn-active mx-4"
                   href={"/breed_management/worker/List"}
                 >
                   Cancel

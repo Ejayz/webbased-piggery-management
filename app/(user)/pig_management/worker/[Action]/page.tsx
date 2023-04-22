@@ -409,22 +409,26 @@ export default function Page({ params }: any) {
                 >
                   {" "}
                 </SelectInput>
-                <TextArea
-                  name={"remark"}
-                  label={"Remarks"}
-                  register={register}
-                  disabled={true}
-                  errors={errors}
-                  required={true}
-                  validationSchema={{ required: "This field is required" }}
-                />
+                {Action == "View" || Action == "Remove" ? (
+                  <></>
+                ) : (
+                  <TextArea
+                    name={"remark"}
+                    label={"Remarks"}
+                    register={register}
+                    disabled={true}
+                    errors={errors}
+                    required={true}
+                    validationSchema={{ required: "This field is required" }}
+                  />
+                )}
               </div>
               <div className="card-actions justify-end mt-6">
                 {params.Action == "View" ? (
                   <></>
                 ) : params.Action == "Update" ? (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-active btn-warning mx-4 ${
                       processing ? "loading" : ""
                     }`}
                   >

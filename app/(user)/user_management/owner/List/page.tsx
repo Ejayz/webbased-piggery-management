@@ -101,7 +101,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 mx-auto flex flex-col gap-2 lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -134,7 +134,7 @@ export default function Page() {
                     e.preventDefault();
                     refetch();
                   }}
-                  className="flex"
+                  className="flex input-group"
                 >
                   <input
                     type="text"
@@ -165,100 +165,100 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table
-            data-theme="dark"
-            className="table table-compact w-11/12  mx-auto  text-center"
-          >
-            <thead>
-              <tr>
-                <th></th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Job</th>
-                <th>Phone</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading || isFetching ? (
+          <div className="overflow-x-auto">
+            <table className="table table-compact w-11/12  mx-auto  text-center">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="text-center">
-                    Please wait while we fetch the data
-                  </td>
+                  <th></th>
+                  <th>Username</th>
+                  <th>Name</th>
+                  <th>Job</th>
+                  <th>Phone</th>
+                  <th>Action</th>
                 </tr>
-              ) : parsed.length != 0 ? (
-                parsed.map((item: any, key: number) => {
-                  return (
-                    <tr key={key} className="hover">
-                      <th>{key + 1}</th>
-                      <td>{item.username}</td>
-                      <td>{item.name}</td>
-                      <td>{item.job}</td>
-                      <td>{item.phone}</td>
-                      <td className="flex">
-                        <div className="flex flex-row mx-auto">
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/user_management/owner/Update",
-                              query: { id: item.user_id },
-                            }}
-                          >
-                            Update
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/user_management/owner/View",
-                              query: { id: item.user_id },
-                            }}
-                          >
-                            View
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/user_management/owner/Remove",
-                              query: { id: item.user_id },
-                            }}
-                          >
-                            Remove
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {isLoading || isFetching ? (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      Please wait while we fetch the data
+                    </td>
+                  </tr>
+                ) : parsed.length != 0 ? (
+                  parsed.map((item: any, key: number) => {
+                    return (
+                      <tr key={key} className="hover">
+                        <th>{key + 1}</th>
+                        <td>{item.username}</td>
+                        <td>{item.name}</td>
+                        <td>{item.job}</td>
+                        <td>{item.phone}</td>
+                        <td className="flex">
+                          <div className="flex flex-row mx-auto">
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/user_management/owner/Update",
+                                query: { id: item.user_id },
+                              }}
+                            >
+                              Update
+                            </Link>
+                            <div className="divider divider-horizontal"></div>
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/user_management/owner/View",
+                                query: { id: item.user_id },
+                              }}
+                            >
+                              View
+                            </Link>
+                            <div className="divider divider-horizontal"></div>
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/user_management/owner/Remove",
+                                query: { id: item.user_id },
+                              }}
+                            >
+                              Remove
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
           <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
+            <div className="btn-group grid grid-cols-3 mx-auto">
               <button
                 onClick={() => {
                   setPage(page == 1 ? 1 : page - 1);
                 }}
-                className="btn btn-outline"
+                className="btn"
               >
-                Previous page
+                «
               </button>
+              <button className="btn">Page {page}</button>
               <button
                 onClick={() => {
                   if (parsed.length != 0) {
                     setPage(page + 1);
                   }
                 }}
-                className="btn btn-outline"
+                className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
               >
-                Next
+                »
               </button>
             </div>
           </div>
