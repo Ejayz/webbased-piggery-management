@@ -33,9 +33,7 @@ export default function RootLayout({
 
   return (
     <>
-      <html
-        className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base"
-      >
+      <html className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base">
         <Head title={"Login"}></Head>
         <body>
           <div className="w-screen h-screen overflow-y-scroll overflow-x-hidden bg-pig  flex flex-col">
@@ -53,6 +51,8 @@ export default function RootLayout({
             />
             <Navbar></Navbar>
             {children}
+          </div>{" "}
+          <div>
             <Footer></Footer>
           </div>
         </body>

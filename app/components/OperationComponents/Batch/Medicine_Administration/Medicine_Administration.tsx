@@ -85,7 +85,7 @@ export default function MedicineAdministration() {
               } `,
               start: item.operation_date,
               backgroundColor:
-              DateTime.fromISO(item.operation_date).diffNow("days").days <
+                DateTime.fromISO(item.operation_date).diffNow("days").days <
                   -1 &&
                 (item.status == "pending" || item.status != "confirmed")
                   ? "red"
@@ -179,8 +179,8 @@ export default function MedicineAdministration() {
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
-        <div className="w-full h-full flex flex-row text-base-content">
-          <div className="w-1/4 flex h-auto">
+        <div className="w-full h-full flex flex-col gap-2 lg:flex-row text-base-content">
+          <div className="w-11/12 lg:w-1/4 flex h-auto">
             {OperationData == undefined ? (
               <div className="flex flex-col w-full">
                 <div className="alert alert-info shadow-lg w-11/12 mx-auto">
@@ -251,7 +251,7 @@ export default function MedicineAdministration() {
                 </div>
                 <div className=" justify-end mt-4 ">
                   <button
-                    className={"btn btn-primary "}
+                    className={"btn btn-warning "}
                     onClick={async () => {
                       const isAllowed = await trigger("item_quantity");
                       if (isAllowed) {
@@ -286,9 +286,9 @@ export default function MedicineAdministration() {
               </div>
             )}
           </div>
-          <div className="w-3/4 flex h-full">
+          <div className="w-full lg:w-3/4 flex h-full">
             <div className="w-11/12 mx-auto h-3/4">
-              <div className="flex flex-row ">
+              <div className="flex flex-col lg:flex-row ">
                 <span className="text-md font-bold font-mono">Legends:</span>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md done mx-2"></div>
@@ -296,78 +296,82 @@ export default function MedicineAdministration() {
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md past-due mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Past Due</span>
+                  <span className="text-sm ">Past Due</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md pending mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Pending</span>
+                  <span className="text-sm ">Pending</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md canceled mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Canceled</span>
+                  <span className="text-sm ">Canceled</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md active-selected mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Selected</span>
+                  <span className="text-sm ">Selected</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md today mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Today</span>
+                  <span className="text-sm ">Today</span>
                 </div>
               </div>
-              <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialDate={new Date()}
-                initialView="dayGridMonth"
-                fixedWeekCount={true}
-                eventClick={(info: any) => {
-                  const data = getExtendProps(info);
-                  if (data.date_diff < -1) {
-                    toast.error("Cannot edit past due operation");
-                    return;
-                  }
-                  if (data.date_diff > 0) {
-                    toast.error("Cannot edit future pending operation");
-                    return;
-                  }
-                  if (data.status != "pending") {
-                    toast.error(
-                      "Interaction with confirmed operation is not permitted."
-                    );
-                    return;
-                  }
-                  if (prevInfo == null) {
-                    setPrevInfo({
-                      prevColor: info.el.style.backgroundColor,
-                      info: info,
-                    });
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  } else {
-                    if (prevInfo.info.event.id != info.event.id) {
+              <div className="W-full min-h-screen ">
+                <FullCalendar
+                  plugins={[dayGridPlugin, interactionPlugin]}
+                  initialDate={new Date()}
+                  height={"auto"}
+                  initialView="dayGridMonth"
+                  fixedWeekCount={true}
+                  eventClick={(info: any) => {
+                    const data = getExtendProps(info);
+                    if (data.date_diff < -1) {
+                      toast.error("Cannot edit past due operation");
+                      return;
+                    }
+                    if (data.date_diff > 0) {
+                      toast.error("Cannot edit future pending operation");
+                      return;
+                    }
+                    if (data.status != "pending") {
+                      toast.error(
+                        "Interaction with confirmed operation is not permitted."
+                      );
+                      return;
+                    }
+                    if (prevInfo == null) {
                       setPrevInfo({
                         prevColor: info.el.style.backgroundColor,
                         info: info,
                       });
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
+                    } else {
+                      if (prevInfo.info.event.id != info.event.id) {
+                        setPrevInfo({
+                          prevColor: info.el.style.backgroundColor,
+                          info: info,
+                        });
+                      }
+                      prevInfo.info.el.style.backgroundColor =
+                        prevInfo.prevColor;
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
                     }
-                    prevInfo.info.el.style.backgroundColor = prevInfo.prevColor;
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  }
-                  getData({
-                    item_id: "",
-                    item_quantity: "",
-                    batch_id: "",
-                    operation_id: data.id,
-                    item_unit: "",
-                  });
-                }}
-                dayHeaders={true}
-                events={parsed}
-                eventDisplay="block"
-                dayMaxEvents={true}
-                displayEventTime={false}
-              />
+                    getData({
+                      item_id: "",
+                      item_quantity: "",
+                      batch_id: "",
+                      operation_id: data.id,
+                      item_unit: "",
+                    });
+                  }}
+                  dayHeaders={true}
+                  events={parsed}
+                  eventDisplay="block"
+                  dayMaxEvents={true}
+                  displayEventTime={false}
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import { IdGenerator } from "@/hooks/usePigManagement";
+import Link from "next/link";
 import printJS from "print-js";
 import { QRCodeCanvas } from "qrcode.react";
 import { useEffect, useState } from "react";
@@ -237,6 +238,33 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
         </div>
       </div>
       <span></span>
+      {cageList.length <= 0 ? (
+        <div className="alert alert-info shadow-lg">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="stroke-current flex-shrink-0 w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <span>
+              No cage listed ? Create nursery cage on{" "}
+              <Link className="underline" href="/cage_management/worker/Create">
+                Cage Management Module
+              </Link>
+            </span>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="gap-2 grid-cols-2 grid-rows-2 grid">
           <div className="flex flex-row">
@@ -305,7 +333,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
             id={"weight"}
           />
         </div>
-        <button type="submit" className="btn btn-primary my-4">
+        <button type="submit" className="btn btn-info my-4">
           Add to list
         </button>
       </form>
@@ -340,7 +368,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
                   <td className="flex flex-row">
                     <button
                       type="button"
-                      className="link "
+                      className="link text-info"
                       onClick={() => {
                         printJS(`${value.pig_id}`, "html");
                       }}
@@ -349,7 +377,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
                     </button>
                     <div className="divider divider-horizontal"></div>
                     <button
-                      className="link"
+                      className="link text-info"
                       type="button"
                       onClick={() => {
                         processQrCode(key, value.pig_id);
@@ -360,7 +388,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
                     <div className="divider divider-horizontal"></div>
                     <button
                       type="button"
-                      className="link"
+                      className="link link-error"
                       onClick={() => {
                         removePig(key);
                         subtractSelectedQuantity(value.cage_id);

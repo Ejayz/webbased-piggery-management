@@ -327,8 +327,8 @@ export default function ModifyMedicineAdministration() {
         </div>
       </div>
       <div className="w-full h-auto overflow-y-hidden">
-        <div className="w-full h-full flex flex-row text-base-content">
-          <div className="w-1/4 flex h-auto">
+        <div className="w-full h-full flex flex-col gap-2  lg:flex-row text-base-content">
+          <div className="lg:w-1/2 w-11/12 flex h-auto">
             {watchActivity == "" ? (
               <div className="flex flex-col w-full">
                 <div className="alert alert-info shadow-lg w-11/12 mx-auto">
@@ -394,7 +394,7 @@ export default function ModifyMedicineAdministration() {
                   </div>
                   <div className=" flex flex-col mt-4 ">
                     <button
-                      className={`btn btn-primary my-2 ${
+                      className={`btn btn-warning my-2 ${
                         processing ? "loading" : ""
                       } `}
                     >
@@ -416,7 +416,7 @@ export default function ModifyMedicineAdministration() {
                           toast.error(returned.message);
                         }
                       }}
-                      className={`btn btn-primary my-2  ${
+                      className={`btn btn-error my-2  ${
                         cancel ? "loading" : ""
                       }`}
                     >
@@ -437,9 +437,9 @@ export default function ModifyMedicineAdministration() {
               </div>
             )}
           </div>
-          <div className="w-3/4 flex h-full">
+          <div className="lg:w-3/4 w-11/12 flex h-full min-h-screen">
             <div className="w-11/12 mx-auto h-3/4">
-              <div className="flex flex-row ">
+              <div className="flex lg:flex-row flex-col gap-2">
                 <span className="text-md font-bold font-mono">Legends:</span>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md done mx-2"></div>
@@ -447,66 +447,70 @@ export default function ModifyMedicineAdministration() {
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md past-due mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Past Due</span>
+                  <span className="text-sm">Past Due</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md pending mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Pending</span>
+                  <span className="text-sm ">Pending</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md canceled mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Canceled</span>
+                  <span className="text-sm ">Canceled</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md active-selected mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Selected</span>
+                  <span className="text-sm">Selected</span>
                 </div>
                 <div className="flex flex-row">
                   <div className="h-4 w-4 rounded-md today mx-2 my-auto"></div>
-                  <span className="text-sm mx-auto">Today</span>
+                  <span className="text-sm ">Today</span>
                 </div>
               </div>
-              <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialDate={new Date()}
-                initialView="dayGridMonth"
-                fixedWeekCount={true}
-                eventClick={(info: any) => {
-                  const data = getExtendProps(info);
+              <div className="w-full min-h-screen h-3/4">
+                <FullCalendar
+                  plugins={[dayGridPlugin, interactionPlugin]}
+                  initialDate={new Date()}
+                  height={"auto"}
+                  initialView="dayGridMonth"
+                  fixedWeekCount={true}
+                  eventClick={(info: any) => {
+                    const data = getExtendProps(info);
 
-                  if (data.status != "pending") {
-                    toast.error("cannot update confirmed schedule");
-                    return;
-                  }
-                  if (prevInfo == null) {
-                    setPrevInfo({
-                      prevColor: info.el.style.backgroundColor,
-                      info: info,
-                    });
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  } else {
-                    if (prevInfo.info.event.id != info.event.id) {
+                    if (data.status != "pending") {
+                      toast.error("cannot update confirmed schedule");
+                      return;
+                    }
+                    if (prevInfo == null) {
                       setPrevInfo({
                         prevColor: info.el.style.backgroundColor,
                         info: info,
                       });
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
+                    } else {
+                      if (prevInfo.info.event.id != info.event.id) {
+                        setPrevInfo({
+                          prevColor: info.el.style.backgroundColor,
+                          info: info,
+                        });
+                      }
+                      prevInfo.info.el.style.backgroundColor =
+                        prevInfo.prevColor;
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
                     }
-                    prevInfo.info.el.style.backgroundColor = prevInfo.prevColor;
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  }
-                  setValue("operation_id", data.operation_id);
-                  setValue("item_id", data.item_id);
-                  setValue("operation_type", data.operation_type);
-                  setValue("item_name", data.item_name);
-                }}
-                dayHeaders={true}
-                events={parsed}
-                eventDisplay="block"
-                dayMaxEvents={true}
-                displayEventTime={false}
-              />
+                    setValue("operation_id", data.operation_id);
+                    setValue("item_id", data.item_id);
+                    setValue("operation_type", data.operation_type);
+                    setValue("item_name", data.item_name);
+                  }}
+                  dayHeaders={true}
+                  events={parsed}
+                  eventDisplay="block"
+                  dayMaxEvents={true}
+                  displayEventTime={false}
+                />
+              </div>
             </div>
           </div>
         </div>

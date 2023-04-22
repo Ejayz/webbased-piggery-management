@@ -209,11 +209,8 @@ export default function Page({ params }: any) {
             </p>
           </div>
         </div>
-        <div
-          data-theme="light"
-          className="card mx-auto text-base-content w-11/12 bg-base-100 shadow-xl"
-        >
-          <div className="card-body">
+        <div className=" mx-auto text-base-content w-11/12 ">
+          <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
                 <li>Inventory Management</li>
@@ -271,12 +268,12 @@ export default function Page({ params }: any) {
                 />
               </div>
 
-              <div className="card-actions justify-end">
+              <div className="card-actions justify-end mt-6">
                 {params.Action == "View" ? (
                   <></>
                 ) : params.Action == "Update" ? (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-active btn-warning mx-4 ${
                       processing ? "loading" : ""
                     }`}
                   >
@@ -284,7 +281,7 @@ export default function Page({ params }: any) {
                   </button>
                 ) : (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-active btn-error mx-4 ${
                       processing ? "loading" : ""
                     }`}
                   >
@@ -295,7 +292,7 @@ export default function Page({ params }: any) {
                   onClick={(e) => {
                     callCancel();
                   }}
-                  className="btn btn-active btn-primary mx-4"
+                  className="btn btn-active mx-4"
                   href={"/inventory_management/worker/List"}
                 >
                   Cancel

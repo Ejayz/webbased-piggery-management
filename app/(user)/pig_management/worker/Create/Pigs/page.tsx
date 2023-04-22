@@ -155,7 +155,7 @@ export default function Page() {
                         onSubmit();
                       }}
                       type="button"
-                      className={`btn btn-primary ${
+                      className={`btn btn-success ${
                         processing ? "loading" : ""
                       }}`}
                     >
@@ -166,7 +166,7 @@ export default function Page() {
                         setResset(true);
                       }}
                       type="button"
-                      className="btn btn-primary "
+                      className="btn  "
                     >
                       Reset
                     </button>

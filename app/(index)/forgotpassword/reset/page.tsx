@@ -105,8 +105,8 @@ export default function ResetPassword() {
 
   return (
     <>
-      <div className="w-full h-screen bg-base-100">
-        <div className="hero h-full  bg-base-100">
+      <div className="w-full h-screen">
+        <div className="hero h-full ">
           <div className="hero-content flex-col lg:flex-row-reverse">
             <div className="text-center text-base-content  lg:text-left">
               <h1 className="text-3xl font-bold">Change Password</h1>
@@ -117,10 +117,9 @@ export default function ResetPassword() {
             </div>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              data-theme="light"
-              className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100"
+              className=" flex-shrink-0 w-full max-w-sm"
             >
-              <div className="card-body">
+              <div className="">
                 <PasswordInputShow
                   name={"password"}
                   label={"Password"}
@@ -135,18 +134,18 @@ export default function ResetPassword() {
                     },
                   }}
                 ></PasswordInputShow>
-                <NormalInput
-                  name={"repeat_password"}
+                <PasswordInputShow
+                  name={"Repeat Password"}
                   label={"Repeat Password"}
                   register={register}
                   errors={errors}
                   required={true}
-                  type={"password"}
                   validationSchema={{
                     required: "This field is required",
                     validate: validateRepeatPassword,
                   }}
-                ></NormalInput>
+                ></PasswordInputShow>
+
                 <label className="label label-text">
                   <Link
                     href="#"

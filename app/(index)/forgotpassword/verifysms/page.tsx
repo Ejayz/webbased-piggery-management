@@ -100,8 +100,8 @@ export default function Layout({}: any) {
   };
 
   return (
-    <div className="w-full bg-base-100 h-screen">
-      <div className="hero h-full bg-base-100">
+    <div className="w-full h-screen">
+      <div className="hero h-full">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center text-base-content lg:text-left">
             <h1 className="text-3xl font-bold">Forgot password</h1>
@@ -147,7 +147,7 @@ export default function Layout({}: any) {
                   pattern: {
                     value: /^9\d{9}$/,
                     message:
-                      "Valid password should start with 9,all numbers, and 10 character long.",
+                      "Phone should start at 9 , all numbers , and 10 character long.",
                   },
                 }}
               ></PhoneInput>

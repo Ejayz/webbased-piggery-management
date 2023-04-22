@@ -62,7 +62,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="hero bg-base-100 h-screen">
+      <div className="hero h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
             <h1 className="text-5xl text-base-content font-bold">Login Now!</h1>

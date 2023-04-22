@@ -131,7 +131,7 @@ export default function Page() {
   useEffect(() => {
     async function exec_get() {
       const returned = await GetCategory();
-      console.log(returned);
+
       if (returned.code == 200) {
         if (returned.data.length !== 0) {
           returned.data.map((data: any, key: number) => {
@@ -149,10 +149,12 @@ export default function Page() {
   }, []);
 
   const onSubmit = (data: any) => {
+    setProcessing(true);
     if (!confirm("Are you sure you want to create?")) {
       setProcessing(false);
       return false;
     }
+
     createUser(data);
   };
 
@@ -265,7 +267,7 @@ export default function Page() {
                   </div>
                   <div className="card-actions justify-end">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         processing ? "loading" : ""
                       }`}
                     >

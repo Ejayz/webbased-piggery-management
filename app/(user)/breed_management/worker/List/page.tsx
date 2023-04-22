@@ -64,7 +64,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 mx-auto flex flex-col gap-2 lg:gap-0 lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -87,42 +87,40 @@ export default function Page() {
             >
               <option value="breed_name">Breed Name</option>
             </select>
-            <div className="form-control my-auto text-base-content mx-2">
-              <div className="input-group">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    refetch();
+            <div className="form-control my-auto text-base-content">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  refetch();
+                }}
+                className=" input-group"
+              >
+                <input
+                  type="text"
+                  placeholder="Search…"
+                  className="input input-bordered "
+                  onChange={(e) => {
+                    setFilter({ ...filter, keyword: e.target.value });
                   }}
-                  className="flex"
-                >
-                  <input
-                    type="text"
-                    placeholder="Search…"
-                    className="input input-bordered my-auto"
-                    onChange={(e) => {
-                      setFilter({ ...filter, keyword: e.target.value });
-                    }}
-                    value={filter.keyword}
-                  />
-                  <button className="btn my-auto btn-square">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
-                </form>
-              </div>
+                  value={filter.keyword}
+                />
+                <button className="btn btn-square">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </form>
             </div>
           </div>
           <table className="table table-compact w-11/12  mx-auto   text-base-content">
@@ -147,7 +145,7 @@ export default function Page() {
                       <th>{key + 1}</th>
                       <td>{item.breed_name}</td>
                       <td className="flex">
-                        <div className="flex flex-row mx-auto">
+                        <div className="flex flex-row mx-auto gap-2">
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -157,7 +155,7 @@ export default function Page() {
                           >
                             Update
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -167,7 +165,7 @@ export default function Page() {
                           >
                             View
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -192,24 +190,25 @@ export default function Page() {
             </tbody>
           </table>
           <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
+            <div className="btn-group grid grid-cols-3 mx-auto">
               <button
                 onClick={() => {
                   setPage(page == 1 ? 1 : page - 1);
                 }}
-                className="btn btn-outline"
+                className="btn"
               >
-                Previous page
+                «
               </button>
+              <button className="btn">Page {page}</button>
               <button
                 onClick={() => {
                   if (parsed.length != 0) {
                     setPage(page + 1);
                   }
                 }}
-                className="btn btn-outline"
+                className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
               >
-                Next
+                »
               </button>
             </div>
           </div>

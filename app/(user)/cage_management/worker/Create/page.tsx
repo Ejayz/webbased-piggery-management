@@ -180,7 +180,7 @@ export default function Page() {
                       errors={errors}
                       required={true}
                       type={"text"}
-                      readonly={true}
+                      readonly={false}
                       validationSchema={{
                         required: "This field is required",
                       }}
@@ -202,7 +202,7 @@ export default function Page() {
 
                   <div className="card-actions justify-end mt-6">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         processing ? "loading" : ""
                       }`}
                     >

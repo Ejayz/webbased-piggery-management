@@ -120,6 +120,7 @@ export default function Page({ params }: any) {
     }
   }
   const onSubmit = async (data: any) => {
+    setRequesting(true);
     if (!confirm("Are you sure you want to destock?")) {
       return false;
     }
@@ -132,8 +133,10 @@ export default function Page({ params }: any) {
         data.item_net_weight
       );
       if (returned.code == 200) {
+        setRequesting(false);
         callCancel(returned.message, "success");
       } else {
+        setRequesting(false);
         toast.error(returned.message);
       }
     }
@@ -229,7 +232,7 @@ export default function Page({ params }: any) {
                   <div className="card-actions justify-end my-2">
                     <button
                       type="submit"
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         requesting ? "loading" : ""
                       }`}
                     >

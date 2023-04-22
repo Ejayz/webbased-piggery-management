@@ -199,9 +199,7 @@ export default function Page({ params }: any) {
             </p>
           </div>
         </div>
-        <div
-          className=" mx-auto text-base-content w-11/12 "
-        >
+        <div className=" mx-auto text-base-content w-11/12 ">
           <div className="">
             <div className="text-sm mt-2 ml-2  overflow-hidden breadcrumbs">
               <ul>
@@ -217,7 +215,11 @@ export default function Page({ params }: any) {
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3 gap-2">
+              <div
+                className={`w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-${
+                  Action == "Update" ? 3 : 1
+                } gap-2`}
+              >
                 <NormalInput
                   name={"username"}
                   label={"Username"}
@@ -233,32 +235,38 @@ export default function Page({ params }: any) {
                     },
                   }}
                 ></NormalInput>
-                <PasswordInputShow
-                  name={"password"}
-                  label={"Password"}
-                  register={register}
-                  errors={errors}
-                  required={false}
-                  readonly={Action == "View" || Action == "Remove"}
-                  validationSchema={{
-                    pattern: {
-                      value: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-                      message: `Valid password: 8+ characters, 1 lowercase, 1 uppercase, 1 number.`,
-                    },
-                  }}
-                ></PasswordInputShow>
-                <NormalInput
-                  name={"repeat_password"}
-                  label={"Repeat Password"}
-                  register={register}
-                  errors={errors}
-                  required={false}
-                  readonly={Action == "View" || Action == "Remove"}
-                  type={"password"}
-                  validationSchema={{
-                    validate: validateRepeatPassword,
-                  }}
-                ></NormalInput>
+                {Action == "Update" ? (
+                  <>
+                    <PasswordInputShow
+                      name={"password"}
+                      label={"Password"}
+                      register={register}
+                      errors={errors}
+                      required={false}
+                      readonly={Action == "View" || Action == "Remove"}
+                      validationSchema={{
+                        pattern: {
+                          value: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                          message: `Valid password: 8+ characters, 1 lowercase, 1 uppercase, 1 number.`,
+                        },
+                      }}
+                    ></PasswordInputShow>
+                    <NormalInput
+                      name={"repeat_password"}
+                      label={"Repeat Password"}
+                      register={register}
+                      errors={errors}
+                      required={false}
+                      readonly={Action == "View" || Action == "Remove"}
+                      type={"password"}
+                      validationSchema={{
+                        validate: validateRepeatPassword,
+                      }}
+                    ></NormalInput>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="w-full grid grid-rows-3 grid-cols-none lg:grid-cols-3 lg:grid-rows-none ml-2 gap-2">
                 <NormalInput
@@ -312,8 +320,7 @@ export default function Page({ params }: any) {
                     },
                     pattern: {
                       value: /^9\d{9}$/,
-                      message:
-                        "Phone number format: 9XXXXXXXXX.",
+                      message: "Phone number format: 9XXXXXXXXX.",
                     },
                   }}
                 ></PhoneInput>
@@ -350,7 +357,7 @@ export default function Page({ params }: any) {
                   <></>
                 ) : params.Action == "Update" ? (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-active btn-warning mx-4 ${
                       requesting ? "loading" : ""
                     }`}
                   >
@@ -358,7 +365,7 @@ export default function Page({ params }: any) {
                   </button>
                 ) : (
                   <button
-                    className={`btn btn-active btn-primary mx-4 ${
+                    className={`btn btn-active btn-error mx-4 ${
                       requesting ? "loading" : ""
                     }`}
                   >
@@ -369,7 +376,7 @@ export default function Page({ params }: any) {
                   onClick={(e) => {
                     callCancel();
                   }}
-                  className="btn btn-active btn-primary mx-4"
+                  className="btn btn-active  mx-4"
                   href={"/user_management/owner/List"}
                 >
                   Cancel

@@ -64,9 +64,9 @@ export default function Page() {
 
   return (
     <>
-      <div className=" h-screen w-screen  text-base-content flex flex-col">
+      <div className=" h-screen w-screen min-h-screen  text-base-content flex flex-col">
         <div className="mx-auto">
-          <span className="text-4xl cartone text-base-content p-4 ml-4">
+          <span className="lg:text-4xl text-2xl cartone text-base-content p-4 ml-4">
             Piggery Management System
           </span>
           <br />

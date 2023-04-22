@@ -85,13 +85,13 @@ export default function Page() {
   }, []);
   return (
     <>
-      <div className="w-full h-auto overflow-y-hidden">
+      <div className="w-full h-auto overflow-x-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <p className="text-2xl text-base-content my-auto p-4">Pig List</p>
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 gap-2 mx-auto flex flex-col lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -131,7 +131,7 @@ export default function Page() {
                       refetch();
                     }
                   }}
-                  className="flex"
+                  className="flex input-group"
                 >
                   <input
                     type="text"
@@ -162,10 +162,8 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table
-            data-theme="dark"
-            className="table table-compact w-11/12  mx-auto  text-center"
-          >
+          <div className="overflow-x-auto w-11/12 mx-auto">
+          <table className="table table-compact w-11/12  mx-auto overflow-x-scroll  text-center">
             <thead>
               <tr>
                 <th></th>
@@ -197,7 +195,7 @@ export default function Page() {
                       <td>{item.breed_name}</td>
                       <td>{item.pig_type}</td>
                       <td className="flex">
-                        <div className="flex flex-row mx-auto">
+                        <div className="flex gap-2 flex-row mx-auto">
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -207,7 +205,7 @@ export default function Page() {
                           >
                             Update
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+                    
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -217,7 +215,7 @@ export default function Page() {
                           >
                             View
                           </Link>
-                          <div className="divider divider-horizontal"></div>
+                        
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{
@@ -241,27 +239,29 @@ export default function Page() {
               )}
             </tbody>
           </table>
-          <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
-              <button
-                onClick={() => {
-                  setPage(page == 1 ? 1 : page - 1);
-                }}
-                className="btn btn-outline"
-              >
-                Previous page
-              </button>
-              <button
-                onClick={() => {
-                  if (parsed.length != 0) {
-                    setPage(page + 1);
-                  }
-                }}
-                className="btn btn-outline"
-              >
-                Next
-              </button>
-            </div>
+          </div>
+        </div>
+        <div className="w-full mt-4  flex">
+          <div className="btn-group grid grid-cols-3 mx-auto">
+            <button
+              onClick={() => {
+                setPage(page == 1 ? 1 : page - 1);
+              }}
+              className="btn"
+            >
+              «
+            </button>
+            <button className="btn">Page {page}</button>
+            <button
+              onClick={() => {
+                if (parsed.length != 0) {
+                  setPage(page + 1);
+                }
+              }}
+              className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
+            >
+              »
+            </button>
           </div>
         </div>
       </div>

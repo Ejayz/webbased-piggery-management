@@ -251,7 +251,7 @@ export default function Page() {
 
                   <div className="card-actions justify-end">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         requesting ? "loading" : ""
                       }`}
                     >

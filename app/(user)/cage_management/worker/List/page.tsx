@@ -155,8 +155,8 @@ export default function Page() {
                       <td>{item.cage_name}</td>
                       <td>{item.cage_capacity}</td>
                       <td>{item.cage_type}</td>
-                      <td className="flex">
-                        <div className="flex flex-row mx-auto">
+                      <td className="flex flex-col">
+                        <div className="flex flex-row ">
                           <Link
                             className="btn btn-sm btn-primary"
                             href={{

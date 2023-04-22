@@ -225,6 +225,7 @@ export default function Page() {
       setProcessing(false);
       return false;
     } else {
+      setProcessing(true);
       const returned = await QuarantinePig(
         data.cage_id,
         data.pig_id,
@@ -393,7 +394,7 @@ export default function Page() {
                   method="post"
                   className="flex w-full h-auto py-2 flex-col"
                 >
-                  <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none gap-2 grid-cols-none grid-rows-2">
+                  <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none gap-2 grid-cols-none grid-rows-1">
                     <div>
                       <label htmlFor="my-modal-6" className={`btn my-auto`}>
                         Choose Pig
@@ -444,9 +445,9 @@ export default function Page() {
                       required={true}
                     />
                   </div>
-                  <div className="card-actions justify-end">
+                  <div className="card-actions justify-end mt-6">
                     <button
-                      className={`btn btn-active btn-primary mx-4 ${
+                      className={`btn btn-active btn-success mx-4 ${
                         processing ? "loading" : ""
                       }`}
                     >

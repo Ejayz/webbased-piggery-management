@@ -205,7 +205,7 @@ export default function GeneralPigBatch({
       <div
         className={`card-actions justify-end ${showPigData ? "hidden" : ""}`}
       >
-        <button className={`btn btn-active btn-primary mx-4`}>Next</button>
+        <button className={`btn btn-active btn-info mx-4`}>Next</button>
         <button type="button" onClick={resetState} className="btn mx-4">
           Reset
         </button>

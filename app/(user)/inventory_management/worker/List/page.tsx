@@ -64,7 +64,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 mx-auto flex flex-col gap-2 lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -98,12 +98,12 @@ export default function Page() {
                     e.preventDefault();
                     refetch();
                   }}
-                  className="flex"
+                  className="flex input-group"
                 >
                   <input
                     type="text"
                     placeholder="Search…"
-                    className="input input-bordered my-auto"
+                    className="input  input-bordered my-auto"
                     onChange={(e) => {
                       setFilter({ ...filter, keyword: e.target.value });
                     }}
@@ -129,99 +129,100 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table className="table table-compact w-11/12  mx-auto  text-base-content">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Item Name</th>
-                <th>Item Description</th>
-                <th>Category Name</th>
-                <th>Total Stocks Available</th>
-                <th>Item Unit</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading || isFetching ? (
+          <div className="overflow-x-auto w-11/12 mx-auto">
+            <table className="table table-compact w-11/12  mx-auto  text-base-content">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="text-center">
-                    Please wait while we fetch the data
-                  </td>
+                  <th></th>
+                  <th>Item Name</th>
+                  <th>Item Description</th>
+                  <th>Category Name</th>
+                  <th>Total Stocks Available</th>
+                  <th>Item Unit</th>
+                  <th>Action</th>
                 </tr>
-              ) : parsed.length != 0 ? (
-                parsed.map((item: any, key: number) => {
-                  return (
-                    <tr key={key} className="hover">
-                      <th>{key + 1}</th>
-                      <td>{item.item_name}</td>
-                      <td>{item.item_description}</td>
-                      <td>{item.category_name}</td>
-                      <td>{item.item_left}</td>
-                      <td>{item.item_unit}</td>
-                      <td className="flex">
-                        <div className="flex flex-row mx-auto">
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/inventory_management/worker/Update",
-                              query: { id: item.item_id },
-                            }}
-                          >
-                            Update
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/inventory_management/worker/View",
-                              query: { id: item.item_id },
-                            }}
-                          >
-                            View
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/inventory_management/worker/Remove",
-                              query: { id: item.item_id },
-                            }}
-                          >
-                            Remove
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {isLoading || isFetching ? (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      Please wait while we fetch the data
+                    </td>
+                  </tr>
+                ) : parsed.length != 0 ? (
+                  parsed.map((item: any, key: number) => {
+                    return (
+                      <tr key={key} className="hover">
+                        <th>{key + 1}</th>
+                        <td>{item.item_name}</td>
+                        <td>{item.item_description}</td>
+                        <td>{item.category_name}</td>
+                        <td>{item.item_left}</td>
+                        <td>{item.item_unit}</td>
+                        <td className="flex">
+                          <div className="flex flex-row gap-2 mx-auto">
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/inventory_management/worker/Update",
+                                query: { id: item.item_id },
+                              }}
+                            >
+                              Update
+                            </Link>
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/inventory_management/worker/View",
+                                query: { id: item.item_id },
+                              }}
+                            >
+                              View
+                            </Link>
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/inventory_management/worker/Remove",
+                                query: { id: item.item_id },
+                              }}
+                            >
+                              Remove
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
           <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
+            <div className="btn-group grid grid-cols-3 mx-auto">
               <button
                 onClick={() => {
                   setPage(page == 1 ? 1 : page - 1);
                 }}
-                className="btn btn-outline"
+                className="btn"
               >
-                Previous page
+                «
               </button>
+              <button className="btn">Page {page}</button>
               <button
                 onClick={() => {
                   if (parsed.length != 0) {
                     setPage(page + 1);
                   }
                 }}
-                className="btn btn-outline"
+                className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
               >
-                Next
+                »
               </button>
             </div>
           </div>

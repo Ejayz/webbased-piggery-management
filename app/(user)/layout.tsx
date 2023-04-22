@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Loading from "@/app/components/Loading/loading";
 import Head from "../(index)/head";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { themeChange } from "theme-change";
 import Footer from "@/components/Footer/footer";
 import { QueryClientProvider } from "react-query";
@@ -27,20 +27,14 @@ export default function User({ children }: { children: React.ReactNode }) {
   const [owner, isOwner] = useState<boolean>(false);
   const [title, setTitle] = useState("RVM Hog Farm");
   const path = usePathname();
+  const router = useRouter();
 
   const particlesInit = useCallback(async (engine: Engine) => {
-    console.log(engine);
-
-    // you can initialize the tsParticles instance (engine) here, adding custom shapes or presets
-    // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-    // starting from v2 you can add only the features you need reducing the bundle size
     await loadFull(engine);
   }, []);
 
   const particlesLoaded = useCallback(
-    async (container: Container | undefined) => {
-      await console.log(container);
-    },
+    async (container: Container | undefined) => {},
     []
   );
 
@@ -58,19 +52,14 @@ export default function User({ children }: { children: React.ReactNode }) {
   }, [path]);
 
   useEffect(() => {
-    themeChange(false);
-  }, []);
-
-  useEffect(() => {
     async function removeAuth() {
       if (Logout) {
         document.cookie =
           "auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;maxAge=-1";
         if (!document.cookie.includes("auth")) {
           toast.success("Successfully logged out. Bye...");
-          setTimeout(() => {
-            window.open("/", "_self");
-          }, 4000);
+          router.push("/login");
+          setTimeout(() => {}, 4000);
         } else {
           toast.error("Something went wrong while removing this session.");
         }
@@ -78,6 +67,7 @@ export default function User({ children }: { children: React.ReactNode }) {
     }
     removeAuth();
   }, [Logout]);
+  console.log(loading);
   if (loading.loading) {
     return (
       <>
@@ -219,6 +209,12 @@ export default function User({ children }: { children: React.ReactNode }) {
             <div className="flex-1 z-5">
               <a className="btn btn-ghost normal-case text-xl ">RVM Hog Farm</a>
             </div>
+           <span className="px-2 text-2xl font-mono">
+           {loading.data.user_name}
+           </span>
+            <div className="w-10 rounded-full">
+              <img src="/assets/icons/user.svg" />
+            </div>
           </div>
           <div className="drawer">
             <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -232,7 +228,13 @@ export default function User({ children }: { children: React.ReactNode }) {
               <ul className="menu p-4 w-80 bg-base-100 text-base-content">
                 <div className="text-base font-medium hover:bg-base-300 rounded-md">
                   <li>
-                    <Link href="/dashboard">
+                    <label
+                      onClick={() => {
+                        setToggleMenu(!toggleMenu);
+                        router.push("/dashboard");
+                      }}
+                      htmlFor="my-drawer"
+                    >
                       <Image
                         src={"/assets/icons/dashboard.svg"}
                         className="h-5 w-5 "
@@ -241,7 +243,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         height={512}
                       ></Image>
                       Dashboard
-                    </Link>
+                    </label>
                   </li>
                 </div>
 
@@ -268,7 +270,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                       </div>
                       <div className="collapse-content">
                         <li>
-                          <Link href="/user_management/owner/Create">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/user_management/owner/Create");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/create.svg"}
                               className="h-6 w-6 "
@@ -277,10 +285,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Create
-                          </Link>
+                          </label>
                         </li>
                         <li>
-                          <Link href="/user_management/owner/List">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/user_management/owner/List");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/list.svg"}
                               className="h-6 w-6 "
@@ -289,7 +303,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             User List
-                          </Link>
+                          </label>
                         </li>
                       </div>
                     </div>
@@ -318,7 +332,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                       </div>
                       <div className="collapse-content">
                         <li>
-                          <Link href="/reorder_report/owner/Create">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/reorder_report/owner/Create");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/reorder_list.svg"}
                               className="h-6 w-6 "
@@ -327,10 +347,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Reorder List
-                          </Link>
+                          </label>
                         </li>{" "}
                         <li>
-                          <Link href="/reports/InventoryReport">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/reports/InventoryReport");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/inventory_report.svg"}
                               className="h-6 w-6 "
@@ -339,10 +365,18 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Inventory Report
-                          </Link>
+                          </label>
                         </li>
                         <li>
-                          <Link href="/reports/MedicineAdministrationReport">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push(
+                                "/reports/MedicineAdministrationReport"
+                              );
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/medicine_administration.svg"}
                               className="h-6 w-6 "
@@ -351,10 +385,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Medicine Adminstration Report
-                          </Link>
+                          </label>
                         </li>
                         <li>
-                          <Link href="/reports/VaccinationReport">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/reports/VaccinationReport");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/vaccine_report.svg"}
                               className="h-6 w-6 "
@@ -363,10 +403,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Vaccination Report
-                          </Link>
+                          </label>
                         </li>
                         <li>
-                          <Link href="/reports/FeedingReport">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/reports/FeedingReport");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/feeding_report.svg"}
                               className="h-6 w-6 "
@@ -375,10 +421,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Feeding Report
-                          </Link>
+                          </label>
                         </li>
                         <li>
-                          <Link href="/reports/DewormingReport">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/reports/DewormingReport");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/deworm.svg"}
                               className="h-6 w-6 "
@@ -387,7 +439,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Deworming Report
-                          </Link>
+                          </label>
                         </li>
                       </div>
                     </div>
@@ -417,7 +469,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                       </div>
                       <div className="collapse-content">
                         <li>
-                          <Link target={"_blank"} href="/api/post/backup">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              open("/api/post/backup", "_blank");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/backup.svg"}
                               className="h-6 w-6 "
@@ -426,10 +484,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Back Up
-                          </Link>
+                          </label>
                         </li>{" "}
                         <li>
-                          <Link href="/BackUpAndRestore/Restore">
+                          <label
+                            onClick={() => {
+                              setToggleMenu(!toggleMenu);
+                              router.push("/BackUpAndRestore/Restore");
+                            }}
+                            htmlFor="my-drawer"
+                          >
                             <Image
                               src={"/assets/icons/restore.svg"}
                               className="h-6 w-6"
@@ -438,7 +502,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                               width={512}
                             ></Image>
                             Restore
-                          </Link>
+                          </label>
                         </li>
                       </div>
                     </div>
@@ -466,7 +530,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/cage_management/worker/Create">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/cage_management/worker/Create");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/create.svg"}
                             className="h-6 w-6 "
@@ -475,10 +545,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/cage_management/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/cage_management/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -487,7 +563,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Cage List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -526,7 +602,15 @@ export default function User({ children }: { children: React.ReactNode }) {
                         </div>
                         <div className="collapse-content">
                           <li>
-                            <Link href="/pig_management/worker/Create/Pigs">
+                            <label
+                              onClick={() => {
+                                setToggleMenu(!toggleMenu);
+                                router.push(
+                                  "/pig_management/worker/Create/Pigs"
+                                );
+                              }}
+                              htmlFor="my-drawer"
+                            >
                               <Image
                                 src={"/assets/icons/piglet.svg"}
                                 className="h-6 w-6 "
@@ -535,10 +619,18 @@ export default function User({ children }: { children: React.ReactNode }) {
                                 width={512}
                               ></Image>
                               Piglets
-                            </Link>
+                            </label>
                           </li>
                           <li>
-                            <Link href="/pig_management/worker/Create/Breeder">
+                            <label
+                              onClick={() => {
+                                setToggleMenu(!toggleMenu);
+                                router.push(
+                                  "/pig_management/worker/Create/Breeder"
+                                );
+                              }}
+                              htmlFor="my-drawer"
+                            >
                               <Image
                                 src={"/assets/icons/breeder.svg"}
                                 className="h-6 w-6 "
@@ -547,12 +639,18 @@ export default function User({ children }: { children: React.ReactNode }) {
                                 width={512}
                               ></Image>
                               Breeder
-                            </Link>
+                            </label>
                           </li>
                         </div>
                       </div>
                       <li>
-                        <Link href="/pig_management/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/pig_management/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -561,7 +659,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Pig List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -587,7 +685,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/breed_management/worker/Create">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/breed_management/worker/Create");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/create.svg"}
                             className="h-6 w-6 "
@@ -596,10 +700,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/breed_management/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/breed_management/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -608,7 +718,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Breed List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -634,7 +744,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/batch_management/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/batch_management/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -643,7 +759,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Batch List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -669,7 +785,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/inventory_management/worker/Create">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/inventory_management/worker/Create");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/create.svg"}
                             className="h-6 w-6 "
@@ -678,10 +800,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/inventory_management/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/inventory_management/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -690,7 +818,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Inventory List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -717,7 +845,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/StockCard/worker/Restock">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/StockCard/worker/Restock");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/restock.png"}
                             className="h-6 w-6 "
@@ -726,10 +860,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Restock
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/StockCard/worker/Destock">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/StockCard/worker/Destock");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/destock.png"}
                             className="h-6 w-6 "
@@ -738,10 +878,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Destock
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/StockCard/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/StockCard/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -750,7 +896,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Stock Card List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -776,7 +922,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/Plan/veterinarian/FeedingPlan">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Plan/veterinarian/FeedingPlan");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/create.svg"}
                             className="h-6 w-6 "
@@ -785,7 +937,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -811,7 +963,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/Schedule/worker/Create">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Schedule/worker/Create");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/create.svg"}
                             className="h-6 w-6 "
@@ -820,10 +978,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/Schedule/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Schedule/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -832,7 +996,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Schedule List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -858,7 +1022,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/Operation/worker/ListBatch">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Operation/worker/ListBatch");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -867,10 +1037,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Batch Operation List
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/Operation/worker/ListCage">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Operation/worker/ListCage");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -879,10 +1055,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Cage Operation List
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/Operation/worker/ListIndividual">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Operation/worker/ListIndividual");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -891,7 +1073,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Individual Operation List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
@@ -917,7 +1099,13 @@ export default function User({ children }: { children: React.ReactNode }) {
                     </div>
                     <div className="collapse-content">
                       <li>
-                        <Link href="/Quarantine_Management/worker/Create">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Quarantine_Management/worker/Create");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/create.svg"}
                             className="h-6 w-6 ="
@@ -926,10 +1114,16 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Create
-                        </Link>
+                        </label>
                       </li>
                       <li>
-                        <Link href="/Quarantine_Management/worker/List">
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/Quarantine_Management/worker/List");
+                          }}
+                          htmlFor="my-drawer"
+                        >
                           <Image
                             src={"/assets/icons/list.svg"}
                             className="h-6 w-6 "
@@ -938,7 +1132,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                             width={512}
                           ></Image>
                           Quarantine List
-                        </Link>
+                        </label>
                       </li>
                     </div>
                   </div>
