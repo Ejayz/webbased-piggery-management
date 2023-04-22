@@ -67,7 +67,7 @@ export default function User({ children }: { children: React.ReactNode }) {
     }
     removeAuth();
   }, [Logout]);
-  console.log(loading);
+
   if (loading.loading) {
     return (
       <>
@@ -209,9 +209,9 @@ export default function User({ children }: { children: React.ReactNode }) {
             <div className="flex-1 z-5">
               <a className="btn btn-ghost normal-case text-xl ">RVM Hog Farm</a>
             </div>
-           <span className="px-2 text-2xl font-mono">
-           {loading.data.user_name}
-           </span>
+            <span className="px-2 text-2xl font-mono">
+              {loading.data.user_name}
+            </span>
             <div className="w-10 rounded-full">
               <img src="/assets/icons/user.svg" />
             </div>

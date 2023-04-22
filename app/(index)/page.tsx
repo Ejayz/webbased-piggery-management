@@ -38,7 +38,7 @@ export default function Page() {
   const router = useRouter();
 
   const exec_login = async (data: any) => {
-    console.log(data);
+
     const returned = await VerifyUser(
       data.username,
       data.password,
@@ -127,6 +127,29 @@ export default function Page() {
             Create plan and schedule for pigs to ensure that they are healthy
             and well fed.
           </span>
+        </div>
+        <div className="mx-auto flex flex-col">
+          <span className="font-bold frickleface text-lg">
+            Scan pig tags on the go! Download our mobile app.
+          </span>
+          <Link
+            className="btn btn-outline border-solid p-8 flex flex-col mx-auto"
+            target={"_blank"}
+            href={
+              "https://webbasedpiggeryuploaded.sgp1.cdn.digitaloceanspaces.com/public/android/MobileBasedQrCodeScannerV1.apk"
+            }
+          >
+            <div className="mx-auto my-auto flex flex-row">
+              <Image
+                src="/assets/icons/android.svg"
+                className="w-12  h-12 mx-auto"
+                alt={""}
+                width={550}
+                height={550}
+              ></Image>{" "}
+              <span className="font-bold p-4 my-auto">Download</span>
+            </div>
+          </Link>
         </div>
 
         <div className="mx-12">

@@ -47,7 +47,7 @@ export default function Loading({ height = "h-screen" }: any) {
   }, []);
   return (
     <>
-      <div className={` w-screen  border-base-300  ${height}`}>
+      <div className={` w-screen min-h-screen  border-base-100  ${height}`}>
         <div className="flex justify-center w-full h-full px-4 py-16  uppercase">
           {words}
         </div>

@@ -16,6 +16,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log(children);
   getErrorCode();
 
   useEffect(() => {
