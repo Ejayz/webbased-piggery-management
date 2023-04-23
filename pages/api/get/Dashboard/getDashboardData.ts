@@ -59,7 +59,7 @@ async function UpdateCage() {
     totalFeed: totalFeed,
     totalOperation: totalOperation[0].total_operation,
     totalQuarantine: totalQuarantine[0].total_quarantine,
-    totalUser: totalUser.length,
+    totalUser: totalUser[0].total_user,
     totalPendingOperation: totalPendingOperation[0].totalPendingOperation,
     totalLowLvl: totalLowLvl.length,
   };
