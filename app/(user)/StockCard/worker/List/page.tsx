@@ -89,7 +89,6 @@ export default function Page() {
             >
               <option value="item_name">Item Name</option>
               <option value="item_count">Total Stock Card</option>
-              <option value="total_stocks">Total Stocks Available</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
               <div className="input-group">

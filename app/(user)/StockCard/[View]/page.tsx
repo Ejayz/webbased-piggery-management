@@ -10,7 +10,7 @@ export default function Page({ params }: any) {
   const [parsed, setParsed] = useState<any[]>([]);
   const [StockCardFilter, setStockCardFilterFilter] = useState({
     sortby: "stock_card_id",
-    sortorder: "asc",
+    sortorder: "desc",
     keyword: "",
     stock_id: params.View,
   });
@@ -190,20 +190,26 @@ export default function Page({ params }: any) {
                   </div>
                   <div className="flex flex-row">
                     <span className="font-semibold">Stock Opening:</span>
-                    <span>
+                    <span className="uppercase">
                       {StockCardData?.data != undefined
-                        ? StockCardData.data[0].opening_quantity /
-                          StockCardData.data[0].item_net_weight
-                        : "Undifined"}
+                        ? (
+                            StockCardData.data[0].opening_quantity /
+                            StockCardData.data[0].item_net_weight
+                          ).toFixed(2)
+                        : "Undifined"}{" "}
+                      {StockCardData.data[0].item_unit}
                     </span>
                   </div>
                   <div className="flex flex-row">
                     <span className="font-semibold">Stock Closing:</span>
-                    <span>
+                    <span className="uppercase">
                       {StockCardData?.data != undefined
-                        ? StockCardData.data[0].closing_quantity /
-                          StockCardData.data[0].item_net_weight
-                        : "Undifined"}
+                        ? (
+                            StockCardData.data[0].closing_quantity /
+                            StockCardData.data[0].item_net_weight
+                          ).toFixed(2)
+                        : "Undifined"}{" "}
+                      {StockCardData.data[0].item_unit}
                     </span>
                   </div>
                   <div className="flex flex-row">
@@ -309,19 +315,25 @@ export default function Page({ params }: any) {
                             <tr key={key} className="hover">
                               <th>{key + 1}</th>
                               <td>{item.type}</td>
-                              <td>
-                                {item.transaction_quantity /
-                                  parseInt(
+                              <td className="uppercase">
+                                {(
+                                  parseFloat(item.transaction_quantity) /
+                                  parseFloat(
                                     StockCardData.data[0].item_net_weight
-                                  )}
+                                  )
+                                ).toFixed(2)}
+                                {` ${StockCardData.data[0].item_unit}`}
                               </td>
-                              <td>
-                                {item.total_quantity /
-                                  parseInt(
+                              <td className="uppercase">
+                                {(
+                                  parseFloat(item.total_quantity) /
+                                  parseFloat(
                                     StockCardData.data[0].item_net_weight
-                                  )}
+                                  )
+                                ).toFixed(2)}
+                                {` ${StockCardData.data[0].item_unit}`}
                               </td>
-                              <td>
+                              <td className="uppercase">
                                 {item.expiration_date == null
                                   ? "N/A"
                                   : DateTime.fromISO(

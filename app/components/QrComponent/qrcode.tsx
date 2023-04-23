@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
   const [camera, setCamera] = useState<CameraDevice[] | undefined>();
   const [choosen, setChoose] = useState("");
+  const [isStart, setIsStart] = useState(false);
 
   function onScanSuccess(decodedText: any, decodedResult: any) {
     // handle the scanned code as you like, for example:
@@ -18,8 +19,10 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
     console.warn(`Code scan error = ${error}`);
   }
   let html5QrCode: any;
+
   useEffect(() => {
     if (html5QrCode !== undefined && hide == false) {
+      setChoose("");
       html5QrCode
         .stop()
         .then((ignore: any) => {
@@ -37,7 +40,7 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
         setCamera(devices);
         if (devices && devices.length) {
           var cameraId = devices[0].id;
-          setChoose(cameraId);
+          setChoose("");
         }
       })
       .catch((err) => {
@@ -47,7 +50,9 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
 
   useEffect(() => {
     html5QrCode = new Html5Qrcode("QrCode");
+
     if (choosen !== "") {
+      setIsStart(true);
       html5QrCode
         .start(
           choosen,
@@ -62,15 +67,17 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
           (errorMessage: any) => {}
         )
         .catch((err: any) => {});
+      console.log(html5QrCode);
+    } else {
+      if (isStart) {
+        html5QrCode.clear();
+      }
     }
   }, [choosen]);
 
   return (
     <>
-      <div
-        data-theme="light"
-        className="card w-96 mx-auto bg-base-100 shadow-xl"
-      >
+      <div className="card w-96 mx-auto bg-base-100 shadow-xl">
         <figure className="px-10 pt-10">
           <div className="w-full h-full" id="QrCode"></div>
         </figure>
@@ -84,6 +91,9 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
             }}
             id=""
           >
+            <option defaultChecked={true} value="">
+              Camera
+            </option>
             {camera?.map((value: any, key: number) => {
               return (
                 <option key={key} value={value.id}>

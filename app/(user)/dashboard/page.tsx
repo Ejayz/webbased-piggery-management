@@ -1,11 +1,13 @@
 "use client";
 
+import getUserInfo from "@/components/getUserInfo";
 import Loading from "@/components/Loading/loading";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 export default function Page() {
   const [rendered, isRendered] = useState(false);
+  const user = getUserInfo();
   useEffect(() => {
     if (typeof window !== "undefined") {
       isRendered(true);
@@ -23,7 +25,7 @@ export default function Page() {
     console.log(data);
     return data;
   });
-
+  console.log(user);
   if (!rendered) {
     return (
       <>
@@ -78,14 +80,18 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div className="stats shadow my-2 w-11/12 mx-auto">
-          <div className="stat place-items-center">
-            <div className="stat-title">Total Users</div>
-            <div className="stat-value text-secondary">
-              {isFetching ? "..." : data.data.totalUser}
+        {user.data.job =="owner" ? (
+          <div className="stats shadow my-2 w-11/12 mx-auto">
+            <div className="stat place-items-center">
+              <div className="stat-title">Total Users</div>
+              <div className="stat-value text-secondary">
+                {isFetching ? "..." : data.data.totalUser}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <> </>
+        )}
         <div className="alert shadow-lg w-11/12 mx-auto">
           <div>
             <svg

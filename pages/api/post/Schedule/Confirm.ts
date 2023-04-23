@@ -2,6 +2,7 @@ import { throws } from "assert";
 import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import connection from "pages/api/mysql";
 
 export default async function handler(
@@ -12,13 +13,15 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
   const { operation_id, quantity } = req.body;
   console.log(operation_id, quantity);
   const conn = await connection.getConnection();
   try {
     conn.beginTransaction();
-    await Ops(conn, operation_id, quantity);
-    await insertStockCardDetails(conn, operation_id, quantity);
+    await Ops(conn, operation_id, quantity,user_id);
+    await insertStockCardDetails(conn, operation_id, quantity, user_id);
     await updateItem(operation_id, quantity);
     const result = await updateOperation(conn, operation_id);
     conn.commit();
@@ -47,7 +50,7 @@ async function updateItem(operation_id: any, quantity: any) {
   }
 }
 
-async function Ops(conn: any, operation_id: any, quantity: any) {
+async function Ops(conn: any, operation_id: any, quantity: any,user_id:any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   console.log(date);
   try {
@@ -74,10 +77,10 @@ async function Ops(conn: any, operation_id: any, quantity: any) {
         ]);
         if (stockCardResult.length <= 0) {
           const createStockCard =
-            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item_id) VALUES (?,?,?,?)";
+            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item_id,user_id) VALUES (?,?,?,?,?)";
           const [createStackCardResult]: any = await conn.query(
             createStockCard,
-            [date, openingQuantity, openingQuantity, items.item_id]
+            [date, openingQuantity, openingQuantity, items.item_id,user_id]
           );
         }
       })
@@ -94,7 +97,8 @@ async function Ops(conn: any, operation_id: any, quantity: any) {
 async function insertStockCardDetails(
   conn: any,
   operation_id: any,
-  quantity: any
+  quantity: any,
+  user_id: any
 ) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   try {
@@ -114,12 +118,10 @@ async function insertStockCardDetails(
         const stockCard_id = stockCardIdResult[0].stock_card_id;
         const closingQuantity = stockCardIdResult[0].closing_quantity;
         const createStockCardDetails =
-          "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,remark) VALUES (?,?,?,?,?)";
-        let calculated_quantity: number =
-          parseFloat(quantity) * parseFloat(items.item_net_weight);
-        const total_quantity =
-          parseFloat(closingQuantity) - calculated_quantity;
-        console.log(calculated_quantity, total_quantity);
+          "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,remark,user_id) VALUES (?,?,?,?,?,?)";
+
+        const total_quantity = parseFloat(closingQuantity) - quantity;
+        console.log(quantity, total_quantity);
         if (total_quantity < 0) {
           throw "Current stocks for this item is not enough.";
         }
@@ -128,10 +130,11 @@ async function insertStockCardDetails(
           createStockCardDetails,
           [
             stockCard_id,
-            calculated_quantity,
+            quantity,
             total_quantity,
             "OUT",
             "Scheduled Activity",
+            user_id,
           ]
         );
         const updateStockCard =
