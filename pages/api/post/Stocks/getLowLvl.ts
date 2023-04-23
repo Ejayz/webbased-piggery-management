@@ -31,7 +31,7 @@ async function Ops() {
   const conn = await connection.getConnection();
   try {
     const sql =
-      'SELECT MAX(transaction_date),tbl_stock_card.*,tbl_inventory.*,(tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) AS stock_density FROM tbl_stock_card INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_stock_card.item_id WHERE (tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) <=5 GROUP BY tbl_stock_card.item_id and tbl_inventory.is_exist="true"';
+      'SELECT MAX(transaction_date),tbl_stock_card.*,tbl_inventory.*,(tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) AS stock_density FROM tbl_stock_card INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_stock_card.item_id INNER JOIN tbl_category ON tbl_category.category_id= tbl_inventory.category_id WHERE (tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) <=5 GROUP BY tbl_stock_card.item_id and tbl_inventory.is_exist="true"';
     const [result] = await conn.query(sql, []);
     console.log(result);
     return result;
