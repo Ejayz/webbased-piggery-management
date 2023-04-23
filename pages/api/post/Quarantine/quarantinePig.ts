@@ -1,5 +1,7 @@
+import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import connection from "pages/api/mysql";
 
 export default async function handler(
@@ -12,8 +14,10 @@ export default async function handler(
   }
   const { cage_id, pig_id, remarks } = req.body;
   console.log(cage_id, pig_id, remarks);
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
   try {
-    const data: any = await UpdateCage(cage_id, pig_id, remarks);
+    const data: any = await UpdateCage(cage_id, pig_id, remarks, user_id);
     if (data) {
       return res
         .status(200)
@@ -27,7 +31,12 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(cage_id: any, pig_id: any, remarks: any) {
+async function UpdateCage(
+  cage_id: any,
+  pig_id: any,
+  remarks: any,
+  user_id: any
+) {
   const conn = await connection.getConnection();
   conn.beginTransaction();
   try {
@@ -39,7 +48,7 @@ async function UpdateCage(cage_id: any, pig_id: any, remarks: any) {
     const pig_old_cage = pigInfo[0].cage_id;
     const history_id = pigInfo[0].pig_history_id;
     const insertPigHistory =
-      "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks) values (?,?,?,?,?,?)";
+      "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id) values (?,?,?,?,?,?,?)";
     const [insertPigHistoryResult]: any = await conn.query(insertPigHistory, [
       pig_id,
       cage_id,
@@ -47,6 +56,7 @@ async function UpdateCage(cage_id: any, pig_id: any, remarks: any) {
       weight,
       "Quarantined",
       remarks,
+      user_id,
     ]);
 
     const updateOldPigHistory =
@@ -57,6 +67,7 @@ async function UpdateCage(cage_id: any, pig_id: any, remarks: any) {
     );
     UpdateNewCage(conn, cage_id);
     UpdateOldCage(conn, pig_old_cage);
+    InsertQuarantine(conn, pig_id, remarks, user_id, cage_id);
 
     conn.commit();
     return true;
@@ -106,4 +117,26 @@ const UpdateOldCage = async (conn: any, cage_id: any) => {
     console.log(error);
     throw error;
   }
+};
+
+const InsertQuarantine = async (
+  conn: any,
+  pig_id: any,
+  remarks: any,
+  user_id: any,
+  cage_id: any
+) => {
+  const Date = DateTime.now().toJSDate();
+  const insertQuarantine =
+    "insert into tbl_quarantine (remarks,quarantine_date,user_id) values (?,?,?)";
+  const [result] = await conn.query(insertQuarantine, [remarks, Date, user_id]);
+  const quarantine_id = result.insertId;
+  const insertInfo =
+    "insert into tbl_quarantine_details (quarantine_id,pig_id,cage_id) values (?,?,?)";
+  const [result2] = await conn.query(insertInfo, [
+    quarantine_id,
+    pig_id,
+    cage_id,
+  ]);
+  return true;
 };

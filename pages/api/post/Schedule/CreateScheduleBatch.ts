@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
+import { getUsers } from "pages/api/getUserDetails";
 import connection from "pages/api/mysql";
 
 export default async function handler(
@@ -12,10 +13,12 @@ export default async function handler(
   }
   const { cage_id, item_list } = req.body;
   console.log(item_list);
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
   const conn = await connection.getConnection();
   try {
     conn.beginTransaction();
-    const data: any = await UpdateCage(conn, cage_id, item_list);
+    const data: any = await UpdateCage(conn, cage_id, item_list, user_id);
     if (data != "") {
       return res.status(200).json({ code: 200, message: "Success" });
     } else {
@@ -31,7 +34,12 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(conn: any, pig_id: any, item_list: any) {
+async function UpdateCage(
+  conn: any,
+  pig_id: any,
+  item_list: any,
+  user_id: any
+) {
   try {
     await Promise.all(
       item_list.map(async (item: any) => {
@@ -39,13 +47,14 @@ async function UpdateCage(conn: any, pig_id: any, item_list: any) {
         const [sqlSelectResult]: any = await conn.query(selectData, [pig_id]);
         const getBatchCapacity = sqlSelectResult[0].batch_capacity;
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm,total_patient) values (?,?,?,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm,total_patient,user_id) values (?,?,?,?,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
           pig_id,
           item.data_time,
           getBatchCapacity,
+          user_id,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
         const data2: any = await InsertOperationItemDetail(

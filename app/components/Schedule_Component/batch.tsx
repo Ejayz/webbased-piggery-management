@@ -759,7 +759,7 @@ export function Batch() {
             <div className="w-11/12 grid grid-row-2">
               <div className="flex flex-col">
                 <label htmlFor="my-modal-6" className={`btn my-auto`}>
-                  Choose Cage
+                  Choose Batch
                 </label>
                 <div className="divider ">OR</div>
                 <NormalInput
@@ -768,7 +768,7 @@ export function Batch() {
                   register={RegisterPlan}
                   errors={errorsPlan}
                   validationSchema={{
-                    required: "Cage is required",
+                    required: "Batch is required",
                   }}
                   required={true}
                 />

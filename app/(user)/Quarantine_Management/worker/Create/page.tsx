@@ -22,11 +22,15 @@ import SelectInput from "@/components/FormCompsV2/SelectInput";
 import { useQuery } from "react-query";
 import TextArea from "@/components/FormCompsV2/TextArea";
 import { QuarantinePig } from "@/hooks/useQuarantine";
+import QrCode from "@/components/QrComponent/qrcode";
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
   const [pig_list, setPigList] = useState<any[]>([]);
   const [keyword, setKeyword] = useState("");
+  const [hideScanner, setHideScanner] = useState(false);
+  const [show, showModal] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -281,11 +285,44 @@ export default function Page() {
   } else {
     return (
       <>
-        <input type="checkbox" id="my-modal-6" className="modal-toggle" />
+        <input
+          type="checkbox"
+          id="my-modal-6"
+          checked={hideScanner}
+          onChange={() => {
+            setHideScanner(!hideScanner);
+          }}
+          className="modal-toggle"
+        />
+        <div className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-base-content">
+              Use custom Qr Code
+            </h3>
+            <QrCode
+              setter={setValue}
+              setHide={setHideScanner}
+              hide={hideScanner}
+              ActionMaker={"pig_id"}
+            ></QrCode>
+            <div className="modal-action">
+              <button
+                onClick={() => {
+                  setHideScanner(false);
+                }}
+                className="btn"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <input type="checkbox" id="search_pig" className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box relative">
             <label
-              htmlFor="my-modal-6"
+              htmlFor="search_pig"
               className="btn btn-sm btn-circle absolute right-2 top-2"
             >
               ✕
@@ -357,7 +394,7 @@ export default function Page() {
                                   shouldValidate: true,
                                 });
                               }}
-                              htmlFor="my-modal-6"
+                              htmlFor="search_pig"
                               className="link underline hover:text-primary"
                             >
                               Select
@@ -396,9 +433,18 @@ export default function Page() {
                 >
                   <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none gap-2 grid-cols-none grid-rows-1">
                     <div>
-                      <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                      <label htmlFor="search_pig" className={`btn my-auto mx-4`}>
                         Choose Pig
                       </label>
+                      <button
+                        type="button"
+                        className={" mt-2 text-primary-content btn"}
+                        onClick={() => {
+                          setHideScanner(true);
+                        }}
+                      >
+                        Scan QR CODE
+                      </button>
                       <div className="divider ">OR</div>
                       <NormalInput
                         name="pig_id"

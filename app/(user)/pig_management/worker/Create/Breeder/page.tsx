@@ -259,6 +259,36 @@ export default function Page() {
                     <li className="font-bold">Breeder</li>
                   </ul>
                 </div>
+                {breedList.length <= 0 ? (
+                  <div className="alert alert-info shadow-lg">
+                    <div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="stroke-current flex-shrink-0 w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      <span>
+                        No breed listed ? Create pig breed on{" "}
+                        <Link
+                          className="underline"
+                          href="/breed_management/worker/Create"
+                        >
+                          Breed Management Module
+                        </Link>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 {cageList.length <= 0 ? (
                   <div className="alert alert-info shadow-lg">
                     <div>
@@ -405,7 +435,7 @@ export default function Page() {
                     ></NormalInput>
                     <NormalInput
                       name={"weight"}
-                      label={"Weight"}
+                      label={"Weight(KG)"}
                       register={register}
                       errors={errors}
                       required={true}

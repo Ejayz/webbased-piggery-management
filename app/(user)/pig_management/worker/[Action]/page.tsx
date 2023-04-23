@@ -234,6 +234,7 @@ export default function Page({ params }: any) {
     isLoading: pigLoading,
     error: pigError,
     refetch: pigRefetch,
+    isFetching: pigIsFetching,
   } = useQuery(
     "pigData",
     async () => {
@@ -290,7 +291,7 @@ export default function Page({ params }: any) {
     }
   };
 
-  if (cage_id == "") {
+  if (cage_id == "" || isFetching) {
     return (
       <>
         <div className="w-full h-1/2 flex">
@@ -413,7 +414,7 @@ export default function Page({ params }: any) {
                   <></>
                 ) : (
                   <TextArea
-                    name={"remark"}
+                    name={"remarks"}
                     label={"Remarks"}
                     register={register}
                     disabled={true}

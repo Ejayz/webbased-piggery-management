@@ -4,6 +4,7 @@ import connection from "pages/api/mysql";
 import { DateTime } from "luxon";
 import fildeHandler from "../../fileHandler";
 import { fileURLToPath } from "url";
+import { getUsers } from "pages/api/getUserDetails";
 
 export const config = {
   api: {
@@ -20,18 +21,23 @@ export default async function handler(
   if (!authorized) {
     return false;
   }
+
+  const users = await getUsers(authorized.cookie);
+  const user_id = users.user_id;
+
   try {
     const data: any = await fildeHandler(req);
 
     const filePath = data.filePath;
     const fields = JSON.parse(data.fields.fields);
 
-    const insertOps = await Ops(conn, filePath, fields);
+    const insertOps = await Ops(conn, filePath, fields, user_id);
     if (insertOps == 200) {
       const insertDetails = await insertStockCardDetails(
         conn,
         filePath,
-        fields
+        fields,
+        user_id
       );
       if (insertDetails == 200) {
         return res.status(200).json({
@@ -61,7 +67,7 @@ export default async function handler(
   }
 }
 
-async function Ops(conn: any, filePath: any, fields: any) {
+async function Ops(conn: any, filePath: any, fields: any, user_id: any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   console.log(date);
   await conn.beginTransaction();
@@ -84,10 +90,10 @@ async function Ops(conn: any, filePath: any, fields: any) {
         console.log(stockCardResult);
         if (stockCardResult.length <= 0) {
           const createStockCard =
-            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item_id) VALUES (?,?,?,?)";
+            "INSERT INTO tbl_stock_card (transaction_date,opening_quantity,closing_quantity,item_id,user_id) VALUES (?,?,?,?,?)";
           const [createStackCardResult]: any = await conn.query(
             createStockCard,
-            [date, openingQuantity, openingQuantity, field.item_id]
+            [date, openingQuantity, openingQuantity, field.item_id, user_id]
           );
         }
       })
@@ -101,7 +107,12 @@ async function Ops(conn: any, filePath: any, fields: any) {
   }
 }
 
-async function insertStockCardDetails(conn: any, filePath: any, fields: any) {
+async function insertStockCardDetails(
+  conn: any,
+  filePath: any,
+  fields: any,
+  user_id: any
+) {
   await conn.beginTransaction();
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   try {
@@ -131,6 +142,7 @@ async function insertStockCardDetails(conn: any, filePath: any, fields: any) {
             "IN",
             field.expiration_date == "" ? null : field.expiration_date,
             filePath,
+            user_id,
           ]
         );
 
