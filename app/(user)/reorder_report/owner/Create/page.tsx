@@ -184,10 +184,6 @@ export default function Page() {
                               field: "category_name",
                               displayName: "Item Category",
                             },
-                            {
-                              field: "quantity",
-                              displayName: "Quantity",
-                            },
                           ],
                           header: `
                           <div style="display:flex;margin:0; width:100%;flex-direction:column;">
