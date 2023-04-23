@@ -10,7 +10,6 @@ const port = process.env.PORT;
 const user = process.env.USERS;
 const password = process.env.PASSWORD;
 
-
 export const config = {
   api: {
     bodyParser: false,
@@ -45,10 +44,18 @@ export default async function handler(
   );
   try {
     const conn = await connection.getConnection();
-    await conn.query(" DROP DATABASE IF EXISTS `piggery_management`;");
+    const [result] = await conn.query("DROP DATABASE `piggery_management`;");
+    console.log(result);
     conn.release();
     const exc = await UpdateCage(data.files.sql_file.filepath);
+    console.log(exc);
     if (exc) {
+      fs.unlink("./pages/api/post/sql_dump.sql", (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
       return res
         .status(200)
         .json({ code: 200, message: "Successfully restored database" });
@@ -58,8 +65,15 @@ export default async function handler(
         .json({ code: 500, message: "Something went wrong" });
     }
   } catch (error: any) {
+    console.log(error);
     const exc = await UpdateCage(data.files.sql_file.filepath);
     if (exc) {
+      fs.unlink("./pages/api/post/sql_dump.sql", (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
       return res
         .status(200)
         .json({ code: 200, message: "Successfully restored database" });
@@ -88,7 +102,7 @@ async function UpdateCage(file: any) {
     });
 
     importer
-      .import("./sql_dump.sql")
+      .import("./pages/api/post/sql_dump.sql")
       .then(() => {
         var files_imported = importer.getImported();
         console.log(`${files_imported.length} SQL file(s) imported.`);
