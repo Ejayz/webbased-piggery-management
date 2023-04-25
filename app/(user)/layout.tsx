@@ -209,6 +209,7 @@ export default function User({ children }: { children: React.ReactNode }) {
             <div className="flex-1 z-5">
               <a className="btn btn-ghost normal-case text-xl ">RVM Hog Farm</a>
             </div>
+
             <span className="px-2 text-2xl font-mono">
               {loading.data.user_name}
             </span>
