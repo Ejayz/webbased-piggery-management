@@ -35,17 +35,19 @@ async function UpdateCage() {
     "SELECT tbl_category.*,tbl_inventory.*, tbl_stock_card.*,FORMAT((tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight), 2) AS item_left FROM tbl_inventory   INNER JOIN tbl_category ON tbl_inventory.category_id=tbl_category.category_id   INNER JOIN (        SELECT item_id, MAX(transaction_date) AS max_date        FROM tbl_stock_card        GROUP BY item_id      ) AS latest ON tbl_inventory.item_id = latest.item_id INNER JOIN tbl_stock_card ON tbl_stock_card.item_id = latest.item_id AND tbl_stock_card.transaction_date = latest.max_date  WHERE tbl_inventory.is_exist = 'true' AND  FORMAT((tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight), 2)<=5";
   const ExpiredItem = "select * from tbl_stock_card where closing_quantity=0";
   const getExpiredItem =
-    "SELECT * FROM tbl_stock_card_details WHERE expiration_date=CURDATE() AND is_exist='true'";
-  const [expiredItem]: any = await conn.query(getExpiredItem);
+    "SELECT * FROM tbl_stock_card_details WHERE expiration_date=? AND is_exist='true'";
+  const [expiredItem]: any = await conn.query(getExpiredItem, [
+    DateTime.now().setZone("Asia/Manila").toISODate(),
+  ]);
   const [sows]: any = await conn.query(getSows);
   const [boars]: any = await conn.query(getBoars);
   const [piglets]: any = await conn.query(getPiglets);
   const [totalFeeds]: any = await conn.query(getTotalFeeds);
   const [totalPendingOperation]: any = await conn.query(
     getTotalPendingOperation,
-    [DateTime.now().toISODate()]
+    [DateTime.now().setZone("Asia/Manila").toISODate()]
   );
-  console.log(DateTime.now().toISODate());
+  console.log(DateTime.now().setZone("Asia/Manila").toISODate());
   let totalFeed = 0;
   totalFeeds.forEach((feed: any) => {
     totalFeed = feed.closing_quantity + totalFeed;
