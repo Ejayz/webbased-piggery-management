@@ -62,7 +62,7 @@ export default function Page() {
           <div className="stat place-items-center">
             <div className="stat-title">Total Feeds</div>
             <div className="stat-value">
-              {isFetching ? "..." : `${data.data.totalFeed} Kg`}
+              {isFetching ? "..." : `${data.data.totalFeed} kg`}
             </div>
           </div>
 
@@ -80,7 +80,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        {user.data.job =="owner" ? (
+        {user.data.job == "owner" ? (
           <div className="stats shadow my-2 w-11/12 mx-auto">
             <div className="stat place-items-center">
               <div className="stat-title">Total Users</div>
@@ -137,6 +137,32 @@ export default function Page() {
               Warning: There are {isFetching ? "..." : data.data.totalLowLvl}{" "}
               low level item(s) . Please check Reorder List Report to generate
               the list of item.
+            </span>
+          </div>
+        </div>
+        <div
+          className={`alert alert-warning shadow-lg w-11/12 mx-auto my-2 ${
+            !isFetching ? (data.data.expiredItem == 0 ? "hidden" : "") : ""
+          }`}
+        >
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current flex-shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <span>
+              Warning: There are {isFetching ? "..." : data.data.expiredItem}{" "}
+              expired item(s) . Please check the inventory and remove the
+              expired items.
             </span>
           </div>
         </div>
