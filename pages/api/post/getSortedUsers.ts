@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { resolve } from "path";
 import authorizationHandler from "../authorizationHandler";
 import { decodeJWT, verifyJWT } from "../jwtProcessor";
-import connection from "../mysql";
+import {connection} from "../mysql";
 
 export default async function handler(
   req: NextApiRequest,

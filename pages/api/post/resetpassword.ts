@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import * as bcrypt from "bcrypt";
-import connection from "../mysql";
+import {connection} from "../mysql";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import * as cookie from "cookie";

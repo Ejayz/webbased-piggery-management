@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,8 +30,7 @@ async function UpdateCage() {
   const TotalQuarantine =
     "SELECT COUNT(quarantine_id) AS total_quarantine FROM tbl_quarantine WHERE is_exist = 'true'";
   const getTotalPendingOperation = `SELECT COUNT(operation_id) AS totalPendingOperation FROM tbl_operation WHERE tbl_operation.operation_date='2023-04-19' AND tbl_operation.\`status\`='pending'`;
-  const TotalUser =
-    "select max(user_id) as total_user from tbl_users where is_exist='true'";
+  const TotalUser = "select * from tbl_users where is_exist='true'";
   const getTotalLowLvl =
     "SELECT MAX(transaction_date),tbl_stock_card.*,(tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) AS stock_density FROM tbl_stock_card INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_stock_card.item_id WHERE (tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) <=5 GROUP BY tbl_inventory.item_id and tbl_inventory.is_exist='true'";
   const [sows]: any = await conn.query(getSows);
@@ -59,7 +58,7 @@ async function UpdateCage() {
     totalFeed: totalFeed,
     totalOperation: totalOperation[0].total_operation,
     totalQuarantine: totalQuarantine[0].total_quarantine,
-    totalUser: totalUser[0].total_user,
+    totalUser: totalUser.length,
     totalPendingOperation: totalPendingOperation[0].totalPendingOperation,
     totalLowLvl: totalLowLvl.length,
   };

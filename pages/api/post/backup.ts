@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import mysqldump from "mysqldump";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 

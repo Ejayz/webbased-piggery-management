@@ -1,7 +1,7 @@
 import { getCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { decodeJWT, verifyJWT } from "pages/api/jwtProcessor";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,

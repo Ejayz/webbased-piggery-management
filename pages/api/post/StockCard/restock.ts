@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandlerFormData";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 import { DateTime } from "luxon";
 import fildeHandler from "../../fileHandler";
 import { fileURLToPath } from "url";

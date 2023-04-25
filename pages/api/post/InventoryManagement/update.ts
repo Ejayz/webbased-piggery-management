@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 import { json } from "stream/consumers";
 
 export default async function handler(

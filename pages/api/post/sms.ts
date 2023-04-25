@@ -1,7 +1,7 @@
 import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
-import connection from "../mysql";
+import {connection} from "../mysql";
 import * as jwt from "jsonwebtoken";
 import { signJWT } from "../jwtProcessor";
 const accountSid = process.env.TWILIO_ACCOUNT_SID;

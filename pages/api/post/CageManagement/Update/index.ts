@@ -1,7 +1,7 @@
 import { OkPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
