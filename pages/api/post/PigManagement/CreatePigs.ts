@@ -102,23 +102,23 @@ async function Ops(
         }
       }
       const insertPig =
-        "insert into tbl_pig (pig_id,batch_id,breed_id,pig_type,birthdate,user_id) values(?,?,?,?,?,?)";
+        "insert into tbl_pig (pig_id,batch_id,breed_id,birthdate,user_id) values(?,?,?,?,,?)";
       await conn.query(insertPig, [
         value.pig_id,
         batch_id,
         breed_id,
-        pig_type,
         birth_date,
         user_id,
       ]);
       const insertPigHistory =
-        "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id) values(?,?,?,?,?)";
+        "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id,pig_type) values(?,?,?,?,?,?)";
       await conn.query(insertPigHistory, [
         value.pig_id,
         value.pig_tag,
         value.pig_weight,
         value.cage_id,
         user_id,
+        pig_type,
       ]);
     });
 

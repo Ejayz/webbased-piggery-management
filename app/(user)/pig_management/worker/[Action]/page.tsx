@@ -50,6 +50,7 @@ export default function Page({ params }: any) {
       pig_id: "",
       cage_id: "",
       pig_tag: "",
+      pig_type: "",
       status: "",
       weight: "",
       remarks: "",
@@ -196,7 +197,8 @@ export default function Page({ params }: any) {
       data.status,
       data.cage_id,
       data.weight,
-      data.remarks
+      data.remarks,
+      data.pig_type
     );
     if (returned.code == 200) {
       resetState();
@@ -258,6 +260,7 @@ export default function Page({ params }: any) {
       setValue("status", pigData.data[0].status);
       setValue("weight", pigData.data[0].weight);
       setValue("pig_tag", pigData.data[0].pig_tag);
+      setValue("pig_type", pigData.data[0].pig_type);
       refetch();
     }
   }, [pigData]);
@@ -323,7 +326,7 @@ export default function Page({ params }: any) {
               method="post"
               className="flex w-full h-auto py-2 flex-col"
             >
-              <div className="gap-2 w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none grid-cols-none grid-rows-2">
+              <div className="gap-2 w-full ml-2 grid lg:grid-cols-3 lg:grid-rows-none grid-cols-none grid-rows-3">
                 <NormalInput
                   name="pig_id"
                   label="Pig Id"
@@ -339,6 +342,47 @@ export default function Page({ params }: any) {
                   register={register}
                   errors={errors}
                   options={cageList}
+                  required={true}
+                  disabled={true}
+                  validationSchema={{ required: "This field is required" }}
+                ></SelectInput>
+                <SelectInput
+                  name={"pig_type"}
+                  label={"Pig Type"}
+                  register={register}
+                  errors={errors}
+                  options={[
+                    {
+                      display: "Gilt",
+                      value: "Gilt",
+                      disabled: false,
+                    },
+                    {
+                      display: "Sow",
+                      value: "Sow",
+                      disabled: false,
+                    },
+                    {
+                      display: "Boar",
+                      value: "Boar",
+                      disabled: false,
+                    },
+                    {
+                      display: "Piglet",
+                      value: "Piglet",
+                      disabled: false,
+                    },
+                    {
+                      display: "Farrowing",
+                      value: "Farrowing",
+                      disabled: false,
+                    },
+                    {
+                      display: "Weaner",
+                      value: "Weaner",
+                      disabled: false,
+                    },
+                  ]}
                   required={true}
                   disabled={true}
                   validationSchema={{ required: "This field is required" }}

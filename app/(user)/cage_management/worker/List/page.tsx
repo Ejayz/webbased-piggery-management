@@ -45,14 +45,26 @@ export default function Page() {
     }
   }, [data]);
   useEffect(() => {
-    refetch();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      refetch();
+    }
   }, [filter.sortby]);
   useEffect(() => {
-    refetch();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      refetch();
+    }
   }, [filter.sortorder]);
   useEffect(() => {
     if (filter.keyword == "") {
-      refetch();
+      if (page !== 1) {
+        setPage(1);
+      } else {
+        refetch();
+      }
     }
   }, [filter.keyword]);
   useEffect(() => {
@@ -67,7 +79,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
-          <div className="w-11/12 mx-auto flex flex-row my-2 text-base-content">
+          <div className="w-11/12 mx-auto flex gap-2 flex-col lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
             </span>
@@ -99,7 +111,7 @@ export default function Page() {
                     e.preventDefault();
                     refetch();
                   }}
-                  className="flex"
+                  className="flex input-group"
                 >
                   <input
                     type="text"
@@ -130,95 +142,98 @@ export default function Page() {
               </div>
             </div>
           </div>
-          <table className="table table-compact w-11/12  mx-auto   text-base-content">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Cage Name</th>
-                <th>Cage Capacity</th>
-                <th>Cage Type</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading || isFetching ? (
+          <div className="overflow-auto w-11/12 mx-auto">
+            <table className="table table-compact w-11/12  mx-auto   text-base-content">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="text-center">
-                    Please wait while we fetch the data
-                  </td>
+                  <th></th>
+                  <th>Cage Name</th>
+                  <th>Cage Capacity</th>
+                  <th>Cage Type</th>
+                  <th>Action</th>
                 </tr>
-              ) : parsed.length != 0 ? (
-                parsed.map((item: any, key: number) => {
-                  return (
-                    <tr key={key} className="hover">
-                      <th>{key + 1}</th>
-                      <td>{item.cage_name}</td>
-                      <td>{item.cage_capacity}</td>
-                      <td>{item.cage_type}</td>
-                      <td className="flex flex-col">
-                        <div className="flex flex-row ">
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/cage_management/worker/Update",
-                              query: { id: item.cage_id },
-                            }}
-                          >
-                            Update
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/cage_management/worker/View",
-                              query: { id: item.cage_id },
-                            }}
-                          >
-                            View
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/cage_management/worker/Remove",
-                              query: { id: item.cage_id },
-                            }}
-                          >
-                            Remove
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {isLoading || isFetching ? (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      Please wait while we fetch the data
+                    </td>
+                  </tr>
+                ) : parsed.length != 0 ? (
+                  parsed.map((item: any, key: number) => {
+                    return (
+                      <tr key={key} className="hover">
+                        <th>{key + 1}</th>
+                        <td>{item.cage_name}</td>
+                        <td>{item.cage_capacity}</td>
+                        <td>{item.cage_type}</td>
+                        <td className="flex flex-col">
+                          <div className="flex flex-row ">
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/cage_management/worker/Update",
+                                query: { id: item.cage_id },
+                              }}
+                            >
+                              Update
+                            </Link>
+                            <div className="divider divider-horizontal"></div>
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/cage_management/worker/View",
+                                query: { id: item.cage_id },
+                              }}
+                            >
+                              View
+                            </Link>
+                            <div className="divider divider-horizontal"></div>
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/cage_management/worker/Remove",
+                                query: { id: item.cage_id },
+                              }}
+                            >
+                              Remove
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
           <div className="w-full mt-4  flex">
-            <div className="btn-group grid grid-cols-2 mx-auto">
+            <div className="btn-group grid grid-cols-3 mx-auto">
               <button
                 onClick={() => {
                   setPage(page == 1 ? 1 : page - 1);
                 }}
-                className="btn btn-outline"
+                className="btn"
               >
-                Previous page
+                «
               </button>
+              <button className="btn">Page {page}</button>
               <button
                 onClick={() => {
                   if (parsed.length != 0) {
                     setPage(page + 1);
                   }
                 }}
-                className="btn btn-outline"
+                className={`btn ${parsed.length == 0 ? "hidden" : ""}`}
               >
-                Next
+                »
               </button>
             </div>
           </div>
