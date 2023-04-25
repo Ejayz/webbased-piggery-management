@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -85,16 +85,15 @@ async function SearhGetCage(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT i.*,(SELECT closing_quantity FROM tbl_stock_card AS sc 
-      WHERE sc.item_id = i.item_id
-      ORDER BY sc.transaction_date DESC 
-      LIMIT 1) AS latest_closing_quantity, c.category_name, s.*, FORMAT((s.closing_quantity / i.item_net_weight), 2) AS item_left
-    FROM tbl_inventory i
-    JOIN tbl_category c ON i.category_id = c.category_id
-    JOIN tbl_stock_card s ON i.item_id = s.item_id
-    WHERE (i.item_name LIKE ? OR i.item_description LIKE ?)
-      AND i.is_exist = 'true'
-      AND s.transaction_date = (SELECT MAX(transaction_date) FROM tbl_stock_card)
+    const sql = `SELECT tbl_inventory.*, tbl_stock_card.*,FORMAT((tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight), 2) AS item_left
+    FROM tbl_inventory 
+    INNER JOIN (
+      SELECT item_id, MAX(transaction_date) AS max_date
+      FROM tbl_stock_card
+      GROUP BY item_id
+    ) AS latest ON tbl_inventory.item_id = latest.item_id
+    INNER JOIN tbl_stock_card ON tbl_stock_card.item_id = latest.item_id AND tbl_stock_card.transaction_date = latest.max_date
+    WHERE tbl_inventory.is_exist = 'true' AND (tbl_inventory.item_name LIKE ? OR tbl_inventory.item_description LIKE ?)
     ORDER BY ${conn.escapeId(sortby)} ${SortOrder}
     LIMIT ${limit} OFFSET ${offset};`;
 

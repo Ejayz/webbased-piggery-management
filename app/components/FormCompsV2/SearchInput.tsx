@@ -13,6 +13,7 @@ const Input = ({
   readonly = false,
   id,
   item_unit,
+  disabled = false,
   showModal,
 }: any) => (
   <div className="form-control">
@@ -27,6 +28,7 @@ const Input = ({
           type={type}
           readOnly={true}
           required={required}
+          disabled={disabled}
           placeholder={label}
           className={`input input-bordered w-full text-base-content ${
             errors[name] != undefined ? "input-error" : ""
@@ -36,7 +38,7 @@ const Input = ({
         />
         <button
           type="button"
-          disabled={readonly}
+          disabled={disabled}
           onClick={() => {
             showModal(true);
           }}

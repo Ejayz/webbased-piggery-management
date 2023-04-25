@@ -18,7 +18,8 @@ export const Create = async (
   category_id: any,
   item_description: string,
   item_unit: any,
-  item_net_weight: any
+  item_net_weight: any,
+  item_net_weight_unit:any
 ) => {
   let headersList = {
     Accept: "*/*",
@@ -32,6 +33,7 @@ export const Create = async (
     item_description: item_description,
     item_unit: item_unit,
     item_net_weight: item_net_weight,
+    item_net_weight_unit:item_net_weight_unit
   });
 
   let response = await fetch(

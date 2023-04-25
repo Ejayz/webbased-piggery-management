@@ -240,7 +240,8 @@ export default function MedicineAdministration() {
                     type={"number"}
                     register={register}
                     errors={errors}
-                    item_unit={OperationData?.data[0].item_unit}
+                    item_unit={OperationData?.data[0].item_net_weight_unit
+                    }
                     required={true}
                     validationSchema={{
                       required: "This field is required",

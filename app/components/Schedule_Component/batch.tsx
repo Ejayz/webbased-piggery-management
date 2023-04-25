@@ -18,6 +18,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
+import { stringGenerator } from "@/hooks/useStringGenerator";
 
 interface activity_interface {
   value: string;
@@ -39,6 +40,7 @@ export function Batch() {
       item_id: string;
       activity: string;
       data_time?: string;
+      id?: string;
     }[]
   >([]);
   const [show, showModal] = useState(false);
@@ -500,12 +502,16 @@ export function Batch() {
                               setValue("pig_id", item.value, {
                                 shouldValidate: true,
                               });
-                              setValue("display", item.display);
+                              setValue("display", item.display, {
+                                shouldValidate: true,
+                              });
                             } else {
                               setValuePlan("pig_id", item.value, {
                                 shouldValidate: true,
                               });
-                              setValuePlan("display", item.display);
+                              setValuePlan("display", item.display, {
+                                shouldValidate: true,
+                              });
                             }
                           }}
                           htmlFor="my-modal-6"
@@ -566,7 +572,7 @@ export function Batch() {
                   register={register}
                   errors={errors}
                   validationSchema={{
-                    required: "Cage is required",
+                    required: "Batch is required",
                   }}
                   required={true}
                   readonly={true}
@@ -662,6 +668,7 @@ export function Batch() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: "AM",
+                          id: stringGenerator(),
                         },
                         {
                           title: `${
@@ -675,6 +682,7 @@ export function Batch() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: "PM",
+                          id: stringGenerator(),
                         },
                       ]);
                     } else {
@@ -691,6 +699,7 @@ export function Batch() {
                           start: new Date(watchOperationDate),
                           item_id: item_id,
                           activity: watchActivity,
+                          id: stringGenerator(),
                           data_time: undefined,
                         },
                       ]);
@@ -750,7 +759,7 @@ export function Batch() {
               </button>
             </div>
           </form>
-        ) : (
+        ) : watchActivity == "2" ? (
           <form
             onSubmit={handleSubmitPlan(onSubmit)}
             method="post"
@@ -771,6 +780,7 @@ export function Batch() {
                     required: "Batch is required",
                   }}
                   required={true}
+                  readonly={true}
                 />
               </div>
               <SelectInput
@@ -815,6 +825,8 @@ export function Batch() {
               </button>
             </div>
           </form>
+        ) : (
+          <></>
         )}
         <div className="overflow-x-auto w-3/4 mx-auto min-h-screen">
           <FullCalendar
@@ -828,7 +840,13 @@ export function Batch() {
               start: new Date(),
             }}
             eventClick={(info: any) => {
-              alert(info.event.title);
+              if (
+                confirm(
+                  `Event:${info.event.title} \r\nDo you want to delete this event?`
+                )
+              ) {
+                info.event.remove(info.event.id);
+              }
             }}
             dateClick={(info: any) => {
               if (watchScheduleType == "1") {

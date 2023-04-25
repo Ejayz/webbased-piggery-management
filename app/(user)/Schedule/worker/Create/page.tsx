@@ -53,7 +53,6 @@ export default function Page() {
     },
   ]);
 
-  console.log(tabs);
   const cage_option = [
     {
       value: "Individual Stalls",

@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -32,7 +32,9 @@ async function UpdateCage() {
   const getTotalPendingOperation = `SELECT COUNT(operation_id) AS totalPendingOperation FROM tbl_operation WHERE tbl_operation.operation_date='2023-04-19' AND tbl_operation.\`status\`='pending'`;
   const TotalUser = "select * from tbl_users where is_exist='true'";
   const getTotalLowLvl =
-    "SELECT MAX(transaction_date),tbl_stock_card.*,(tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) AS stock_density FROM tbl_stock_card INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_stock_card.item_id WHERE (tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight) <=5 GROUP BY tbl_inventory.item_id and tbl_inventory.is_exist='true'";
+    "SELECT tbl_category.*,tbl_inventory.*, tbl_stock_card.*,FORMAT((tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight), 2) AS item_left FROM tbl_inventory   INNER JOIN tbl_category ON tbl_inventory.category_id=tbl_category.category_id   INNER JOIN (        SELECT item_id, MAX(transaction_date) AS max_date        FROM tbl_stock_card        GROUP BY item_id      ) AS latest ON tbl_inventory.item_id = latest.item_id INNER JOIN tbl_stock_card ON tbl_stock_card.item_id = latest.item_id AND tbl_stock_card.transaction_date = latest.max_date  WHERE tbl_inventory.is_exist = 'true' AND  FORMAT((tbl_stock_card.closing_quantity / tbl_inventory.item_net_weight), 2)<=5";
+  const ExpiredItem = "select * from tbl_stock_card where closing_quantity=0";
+
   const [sows]: any = await conn.query(getSows);
   const [boars]: any = await conn.query(getBoars);
   const [piglets]: any = await conn.query(getPiglets);
