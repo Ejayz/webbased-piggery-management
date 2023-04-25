@@ -18,11 +18,11 @@ export default async function handler(
 async function UpdateCage() {
   const conn = await connection.getConnection();
   const getSows =
-    "SELECT COUNT(pig_id) AS total_pig FROM tbl_pig WHERE pig_type='Sow' AND is_exist = 'true'";
+    "SELECT COUNT(pig_id) AS total_pig FROM tbl_pig_history WHERE pig_type='Sow' AND pig_history_status = 'active'";
   const getBoars =
-    "SELECT COUNT(pig_id) AS total_pig FROM tbl_pig WHERE pig_type='Boar' AND is_exist = 'true'";
+    "SELECT COUNT(pig_id) AS total_pig FROM tbl_pig_history WHERE pig_type='Boar' AND pig_history_status = 'active'";
   const getPiglets =
-    "SELECT COUNT(pig_id) AS total_pig FROM tbl_pig WHERE pig_type='Piglet' AND is_exist = 'true'";
+    "SELECT COUNT(pig_id) AS total_pig FROM tbl_pig_history WHERE pig_type='Piglet' AND pig_history_status = 'active'";
   const getTotalFeeds =
     "SELECT *, MAX(tbl_stock_card.stock_card_id) FROM tbl_inventory INNER JOIN tbl_stock_card ON tbl_inventory.item_id = tbl_stock_card.item_id WHERE tbl_inventory.category_id='1' GROUP BY tbl_stock_card.item_id";
   const TotalOperation =
