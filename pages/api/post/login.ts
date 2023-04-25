@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import connection from "../mysql";
+import {connection} from "../mysql";
 import { rejects } from "assert";
 dotenv.config();
 

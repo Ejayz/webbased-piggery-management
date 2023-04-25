@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
 import { decodeJWT } from "pages/api/jwtProcessor";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,

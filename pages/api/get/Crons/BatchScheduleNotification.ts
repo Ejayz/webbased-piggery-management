@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { signJWT, verifyJWT } from "pages/api/jwtProcessor";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twillioPhone = process.env.TWILIO_PHONE_NUMBER;

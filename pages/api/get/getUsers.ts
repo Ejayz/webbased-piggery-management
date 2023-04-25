@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import connection from "../mysql";
+import {connection} from "../mysql";
 import { decodeJWT, verifyJWT } from "../jwtProcessor";
 import searchCookie from "../cookieParser";
 

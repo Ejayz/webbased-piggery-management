@@ -1,7 +1,8 @@
 import { IncomingForm } from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandlerFormData";
-import connection from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
+import { resetConnection } from "pages/api/mysql";
 import fs from "fs";
 const Importer = require("mysql-import");
 
@@ -56,6 +57,7 @@ export default async function handler(
           return;
         }
       });
+      resetConnection();
       return res
         .status(200)
         .json({ code: 200, message: "Successfully restored database" });
@@ -74,6 +76,8 @@ export default async function handler(
           return;
         }
       });
+
+      resetConnection();
       return res
         .status(200)
         .json({ code: 200, message: "Successfully restored database" });

@@ -2,7 +2,7 @@ import { ResultSetHeader } from "mysql2";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 import { resolve } from "path";
 
 export default async function handler(

@@ -3,7 +3,7 @@ import { randomInt } from "crypto";
 import { IncomingForm } from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import connection from "pages/api/mysql";
+import {connection} from "pages/api/mysql";
 import { bucket, s3Client } from "pages/api/s3";
 import fs from "fs";
 
