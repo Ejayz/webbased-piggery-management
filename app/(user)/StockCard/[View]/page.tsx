@@ -9,8 +9,8 @@ export default function Page({ params }: any) {
   console.log(params);
   const [parsed, setParsed] = useState<any[]>([]);
   const [StockCardFilter, setStockCardFilterFilter] = useState({
-    sortby: "stock_card_id",
-    sortorder: "desc",
+    sortby: "transaction_date",
+    sortorder: "asc",
     keyword: "",
     stock_id: params.View,
   });

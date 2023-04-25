@@ -42,14 +42,26 @@ export default function Page() {
     }
   }, [data]);
   useEffect(() => {
-    refetch();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      refetch();
+    }
   }, [filter.sortby]);
   useEffect(() => {
-    refetch();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      refetch();
+    }
   }, [filter.sortorder]);
   useEffect(() => {
     if (filter.keyword == "") {
-      refetch();
+      if (page !== 1) {
+        setPage(1);
+      } else {
+        refetch();
+      }
     }
   }, [filter.keyword]);
   useEffect(() => {

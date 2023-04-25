@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -69,23 +69,17 @@ async function Ops(
   conn.beginTransaction();
   try {
     const sql =
-      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,  `batch_id`, `breed_id` ,`pig_type`, `birthdate`,user_id ) VALUES ( ?, ?,?, ?, ?,?);";
-    await conn.query(sql, [
-      pig_id,
-      batch_id,
-      breed_id,
-      pig_type,
-      birthdate,
-      user_id,
-    ]);
+      "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,  `batch_id`, `breed_id` , `birthdate`,user_id ) VALUES ( ?, ?,?, ?, ?);";
+    await conn.query(sql, [pig_id, batch_id, breed_id, birthdate, user_id]);
     const insertPigHistory =
-      "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id) values(?,?,?,?,?)";
+      "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id,pig_type) values(?,?,?,?,?,?)";
     await conn.query(insertPigHistory, [
       pig_id,
       pig_tag,
       weight,
       cage_id,
       user_id,
+      pig_type,
     ]);
     const getCageCapacity =
       "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";

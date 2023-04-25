@@ -66,10 +66,18 @@ export default function Page() {
     }
   }, [data]);
   useEffect(() => {
-    refetch();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      refetch();
+    }
   }, [filter.sortby]);
   useEffect(() => {
-    refetch();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      refetch();
+    }
   }, [filter.sortorder]);
   useEffect(() => {
     refetch();
@@ -163,82 +171,82 @@ export default function Page() {
             </div>
           </div>
           <div className="overflow-x-auto w-11/12 mx-auto">
-          <table className="table table-compact w-11/12  mx-auto overflow-x-scroll  text-center">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Pig Id</th>
-                <th>Pig Tag</th>
-                <th>Cage Name</th>
-                <th>Batch Name</th>
-                <th>Breed Name</th>
-                <th>Pig Type</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading || isFetching ? (
+            <table className="table table-compact w-11/12  mx-auto overflow-x-scroll  text-center">
+              <thead>
                 <tr>
-                  <td colSpan={8} className="text-center">
-                    Please wait while we fetch the data
-                  </td>
+                  <th></th>
+                  <th>Pig Id</th>
+                  <th>Pig Tag</th>
+                  <th>Cage Name</th>
+                  <th>Batch Name</th>
+                  <th>Breed Name</th>
+                  <th>Pig Type</th>
+                  <th>Action</th>
                 </tr>
-              ) : parsed.length != 0 ? (
-                parsed.map((item: any, key: number) => {
-                  return (
-                    <tr key={key} className="hover">
-                      <th>{key + 1}</th>
-                      <td>{item.pig_id}</td>
-                      <td>{item.pig_tag}</td>
-                      <td>{item.cage_name}</td>
-                      <td>{item.batch_name}</td>
-                      <td>{item.breed_name}</td>
-                      <td>{item.pig_type}</td>
-                      <td className="flex">
-                        <div className="flex gap-2 flex-row mx-auto">
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/Update",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            Update
-                          </Link>
-                    
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/View",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            View
-                          </Link>
-                        
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/Remove",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            Remove
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="text-center">
-                    No data found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {isLoading || isFetching ? (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      Please wait while we fetch the data
+                    </td>
+                  </tr>
+                ) : parsed.length != 0 ? (
+                  parsed.map((item: any, key: number) => {
+                    return (
+                      <tr key={key} className="hover">
+                        <th>{key + 1}</th>
+                        <td>{item.pig_id}</td>
+                        <td>{item.pig_tag}</td>
+                        <td>{item.cage_name}</td>
+                        <td>{item.batch_name}</td>
+                        <td>{item.breed_name}</td>
+                        <td>{item.pig_type}</td>
+                        <td className="flex">
+                          <div className="flex gap-2 flex-row mx-auto">
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/pig_management/worker/Update",
+                                query: { id: item.pig_id },
+                              }}
+                            >
+                              Update
+                            </Link>
+
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/pig_management/worker/View",
+                                query: { id: item.pig_id },
+                              }}
+                            >
+                              View
+                            </Link>
+
+                            <Link
+                              className="btn btn-sm btn-primary"
+                              href={{
+                                pathname: "/pig_management/worker/Remove",
+                                query: { id: item.pig_id },
+                              }}
+                            >
+                              Remove
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      No data found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
         <div className="w-full mt-4  flex">

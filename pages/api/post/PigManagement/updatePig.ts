@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,7 +12,8 @@ export default async function handler(
     return false;
   }
   try {
-    const { cage_id, pig_id, pig_tag, weight, status, remarks } = req.body;
+    const { cage_id, pig_id, pig_tag, weight, status, remarks, pig_type } =
+      req.body;
     const users = await getUsers(authorized.cookie);
     const user_id = users.user_id;
     const data: any = await Ops(
@@ -22,7 +23,8 @@ export default async function handler(
       weight,
       status,
       remarks,
-      user_id
+      user_id,
+      pig_type
     );
     if (data == 900) {
       return res
@@ -45,7 +47,8 @@ async function Ops(
   weight: any,
   status: any,
   remarks: any,
-  user_id: any
+  user_id: any,
+  pig_type: any
 ) {
   const conn = await connection.getConnection();
   await conn.beginTransaction();
@@ -68,7 +71,7 @@ async function Ops(
         "update tbl_pig_history set pig_history_status='inactive' where pig_id=? and is_exist='true' and pig_history_status='active'";
       const [inActivateOldR]: any = await conn.query(inActivateOld, [pig_id]);
       const insertNewPigDetails =
-        "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id) values (?,?,?,?,?,?,?)";
+        "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id,pig_type) values (?,?,?,?,?,?,?,?)";
 
       const [updatePig]: any = await conn.query(insertNewPigDetails, [
         pig_id,
@@ -78,6 +81,7 @@ async function Ops(
         status,
         remarks,
         user_id,
+        pig_type,
       ]);
 
       if (updatePig.affectedRows == 1) {
