@@ -174,6 +174,9 @@ export default function FeedingActivity() {
       OperationDataRefetch();
     }
   }, [submitable?.operation_id]);
+
+console.log(OperationData)
+
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -209,7 +212,8 @@ export default function FeedingActivity() {
                       Operation Date:
                     </span>
                     <span>
-                      {DateTime.fromISO(OperationData?.data[0].operation_date)
+                      {DateTime.fromISO(OperationData?.data[0].item_net_weight_unit
+)
                         .setZone("Asia/Manila")
                         .toFormat("EEEE',' MMM d',' yyyy")}
                     </span>
@@ -238,7 +242,8 @@ export default function FeedingActivity() {
                     type={"number"}
                     register={register}
                     errors={errors}
-                    item_unit={OperationData?.data[0].item_unit}
+                    item_unit={OperationData?.data[0].item_net_weight_unit
+}
                     required={true}
                     validationSchema={{
                       required: "This field is required",

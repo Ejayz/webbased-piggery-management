@@ -155,55 +155,6 @@ export default function Page() {
     reset();
   }
 
-  const validate = async (e: any) => {
-    e.preventDefault();
-    setProcessing(true);
-    if (
-      item_name == "" ||
-      category_id == "default" ||
-      item_description == "" ||
-      item_quantity == "" ||
-      item_unit == "default"
-    ) {
-      setProcessing(false);
-      toast.error("All feilds are required.");
-      return false;
-    }
-
-    if (
-      !(
-        isItemName &&
-        isCategoryId &&
-        isItemDescription &&
-        isItemQuantity &&
-        isItemUnit
-      )
-    ) {
-      setProcessing(false);
-      toast.error(
-        "There are errors in your form. Please review and correct the input in the fields outlined in red before submitting."
-      );
-      return false;
-    }
-  };
-
-  async function createUser(data: any) {
-    const returned = await Create(
-      data.item_name,
-      data.category_id,
-      data.item_description,
-      data.item_unit,
-      data.item_net_weight
-    );
-    if (returned.code == 200) {
-      setProcessing(false);
-      toast.success(returned.message);
-      resetState();
-    } else {
-      setProcessing(false);
-      toast.error(returned.message);
-    }
-  }
   useEffect(() => {
     async function exec_get() {
       const returned = await GetCategory();
@@ -433,7 +384,10 @@ export default function Page() {
                 >
                   <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none gap-2 grid-cols-none grid-rows-1">
                     <div>
-                      <label htmlFor="search_pig" className={`btn my-auto mx-4`}>
+                      <label
+                        htmlFor="search_pig"
+                        className={`btn my-auto mx-4`}
+                      >
                         Choose Pig
                       </label>
                       <button

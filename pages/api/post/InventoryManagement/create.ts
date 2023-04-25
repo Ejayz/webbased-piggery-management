@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,12 +18,11 @@ export default async function handler(
     item_description,
     item_unit,
     item_net_weight,
+    item_net_weight_unit,
   } = req.body;
 
-
-const users = await getUsers(authorized.cookie);
+  const users = await getUsers(authorized.cookie);
   const user_id = users.user_id;
-
 
   const conn = await connection.getConnection();
 
@@ -41,8 +40,9 @@ const users = await getUsers(authorized.cookie);
     category_id,
     item_description,
     item_unit,
-    item_net_weight
-    ,user_id
+    item_net_weight,
+    user_id,
+    item_net_weight_unit
   );
   try {
     if (data.affectedRow != 0) {
@@ -68,21 +68,23 @@ async function CreateInventory(
   category_id: any,
   item_description: string,
   item_unit: any,
-  item_net_weight: any
-  ,user_id:any
+  item_net_weight: any,
+  user_id: any,
+  item_net_weight_unit: any
 ) {
   await conn.beginTransaction();
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   try {
     const sql =
-      "INSERT INTO `piggery_management`.`tbl_inventory` (`item_name`, `category_id`, `item_description`, `item_unit`,`item_net_weight`,user_id) VALUES (?, ?, ?, ?,?,?);";
+      "INSERT INTO `piggery_management`.`tbl_inventory` (`item_name`, `category_id`, `item_description`, `item_unit`,`item_net_weight`,user_id,item_net_weight_unit) VALUES (?, ?, ?, ?,?,?,?);";
     const [result]: any = await conn.query(sql, [
       item_name,
       category_id,
       item_description,
       item_unit,
       item_net_weight,
-      user_id
+      user_id,
+      item_net_weight_unit,
     ]);
     if (result.affectedRows != 0) {
       const createStocks =
@@ -92,7 +94,7 @@ async function CreateInventory(
         0,
         result.insertId,
         date,
-        user_id
+        user_id,
       ]);
       if (createStocksR.affectedRows != 0) {
         await conn.commit();

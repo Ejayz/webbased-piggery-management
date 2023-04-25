@@ -36,6 +36,7 @@ export default function Page() {
       item_description: "",
       item_unit: "",
       item_net_weight: "",
+      item_net_weight_unit: "",
     },
     mode: "onChange",
     criteriaMode: "all",
@@ -117,7 +118,8 @@ export default function Page() {
       data.category_id,
       data.item_description,
       data.item_unit,
-      data.item_net_weight
+      data.item_net_weight,
+      data.item_net_weight_unit
     );
     if (returned.code == 200) {
       setProcessing(false);
@@ -233,22 +235,22 @@ export default function Page() {
                       required={true}
                       options={[
                         {
-                          value: "sack",
+                          value: "Sacks",
                           display: "Sacks",
                           disabled: false,
                         },
                         {
-                          value: "kg",
-                          display: "Kilo Gram",
+                          value: "Viel",
+                          display: "Vial",
                           disabled: false,
                         },
                         {
-                          value: "mg",
-                          display: "Milli Gram",
+                          value: "Packs",
+                          display: "Packs",
                           disabled: false,
                         },
                         {
-                          value: "pcs",
+                          value: "Pieces",
                           display: "Pieces",
                           disabled: false,
                         },
@@ -264,8 +266,43 @@ export default function Page() {
                       type={"number"}
                       validationSchema={{ required: "This field is required" }}
                     ></NormalInput>
+                    <SelectInput
+                      name="item_net_weight_unit"
+                      label={"Item Net Weight Unit"}
+                      register={register}
+                      errors={errors}
+                      required={true}
+                      options={[
+                        {
+                          value: "mg",
+                          display: "Milligrams",
+                          disabled: false,
+                        },
+                        {
+                          value: "ml",
+                          display: "Milliliters",
+                          disabled: false,
+                        },
+                        {
+                          value: "gm",
+                          display: "Grams",
+                          disabled: false,
+                        },
+                        {
+                          value: "kg",
+                          display: "Kilograms",
+                          disabled: false,
+                        },
+                        {
+                          value: "pcs",
+                          display: "Pieces",
+                          disabled: false,
+                        },
+                      ]}
+                      validationSchema={{ required: "This field is required" }}
+                    ></SelectInput>
                   </div>
-                  <div className="card-actions justify-end">
+                  <div className="card-actions justify-end mt-6">
                     <button
                       className={`btn btn-active btn-success mx-4 ${
                         processing ? "loading" : ""

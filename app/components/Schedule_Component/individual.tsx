@@ -8,13 +8,13 @@ import { useForm, useWatch } from "react-hook-form";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import NormalInput from "../FormCompsV2/NormalInput";
-import RightDisplay from "../FormCompsV2/RightDisplay";
 import SelectInput from "../FormCompsV2/SelectInput";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
 import QrCode from "../QrComponent/qrcode";
+import { stringGenerator } from "@/hooks/useStringGenerator";
 
 interface activity_interface {
   value: string;
@@ -37,6 +37,8 @@ export function Individual() {
       item_id: string;
       activity: string;
       data_time?: string;
+      id?: string;
+      extendedProps?: any;
     }[]
   >([]);
   const [show, showModal] = useState(false);
@@ -240,7 +242,6 @@ export function Individual() {
           setActivity(
             typedata.data.map((item: any) => ({
               value: item.operation_type_id,
-
               display: item.operation_name,
               disabled: false,
             }))
@@ -671,13 +672,18 @@ export function Individual() {
                   processing ? "loading" : ""
                 }`}
                 type={"button"}
-                onClick={() => {
-                  const result = trigger([
+                onClick={async () => {
+                  const result = await trigger([
                     "item_id",
                     "operation_date",
                     "pig_id",
                     "activity",
+                    "item_name",
                   ]);
+                  if (!result) {
+                    toast.warning("Check form inputs for errors");
+                    return false;
+                  }
                   const item_id: any = watch("item_id");
                   const item_name = watch("item_name");
                   if (watchItemName != "") {
@@ -701,6 +707,10 @@ export function Individual() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: "AM",
+                          id: stringGenerator(),
+                          extendedProps: {
+                            id: useItem.length,
+                          },
                         },
                         {
                           title: `${
@@ -714,6 +724,10 @@ export function Individual() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: "PM",
+                          id: `${stringGenerator()}`,
+                          extendedProps: {
+                            id: useItem.length + 1,
+                          },
                         },
                       ]);
                     } else {
@@ -731,6 +745,10 @@ export function Individual() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: undefined,
+                          id: `${stringGenerator()}`,
+                          extendedProps: {
+                            id: useItem.length,
+                          },
                         },
                       ]);
                     }
@@ -789,7 +807,7 @@ export function Individual() {
               </button>
             </div>
           </form>
-        ) : (
+        ) : watchScheduleType == "2" ? (
           <form
             onSubmit={handleSubmitPlan(onSubmit)}
             method="post"
@@ -862,6 +880,8 @@ export function Individual() {
               </button>
             </div>
           </form>
+        ) : (
+          <></>
         )}
         <div className="overflow-x-auto lg:w-3/4 min-h-screen mx-auto w-11/12 h-full">
           <FullCalendar
@@ -875,7 +895,13 @@ export function Individual() {
               start: new Date(),
             }}
             eventClick={(info: any) => {
-              alert(info.event.title);
+              if (
+                confirm(
+                  `Event:${info.event.title} \r\nDo you want to delete this event?`
+                )
+              ) {
+                info.event.remove(info.event.id);
+              }
             }}
             dateClick={(info: any) => {
               if (watchScheduleType == "1") {

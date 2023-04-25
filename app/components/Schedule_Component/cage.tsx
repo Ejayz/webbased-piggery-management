@@ -18,6 +18,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
 import { setuid } from "process";
+import { stringGenerator } from "@/hooks/useStringGenerator";
 
 interface activity_interface {
   value: string;
@@ -38,6 +39,7 @@ export function Cage() {
       backgroundColor?: string;
       item_id: string;
       activity: string;
+      id?: string;
       data_time?: string;
     }[]
   >([]);
@@ -500,12 +502,16 @@ export function Cage() {
                               setValue("pig_id", item.value, {
                                 shouldValidate: true,
                               });
-                              setValue("display", item.display);
+                              setValue("display", item.display, {
+                                shouldValidate: true,
+                              });
                             } else {
                               setValuePlan("pig_id", item.value, {
                                 shouldValidate: true,
                               });
-                              setValuePlan("display", item.display);
+                              setValuePlan("display", item.display, {
+                                shouldValidate: true,
+                              });
                             }
                           }}
                           htmlFor="my-modal-6"
@@ -613,6 +619,7 @@ export function Cage() {
                   }}
                   required={true}
                   showModal={showModal}
+                  disabled={watch("activity") == ""}
                 />
 
                 <ErrorMessage
@@ -632,13 +639,18 @@ export function Cage() {
                   processing ? "loading" : ""
                 }`}
                 type={"button"}
-                onClick={() => {
-                  const result = trigger([
+                onClick={async () => {
+                  const result = await trigger([
+                    "display",
                     "item_id",
                     "operation_date",
                     "pig_id",
                     "activity",
                   ]);
+                  if (!result) {
+                    toast.warning("Check form inputs for errors");
+                    return false;
+                  }
                   const item_id: any = watch("item_id");
                   const item_name = watch("item_name");
                   if (watchItemName != "") {
@@ -662,6 +674,7 @@ export function Cage() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: "AM",
+                          id: stringGenerator(),
                         },
                         {
                           title: `${
@@ -675,6 +688,8 @@ export function Cage() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: "PM",
+
+                          id: stringGenerator(),
                         },
                       ]);
                     } else {
@@ -692,6 +707,7 @@ export function Cage() {
                           item_id: item_id,
                           activity: watchActivity,
                           data_time: undefined,
+                          id: stringGenerator(),
                         },
                       ]);
                     }
@@ -750,7 +766,7 @@ export function Cage() {
               </button>
             </div>
           </form>
-        ) : (
+        ) : watchActivity == "2" ? (
           <form
             onSubmit={handleSubmitPlan(onSubmit)}
             method="post"
@@ -771,6 +787,7 @@ export function Cage() {
                     required: "Cage is required",
                   }}
                   required={true}
+                  readonly={true}
                 />
               </div>
               <SelectInput
@@ -815,6 +832,8 @@ export function Cage() {
               </button>
             </div>
           </form>
+        ) : (
+          <></>
         )}
         <div className="overflow-x-auto w-3/4 mx-auto min-h-screen">
           <FullCalendar
@@ -828,7 +847,13 @@ export function Cage() {
               start: new Date(),
             }}
             eventClick={(info: any) => {
-              alert(info.event.title);
+              if (
+                confirm(
+                  `Event:${info.event.title} \r\nDo you want to delete this event?`
+                )
+              ) {
+                info.event.remove(info.event.id);
+              }
             }}
             dateClick={(info: any) => {
               if (watchScheduleType == "1") {
