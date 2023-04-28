@@ -20,7 +20,13 @@ interface SelectedCage {
   cage_id: string;
   selected_quantity: number;
 }
-export default function ({ pigData, setPigData, clear, setResset }: any) {
+export default function ({
+  pigData,
+  setPigData,
+  clear,
+  setResset,
+  batch_num,
+}: any) {
   const [cageList, setCageList] = useState<SelectInter[]>([]);
   const [cageSelected, setCageSelected] = useState<SelectedCage[]>([]);
   const [hideScanner, setHideScanner] = useState(false);
@@ -162,7 +168,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
   };
 
   const idSetter = async () => {
-    return await IdGenerator();
+    return await IdGenerator(`Piglet${pigData.length}`, batch_num);
   };
 
   const checkIsExist = async (cage_id: any) => {
@@ -231,7 +237,12 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
             ActionMaker={"pig_id"}
           ></QrCode>
           <div className="modal-action">
-            <button onClick={() => {}} className="btn">
+            <button
+              onClick={() => {
+                setHideScanner(!hideScanner);
+              }}
+              className="btn"
+            >
               Close
             </button>
           </div>
@@ -318,7 +329,7 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
           />
           <NormalInput
             type={"number"}
-            label={"Weight"}
+            label={"Weight(kg)"}
             name={`weight`}
             required={true}
             register={register}
@@ -362,7 +373,13 @@ export default function ({ pigData, setPigData, clear, setResset }: any) {
                     <QRCodeCanvas id={value.pig_id} value={value.pig_id} />
                   </th>
                   <th>{value.pig_id}</th>
-                  <td>{value.cage_id}</td>
+                  <td>
+                    {
+                      cageList.find(
+                        (item: any) => item.value == value.cage_id
+                      )?.display
+                    }
+                  </td>
                   <td>{value.pig_tag}</td>
                   <td>{value.weight}</td>
                   <td className="flex flex-row">

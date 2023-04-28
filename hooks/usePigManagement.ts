@@ -27,14 +27,8 @@ export const getData = async (
 export const sortData = async () => {};
 export const Search = async () => {};
 
-export const IdGenerator = async () => {
-  let selection = "abcdefghijklmnopqrstuvwxyz1234567890";
-  let split_selection = selection.split("");
-  let id = "pig_";
-  for (let i = 0; i < 10; i++) {
-    const rand = Math.floor(Math.random() * split_selection.length);
-    id = id + split_selection[rand];
-  }
+export const IdGenerator = async (breeder_num: any, batch_num: any) => {
+  let id = `${breeder_num}_Batch${batch_num}`;
   return id;
 };
 
@@ -80,14 +74,10 @@ export const getBreedList = async () => {
 };
 
 export const Create = async (
-  pig_id: any,
-  cage_id: any,
   batch_id: any,
-  breed_id: any,
-  pig_tag: any,
-  pig_type: any,
-  birthdate: any,
-  weight: any
+  batch_name: any,
+  BreederList: any,
+  arrivalDate: any
 ) => {
   let headersList = {
     Accept: "*/*",
@@ -96,14 +86,10 @@ export const Create = async (
   };
 
   let bodyContent = JSON.stringify({
-    pig_id: pig_id,
-    cage_id: cage_id,
     batch_id: batch_id,
-    breed_id: breed_id,
-    pig_tag: pig_tag,
-    pig_type: pig_type,
-    birthdate: birthdate,
-    weight: weight,
+    batch_name: batch_name,
+    BreederList: BreederList,
+    arrivalDate: arrivalDate,
   });
 
   let response = await fetch(

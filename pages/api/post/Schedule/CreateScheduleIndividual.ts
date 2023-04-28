@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,36 +34,72 @@ export default async function handler(
   }
 }
 
-async function UpdateCage(conn: any, pig_id: any, item_list: any,user_id:any) {
+async function UpdateCage(
+  conn: any,
+  pig_id: any,
+  item_list: any,
+  user_id: any
+) {
   try {
     await Promise.all(
       item_list.map(async (item: any) => {
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm,total_patient,user_id) values (?,?,?,?,1,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm,total_patient,user_id,description) values (?,?,?,?,1,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
           pig_id,
           item.data_time,
           user_id,
+          item.description,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
-        const data2: any = await InsertOperationItemDetail(
-          conn,
-          item.item_id,
-          lastInsertedData
-        );
+        if (item.items != undefined) {
+          const data2: any = await InsertOperationItemDetail(
+            conn,
+            item.items,
+            lastInsertedData
+          );
+        } else {
+          const data2: any = await InsertSingleOperationalData(
+            conn,
+            item.item_id,
+            lastInsertedData
+          );
+        }
       })
     );
     conn.commit();
     return "something";
   } catch (error) {
     conn.rollback();
-    console.log(error);
+    console.log("data", error);
     return error;
   }
 }
 async function InsertOperationItemDetail(
+  conn: any,
+  item: any,
+  operation_id: any
+) {
+  try {
+    await Promise.all(
+      item.map(async (item: any) => {
+        const insertOperationItemDetail =
+          "insert into tbl_operation_item_details (operation_id,item_id) values (?,?)";
+        const [sqlInsertResult]: any = await conn.query(
+          insertOperationItemDetail,
+          [operation_id, item.item_id]
+        );
+      })
+    );
+    return 200;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+async function InsertSingleOperationalData(
   conn: any,
   item_id: any,
   operation_id: any
@@ -75,6 +111,7 @@ async function InsertOperationItemDetail(
       operation_id,
       item_id,
     ]);
+
     return 200;
   } catch (error) {
     console.log(error);

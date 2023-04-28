@@ -243,7 +243,7 @@ export default function Page({ params }: any) {
                       onClick={resetState}
                       className="btn mx-4"
                     >
-                      Reset
+                      Clear
                     </button>
                   </div>
                 </form>

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -56,7 +56,7 @@ async function getPig(limit: any, offset: any) {
   try {
     const sql = `SELECT *
     FROM tbl_batch LEFT JOIN tbl_pig ON tbl_batch.pig_id = tbl_pig.pig_id
-   WHERE (batch_name LIKE ?) AND is_exist='true'   LIMIT ${limit} OFFSET ${offset} ;`;
+   WHERE (batch_name LIKE ?) AND batch_type='piglet' and is_exist='true'   LIMIT ${limit} OFFSET ${offset} ;`;
     const result = await conn.query(sql);
     conn.release();
     return result[0];
@@ -106,8 +106,8 @@ async function SearhGetCage(
   try {
     keyword = `%${keyword}%`;
     const sql = `SELECT *
-    FROM tbl_batch LEFT JOIN tbl_pig ON tbl_batch.sow_id = tbl_pig.pig_id AND tbl_batch.boar_id = tbl_pig.pig_id
-   WHERE (batch_name LIKE ? OR sow_id like ? or boar_id like ? or batch_capacity like ? ) AND tbl_batch.is_exist='true' 
+    FROM tbl_batch 
+   WHERE (batch_name LIKE ? OR sow_id like ? or boar_id like ? or batch_capacity like ? ) and batch_type='piglet' AND tbl_batch.is_exist='true' 
      ORDER BY ${conn.escapeId(
        sortby
      )} ${sortorder}  LIMIT ${limit} OFFSET ${offset} ;`;

@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 export default function Page() {
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
@@ -159,12 +160,19 @@ export default function Page() {
                       <td className="flex">
                         <div className="flex flex-row mx-auto gap-2">
                           <Link
-                            className="btn btn-sm btn-primary"
+                            className="btn btn-sm btn-warning"
                             href={{
                               pathname: "/breed_management/worker/Update",
                               query: { id: item.breed_id },
                             }}
                           >
+                            <Image
+                              src="/assets/table/edit.svg"
+                              height={520}
+                              width={520}
+                              alt={""}
+                              className="mx-auto w-6 h-6"
+                            ></Image>
                             Update
                           </Link>
 
@@ -175,16 +183,30 @@ export default function Page() {
                               query: { id: item.breed_id },
                             }}
                           >
+                            <Image
+                              src="/assets/table/view.svg"
+                              height={520}
+                              width={520}
+                              alt={""}
+                              className="mx-auto w-6 h-6"
+                            ></Image>
                             View
                           </Link>
 
                           <Link
-                            className="btn btn-sm btn-primary"
+                            className="btn btn-sm btn-error"
                             href={{
                               pathname: "/breed_management/worker/Remove",
                               query: { id: item.breed_id },
                             }}
                           >
+                            <Image
+                              src="/assets/table/remove.svg"
+                              height={520}
+                              width={520}
+                              alt={""}
+                              className="mx-auto w-6 h-6"
+                            ></Image>
                             Remove
                           </Link>
                         </div>

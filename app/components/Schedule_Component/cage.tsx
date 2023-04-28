@@ -19,6 +19,7 @@ import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
 import { setuid } from "process";
 import { stringGenerator } from "@/hooks/useStringGenerator";
+import TextArea from "@/components/FormCompsV2/TextArea";
 
 interface activity_interface {
   value: string;
@@ -31,16 +32,19 @@ export function Cage() {
   const [keyword, setKeyword] = useState("");
   const [activity, setActivity] = useState<activity_interface[]>([]);
   const [plan_list, setPlanList] = useState<any[]>([]);
+  const [usingItem, setUsingItem] = useState<any[]>([]);
   const [useItem, setUseItem] = useState<
     {
       title: string;
       start: Date;
       end?: Date;
       backgroundColor?: string;
-      item_id: string;
+      items?: any[];
       activity: string;
-      id?: string;
+      description: string;
       data_time?: string;
+      id?: string;
+      extendedProps?: any;
     }[]
   >([]);
   const [show, showModal] = useState(false);
@@ -67,6 +71,7 @@ export function Cage() {
       operation_date: "",
       schedule_option: "1",
       display: "",
+      description: "",
     },
     criteriaMode: "all",
     mode: "all",
@@ -166,6 +171,7 @@ export function Cage() {
                   item_id: item.item_id,
                   activity: "1",
                   data_time: "AM",
+                  description: "Feeding cage morning",
                 },
                 {
                   title: `Feeding ${item.item_name} PM`,
@@ -173,6 +179,7 @@ export function Cage() {
                   item_id: item.item_id,
                   activity: "1",
                   data_time: "PM",
+                  description: "Feeding age afternoon",
                 },
               ]);
             });
@@ -337,9 +344,70 @@ export function Cage() {
     setValue("item_id", "");
     setValue("item_name", "");
   }, [watchActivity]);
-
+  console.log(useItem);
   return (
     <>
+      {" "}
+      <input type="checkbox" id="Items" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">
+            Add items to scheduled operation
+          </h3>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-lg">Item Name*</span>
+            </label>
+            <SearchInput
+              label="Selected Item"
+              type="text"
+              register={register}
+              name="item_name"
+              errors={errors}
+              validationSchema={{
+                required: "Item is required",
+              }}
+              required={true}
+              showModal={showModal}
+            />
+          </div>
+          <table className="table w-full mt-2">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usingItem.map((item: any, index: any) => (
+                <tr key={index}>
+                  <td>{item.item_name}</td>
+                  <td>
+                    <button
+                      onClick={() => {
+                        setUsingItem(
+                          usingItem.filter(
+                            (x: any) => x.item_id != item.item_id
+                          )
+                        );
+                      }}
+                      className="btn btn-sm btn-error"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="modal-action">
+            <label htmlFor="Items" className="btn">
+              Close
+            </label>
+          </div>
+        </div>
+      </div>
       <input
         type="checkbox"
         checked={show}
@@ -403,30 +471,36 @@ export function Cage() {
                   <tr>
                     <th>Item Name</th>
                     <th>Description</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {item_list.map((item, index) => (
                     <tr key={index}>
-                      <td>{item.item_name}</td>
-                      <td>{item.item_description}</td>
                       <td>
+                        {" "}
                         <label
                           onClick={() => {
-                            setValue("item_id", item.item_id, {
-                              shouldValidate: true,
-                            });
-                            setValue("item_name", item.item_name),
-                              {
-                                shouldValidate: true,
-                              };
+                            setUsingItem([...usingItem, item]);
                             showModal(false);
                             searchItemReset();
                           }}
                           className="link underline hover:text-primary"
                         >
-                          Select
+                          {item.item_name}
+                        </label>
+                      </td>
+
+                      <td>
+                        {" "}
+                        <label
+                          onClick={() => {
+                            setUsingItem([...usingItem, item]);
+                            showModal(false);
+                            searchItemReset();
+                          }}
+                          className="link underline hover:text-primary"
+                        >
+                          {item.item_description}
                         </label>
                       </td>
                     </tr>
@@ -488,14 +562,13 @@ export function Cage() {
                 <thead>
                   <tr>
                     <th>Cage Name</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pig_list.map((item, index) => (
                     <tr key={index}>
-                      <td>{item.display}</td>
                       <td>
+                        {" "}
                         <label
                           onClick={() => {
                             if (watchScheduleType == "1") {
@@ -517,7 +590,7 @@ export function Cage() {
                           htmlFor="my-modal-6"
                           className="link underline hover:text-primary"
                         >
-                          Select
+                          {item.display}
                         </label>
                       </td>
                     </tr>
@@ -552,7 +625,6 @@ export function Cage() {
           required={true}
         />
       </div>
-
       <div className="flex flex-col gap-2 lg:flex-row w-full">
         {watchScheduleType == "1" ? (
           <form
@@ -562,7 +634,7 @@ export function Cage() {
           >
             <div className="w-11/12  grid grid-row-3">
               <div className="flex flex-col">
-                <label htmlFor="my-modal-6" className={`btn my-auto`}>
+                <label htmlFor="my-modal-6" className={`btn my-aut`}>
                   Choose Cage
                 </label>
                 <div className="divider ">OR</div>
@@ -589,6 +661,20 @@ export function Cage() {
                 }}
                 required={true}
               />
+              <TextArea
+                label="Description"
+                name="description"
+                errors={errors}
+                validationSchema={{
+                  required: "Description is required",
+                  maxLength: {
+                    value: 100,
+                    message: "Description should be less than 100 characters",
+                  },
+                }}
+                register={register}
+                required={true}
+              ></TextArea>
               <NormalInput
                 label={"Activty Date"}
                 name={"operation_date"}
@@ -604,34 +690,9 @@ export function Cage() {
                 type={"date"}
                 required={true}
               />
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-lg">Item Name*</span>
-                </label>
-                <SearchInput
-                  label="Selected Item"
-                  type="text"
-                  register={register}
-                  name="item_name"
-                  errors={errors}
-                  validationSchema={{
-                    required: "Item is required",
-                  }}
-                  required={true}
-                  showModal={showModal}
-                  disabled={watch("activity") == ""}
-                />
-
-                <ErrorMessage
-                  errors={errors}
-                  name="item_id"
-                  render={({ message }) => (
-                    <p className="mt-2 text-sm  text-error">
-                      <span className="font-medium">{message}</span>{" "}
-                    </p>
-                  )}
-                />
-              </div>
+              <label htmlFor="Items" className="btn mt-2 mb-2">
+                Add Items
+              </label>
             </div>
             <div className="card-actions mt-4">
               <button
@@ -642,7 +703,6 @@ export function Cage() {
                 onClick={async () => {
                   const result = await trigger([
                     "display",
-                    "item_id",
                     "operation_date",
                     "pig_id",
                     "activity",
@@ -651,9 +711,7 @@ export function Cage() {
                     toast.warning("Check form inputs for errors");
                     return false;
                   }
-                  const item_id: any = watch("item_id");
-                  const item_name = watch("item_name");
-                  if (watchItemName != "") {
+                  if (usingItem.length !== 0) {
                     setActivityList([
                       {
                         pig_id: watch("pig_id"),
@@ -663,32 +721,21 @@ export function Cage() {
                       setUseItem([
                         ...useItem,
                         {
-                          title: `${
-                            activity !== undefined
-                              ? activity.find(
-                                  (item: any) => item.value == watchActivity
-                                )?.display
-                              : ""
-                          } of ${item_name} AM`,
+                          title: `${watch("description")} AM`,
                           start: new Date(watchOperationDate),
-                          item_id: item_id,
+                          items: usingItem,
                           activity: watchActivity,
                           data_time: "AM",
+                          description: watch("description"),
                           id: stringGenerator(),
                         },
                         {
-                          title: `${
-                            activity !== undefined
-                              ? activity.find(
-                                  (item: any) => item.value == watchActivity
-                                )?.display
-                              : ""
-                          } of ${item_name} PM`,
+                          title: `${watch("description")} PM`,
                           start: new Date(watchOperationDate),
-                          item_id: item_id,
+                          items: usingItem,
                           activity: watchActivity,
                           data_time: "PM",
-
+                          description: watch("description"),
                           id: stringGenerator(),
                         },
                       ]);
@@ -696,27 +743,18 @@ export function Cage() {
                       setUseItem([
                         ...useItem,
                         {
-                          title: `${
-                            activity !== undefined
-                              ? activity.find(
-                                  (item: any) => item.value == watchActivity
-                                )?.display
-                              : ""
-                          } of ${item_name} `,
+                          title: `${watch("description")}  `,
                           start: new Date(watchOperationDate),
-                          item_id: item_id,
+                          items: usingItem,
                           activity: watchActivity,
+                          description: watch("description"),
                           data_time: undefined,
                           id: stringGenerator(),
                         },
                       ]);
                     }
-                    setValue("item_id", "", {
-                      shouldValidate: false,
-                    });
-                    setValue("item_name", "", {
-                      shouldValidate: false,
-                    });
+
+                    setUsingItem([]);
                     setValue("activity", "", {
                       shouldValidate: false,
                     });
@@ -724,12 +762,7 @@ export function Cage() {
                       shouldValidate: false,
                     });
                   } else {
-                    setValue("item_id", "", {
-                      shouldValidate: false,
-                    });
-                    setValue("item_name", "", {
-                      shouldValidate: false,
-                    });
+                    setUsingItem([]);
                     setValue("activity", "", {
                       shouldValidate: false,
                     });
@@ -762,11 +795,11 @@ export function Cage() {
                 }}
                 className="btn mx-4"
               >
-                Reset
+                Clear
               </button>
             </div>
           </form>
-        ) : watchActivity == "2" ? (
+        ) : watchScheduleType == "2" ? (
           <form
             onSubmit={handleSubmitPlan(onSubmit)}
             method="post"
@@ -853,6 +886,7 @@ export function Cage() {
                 )
               ) {
                 info.event.remove(info.event.id);
+                setUseItem(useItem.filter((item) => item.id != info.event.id));
               }
             }}
             dateClick={(info: any) => {

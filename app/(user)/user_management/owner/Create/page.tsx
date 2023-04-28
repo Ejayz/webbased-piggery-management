@@ -235,11 +235,6 @@ export default function Page() {
                           disabled: false,
                         },
                         {
-                          value: "owner",
-                          display: "Owner",
-                          disabled: false,
-                        },
-                        {
                           value: "veterinarian",
                           display: "Veterinarian",
                           disabled: false,
@@ -262,7 +257,7 @@ export default function Page() {
                       onClick={resetState}
                       className="btn mx-4"
                     >
-                      Reset
+                      Clear
                     </button>
                   </div>
                 </form>

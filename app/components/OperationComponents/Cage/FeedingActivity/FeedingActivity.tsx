@@ -53,6 +53,8 @@ export default function FeedingActivity() {
     sortorder: "desc",
     keyword: "",
   });
+  const [OpData, setOperationData] = useState<any[]>([]);
+
   const [parsed, setParsed] = useState<any[]>([]);
   const [colsData, setColsData] = ["username", "name", "job", "phone"];
   const colsName = ["username", "name", "job", "phone"];
@@ -80,7 +82,7 @@ export default function FeedingActivity() {
             ...prev,
             {
               id: item.operation_id,
-              title: `${item.operation_name} ${item.item_name} ${item.am_pm} `,
+              title: `${item.description} ${item.am_pm} `,
               start: item.operation_date,
               backgroundColor:
                 DateTime.fromISO(item.operation_date).diffNow("days").days <
@@ -174,6 +176,29 @@ export default function FeedingActivity() {
       OperationDataRefetch();
     }
   }, [submitable?.operation_id]);
+
+  useEffect(() => {
+    setOperationData([]);
+    if (OperationData) {
+      if (OperationData.data) {
+        console.log(OperationData.data);
+        OperationData.data.map((item: any) => {
+          setOperationData([
+            ...OpData,
+            {
+              operation_details_id: item.operation_item_details_id,
+              operation_id: item.operation_id,
+              item_id: item.item_id,
+              item_name: item.item_name,
+              quantity: 0,
+              totalStocks: item.closing_quantity,
+              item_net_weight_unit: item.item_net_weight_unit,
+            },
+          ]);
+        });
+      }
+    }
+  }, [OperationData]);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -226,35 +251,53 @@ export default function FeedingActivity() {
                     </span>
                     <span>{OperationData?.data[0].am_pm}</span>
                   </div>
-                  <div className="w-full flex flex-row">
-                    <span className="text-md font-bold font-mono w-5/12">
-                      Item:
-                    </span>
-                    <span>{OperationData?.data[0].item_name}</span>
-                  </div>
-                  <RightDisplay
-                    name="item_quantity"
-                    label={"Item Quantity"}
-                    type={"number"}
-                    register={register}
-                    errors={errors}
-                    item_unit={OperationData?.data[0].item_net_weight_unit
-                    }
-                    required={true}
-                    validationSchema={{
-                      required: "This field is required",
-                    }}
-                  />
+                  {OpData.length < 0 ? (
+                    <></>
+                  ) : (
+                    OpData.map((item: any, key: number) => {
+                      return (
+                        <>
+                          <div className="w-full flex flex-row">
+                            <span className="text-md font-bold font-mono w-5/12">
+                              Item:
+                            </span>
+                            <span>{item.item_name}</span>
+                          </div>
+                          <div className="w-full flex flex-row">
+                            <span className="text-md font-bold font-mono w-5/12">
+                              Stocks:
+                            </span>
+                            <span>{`${item.totalStocks} ${item.item_net_weight_unit}`}</span>
+                          </div>
+                          <RightDisplay
+                            name="item_quantity"
+                            label={"Item Quantity"}
+                            type={"number"}
+                            register={register}
+                            item_unit={item.item_net_weight_unit}
+                            required={true}
+                            value={item.quantity}
+                            setValue={setOperationData}
+                            index={key}
+                          />
+                        </>
+                      );
+                    })
+                  )}
                 </div>
                 <div className=" justify-end mt-4 ">
                   <button
                     className={"btn btn-warning "}
                     onClick={async () => {
-                      const isAllowed = await trigger("item_quantity");
+                      let isAllowed = true;
+                      OpData.map((item: any) => {
+                        if (item.quantity == 0 || item.quantity == "") {
+                          isAllowed = false;
+                        }
+                      });
                       if (isAllowed) {
                         const returned = await ConfirmIndividualSchedule(
-                          submitable?.operation_id,
-                          watchQuantity
+                          OpData
                         );
                         if (returned.code == 200) {
                           getData(undefined);
@@ -263,9 +306,14 @@ export default function FeedingActivity() {
                           setValue("item_quantity", "");
                           toast.success(returned.message);
                           setPrevInfo(undefined);
+                          setOperationData([]);
                         } else {
                           toast.error(returned.message);
                         }
+                      } else {
+                        toast.error(
+                          "Please fill up all the fields.0 Quantity is not allowed"
+                        );
                       }
                     }}
                   >

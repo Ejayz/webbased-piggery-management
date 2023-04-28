@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-
+import Image from "next/image";
 interface Cage {
   cage_name: String;
   cage_type: String;
@@ -205,12 +205,19 @@ export default function Page() {
                         <td className="flex">
                           <div className="flex gap-2 flex-row mx-auto">
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-warning"
                               href={{
                                 pathname: "/pig_management/worker/Update",
-                                query: { id: item.pig_id },
+                                query: { id: `${item.pig_id}` },
                               }}
                             >
+                              <Image
+                                src="/assets/table/edit.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               Update
                             </Link>
 
@@ -218,19 +225,33 @@ export default function Page() {
                               className="btn btn-sm btn-primary"
                               href={{
                                 pathname: "/pig_management/worker/View",
-                                query: { id: item.pig_id },
+                                query: { id: `${item.pig_id}` },
                               }}
                             >
+                              <Image
+                                src="/assets/table/view.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               View
                             </Link>
 
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-error"
                               href={{
                                 pathname: "/pig_management/worker/Remove",
-                                query: { id: item.pig_id },
+                                query: { id: `${item.pig_id}` },
                               }}
                             >
+                              <Image
+                                src="/assets/table/remove.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               Remove
                             </Link>
                           </div>

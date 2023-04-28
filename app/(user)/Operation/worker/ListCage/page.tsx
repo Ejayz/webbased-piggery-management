@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-
+import Image from "next/image";
 interface User {
   user_id: number;
   username: string;
@@ -192,7 +192,14 @@ export default function Page() {
                               query: { id: item.cage_id },
                             }}
                           >
-                            View Activities
+                            <Image
+                              src="/assets/table/view.svg"
+                              height={520}
+                              width={520}
+                              alt={""}
+                              className="mx-auto w-6 h-6"
+                            ></Image>
+                            View
                           </Link>
                         </div>
                       </td>

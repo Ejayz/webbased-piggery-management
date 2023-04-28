@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 export default function Page() {
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
@@ -171,32 +172,53 @@ export default function Page() {
                         <td className="flex flex-col">
                           <div className="flex flex-row ">
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-warning mx-2"
                               href={{
                                 pathname: "/cage_management/worker/Update",
                                 query: { id: item.cage_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/edit.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               Update
                             </Link>
-                            <div className="divider divider-horizontal"></div>
+
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-primary mx-2"
                               href={{
                                 pathname: "/cage_management/worker/View",
                                 query: { id: item.cage_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/view.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               View
                             </Link>
-                            <div className="divider divider-horizontal"></div>
+
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-error mx-2"
                               href={{
                                 pathname: "/cage_management/worker/Remove",
                                 query: { id: item.cage_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/remove.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               Remove
                             </Link>
                           </div>

@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="navbar text-base-content bg-white w-full h-1/12">
+      <div className="navbar text-base-content bg-transparent w-full h-1/12">
         <div className="flex-none">
           <a className="btn btn-ghost normal-case text-base-content text-2xl">
             RVM Hog Farm

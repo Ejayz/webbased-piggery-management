@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 export default function Page() {
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
@@ -145,8 +146,6 @@ export default function Page() {
                   <th>Item Name</th>
                   <th>Item Description</th>
                   <th>Category Name</th>
-                  <th>Total Stocks Available</th>
-                  <th>Item Unit</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -165,17 +164,22 @@ export default function Page() {
                         <td>{item.item_name}</td>
                         <td>{item.item_description}</td>
                         <td>{item.category_name}</td>
-                        <td>{item.item_left}</td>
-                        <td>{item.item_unit}</td>
                         <td className="flex">
-                          <div className="flex flex-row gap-2 mx-auto">
+                          <div className="flex flex-row gap-2">
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-warning"
                               href={{
                                 pathname: "/inventory_management/worker/Update",
                                 query: { id: item.item_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/edit.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-2 w-6 h-6"
+                              ></Image>
                               Update
                             </Link>
                             <Link
@@ -185,15 +189,29 @@ export default function Page() {
                                 query: { id: item.item_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/view.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-2 w-6 h-6"
+                              ></Image>
                               View
                             </Link>
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-error"
                               href={{
                                 pathname: "/inventory_management/worker/Remove",
                                 query: { id: item.item_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/remove.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-2 w-6 h-6"
+                              ></Image>
                               Remove
                             </Link>
                           </div>

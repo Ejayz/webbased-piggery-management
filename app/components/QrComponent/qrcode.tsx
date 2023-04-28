@@ -50,9 +50,7 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
 
   useEffect(() => {
     html5QrCode = new Html5Qrcode("QrCode");
-
     if (choosen !== "") {
-      setIsStart(true);
       html5QrCode
         .start(
           choosen,
@@ -69,7 +67,7 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
         .catch((err: any) => {});
       console.log(html5QrCode);
     } else {
-      if (isStart) {
+      if (choosen == "") {
         html5QrCode.clear();
       }
     }

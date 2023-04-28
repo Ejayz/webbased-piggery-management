@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandlerFormData";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 import { DateTime } from "luxon";
 import fildeHandler from "../../fileHandler";
 import { fileURLToPath } from "url";
@@ -30,14 +30,15 @@ export default async function handler(
 
     const filePath = data.filePath;
     const fields = JSON.parse(data.fields.fields);
-
+    const insertRestocks = await insertRestock(conn, filePath, user_id);
     const insertOps = await Ops(conn, filePath, fields, user_id);
     if (insertOps == 200) {
       const insertDetails = await insertStockCardDetails(
         conn,
         filePath,
         fields,
-        user_id
+        user_id,
+        insertRestocks
       );
       if (insertDetails == 200) {
         return res.status(200).json({
@@ -67,6 +68,18 @@ export default async function handler(
   }
 }
 
+async function insertRestock(conn: any, filePath: any, user_id: any) {
+  const restockDate = DateTime.now().setZone("Asia/Manila").toISODate();
+  const insertRestock =
+    "INSERT INTO tbl_restock (restock_date,attachment,user_id) VALUES (?,?,?)";
+  const [insertRestockResult]: any = await conn.query(insertRestock, [
+    restockDate,
+    filePath,
+    user_id,
+  ]);
+  return insertRestockResult.insertId;
+}
+//Create stock card
 async function Ops(conn: any, filePath: any, fields: any, user_id: any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
   console.log(date);
@@ -107,11 +120,13 @@ async function Ops(conn: any, filePath: any, fields: any, user_id: any) {
   }
 }
 
+//Insert stock card details
 async function insertStockCardDetails(
   conn: any,
   filePath: any,
   fields: any,
-  user_id: any
+  user_id: any,
+  restock_id: any
 ) {
   await conn.beginTransaction();
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
@@ -129,10 +144,15 @@ async function insertStockCardDetails(
         const closingQuantity = stockCardIdResult[0].closing_quantity;
         const createStockCardDetails =
           "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,expiration_date,attachment) VALUES (?,?,?,?,?,?)";
+        const createRestockDetails =
+          "insert into tbl_restock_details (restock_id,item_id,quantity) values (?,?,?)";
+        const [createRestockDetailsResult]: any = await conn.query(
+          createRestockDetails,
+          [restock_id, field.item_id, field.quantity]
+        );
         let calculated_quantity: number =
           parseInt(field.quantity) * parseInt(field.item_net_weight);
         const total_quantity = calculated_quantity + parseInt(closingQuantity);
-
         const [createStockCardDetailsResult]: any = await conn.query(
           createStockCardDetails,
           [

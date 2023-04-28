@@ -37,7 +37,7 @@ export default function RootLayout({
       <html className="overflow-x-hidden overflow-y-scroll h-screen w-screen lg:overflow-y-auto bg-base">
         <Head title={"Login"}></Head>
         <body>
-          <div className="w-screen h-screen overflow-y-scroll overflow-x-hidden bg-pig  flex flex-col">
+          <div className="w-screen h-screen min-h-screen overflow-y-scroll lg:overflow-y-hidden overflow-x-hidden bg-pig  flex flex-col">
             <ToastContainer
               position="top-right"
               autoClose={5000}
@@ -52,9 +52,9 @@ export default function RootLayout({
             />
             <Navbar></Navbar>
             {children}
-          </div>{" "}
-          <div>
-            <Footer></Footer>
+            <div className="mb-0 mt-auto">
+              <Footer></Footer>
+            </div>
           </div>
         </body>
         {/* <Script src="/sw.js"></Script> */}

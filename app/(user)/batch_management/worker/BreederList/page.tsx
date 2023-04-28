@@ -2,10 +2,11 @@
 import Table from "@/components/TableBody/Table";
 import { getData, Search, sortData } from "@/hooks/usePigManagement";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function Page() {
   const [parsed, setParsed] = useState([]);
@@ -17,6 +18,7 @@ export default function Page() {
   const [page, setPage] = useState(1);
   const msg = useSearchParams().get("msg");
   const status = useSearchParams().get("status");
+  const router = useRouter();
 
   const { error, isLoading, isFetching, data, refetch } = useQuery(
     "cage",
@@ -27,7 +29,9 @@ export default function Page() {
       let response = await fetch(
         `${
           location.origin
-        }/api/get/BatchManagement/${page}/?&filters=${JSON.stringify(filter)}`,
+        }/api/get/BatchManagement/Breeder/${page}/?&filters=${JSON.stringify(
+          filter
+        )}`,
         {
           method: "GET",
           headers: headersList,
@@ -110,8 +114,6 @@ export default function Page() {
               value={filter.sortby}
             >
               <option value="batch_name">Batch Name</option>
-              <option value="sow_id">Sow</option>
-              <option value="boar_id">Boar</option>
               <option value="batch_capacity">Total Pigs</option>
             </select>
             <div className="form-control my-auto text-base-content mx-2">
@@ -164,10 +166,8 @@ export default function Page() {
                 <tr>
                   <th></th>
                   <th>Batch Name</th>
-                  <th>Sow</th>
-                  <th>Boar</th>
                   <th>Total Pig</th>
-                  {/* <th>Action</th> */}
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -183,42 +183,59 @@ export default function Page() {
                       <tr key={key} className="hover">
                         <th>{key + 1}</th>
                         <td>{item.batch_name}</td>
-                        <td>{item.sow_id != null ? item.sow_id : "N/A"}</td>
-                        <td>{item.boar_id != null ? item.boar_id : "N/A"}</td>
                         <td>{item.batch_capacity}</td>
-                        {/* <td className="flex">
-                        <div className="flex flex-row mx-auto">
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/Update",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            Update
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/View",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            View
-                          </Link>
-                          <div className="divider divider-horizontal"></div>
-                          <Link
-                            className="btn btn-sm btn-primary"
-                            href={{
-                              pathname: "/pig_management/worker/Remove",
-                              query: { id: item.pig_id },
-                            }}
-                          >
-                            Remove
-                          </Link>
-                        </div>
-                      </td> */}
+                        <td className="flex">
+                          <div className="flex flex-row ">
+                            {/* <Link
+                              className="btn btn-sm btn-warning mx-2"
+                              href={{
+                                pathname: "/pig_management/worker/View",
+                                query: { id: item.pig_id },
+                              }}
+                            >
+                              <Image
+                                src="/assets/table/edit.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
+                              Update
+                            </Link> */}
+                            <Link
+                              className="btn btn-sm btn-primary mx-2"
+                              href={{
+                                pathname: `/batch_management/worker/BreederList/View/${item.batch_id}`,
+                              }}
+                            >
+                              <Image
+                                src="/assets/table/view.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
+                              View
+                            </Link>
+                            {/* <Link
+                              className="btn btn-sm btn-error mx-2"
+                              href={{
+                                pathname: "/pig_management/worker/Remove",
+                                query: { id: item.pig_id },
+                              }}
+                            >
+                              {" "}
+                              <Image
+                                src="/assets/table/remove.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
+                              Remove
+                            </Link> */}
+                          </div>
+                        </td>
                       </tr>
                     );
                   })

@@ -339,11 +339,6 @@ export default function Page({ params }: any) {
                       disabled: Action == "View" || Action == "Remove",
                     },
                     {
-                      value: "owner",
-                      display: "Owner",
-                      disabled: Action == "View" || Action == "Remove",
-                    },
-                    {
                       value: "veterinarian",
                       display: "Veterinarian",
                       disabled: Action == "View" || Action == "Remove",

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -49,7 +49,7 @@ async function UpdateCage(
         ]);
         const getCageCapacity = sqlSelectCageResult[0].cage_capacity;
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,cage_id,am_pm,total_patient,user_id) values (?,?,?,?,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,cage_id,am_pm,total_patient,user_id,description) values (?,?,?,?,?,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
@@ -57,19 +57,51 @@ async function UpdateCage(
           item.data_time,
           getCageCapacity,
           user_id,
+          item.description,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
-        const data2: any = await InsertOperationItemDetail(
-          conn,
-          item.item_id,
-          lastInsertedData
-        );
+        if (item.items != undefined) {
+          const data2: any = await InsertOperationItemDetails(
+            conn,
+            item.items,
+            lastInsertedData
+          );
+        } else {
+          const data2: any = await InsertOperationItemDetail(
+            conn,
+            item.item_id,
+            lastInsertedData
+          );
+        }
       })
     );
     conn.commit();
     return "something";
   } catch (error) {
     conn.rollback();
+    console.log(error);
+    return error;
+  }
+}
+
+async function InsertOperationItemDetails(
+  conn: any,
+  items: any,
+  operation_id: any
+) {
+  try {
+    await Promise.all(
+      items.map(async (item: any) => {
+        const insertOperationItemDetail =
+          "insert into tbl_operation_item_details (operation_id,item_id) values (?,?)";
+        const [sqlInsertResult]: any = await conn.query(
+          insertOperationItemDetail,
+          [operation_id, item.item_id]
+        );
+      })
+    );
+    return 200;
+  } catch (error) {
     console.log(error);
     return error;
   }

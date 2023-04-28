@@ -48,6 +48,7 @@ export default function Page({ params }: any) {
   const [cage, setCage] = useState<any[]>([]);
   const [tabs, setTabs] = useState<any>(0);
   const [page, setPage] = useState<any>(1);
+  console.log(id);
   const {
     register,
     handleSubmit,

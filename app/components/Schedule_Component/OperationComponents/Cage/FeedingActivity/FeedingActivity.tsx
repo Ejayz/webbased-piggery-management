@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { getExtendProps } from "@/hooks/useSched";
+import Loading from "@/components/Loading/loading";
 
 interface User {
   user_id: number;
@@ -174,6 +175,30 @@ export default function FeedingActivity() {
       OperationDataRefetch();
     }
   }, [submitable?.operation_id]);
+  const [OpData, setOperationData] = useState<any[]>([]);
+
+  useEffect(() => {
+    setOperationData([]);
+    if (OperationData) {
+      if (OperationData.data) {
+        console.log(OperationData.data);
+        OperationData.data.map((item: any) => {
+          setOperationData([
+            ...OpData,
+            {
+              operation_details_id: item.operation_details_id,
+              operation_id: item.operation_id,
+              item_id: item.item_id,
+              item_name: item.item_name,
+              quantity: 0,
+              totalStocks: item.closing_quantity,
+              item_net_weight_unit: item.item_net_weight_unit,
+            },
+          ]);
+        });
+      }
+    }
+  }, [OperationData]);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -226,34 +251,53 @@ export default function FeedingActivity() {
                     </span>
                     <span>{OperationData?.data[0].am_pm}</span>
                   </div>
-                  <div className="w-full flex flex-row">
-                    <span className="text-md font-bold font-mono w-5/12">
-                      Item:
-                    </span>
-                    <span>{OperationData?.data[0].item_name}</span>
-                  </div>
-                  <RightDisplay
-                    name="item_quantity"
-                    label={"Item Quantity"}
-                    type={"number"}
-                    register={register}
-                    errors={errors}
-                    item_unit={OperationData?.data[0].item_unit}
-                    required={true}
-                    validationSchema={{
-                      required: "This field is required",
-                    }}
-                  />
+                  {OpData.length < 0 ? (
+                    <></>
+                  ) : (
+                    OpData.map((item: any, key: number) => {
+                      return (
+                        <>
+                          <div className="w-full flex flex-row">
+                            <span className="text-md font-bold font-mono w-5/12">
+                              Item:
+                            </span>
+                            <span>{item.item_name}</span>
+                          </div>
+                          <div className="w-full flex flex-row">
+                            <span className="text-md font-bold font-mono w-5/12">
+                              Stocks:
+                            </span>
+                            <span>{`${item.totalStocks} ${item.item_net_weight_unit}`}</span>
+                          </div>
+                          <RightDisplay
+                            name="item_quantity"
+                            label={"Item Quantity"}
+                            type={"number"}
+                            register={register}
+                            item_unit={item.item_net_weight_unit}
+                            required={true}
+                            value={item.quantity}
+                            setValue={setOperationData}
+                            index={key}
+                          />
+                        </>
+                      );
+                    })
+                  )}
                 </div>
                 <div className=" justify-end mt-4 ">
                   <button
                     className={"btn btn-primary "}
                     onClick={async () => {
-                      const isAllowed = await trigger("item_quantity");
+                      let isAllowed = true;
+                      OpData.map((item: any) => {
+                        if (item.quantity == 0 || item.quantity == "") {
+                          isAllowed = false;
+                        }
+                      });
                       if (isAllowed) {
                         const returned = await ConfirmIndividualSchedule(
-                          submitable?.operation_id,
-                          watchQuantity
+                          OpData
                         );
                         if (returned.code == 200) {
                           getData(undefined);
@@ -262,6 +306,7 @@ export default function FeedingActivity() {
                           setValue("item_quantity", "");
                           toast.success(returned.message);
                           setPrevInfo(undefined);
+                          setOperationData([]);
                         } else {
                           toast.error(returned.message);
                         }
@@ -311,59 +356,64 @@ export default function FeedingActivity() {
                   <span className="text-sm mx-auto">Today</span>
                 </div>
               </div>
-              <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialDate={new Date()}
-                initialView="dayGridMonth"
-                fixedWeekCount={true}
-                eventClick={(info: any) => {
-                  const data = getExtendProps(info);
-                  if (data.date_diff < -1) {
-                    toast.error("Cannot edit past due operation");
-                    return;
-                  }
-                  if (data.date_diff > 0) {
-                    toast.error("Cannot edit future pending operation");
-                    return;
-                  }
-                  if (data.status != "pending") {
-                    toast.error(
-                      "Interaction with confirmed operation is not permitted."
-                    );
-                    return;
-                  }
-                  if (prevInfo == null) {
-                    setPrevInfo({
-                      prevColor: info.el.style.backgroundColor,
-                      info: info,
-                    });
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  } else {
-                    if (prevInfo.info.event.id != info.event.id) {
+              {isFetching || isLoading ? (
+                <Loading></Loading>
+              ) : (
+                <FullCalendar
+                  plugins={[dayGridPlugin, interactionPlugin]}
+                  initialDate={new Date()}
+                  initialView="dayGridMonth"
+                  fixedWeekCount={true}
+                  eventClick={(info: any) => {
+                    const data = getExtendProps(info);
+                    if (data.date_diff < -1) {
+                      toast.error("Cannot edit past due operation");
+                      return;
+                    }
+                    if (data.date_diff > 0) {
+                      toast.error("Cannot edit future pending operation");
+                      return;
+                    }
+                    if (data.status != "pending") {
+                      toast.error(
+                        "Interaction with confirmed operation is not permitted."
+                      );
+                      return;
+                    }
+                    if (prevInfo == null) {
                       setPrevInfo({
                         prevColor: info.el.style.backgroundColor,
                         info: info,
                       });
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
+                    } else {
+                      if (prevInfo.info.event.id != info.event.id) {
+                        setPrevInfo({
+                          prevColor: info.el.style.backgroundColor,
+                          info: info,
+                        });
+                      }
+                      prevInfo.info.el.style.backgroundColor =
+                        prevInfo.prevColor;
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
                     }
-                    prevInfo.info.el.style.backgroundColor = prevInfo.prevColor;
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  }
-                  getData({
-                    item_id: "",
-                    item_quantity: "",
-                    batch_id: "",
-                    operation_id: data.id,
-                    item_unit: "",
-                  });
-                }}
-                dayHeaders={true}
-                events={parsed}
-                eventDisplay="block"
-                dayMaxEvents={true}
-                displayEventTime={false}
-              />
+                    getData({
+                      item_id: "",
+                      item_quantity: "",
+                      batch_id: "",
+                      operation_id: data.id,
+                      item_unit: "",
+                    });
+                  }}
+                  dayHeaders={true}
+                  events={parsed}
+                  eventDisplay="block"
+                  dayMaxEvents={true}
+                  displayEventTime={false}
+                />
+              )}
             </div>
           </div>
         </div>
