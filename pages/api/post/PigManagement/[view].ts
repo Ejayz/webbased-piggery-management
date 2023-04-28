@@ -11,6 +11,7 @@ export default async function handler(
     return false;
   }
   const { view } = req.query;
+  console.log(view)
   try {
     const data: any = await Ops(view);
 

@@ -11,6 +11,7 @@ export default async function handler(
     return false;
   }
   const { page, filters }: any = req.query;
+  
   const { sortby, sortorder, keyword }: any = JSON.parse(filters);
   if (page == "0") {
     return res

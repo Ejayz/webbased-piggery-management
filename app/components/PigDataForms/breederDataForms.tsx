@@ -111,7 +111,7 @@ export default function ({
   useEffect(() => {
     async function generate() {
       breedRefetch();
-      const returned = await IdGenerator(`Breeder#${pigData.length}`, batch_num);
+      const returned = await IdGenerator(`Breeder${pigData.length}`, batch_num);
       setValue("pig_id", returned);
     }
     generate();
@@ -185,7 +185,7 @@ export default function ({
   }, [clear]);
   useEffect(() => {
     async function generate() {
-      const returned = await IdGenerator(`Breeder#${pigData.length}`, batch_num);
+      const returned = await IdGenerator(`Breeder${pigData.length}`, batch_num);
       setValue("pig_id", returned);
     }
     generate();

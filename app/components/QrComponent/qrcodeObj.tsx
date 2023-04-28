@@ -6,11 +6,9 @@ import { useEffect, useState } from "react";
 export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
   const [camera, setCamera] = useState<CameraDevice[] | undefined>();
   const [choosen, setChoose] = useState("");
-  const [isStart, setIsStart] = useState(false);
 
   function onScanSuccess(decodedText: any, decodedResult: any) {
-    // handle the scanned code as you like, for example:
-    console.log(`Code matched = ${decodedText}`, decodedResult);
+    html5QrCode.stop();
   }
 
   function onScanFailure(error: any) {
@@ -33,7 +31,7 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
         });
     }
   }, [hide]);
-
+  console.log(ActionMaker);
   useEffect(() => {
     Html5Qrcode.getCameras()
       .then((devices) => {
@@ -59,17 +57,16 @@ export default function QrCode({ setter, setHide, hide, ActionMaker }: any) {
             qrbox: { width: 500, height: 500 }, // Optional, if you want bounded box UI
           },
           (decodedText: any, decodedResult: any) => {
-            setter(ActionMaker, decodedText);
-            setHide(false);
+            setter(hide.type, decodedText);
+            setHide({ hide: false, type: hide.type });
+            html5QrCode.stop();
           },
           (errorMessage: any) => {}
         )
         .catch((err: any) => {});
       console.log(html5QrCode);
     } else {
-      if (choosen == "") {
-        html5QrCode.clear();
-      }
+      html5QrCode.clear();
     }
   }, [choosen]);
 

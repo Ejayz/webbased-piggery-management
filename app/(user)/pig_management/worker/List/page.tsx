@@ -208,7 +208,7 @@ export default function Page() {
                               className="btn btn-sm btn-warning"
                               href={{
                                 pathname: "/pig_management/worker/Update",
-                                query: { id: item.pig_id },
+                                query: { id: `${item.pig_id}` },
                               }}
                             >
                               <Image
@@ -225,7 +225,7 @@ export default function Page() {
                               className="btn btn-sm btn-primary"
                               href={{
                                 pathname: "/pig_management/worker/View",
-                                query: { id: item.pig_id },
+                                query: { id: `${item.pig_id}` },
                               }}
                             >
                               <Image
@@ -242,7 +242,7 @@ export default function Page() {
                               className="btn btn-sm btn-error"
                               href={{
                                 pathname: "/pig_management/worker/Remove",
-                                query: { id: item.pig_id },
+                                query: { id: `${item.pig_id}` },
                               }}
                             >
                               <Image

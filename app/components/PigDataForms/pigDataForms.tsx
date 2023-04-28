@@ -168,7 +168,7 @@ export default function ({
   };
 
   const idSetter = async () => {
-    return await IdGenerator(`Piglet#${pigData.length}`, batch_num);
+    return await IdGenerator(`Piglet${pigData.length}`, batch_num);
   };
 
   const checkIsExist = async (cage_id: any) => {
