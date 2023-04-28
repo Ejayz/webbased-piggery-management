@@ -32,7 +32,7 @@ interface BatchData {
 }
 export default function Page() {
   const queryClient = useQueryClient();
-
+  const [batch_id, setBatchId] = useState("");
   const [allowed, setIsAllowed] = useState(false);
   const [pigData, setPigData] = useState<PigData[]>([]);
   const [batchData, setBatchData] = useState<BatchData>();
@@ -64,7 +64,7 @@ export default function Page() {
       batchData?.batch_id,
       batchData?.boar_id,
       batchData?.sow_id,
-      batchData?.pig_type,
+      "piglet",
       batchData?.birth_date,
       batchData?.breed_id,
       pigData,
@@ -131,6 +131,7 @@ export default function Page() {
                   showPigData={showPigData}
                   setBatchData={setBatchData}
                   clear={resset}
+                  setBatchId={setBatchId}
                 ></GeneralPigBatch>
 
                 <div className={`${showPigData ? "" : "hidden"}`}>
@@ -142,6 +143,7 @@ export default function Page() {
                     setPigData={setPigData}
                     clear={resset}
                     setResset={setResset}
+                    batch_num={batch_id}
                   ></PigDataForms>
                 </div>
                 <div>
@@ -168,7 +170,7 @@ export default function Page() {
                       type="button"
                       className="btn  "
                     >
-                      Reset
+                      Clear
                     </button>
                   </div>
                 </div>

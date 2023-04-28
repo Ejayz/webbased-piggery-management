@@ -37,6 +37,7 @@ export default function Page() {
         `${location.origin}/api/get/Reports/getVaccinationReports?from=${range.from}&to=${range.to}&type=${range.type}`
       );
       const data = await response.json();
+      console.log(data);
       if (data.code == 200) {
         if (data.data) {
           setItemList([]);
@@ -45,6 +46,11 @@ export default function Page() {
               return [
                 ...prev,
                 {
+                  age: `${
+                    DateTime.fromISO(item.operation_date).diff(
+                      DateTime.fromISO(item.birthdate)
+                    ).days
+                  } Days Old`,
                   item_name: item.item_name,
                   item_description: item.item_description,
                   type:
@@ -280,6 +286,10 @@ export default function Page() {
                                 displayName: "Operation Date",
                               },
                               {
+                                field: "age",
+                                displayName: "Age",
+                              },
+                              {
                                 field: "quantity",
                                 displayName: "Quantity",
                               },
@@ -359,6 +369,7 @@ export default function Page() {
                             <th>Item Name</th>
                             <th>Item Description</th>
                             <th>Type</th>
+                            <th>Age</th>
                             <th>Operation Date</th>
                             <th>Quantity</th>
                             <th>Status</th>
@@ -389,6 +400,7 @@ export default function Page() {
                                   <td>{data.item_name}</td>
                                   <td>{data.item_description}</td>
                                   <td>{data.type}</td>
+                                  <td>{data.age}</td>
                                   <td>{data.operation_date}</td>
                                   <td className="uppercase">{`${data.quantity}`}</td>
                                   <td>{data.status}</td>

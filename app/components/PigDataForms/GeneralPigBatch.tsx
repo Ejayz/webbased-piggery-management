@@ -16,6 +16,7 @@ export default function GeneralPigBatch({
   setShowPigData,
   showPigData,
   clear,
+  setBatchId,
 }: any) {
   const queryClient = useQueryClient();
   const {
@@ -68,6 +69,7 @@ export default function GeneralPigBatch({
         });
       });
       setValue("batch_id", batchid[0].batch_id + 1);
+      setBatchId(batchid[0].batch_id + 1);
       setValue("batch_name", `Batch ${batchid[0].batch_id + 1}`);
       sowlist.map((data: any, key: number) => {
         listSow.push({
@@ -171,23 +173,7 @@ export default function GeneralPigBatch({
             required: "This field is required",
           }}
         />
-        <SelectInput
-          name={"pig_type"}
-          label={"Pig Type"}
-          register={register}
-          errors={errors}
-          required={true}
-          options={[
-            {
-              value: "Piglet",
-              display: "Piglet",
-              disabled: false,
-            },
-          ]}
-          validationSchema={{
-            required: "This field is required",
-          }}
-        ></SelectInput>
+
         <NormalInput
           type={"date"}
           label={"Birth Date"}
@@ -207,7 +193,7 @@ export default function GeneralPigBatch({
       >
         <button className={`btn btn-active btn-info mx-4`}>Next</button>
         <button type="button" onClick={resetState} className="btn mx-4">
-          Reset
+          Clear
         </button>
       </div>
     </form>

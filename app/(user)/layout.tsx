@@ -748,7 +748,7 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <label
                           onClick={() => {
                             setToggleMenu(!toggleMenu);
-                            router.push("/batch_management/worker/List");
+                            router.push("/batch_management/worker/BreederList");
                           }}
                           htmlFor="my-drawer"
                         >
@@ -759,7 +759,25 @@ export default function User({ children }: { children: React.ReactNode }) {
                             height={512}
                             width={512}
                           ></Image>
-                          Batch List
+                          Breeder Batch List
+                        </label>
+                      </li>{" "}
+                      <li>
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
+                            router.push("/batch_management/worker/PigletList");
+                          }}
+                          htmlFor="my-drawer"
+                        >
+                          <Image
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Piglet Batch List
                         </label>
                       </li>
                     </div>

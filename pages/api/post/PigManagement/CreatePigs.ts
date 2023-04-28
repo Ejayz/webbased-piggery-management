@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -66,7 +66,7 @@ async function Ops(
   try {
     let batch_capacity = pigData.length;
     const insertBatch =
-      "insert into tbl_batch (batch_id,batch_name,boar_id,sow_id,batch_capacity,user_id) values(?,?,?,?,?,?)";
+      "insert into tbl_batch (batch_id,batch_name,boar_id,sow_id,batch_capacity,user_id,batch_type) values(?,?,?,?,?,?,'piglet')";
     await conn.query(insertBatch, [
       batch_id,
       batch_name,
@@ -75,6 +75,10 @@ async function Ops(
       batch_capacity,
       user_id,
     ]);
+    const [updateSelectableSow] = await conn.query(
+      "update tbl_pig set selectable=`selectable`+1 where pig_id=?",
+      [sow_id]
+    );
     pigData.map(async (value: any, key: number) => {
       const getCageCapacity =
         "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";

@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-
+import Image from "next/image";
 interface User {
   user_id: number;
   username: string;
@@ -196,12 +196,19 @@ export default function Page() {
                         <td className="flex">
                           <div className="flex flex-row mx-auto">
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-warning"
                               href={{
                                 pathname: "/user_management/owner/Update",
                                 query: { id: item.user_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/edit.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               Update
                             </Link>
                             <div className="divider divider-horizontal"></div>
@@ -212,16 +219,30 @@ export default function Page() {
                                 query: { id: item.user_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/view.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               View
                             </Link>
                             <div className="divider divider-horizontal"></div>
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-error"
                               href={{
                                 pathname: "/user_management/owner/Remove",
                                 query: { id: item.user_id },
                               }}
                             >
+                              <Image
+                                src="/assets/table/remove.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               Remove
                             </Link>
                           </div>

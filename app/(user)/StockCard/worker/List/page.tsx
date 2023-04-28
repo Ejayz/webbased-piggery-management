@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 export default function Page() {
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
@@ -167,6 +168,13 @@ export default function Page() {
                                 query: { card_num: 1 },
                               }}
                             >
+                              <Image
+                                src="/assets/table/edit.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
                               View
                             </Link>
                           </div>

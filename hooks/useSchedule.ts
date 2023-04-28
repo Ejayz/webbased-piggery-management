@@ -4,7 +4,7 @@ export const CreateIndividualSchedule = async (pig_id: any, item_list: any) => {
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
     "Content-Type": "application/json",
   };
-
+  console.log(item_list);
   let bodyContent = JSON.stringify({
     pig_id: pig_id,
     item_list: item_list,
@@ -20,10 +20,7 @@ export const CreateIndividualSchedule = async (pig_id: any, item_list: any) => {
   return data;
 };
 
-export const ConfirmIndividualSchedule = async (
-  operation_id: any,
-  quantity: any
-) => {
+export const ConfirmIndividualSchedule = async (OpData: any) => {
   let headersList = {
     Accept: "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -31,8 +28,7 @@ export const ConfirmIndividualSchedule = async (
   };
 
   let bodyContent = JSON.stringify({
-    operation_id: operation_id,
-    quantity: quantity,
+    OpData: OpData,
   });
 
   let response = await fetch("/api/post/Schedule/Confirm", {

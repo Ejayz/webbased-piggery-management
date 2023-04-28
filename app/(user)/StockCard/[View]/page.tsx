@@ -316,22 +316,14 @@ export default function Page({ params }: any) {
                               <th>{key + 1}</th>
                               <td>{item.type}</td>
                               <td className="uppercase">
-                                {(
-                                  parseFloat(item.transaction_quantity) /
-                                  parseFloat(
-                                    StockCardData.data[0].item_net_weight
-                                  )
-                                ).toFixed(2)}
-                                {` ${StockCardData.data[0].item_unit}`}
+                                {parseFloat(item.transaction_quantity).toFixed(
+                                  2
+                                )}
+                                {` ${StockCardData.data[0].item_net_weight_unit}`}
                               </td>
                               <td className="uppercase">
-                                {(
-                                  parseFloat(item.total_quantity) /
-                                  parseFloat(
-                                    StockCardData.data[0].item_net_weight
-                                  )
-                                ).toFixed(2)}
-                                {` ${StockCardData.data[0].item_unit}`}
+                                {parseFloat(item.total_quantity).toFixed(2)}
+                                {` ${StockCardData.data[0].item_net_weight_unit}`}
                               </td>
                               <td className="uppercase">
                                 {item.expiration_date == null
