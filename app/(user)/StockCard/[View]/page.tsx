@@ -72,6 +72,7 @@ export default function Page({ params }: any) {
   useEffect(() => {
     if (filter.stock_card_id !== "") {
       refetch();
+      StockCardRefetch();
     }
   }, [filter.sortby]);
   useEffect(() => {
@@ -82,12 +83,14 @@ export default function Page({ params }: any) {
   useEffect(() => {
     if (filter.keyword == "" && filter.stock_card_id !== "") {
       refetch();
+      StockCardRefetch();
     }
   }, [filter.keyword]);
 
   useEffect(() => {
     if (filter.stock_card_id !== "") {
       refetch();
+      StockCardRefetch();
     }
   }, [page]);
 
@@ -97,6 +100,7 @@ export default function Page({ params }: any) {
 
   useEffect(() => {
     if (filter.stock_card_id !== "" && StockCardFilter.stock_id !== "") {
+      StockCardRefetch();
       StockCardRefetch();
     }
   }, [StockCardFilter.stock_id]);
