@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { getExtendProps } from "@/hooks/useSched";
+import Loading from "@/components/Loading/loading";
 
 interface User {
   user_id: number;
@@ -359,59 +360,64 @@ export default function MedicineAdministration() {
                   <span className="text-sm mx-auto">Today</span>
                 </div>
               </div>
-              <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin]}
-                initialDate={new Date()}
-                initialView="dayGridMonth"
-                fixedWeekCount={true}
-                eventClick={(info: any) => {
-                  const data = getExtendProps(info);
-                  if (data.date_diff < -1) {
-                    toast.error("Cannot edit past due operation");
-                    return;
-                  }
-                  if (data.date_diff > 0) {
-                    toast.error("Cannot edit future pending operation");
-                    return;
-                  }
-                  if (data.status != "pending") {
-                    toast.error(
-                      "Interaction with confirmed operation is not permitted."
-                    );
-                    return;
-                  }
-                  if (prevInfo == null) {
-                    setPrevInfo({
-                      prevColor: info.el.style.backgroundColor,
-                      info: info,
-                    });
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  } else {
-                    if (prevInfo.info.event.id != info.event.id) {
+              {isFetching || isLoading ? (
+                <Loading></Loading>
+              ) : (
+                <FullCalendar
+                  plugins={[dayGridPlugin, interactionPlugin]}
+                  initialDate={new Date()}
+                  initialView="dayGridMonth"
+                  fixedWeekCount={true}
+                  eventClick={(info: any) => {
+                    const data = getExtendProps(info);
+                    if (data.date_diff < -1) {
+                      toast.error("Cannot edit past due operation");
+                      return;
+                    }
+                    if (data.date_diff > 0) {
+                      toast.error("Cannot edit future pending operation");
+                      return;
+                    }
+                    if (data.status != "pending") {
+                      toast.error(
+                        "Interaction with confirmed operation is not permitted."
+                      );
+                      return;
+                    }
+                    if (prevInfo == null) {
                       setPrevInfo({
                         prevColor: info.el.style.backgroundColor,
                         info: info,
                       });
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
+                    } else {
+                      if (prevInfo.info.event.id != info.event.id) {
+                        setPrevInfo({
+                          prevColor: info.el.style.backgroundColor,
+                          info: info,
+                        });
+                      }
+                      prevInfo.info.el.style.backgroundColor =
+                        prevInfo.prevColor;
+                      data.date_diff < 0 ? console.log(data) : console.log("");
+                      info.el.style.backgroundColor = "#9400D3";
                     }
-                    prevInfo.info.el.style.backgroundColor = prevInfo.prevColor;
-                    data.date_diff < 0 ? console.log(data) : console.log("");
-                    info.el.style.backgroundColor = "#9400D3";
-                  }
-                  getData({
-                    item_id: "",
-                    item_quantity: "",
-                    batch_id: "",
-                    operation_id: data.id,
-                    item_unit: "",
-                  });
-                }}
-                dayHeaders={true}
-                events={parsed}
-                eventDisplay="block"
-                dayMaxEvents={true}
-                displayEventTime={false}
-              />
+                    getData({
+                      item_id: "",
+                      item_quantity: "",
+                      batch_id: "",
+                      operation_id: data.id,
+                      item_unit: "",
+                    });
+                  }}
+                  dayHeaders={true}
+                  events={parsed}
+                  eventDisplay="block"
+                  dayMaxEvents={true}
+                  displayEventTime={false}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -196,7 +196,7 @@ export default function Page() {
                         <td className="flex">
                           <div className="flex flex-row mx-auto">
                             <Link
-                              className="btn btn-sm btn-warning"
+                              className="btn btn-sm btn-warning mx-2"
                               href={{
                                 pathname: "/user_management/owner/Update",
                                 query: { id: item.user_id },
@@ -211,9 +211,9 @@ export default function Page() {
                               ></Image>
                               Update
                             </Link>
-                            <div className="divider divider-horizontal"></div>
+                        
                             <Link
-                              className="btn btn-sm btn-primary"
+                              className="btn btn-sm btn-primary mx-2"
                               href={{
                                 pathname: "/user_management/owner/View",
                                 query: { id: item.user_id },
@@ -228,9 +228,9 @@ export default function Page() {
                               ></Image>
                               View
                             </Link>
-                            <div className="divider divider-horizontal"></div>
+                           
                             <Link
-                              className="btn btn-sm btn-error"
+                              className="btn btn-sm btn-error mx-2"
                               href={{
                                 pathname: "/user_management/owner/Remove",
                                 query: { id: item.user_id },
