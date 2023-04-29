@@ -210,10 +210,12 @@ export default function Page() {
                     </button>
                     <button
                       type="reset"
-                      onClick={resetState}
+                      onClick={() => {
+                        router.back();
+                      }}
                       className="btn mx-4"
                     >
-                      Clear
+                      Back
                     </button>
                   </div>
                 </form>

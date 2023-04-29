@@ -103,17 +103,7 @@ export default function Page() {
                   required: "This field is required",
                 }}
               ></PasswordInput>
-              <SelectInput
-                name={"job"}
-                label={"Job"}
-                register={register}
-                errors={errors}
-                required={true}
-                options={job_option}
-                validationSchema={{
-                  required: "This field is required",
-                }}
-              ></SelectInput>
+
               <div className="form-control">
                 <label className="label label-text">
                   <Link href="#" as={"/forgotpassword/verifysms"}>

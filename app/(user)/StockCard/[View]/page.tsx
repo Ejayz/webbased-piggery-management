@@ -96,12 +96,13 @@ export default function Page({ params }: any) {
 
   useEffect(() => {
     setStockCardFilterFilter({ ...StockCardFilter, stock_id: params.View });
+    refetch();
   }, [params.View]);
 
   useEffect(() => {
     if (filter.stock_card_id !== "" && StockCardFilter.stock_id !== "") {
       StockCardRefetch();
-      StockCardRefetch();
+      refetch();
     }
   }, [StockCardFilter.stock_id]);
 
@@ -112,6 +113,7 @@ export default function Page({ params }: any) {
           ...filter,
           stock_card_id: StockCardData.data[0].stock_card_id,
         });
+        refetch();
       }
     }
   }, [StockCardData]);
@@ -119,6 +121,7 @@ export default function Page({ params }: any) {
   useEffect(() => {
     if (filter.stock_card_id !== "") {
       refetch();
+      StockCardRefetch();
     }
   }, [filter.stock_card_id]);
 

@@ -188,7 +188,7 @@ export default function MedicineAdministration() {
               operation_id: item.operation_id,
               item_id: item.item_id,
               item_name: item.item_name,
-              quantity: 0,
+              quantity: "",
               totalStocks: item.closing_quantity,
               item_net_weight_unit: item.item_net_weight_unit,
             },
@@ -256,7 +256,10 @@ export default function MedicineAdministration() {
                   ) : (
                     OpData.map((item: any, key: number) => {
                       return (
-                        <>
+                        <div
+                          className="border-t-2 border-b-2 border-black py-2"
+                          key={key}
+                        >
                           <div className="w-full flex flex-row">
                             <span className="text-md font-bold font-mono w-5/12">
                               Item:
@@ -280,7 +283,7 @@ export default function MedicineAdministration() {
                             setValue={setOperationData}
                             index={key}
                           />
-                        </>
+                        </div>
                       );
                     })
                   )}
@@ -293,6 +296,13 @@ export default function MedicineAdministration() {
                       OpData.map((item: any) => {
                         if (item.quantity == 0 || item.quantity == "") {
                           isAllowed = false;
+                          toast.error("Item quantity cannot be empty");
+                        }
+                        if (item.quantity > item.totalStocks) {
+                          isAllowed = false;
+                          toast.error(
+                            "Item quantity cannot be greater than the total available stocks"
+                          );
                         }
                       });
                       if (isAllowed) {
@@ -397,6 +407,7 @@ export default function MedicineAdministration() {
                       data.date_diff < 0 ? console.log(data) : console.log("");
                       info.el.style.backgroundColor = "#9400D3";
                     }
+                    setOperationData([]);
                     getData({
                       item_id: "",
                       item_quantity: "",

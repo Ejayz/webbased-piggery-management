@@ -190,7 +190,7 @@ export default function FeedingActivity() {
               operation_id: item.operation_id,
               item_id: item.item_id,
               item_name: item.item_name,
-              quantity: 0,
+              quantity: "",
               totalStocks: item.closing_quantity,
               item_net_weight_unit: item.item_net_weight_unit,
             },

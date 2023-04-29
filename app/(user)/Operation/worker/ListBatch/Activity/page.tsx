@@ -38,9 +38,9 @@ export default function Page() {
               </button>
             </div>
             {tab == 0 ? (
-              <FeedingActivity />
+              <FeedingActivity key="1" />
             ) : tab == 1 ? (
-              <MedicineAdministration />
+              <MedicineAdministration key="2" />
             ) : (
               <></>
             )}

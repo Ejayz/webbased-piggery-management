@@ -21,7 +21,7 @@ export default function Page() {
       const response = await fetch(
         `${
           location.origin
-        }/api/get/InventoryManagement/${page}/?&filter=${JSON.stringify(
+        }/api/get/InventoryManagement/GetStockCard/${page}/?&filter=${JSON.stringify(
           filter
         )}`
       );
@@ -65,7 +65,7 @@ export default function Page() {
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
           <p className="text-2xl text-base-content my-auto p-4">
-            Inventory List
+            Destock List
           </p>
         </div>
 
@@ -144,7 +144,6 @@ export default function Page() {
                   <th>Item Description</th>
                   <th>Category Name</th>
                   <th>Total Stocks Available</th>
-                  <th>Item Unit</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -163,8 +162,7 @@ export default function Page() {
                         <td>{item.item_name}</td>
                         <td>{item.item_description}</td>
                         <td>{item.category_name}</td>
-                        <td>{item.item_left}</td>
-                        <td>{item.item_unit}</td>
+                        <td>{`${parseFloat(item.closing_quantity)/parseFloat(item.item_net_weight)} ${item.item_unit}`}</td>
                         <td className="flex">
                           <div className="flex flex-row mx-auto">
                             <Link

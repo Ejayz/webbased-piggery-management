@@ -133,10 +133,9 @@ export default function Page() {
                   clear={resset}
                   setBatchId={setBatchId}
                 ></GeneralPigBatch>
-
                 <div className={`${showPigData ? "" : "hidden"}`}>
                   <div className="flex flex-col w-full border-opacity-50">
-                    <div className="divider">Pig Details</div>
+                    <div className="divider text-2xl">Pig Details</div>
                   </div>
                   <PigDataForms
                     pigData={pigData}

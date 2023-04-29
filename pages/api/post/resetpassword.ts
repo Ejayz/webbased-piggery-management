@@ -23,7 +23,7 @@ export default async function handler(
   const { phone, username, password, job }: any = req.body;
   try {
     const hashedPass = await generateHased(password);
-    const data: any = await resetPassword(phone, username, hashedPass, job);
+    const data: any = await resetPassword(phone, username, hashedPass);
     if (data.affectedRows <= 0) {
       return res.status(404).json({
         code: 404,
@@ -46,16 +46,16 @@ async function resetPassword(
   phone: string,
   username: string,
   password: string,
-  job: string
+ 
 ) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "UPDATE `tbl_users` SET  `password`=? WHERE username=? and job=? and  phone=? and is_exist='true';";
+      "UPDATE `tbl_users` SET  `password`=? WHERE username=?  and  phone=? and is_exist='true';";
     const [err, result] = await conn.query(sql, [
       password,
       username,
-      job,
+    
       phone,
     ]);
     if (err) return err;

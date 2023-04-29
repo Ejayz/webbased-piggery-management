@@ -5,9 +5,11 @@ import Link from "next/link";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }: any) {
   const [page, setPage] = useState(1);
+  const router = useRouter();
   const { data, isLoading, isFetching, error, refetch } = useQuery(
     ["batch_data", params.ID !== undefined],
     async () => {
@@ -26,11 +28,13 @@ export default function Page({ params }: any) {
     return (
       <div className="w-full h-auto overflow-y-hidden">
         <div className="w-11/12  mx-auto flex flex-row">
-          <p className="text-2xl text-base-content my-auto p-4">Batch List</p>
+          <p className="text-2xl text-base-content my-auto p-4">
+            {data.data.batch_details[0].batch_name} List
+          </p>
         </div>
 
         <div className="w-full h-auto flex flex-col"></div>
-        <div className="overflow-x-auto mx-auto w-11/12">
+        <div className="overflow-x-auto mx-auto w-11/12 flex flex-col">
           <table className="table table-compact w-11/12  mx-auto  text-base-content">
             <thead>
               <tr>
@@ -69,6 +73,16 @@ export default function Page({ params }: any) {
               )}
             </tbody>
           </table>
+          <div className="justify-content ml-auto my-4">
+            <button
+              className="btn"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Back
+            </button>
+          </div>
         </div>
       </div>
     );

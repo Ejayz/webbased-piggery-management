@@ -16,6 +16,7 @@ import { DateTime } from "luxon";
 import QrCode from "../QrComponent/qrcode";
 import { stringGenerator } from "@/hooks/useStringGenerator";
 import Textarea from "@/components/FormCompsV2/TextArea";
+import DateMinMax from "../FormCompsV2/DateMinMax";
 
 interface activity_interface {
   value: string;
@@ -500,39 +501,46 @@ export function Individual() {
                   </tr>
                 </thead>
                 <tbody>
-                  {item_list.map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        {" "}
-                        <label
-                          onClick={() => {
-                            setUsingItem([...usingItem, item]);
+                  {item_list.map((item, index) => {
+                    if (
+                      usingItem.find((x) => x.item_id == item.item_id) ==
+                      undefined
+                    ) {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setUsingItem([...usingItem, item]);
+                                ItemsRefetch();
+                                showModal(false);
+                                searchItemReset();
+                              }}
+                              className="link underline hover:text-primary"
+                            >
+                              {item.item_name}
+                            </label>
+                          </td>
 
-                            showModal(false);
-                            searchItemReset();
-                          }}
-                          className="link underline hover:text-primary"
-                        >
-                          {item.item_name}
-                        </label>
-                      </td>
-
-                      <td>
-                        {" "}
-                        <label
-                          onClick={() => {
-                            setUsingItem([...usingItem, item]);
-
-                            showModal(false);
-                            searchItemReset();
-                          }}
-                          className="link underline hover:text-primary"
-                        >
-                          {item.item_description}
-                        </label>
-                      </td>
-                    </tr>
-                  ))}
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setUsingItem([...usingItem, item]);
+                                ItemsRefetch();
+                                showModal(false);
+                                searchItemReset();
+                              }}
+                              className="link underline hover:text-primary"
+                            >
+                              {item.item_description}
+                            </label>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  })}
                 </tbody>
               </table>
             </label>
@@ -748,7 +756,7 @@ export function Individual() {
                 register={register}
                 required={true}
               ></Textarea>
-              <NormalInput
+              <DateMinMax
                 label={"Activty Date"}
                 name={"operation_date"}
                 register={register}
@@ -758,6 +766,8 @@ export function Individual() {
                 }}
                 type={"date"}
                 required={true}
+                min={DateTime.now().toISODate()}
+                max={DateTime.now().plus({ months: 6 }).toISODate()}
               />
               <label htmlFor="Items" className="btn mt-2 mb-2">
                 Add Items

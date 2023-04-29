@@ -32,6 +32,7 @@ const Input = ({
               return newState;
             })
           }
+          placeholder={label}
           className={`input input-bordered w-full text-base-content `}
           step="any"
           type="number"

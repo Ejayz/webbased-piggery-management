@@ -1,5 +1,5 @@
 "use client";
-import RightDisplay from "@/components/FormCompsV2/RightDisplay";
+import RightDisplay from "@/components/FormCompsV2/RightDisplayState";
 import Table from "@/components/TableBody/Table";
 import { ConfirmIndividualSchedule } from "@/hooks/useSchedule";
 import FullCalendar from "@fullcalendar/react";
@@ -191,7 +191,7 @@ export default function MedicineAdministration() {
               operation_id: item.operation_id,
               item_id: item.item_id,
               item_name: item.item_name,
-              quantity: 0,
+              quantity: "",
               totalStocks: item.closing_quantity,
               item_net_weight_unit: item.item_net_weight_unit,
             },

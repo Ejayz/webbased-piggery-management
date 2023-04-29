@@ -48,3 +48,27 @@ export const Destock = async (
   let data = await response.json();
   return data;
 };
+
+export const CancelRestock = async (restock_id: any) => {
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Content-Type": "application/json",
+  };
+
+  let bodyContent = JSON.stringify({
+    restock_id: restock_id,
+  });
+
+  let response = await fetch(
+    `${location.origin}/api/post/StockCard/cancelRestock`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+
+  let data = await response.json();
+  return data;
+};

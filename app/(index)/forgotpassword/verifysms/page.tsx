@@ -152,32 +152,6 @@ export default function Layout({}: any) {
                 }}
               ></PhoneInput>
 
-              <SelectInput
-                name={"job"}
-                label={"Job"}
-                register={register}
-                errors={errors}
-                required={true}
-                options={[
-                  {
-                    value: "worker",
-                    display: "Worker",
-                    disabled: false,
-                  },
-                  {
-                    value: "owner",
-                    display: "Owner",
-                    disabled: false,
-                  },
-                  {
-                    value: "veterinarian",
-                    display: "Veterinarian",
-                    disabled: false,
-                  },
-                ]}
-                validationSchema={{ required: "This field is required" }}
-              ></SelectInput>
-
               <label className="label label-text">
                 <Link
                   href="#"

@@ -20,6 +20,7 @@ import SearchInput from "../FormCompsV2/SearchInput";
 import { DateTime } from "luxon";
 import { stringGenerator } from "@/hooks/useStringGenerator";
 import Textarea from "@/components/FormCompsV2/TextArea";
+import DateMinMax from "../FormCompsV2/DateMinMax";
 interface activity_interface {
   value: string;
   display: string;
@@ -329,7 +330,14 @@ export function Batch() {
   useEffect(() => {
     if (ItemsData) {
       if (ItemsData.code == 200) {
-        setItems(ItemsData.data);
+        ItemsData.data.map((item: any) => {
+          if (
+            useItem.find((i: any) => i.item_id == item.item_id) != undefined
+          ) {
+          } else {
+            setItems([...item_list, item]);
+          }
+        });
       }
     }
   }, [ItemsData]);
@@ -672,7 +680,7 @@ export function Batch() {
                 register={register}
                 required={true}
               ></Textarea>
-              <NormalInput
+              <DateMinMax
                 label={"Activty Date"}
                 name={"operation_date"}
                 register={register}
@@ -686,6 +694,8 @@ export function Batch() {
                 }}
                 type={"date"}
                 required={true}
+                min={DateTime.now().toISODate()}
+                max={DateTime.now().plus({ months: 6 }).toISODate()}
               />
               <label htmlFor="Items" className="btn mt-2 mb-2">
                 Add Items
