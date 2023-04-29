@@ -1,7 +1,7 @@
 import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
-import {connection} from "../mysql";
+import { connection } from "../mysql";
 import * as jwt from "jsonwebtoken";
 import { signJWT } from "../jwtProcessor";
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -37,12 +37,12 @@ async function send_sms(phone: any, username: any) {
   }
 }
 
-async function VerifySms(username: string, phone: string, job: string) {
+async function VerifySms(username: string, phone: string) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_users where username=? and phone=? and job=? and is_exist='true'";
-    const [err, result] = await conn.query(sql, [username, phone, job]);
+      "select * from tbl_users where username=? and phone=? and is_exist='true'";
+    const [err, result] = await conn.query(sql, [username, phone]);
     conn.release();
     if (err) return err;
     return result;
@@ -58,11 +58,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { phone, username, job } = req.body;
+  const { phone, username } = req.body;
 
   const token = await signJWT(req.body);
 
-  VerifySms(username, phone, job)
+  VerifySms(username, phone)
     .then((result: any) => {
       const data = result.length;
       try {

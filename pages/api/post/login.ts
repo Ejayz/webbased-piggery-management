@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import * as dotenv from "dotenv";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {connection} from "../mysql";
+import { connection } from "../mysql";
 import { rejects } from "assert";
 dotenv.config();
 
@@ -31,8 +31,8 @@ export default async function handler(
     });
     return 0;
   }
-  const { username, password, rememberme, job } = req.body;
-  VerifyUser(username, job)
+  const { username, password, rememberme } = req.body;
+  VerifyUser(username)
     .then((result: any) => {
       if (result.length !== 0) {
         const data = result[0];
@@ -92,12 +92,12 @@ export default async function handler(
     });
 }
 
-async function VerifyUser(username: string, job: string) {
+async function VerifyUser(username: string) {
   const conn = await connection.getConnection();
   try {
     const [err, result] = await conn.query(
-      "select * from tbl_users where username=? and job=? and is_exist='true'",
-      [username, job]
+      "select * from tbl_users where username=? and is_exist='true'",
+      [username]
     );
     conn.release();
 

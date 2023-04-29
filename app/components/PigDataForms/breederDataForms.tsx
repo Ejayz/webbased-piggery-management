@@ -432,8 +432,12 @@ export default function ({
             validationSchema={{
               required: "This field is required",
               min: {
-                value: 1,
-                message: "Weight must be greater than 0",
+                value: 60,
+                message: "Weight must be greater than 60kg",
+              },
+              max: {
+                value: 250,
+                message: "Weight must be less than 250kg",
               },
             }}
             id={"weight"}

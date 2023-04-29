@@ -1,6 +1,6 @@
 import { rejects } from "assert";
 import { NextApiRequest, NextApiResponse } from "next";
-import {connection} from "../../../mysql";
+import { connection } from "../../../mysql";
 import bcrypt, { genSalt } from "bcrypt";
 import { ResultSetHeader } from "mysql2";
 import { getCookie } from "cookies-next";
@@ -32,7 +32,7 @@ export default async function handler(
   const { username, first_name, middle_name, last_name, password, phone, job } =
     req.body;
   const hashedPassword = await generateHased(password);
-  const checkDup: any = await checkDups({ username, job });
+  const checkDup: any = await checkDups({ username });
 
   if (checkDup.length >= 1) {
     return res
@@ -95,13 +95,13 @@ async function createUser({
   }
 }
 
-async function checkDups({ username, job }: any) {
+async function checkDups({ username }: any) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_users where BINARY username=? and is_exist='true' and job=?";
+      "select * from tbl_users where BINARY username=? and is_exist='true'";
 
-    const [err, result] = await conn.query(sql, [username, job]);
+    const [err, result] = await conn.query(sql, [username]);
     conn.release();
     if (err) {
       return err;

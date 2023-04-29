@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 import bcrypt from "bcrypt";
 export default async function handler(
   req: NextApiRequest,
@@ -24,7 +24,7 @@ export default async function handler(
   if (password != "") {
     hashedPass = await generateHased(password);
   }
-  const checkDup: any = await checkDups({ username, user_id, job });
+  const checkDup: any = await checkDups({ username, user_id });
 
   if (checkDup.length >= 1) {
     return res
@@ -111,12 +111,12 @@ async function generateHased(password: string) {
   return bcrypt.hashSync(password, salt);
 }
 
-async function checkDups({ username, user_id, job }: any) {
+async function checkDups({ username, user_id }: any) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_users where BINARY username=? and user_id!=? and job=? and is_exist='true'";
-    const [err, result] = await conn.query(sql, [username, user_id, job]);
+      "select * from tbl_users where BINARY username=? and user_id!=?  and is_exist='true'";
+    const [err, result] = await conn.query(sql, [username, user_id]);
     if (err) return err;
     return result;
   } catch (error) {

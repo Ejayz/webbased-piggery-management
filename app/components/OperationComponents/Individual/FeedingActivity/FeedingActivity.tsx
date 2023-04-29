@@ -1,5 +1,5 @@
 "use client";
-import RightDisplay from "@/components/FormCompsV2/RightDisplay";
+import RightDisplay from "@/components/FormCompsV2/RightDisplayState";
 import Table from "@/components/TableBody/Table";
 import { ConfirmIndividualSchedule } from "@/hooks/useSchedule";
 import FullCalendar from "@fullcalendar/react";
@@ -191,7 +191,7 @@ export default function FeedingActivity() {
               operation_id: item.operation_id,
               item_id: item.item_id,
               item_name: item.item_name,
-              quantity: 0,
+              quantity: "",
               totalStocks: item.closing_quantity,
               item_net_weight_unit: item.item_net_weight_unit,
             },
@@ -259,7 +259,10 @@ export default function FeedingActivity() {
                   ) : (
                     OpData.map((item: any, key: number) => {
                       return (
-                        <>
+                        <div
+                          className="border-b-2 border-t-2 border-black "
+                          key={key}
+                        >
                           <div className="w-full flex flex-row">
                             <span className="text-md font-bold font-mono w-5/12">
                               Item:
@@ -283,7 +286,7 @@ export default function FeedingActivity() {
                             setValue={setOperationData}
                             index={key}
                           />
-                        </>
+                        </div>
                       );
                     })
                   )}
@@ -296,6 +299,15 @@ export default function FeedingActivity() {
                       OpData.map((item: any) => {
                         if (item.quantity == 0 || item.quantity == "") {
                           isAllowed = false;
+                          toast.error(
+                            "Please fill up all the fields.0 Quantity is not allowed"
+                          );
+                        }
+                        if (item.quantity > item.totalStocks) {
+                          isAllowed = false;
+                          toast.error(
+                            "Quantity must not be greater than the total available stocks"
+                          );
                         }
                       });
 
@@ -314,10 +326,6 @@ export default function FeedingActivity() {
                         } else {
                           toast.error(returned.message);
                         }
-                      } else {
-                        toast.error(
-                          "Please fill up all the fields.0 Quantity is not allowed"
-                        );
                       }
                     }}
                   >
@@ -406,6 +414,7 @@ export default function FeedingActivity() {
                       data.date_diff < 0 ? console.log(data) : console.log("");
                       info.el.style.backgroundColor = "#9400D3";
                     }
+                    setOperationData([]);
                     getData({
                       item_id: "",
                       item_quantity: "",

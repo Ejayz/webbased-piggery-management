@@ -20,6 +20,7 @@ import { DateTime } from "luxon";
 import { setuid } from "process";
 import { stringGenerator } from "@/hooks/useStringGenerator";
 import TextArea from "@/components/FormCompsV2/TextArea";
+import DateMinMax from "../FormCompsV2/DateMinMax";
 
 interface activity_interface {
   value: string;
@@ -675,7 +676,7 @@ export function Cage() {
                 register={register}
                 required={true}
               ></TextArea>
-              <NormalInput
+              <DateMinMax
                 label={"Activty Date"}
                 name={"operation_date"}
                 register={register}
@@ -689,6 +690,8 @@ export function Cage() {
                 }}
                 type={"date"}
                 required={true}
+                min={DateTime.now().toISODate()}
+                max={DateTime.now().plus({ months: 6 }).toISODate()}
               />
               <label htmlFor="Items" className="btn mt-2 mb-2">
                 Add Items

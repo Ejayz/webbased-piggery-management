@@ -11,6 +11,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import RightDisplay from "@/components/FormCompsV2/RightDisplay";
 import { DateTime } from "luxon";
 import SearchInput from "@/components/FormCompsV2/SearchInput";
+import DateMinMax from "@/components/FormCompsV2/DateMinMax";
 
 interface RestockList {
   item_id: string;
@@ -404,7 +405,7 @@ export default function Page() {
                         },
                       }}
                     />
-                    <NormalInput
+                    <DateMinMax
                       label="Expiration Date"
                       name="expiration_date"
                       register={register}
@@ -416,12 +417,14 @@ export default function Page() {
                           message: "Expiration date must be greater than today",
                         },
                         max: {
-                          value: DateTime.now().plus({ year: 5 }).toISO(),
+                          value: DateTime.local().plus({ years: 6 }),
                           message:
                             "Expiration date must be less than 6 year from today",
                         },
                       }}
                       type="date"
+                      min={new Date()}
+                      max={DateTime.local().plus({ years: 6 }).toISODate()}
                     />
                   </div>{" "}
                   <div className="w-full h-auto grid grid-cols-2 lg:grid-cols-4 my-2">

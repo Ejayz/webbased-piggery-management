@@ -200,12 +200,14 @@ export default function Page() {
                       </span>
                       <div className="form-control w-full max-w-xs">
                         <label className="label">
-                          <span className="label-text text-xl">Date From</span>
+                          <span className="label-text text-xl">Start</span>
                         </label>
                         <input
                           type="date"
                           placeholder="Type here"
                           className="input input-bordered w-full max-w-xs"
+                          min="2022-01-01"
+                          max={DateTime.now().toISO().split("T")[0]}
                           value={range.from}
                           onChange={(e) => {
                             setRange({ ...range, from: e.target.value });
@@ -214,12 +216,14 @@ export default function Page() {
                       </div>
                       <div className="form-control w-full max-w-xs">
                         <label className="label">
-                          <span className="label-text text-xl">Date To</span>
+                          <span className="label-text text-xl">End</span>
                         </label>
                         <input
                           type="date"
                           placeholder="Type here"
                           className="input input-bordered w-full max-w-xs"
+                          min="2022-01-01"
+                          max={DateTime.now().toISO().split("T")[0]}
                           value={range.to}
                           onChange={(e) => {
                             setRange({ ...range, to: e.target.value });

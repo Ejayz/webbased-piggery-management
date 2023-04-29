@@ -337,8 +337,12 @@ export default function ({
             validationSchema={{
               required: "This field is required",
               min: {
-                value: 1,
-                message: "Weight must be greater than 0",
+                value: 0.5,
+                message: "Weight must be greater than 0.5kg",
+              },
+              max: {
+                value: 5,
+                message: "Weight must be less than 5kg",
               },
             }}
             id={"weight"}
@@ -375,9 +379,8 @@ export default function ({
                   <th>{value.pig_id}</th>
                   <td>
                     {
-                      cageList.find(
-                        (item: any) => item.value == value.cage_id
-                      )?.display
+                      cageList.find((item: any) => item.value == value.cage_id)
+                        ?.display
                     }
                   </td>
                   <td>{value.pig_tag}</td>

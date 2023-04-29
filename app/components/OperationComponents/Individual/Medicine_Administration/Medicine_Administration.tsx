@@ -184,7 +184,7 @@ export default function MedicineAdministration() {
             operation_id: item.operation_id,
             item_id: item.item_id,
             item_name: item.item_name,
-            quantity: 0,
+            quantity: "",
             totalStocks: item.closing_quantity,
             item_net_weight_unit: item.item_net_weight_unit,
           });
@@ -254,7 +254,10 @@ export default function MedicineAdministration() {
                     OpData.map((item: any, key: number) => {
                       console.log(item);
                       return (
-                        <div key={key}>
+                        <div
+                          className="border-t-2 border-b-2 border-black py-2"
+                          key={key}
+                        >
                           <div className="w-full flex flex-row">
                             <span className="text-md font-bold font-mono w-5/12">
                               Item:
@@ -291,6 +294,13 @@ export default function MedicineAdministration() {
                       OpData.map((item: any) => {
                         if (item.quantity == 0 || item.quantity == "") {
                           isAllowed = false;
+                          toast.error("Please fill up all the required fields");
+                        }
+                        if (item.quantity > item.totalStocks) {
+                          isAllowed = false;
+                          toast.error(
+                            "Item quantity must not exceed the total available stocks"
+                          );
                         }
                       });
                       if (isAllowed) {
