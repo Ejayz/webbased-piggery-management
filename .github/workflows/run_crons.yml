@@ -1,10 +1,11 @@
 name: Hourly cron job
 on:
   schedule:
-    - cron: '*/60 * * * *'
+    - cron: '59 23 * * * '
 jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
       - name: Hourly cron job
         run: |
+          curl -H "authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg" -m 30 https://piggery.sledgedevsteam.lol/api/get/Crons/UpdateDue > /dev/null
