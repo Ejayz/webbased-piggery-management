@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { signJWT, verifyJWT } from "pages/api/jwtProcessor";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twillioPhone = process.env.TWILIO_PHONE_NUMBER;
@@ -46,8 +46,9 @@ async function UpdateCage() {
     const now = DateTime.now().toJSDate();
     const threeDays = DateTime.now().plus({ days: 3 }).toJSDate();
     const data =
-      "SELECT * ,DATE_FORMAT(tbl_operation.operation_date, '%W %M %e %Y') AS 'formatted_date' FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation.operation_id = tbl_operation_item_details.operation_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id = tbl_operation.operation_type_id INNER JOIN tbl_users ON tbl_users.user_id=tbl_operation.user_id INNER JOIN tbl_batch ON tbl_batch.batch_id =tbl_operation.batch_id WHERE (operation_date=DATE(?) OR operation_date=date(?)) and status='pending'";
+      "SELECT * ,DATE_FORMAT(tbl_operation.operation_date, '%W %M %e %Y') AS 'formatted_date' FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation.operation_id = tbl_operation_item_details.operation_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id = tbl_operation.operation_type_id INNER JOIN tbl_users ON tbl_users.user_id=tbl_operation.user_id INNER JOIN tbl_batch ON tbl_batch.batch_id =tbl_operation.batch_id WHERE (operation_date=DATE(?) OR operation_date=date(?)) and status='pending' GROUP BY tbl_operation.user_id";
     const [rows]: any = await conn.query(data, [now, threeDays]);
+    console.log(rows);
     return rows;
   } catch (error) {
     return error;
