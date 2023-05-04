@@ -1,7 +1,8 @@
+import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { verifyJWT } from "pages/api/jwtProcessor";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,11 +25,15 @@ export default async function handler(
 }
 
 async function UpdateCage() {
+  const now = DateTime.now()
+    .setZone("Asia/Manila")
+    .minus({ day: 1 })
+    .toJSDate();
   const updateSetDue =
-    "UPDATE tbl_operation SET status='overdue' WHERE operation_date < DATE(NOW()) AND status='pending' ";
+    "UPDATE tbl_operation SET status='overdue' WHERE operation_date < DATE(?) AND status='pending' ";
   const conn = await connection.getConnection();
   try {
-    const [updateSetDueRows]: any = await conn.query(updateSetDue);
+    const [updateSetDueRows]: any = await conn.query(updateSetDue, [now]);
     return updateSetDueRows;
   } catch (error) {
     throw error;
