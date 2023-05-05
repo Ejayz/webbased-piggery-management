@@ -403,7 +403,7 @@ export default function Page({ params }: any) {
                 ></NormalInput>
                 <NormalInput
                   name={"weight"}
-                  label={"Weight"}
+                  label={"Weight(kg)"}
                   register={register}
                   errors={errors}
                   readonly={
@@ -416,6 +416,7 @@ export default function Page({ params }: any) {
                       message: "Weight must be greater than 0.1",
                     },
                   }}
+                  required={true}
                 ></NormalInput>
                 <SelectInput
                   name={"status"}

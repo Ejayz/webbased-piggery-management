@@ -225,7 +225,7 @@ export default function Page() {
                           type="date"
                           placeholder="Type here"
                           className="input input-bordered w-full max-w-xs"
-                          min="2022-01-01"
+                          min={"2023-01-01"}
                           max={DateTime.now().toISO().split("T")[0]}
                           value={range.from}
                           onChange={(e) => {
@@ -241,7 +241,7 @@ export default function Page() {
                           type="date"
                           placeholder="Type here"
                           className="input input-bordered w-full max-w-xs"
-                          min="2022-01-01"
+                          min={"2023-01-01"}
                           max={DateTime.now().toISO().split("T")[0]}
                           value={range.to}
                           onChange={(e) => {

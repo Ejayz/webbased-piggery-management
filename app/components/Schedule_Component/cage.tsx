@@ -180,7 +180,7 @@ export function Cage() {
                   item_id: item.item_id,
                   activity: "1",
                   data_time: "PM",
-                  description: "Feeding age afternoon",
+                  description: "Feeding cage afternoon",
                 },
               ]);
             });
@@ -416,7 +416,7 @@ export function Cage() {
         className="modal-toggle"
       />
       <div className="modal">
-        <div className="modal-box relative">
+        <div className="modal-box relative w-11/12 max-w-5xl">
           <label
             className="btn btn-sm btn-circle absolute right-2 top-2"
             onClick={() => showModal(false)}
@@ -881,6 +881,10 @@ export function Cage() {
             fixedWeekCount={false}
             validRange={{
               start: new Date(),
+              end: `${DateTime.now()
+                .plus({ months: 6 })
+                .setZone("Asia/Manila")
+                .toISODate()}`,
             }}
             eventClick={(info: any) => {
               if (

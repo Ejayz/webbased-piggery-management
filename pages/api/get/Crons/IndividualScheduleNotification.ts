@@ -64,7 +64,7 @@ async function NotifySchedule(
   let sms = {};
   let completePhone = `+63${phone}`;
   const data = await client.messages.create({
-    body: `Hi ${username},This is scheduled operation notification alert! You have a schedule on ${schedule} with pig ${patient}. Make sure to check your schedule. Thank you!`,
+    body: `Hi ${username},This is scheduled operation notification alert! You have a schedule on ${schedule} with pig ${patient}. Make sure to check other scheduled operation. Thank you!`,
     from: twillioPhone,
     to: completePhone,
   });

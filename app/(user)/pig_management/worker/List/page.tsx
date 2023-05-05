@@ -2,7 +2,7 @@
 import Table from "@/components/TableBody/Table";
 import { getData, Search, sortData } from "@/hooks/usePigManagement";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
@@ -19,6 +19,7 @@ interface ApiData {
 }
 
 export default function Page() {
+  const router = useRouter();
   const [parsed, setParsed] = useState<Cage[]>([]);
   const [filter, setFilter] = useState({
     sortby: "pig_id",
@@ -168,6 +169,16 @@ export default function Page() {
                   </button>
                 </form>
               </div>
+            </div>{" "}
+            <div className="mr-auto ml-8">
+              <button
+                className="btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </button>
             </div>
           </div>
           <div className="overflow-x-auto w-11/12 mx-auto">

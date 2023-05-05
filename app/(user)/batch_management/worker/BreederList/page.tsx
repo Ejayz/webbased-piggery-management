@@ -92,6 +92,7 @@ export default function Page() {
         </div>
 
         <div className="w-full h-auto flex flex-col">
+        
           <div className="w-11/12 mx-auto flex flex-col gap-2 lg:flex-row my-2 text-base-content">
             <span className="uppercase text-xl font-bold my-auto">
               Filters:
@@ -157,6 +158,16 @@ export default function Page() {
                     </svg>
                   </button>
                 </form>
+                <div className="mr-auto ml-8">
+            <button
+              className="btn"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Back
+            </button>
+          </div>
               </div>
             </div>
           </div>
@@ -271,6 +282,7 @@ export default function Page() {
                 »
               </button>
             </div>
+            
           </div>
         </div>
       </div>

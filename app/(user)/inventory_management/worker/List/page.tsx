@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 export default function Page() {
+  const router = useRouter();
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
     sortby: "item_name",
@@ -136,6 +137,16 @@ export default function Page() {
                   </button>
                 </form>
               </div>
+            </div>{" "}
+            <div className="mr-auto ml-8">
+              <button
+                className="btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </button>
             </div>
           </div>
           <div className="overflow-x-auto w-11/12 mx-auto">

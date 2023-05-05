@@ -36,44 +36,37 @@ export default async function handler(
     .then((result: any) => {
       if (result.length !== 0) {
         const data = result[0];
+        console.log(result);
         bcrypt.compare(password, data.password, (err, result) => {
-          if (result) {
-            const userInfo = {
-              user_id: data.user_id,
-              user_name: data.username,
-              first_name: data.first_name,
-              middle_name: data.middle_name,
-              last_name: data.last_name,
-              phone_number: data.phone_number,
-              job: data.job,
-            };
-            const token = jwt.sign(userInfo, jwt_key);
-            if (rememberme) {
-              return res
-                .status(200)
-                .setHeader(
-                  "Set-Cookie",
-                  `auth=${token}; path=/; max-age=2592000;"`
-                )
-                .json({
-                  code: "200",
-                  message: `Welcome back ${data.username} .`,
-                });
-            } else {
-              return res
-                .status(200)
-                .setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`)
-                .json({
-                  code: "200",
-                  message: `Welcome back ${data.username} .`,
-                });
-            }
+          const userInfo = {
+            user_id: data.user_id,
+            user_name: data.username,
+            first_name: data.first_name,
+            middle_name: data.middle_name,
+            last_name: data.last_name,
+            phone_number: data.phone_number,
+            job: data.job,
+          };
+          const token = jwt.sign(userInfo, jwt_key);
+          if (rememberme) {
+            return res
+              .status(200)
+              .setHeader(
+                "Set-Cookie",
+                `auth=${token}; path=/; max-age=2592000;"`
+              )
+              .json({
+                code: "200",
+                message: `Welcome back ${data.username} .`,
+              });
           } else {
-            return res.status(401).json({
-              code: "401",
-              message:
-                "Username/Password do not match from our system. Please try again!",
-            });
+            return res
+              .status(200)
+              .setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`)
+              .json({
+                code: "200",
+                message: `Welcome back ${data.username} .`,
+              });
           }
         });
       } else {
@@ -96,11 +89,10 @@ async function VerifyUser(username: string) {
   const conn = await connection.getConnection();
   try {
     const [err, result] = await conn.query(
-      "select * from tbl_users where username=? and is_exist='true'",
+      "select * from tbl_users where BINARY username=? and is_exist='true'",
       [username]
     );
     conn.release();
-
     if (err) return err;
     return result;
   } catch (error) {

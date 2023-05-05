@@ -271,7 +271,7 @@ export default function Page() {
 
         <input type="checkbox" id="search_pig" className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
-          <div className="modal-box relative">
+          <div className="modal-box w-3/4">
             <label
               htmlFor="search_pig"
               className="btn btn-sm btn-circle absolute right-2 top-2"
@@ -322,7 +322,6 @@ export default function Page() {
                       <th>Pig Id</th>
                       <th>Batch</th>
                       <th>Cage</th>
-                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -335,10 +334,8 @@ export default function Page() {
                     ) : (
                       pig_list.map((item, index) => (
                         <tr key={index}>
-                          <td>{item.display}</td>
-                          <td>{item.batch_name}</td>
-                          <td>{item.cage_name}</td>
                           <td>
+                            {" "}
                             <label
                               onClick={() => {
                                 setValue("pig_id", item.value, {
@@ -348,7 +345,35 @@ export default function Page() {
                               htmlFor="search_pig"
                               className="link underline hover:text-primary"
                             >
-                              Select
+                              {item.display}
+                            </label>
+                          </td>
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setValue("pig_id", item.value, {
+                                  shouldValidate: true,
+                                });
+                              }}
+                              htmlFor="search_pig"
+                              className="link underline hover:text-primary"
+                            >
+                              {item.batch_name}
+                            </label>
+                          </td>
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setValue("pig_id", item.value, {
+                                  shouldValidate: true,
+                                });
+                              }}
+                              htmlFor="search_pig"
+                              className="link underline hover:text-primary"
+                            >
+                              {item.cage_name}{" "}
                             </label>
                           </td>
                         </tr>
@@ -454,11 +479,13 @@ export default function Page() {
                       Create
                     </button>
                     <button
-                      type="reset"
-                      onClick={resetState}
+                      type="button"
+                      onClick={() => {
+                        router.back();
+                      }}
                       className="btn mx-4"
                     >
-                      Clear
+                      Back
                     </button>
                   </div>
                 </form>

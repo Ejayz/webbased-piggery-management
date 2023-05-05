@@ -317,6 +317,16 @@ export default function Page() {
                     >
                       Clear
                     </button>
+
+                    <button
+                      className="btn"
+                      type={"button"}
+                      onClick={() => {
+                        router.back();
+                      }}
+                    >
+                      Back
+                    </button>
                   </div>
                 </form>
               </div>

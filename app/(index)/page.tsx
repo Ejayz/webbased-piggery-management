@@ -73,7 +73,7 @@ export default function Page() {
             Manage your growing hog farm!
           </span>
         </div>
-        <div className="grid lg:grid-cols-3 lg:grid-rows-1 grid-cols-1 grid-rows-3 gap-y-2 h-auto mt-4 mb-4">
+        <div className="grid w-1/2 lg:grid-cols-2 lg:grid-rows-3 grid-cols-1 grid-rows-3 gap-y-2 h-auto mt-4 mb-4">
           <div className="flex card glass flex-col w-3/4 mx-auto p-4 h-64">
             <figure>
               <Image
@@ -134,29 +134,29 @@ export default function Page() {
               and well fed.
             </span>
           </div>
-        </div>
-        <div className="mx-auto flex flex-col mt-4 mb-4">
-          <span className="font-bold frickleface text-lg">
-            Scan pig tags on the go! Download our mobile app.
-          </span>
-          <Link
-            className="btn btn-outline border-solid p-8 flex flex-col mx-auto"
-            target={"_blank"}
-            href={
-              "https://webbasedpiggeryuploaded.sgp1.cdn.digitaloceanspaces.com/public/android/MobileBasedQrCodeScannerV1.apk"
-            }
-          >
-            <div className="mx-auto my-auto flex flex-row">
-              <Image
-                src="/assets/icons/android.svg"
-                className="w-12  h-12 mx-auto"
-                alt={""}
-                width={550}
-                height={550}
-              ></Image>{" "}
-              <span className="font-bold p-4 my-auto">Download</span>
-            </div>
-          </Link>
+          <div className="mx-auto flex flex-col mt-4 mb-4">
+            <span className="font-bold frickleface text-lg">
+              Scan pig tags on the go! Download our mobile app.
+            </span>
+            <Link
+              className="btn btn-outline border-solid p-8 flex flex-col mx-auto"
+              target={"_blank"}
+              href={
+                "https://webbasedpiggeryuploaded.sgp1.cdn.digitaloceanspaces.com/public/android/MobileBasedQrCodeScannerV1.apk"
+              }
+            >
+              <div className="mx-auto my-auto flex flex-row">
+                <Image
+                  src="/assets/icons/android.svg"
+                  className="w-12  h-12 mx-auto"
+                  alt={""}
+                  width={550}
+                  height={550}
+                ></Image>{" "}
+                <span className="font-bold p-4 my-auto">Download</span>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </>

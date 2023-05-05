@@ -44,7 +44,10 @@ async function UpdateCage() {
   const conn = await connection.getConnection();
   try {
     const now = DateTime.now().setZone("Asia/Manila").toJSDate();
-    const threeDays = DateTime.now().setZone("Asia/Manila").plus({ days: 3 }).toJSDate();
+    const threeDays = DateTime.now()
+      .setZone("Asia/Manila")
+      .plus({ days: 3 })
+      .toJSDate();
     const data =
       "SELECT * ,DATE_FORMAT(tbl_operation.operation_date, '%W %M %e %Y') AS 'formatted_date' FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation.operation_id = tbl_operation_item_details.operation_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id INNER JOIN tbl_operation_type ON tbl_operation_type.operation_type_id = tbl_operation.operation_type_id INNER JOIN tbl_users ON tbl_users.user_id=tbl_operation.user_id INNER JOIN tbl_batch ON tbl_batch.batch_id =tbl_operation.batch_id WHERE (operation_date=DATE(?) OR operation_date=date(?)) and status='pending' GROUP BY tbl_operation.user_id";
     const [rows]: any = await conn.query(data, [now, threeDays]);
@@ -65,7 +68,7 @@ async function NotifySchedule(
   let sms = {};
   let completePhone = `+63${phone}`;
   const data = await client.messages.create({
-    body: `Hi ${username},This is scheduled operation notification alert! You have a schedule on ${schedule} with  ${patient} . Make sure to check your schedule. Thank you!`,
+    body: `Hi ${username},This is scheduled operation notification alert! You have a schedule on ${schedule} with  ${patient} . Make sure to check otehr scheduled operation. Thank you!`,
     from: twillioPhone,
     to: completePhone,
   });

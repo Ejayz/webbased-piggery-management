@@ -212,7 +212,7 @@ export default function Page() {
           className="modal-toggle"
         />
         <div className="modal">
-          <div className="modal-box relative">
+          <div className="modal-box relative w-11/12 max-w-5xl">
             <label
               className="btn btn-sm btn-circle absolute right-2 top-2"
               onClick={() => showModal(false)}
@@ -268,15 +268,13 @@ export default function Page() {
                     <tr>
                       <th>Item Name</th>
                       <th>Description</th>
-                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {item_list.map((item, index) => (
                       <tr key={index}>
-                        <td>{item.item_name}</td>
-                        <td>{item.item_description}</td>
                         <td>
+                          {" "}
                           <label
                             onClick={() => {
                               setValue("item_id", item.item_id, {
@@ -291,7 +289,26 @@ export default function Page() {
                             }}
                             className="link underline hover:text-primary"
                           >
-                            Select
+                            {item.item_name}
+                          </label>
+                        </td>
+                        <td>
+                          {" "}
+                          <label
+                            onClick={() => {
+                              setValue("item_id", item.item_id, {
+                                shouldValidate: true,
+                              });
+                              setValue("item_name", item.item_name),
+                                {
+                                  shouldValidate: true,
+                                };
+                              showModal(false);
+                              searchItemReset();
+                            }}
+                            className="link underline hover:text-primary"
+                          >
+                            {item.item_description}
                           </label>
                         </td>
                       </tr>
@@ -403,6 +420,16 @@ export default function Page() {
                           value: 1,
                           message: "Quantity must be greater than 0",
                         },
+                        max: {
+                          value: 10000,
+                          message: `Max item can be restocked is over 10,000 ${
+                            watchItemName != ""
+                              ? item_list.find(
+                                  (item: any) => item.item_name == watchItemName
+                                ).item_unit
+                              : "N/A"
+                          }`,
+                        },
                       }}
                     />
                     <DateMinMax
@@ -423,7 +450,7 @@ export default function Page() {
                         },
                       }}
                       type="date"
-                      min={new Date()}
+                      min={DateTime.local().plus({ months: 6 }).toISODate()}
                       max={DateTime.local().plus({ years: 6 }).toISODate()}
                     />
                   </div>{" "}
