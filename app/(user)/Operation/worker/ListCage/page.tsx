@@ -2,7 +2,7 @@
 import Table from "@/components/TableBody/Table";
 import { getData, Search, sortData } from "@/hooks/useUserManagement";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { useQuery } from "react-query";
@@ -25,6 +25,7 @@ interface ApiData {
   data: User[];
 }
 export default function Page() {
+  const router = useRouter();
   const [parsed, setParsed] = useState<User[]>([]);
   const [colsData, setColsData] = ["username", "name", "job", "phone"];
   const colsName = ["username", "name", "job", "phone"];
@@ -159,6 +160,16 @@ export default function Page() {
                   </button>
                 </form>
               </div>
+            </div>{" "}
+            <div className="mr-auto ml-8">
+              <button
+                className="btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </button>
             </div>
           </div>
           <table className="table table-compact w-11/12  mx-auto  text-base-content">

@@ -402,7 +402,7 @@ export default function Page({ params }: any) {
                               <th>Pig Tag</th>
                               <th>Weight</th>
                               <th>Remarks</th>
-                              <th>History Status</th>
+                              <th>Pig Status</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -461,7 +461,7 @@ export default function Page({ params }: any) {
                                         : ""
                                     }`}
                                   >
-                                    {item.pig_history_status}
+                                    {item.pig_status}
                                   </td>
                                 </tr>
                               );

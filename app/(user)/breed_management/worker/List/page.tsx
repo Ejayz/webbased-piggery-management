@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 export default function Page() {
+  const router = useRouter();
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
     sortby: "breed_name",
@@ -134,6 +135,16 @@ export default function Page() {
                   </svg>
                 </button>
               </form>
+            </div>
+            <div className="mr-auto ml-8">
+              <button
+                className="btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </button>
             </div>
           </div>
           <table className="table table-compact w-11/12  mx-auto   text-base-content">

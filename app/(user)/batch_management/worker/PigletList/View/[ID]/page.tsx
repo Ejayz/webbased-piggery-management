@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useQuery } from "react-query";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }: any) {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const { data, isLoading, isFetching, error, refetch } = useQuery(
     ["batch_data", params.ID !== undefined],
@@ -29,7 +31,19 @@ export default function Page({ params }: any) {
           <p className="text-2xl text-base-content my-auto p-4">Batch List</p>
         </div>
 
-        <div className="w-full h-auto flex flex-col"></div>
+        <div className="w-11/12 mx-auto h-auto flex flex-col">
+          {" "}
+          <div className="mr-auto ml-0 mt-2 mb-2">
+            <button
+              className="btn"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Back
+            </button>
+          </div>
+        </div>
         <div className="overflow-x-auto mx-auto w-11/12">
           <table className="table table-compact w-11/12  mx-auto  text-base-content">
             <thead>

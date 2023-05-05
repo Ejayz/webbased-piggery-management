@@ -52,13 +52,13 @@ export default function RootLayout({
             />
             <Navbar></Navbar>
             {children}
-            <div className="mb-0 mt-auto">
+            {/* <div className="mb-0 mt-auto">
               <Footer></Footer>
-            </div>
+            </div> */}
           </div>
         </body>
         {/* <Script src="/sw.js"></Script> */}
       </html>
     </>
-  );
+  ); 
 }

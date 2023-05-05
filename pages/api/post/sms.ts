@@ -41,7 +41,7 @@ async function VerifySms(username: string, phone: string) {
   const conn = await connection.getConnection();
   try {
     const sql =
-      "select * from tbl_users where username=? and phone=? and is_exist='true'";
+      "select * from tbl_users where BINARY username=? and phone=? and is_exist='true'";
     const [err, result] = await conn.query(sql, [username, phone]);
     conn.release();
     if (err) return err;

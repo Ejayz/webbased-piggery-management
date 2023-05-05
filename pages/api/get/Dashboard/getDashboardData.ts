@@ -26,7 +26,7 @@ async function UpdateCage() {
   const getTotalFeeds =
     "SELECT *, MAX(tbl_stock_card.stock_card_id) FROM tbl_inventory INNER JOIN tbl_stock_card ON tbl_inventory.item_id = tbl_stock_card.item_id WHERE tbl_inventory.category_id='1' GROUP BY tbl_stock_card.item_id";
   const TotalOperation =
-    "SELECT COUNT(operation_id) AS total_operation FROM tbl_operation WHERE is_exist = 'true'";
+    "SELECT COUNT(operation_id) AS total_operation FROM tbl_operation WHERE and is_exist = 'true'";
   const TotalQuarantine =
     "SELECT COUNT(quarantine_id) AS total_quarantine FROM tbl_quarantine WHERE is_exist = 'true'";
   const getTotalPendingOperation = `SELECT COUNT(operation_id) AS totalPendingOperation FROM tbl_operation WHERE tbl_operation.operation_date=CURDATE() AND tbl_operation.\`status\`='pending'`;
@@ -47,6 +47,7 @@ async function UpdateCage() {
     getTotalPendingOperation,
     [DateTime.now().setZone("Asia/Manila").toISODate()]
   );
+  console.log(totalPendingOperation)
   console.log(DateTime.now().setZone("Asia/Manila").toISODate());
   let totalFeed = 0;
   totalFeeds.forEach((feed: any) => {

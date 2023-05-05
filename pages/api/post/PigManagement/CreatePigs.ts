@@ -21,6 +21,7 @@ export default async function handler(
     batch_name,
     pigData,
   } = req.body;
+  console.log(req.body);
   const users = await getUsers(authorized.cookie);
   const user_id = users.user_id;
 
@@ -119,7 +120,7 @@ async function Ops(
       await conn.query(insertPigHistory, [
         value.pig_id,
         value.pig_tag,
-        value.pig_weight,
+        value.weight,
         value.cage_id,
         user_id,
         pig_type,

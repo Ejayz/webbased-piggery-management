@@ -161,6 +161,16 @@ export default function Page() {
                 </form>
               </div>
             </div>
+            <div className="mr-auto ml-8">
+              <button
+                className="btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto mx-auto w-11/12">
             <table className="table table-compact w-11/12  mx-auto  text-base-content">
