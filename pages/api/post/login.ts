@@ -48,25 +48,34 @@ export default async function handler(
             job: data.job,
           };
           const token = jwt.sign(userInfo, jwt_key);
-          if (rememberme) {
-            return res
-              .status(200)
-              .setHeader(
-                "Set-Cookie",
-                `auth=${token}; path=/; max-age=2592000;"`
-              )
-              .json({
-                code: "200",
-                message: `Welcome back ${data.username} .`,
-              });
+          console.log(result);
+          if (result) {
+            if (rememberme) {
+              return res
+                .status(200)
+                .setHeader(
+                  "Set-Cookie",
+                  `auth=${token}; path=/; max-age=2592000;"`
+                )
+                .json({
+                  code: "200",
+                  message: `Welcome back ${data.username} .`,
+                });
+            } else {
+              return res
+                .status(200)
+                .setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`)
+                .json({
+                  code: "200",
+                  message: `Welcome back ${data.username} .`,
+                });
+            }
           } else {
-            return res
-              .status(200)
-              .setHeader("Set-Cookie", `auth=${token};path=/; max-age=86400;`)
-              .json({
-                code: "200",
-                message: `Welcome back ${data.username} .`,
-              });
+            return res.status(401).json({
+              code: "401",
+              message:
+                "Username/Password do not match from our system. Please try again!",
+            });
           }
         });
       } else {
