@@ -1,4 +1,5 @@
 "use client";
+import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery, useQueryClient } from "react-query";
@@ -90,7 +91,7 @@ export default function GeneralPigBatch({
       setBoarList(listBoar);
       setSowList(listSow);
       setBreedList(listBreed);
-      setValue("birth_date", new Date().toISOString().substr(0, 10));
+      setValue("birth_date", DateTime.now().setZone("Asia/Manila").toISODate());
     },
     {
       cacheTime: 0,

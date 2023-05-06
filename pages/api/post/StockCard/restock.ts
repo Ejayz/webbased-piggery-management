@@ -82,7 +82,6 @@ async function insertRestock(conn: any, filePath: any, user_id: any) {
 //Create stock card
 async function Ops(conn: any, filePath: any, fields: any, user_id: any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
-  console.log(date);
   await conn.beginTransaction();
   try {
     await Promise.all(
@@ -93,7 +92,11 @@ async function Ops(conn: any, filePath: any, fields: any, user_id: any) {
           getOpeningQuantity,
           [field.item_id]
         );
-        const openingQuantity = openingQuantityResult[0].closing_quantity;
+        console.log(field.item_id);
+        const openingQuantity =
+          openingQuantityResult.length == 0
+            ? 0
+            : openingQuantityResult[0].closing_quantity;
         const checkStockCard =
           "SELECT * FROM tbl_stock_card WHERE item_id=? AND transaction_date=? AND is_exist='true'";
         const [stockCardResult]: any = await conn.query(checkStockCard, [

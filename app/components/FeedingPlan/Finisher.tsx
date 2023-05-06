@@ -205,14 +205,11 @@ export default function farrowing() {
                   <tr>
                     <th>Item Name</th>
                     <th>Description</th>
-                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {item_list.map((item, index) => (
                     <tr key={index}>
-                      <td>{item.item_name}</td>
-                      <td>{item.item_description}</td>
                       <td>
                         <label
                           onClick={() => {
@@ -223,7 +220,20 @@ export default function farrowing() {
                           htmlFor="my-modal-6"
                           className="link underline hover:text-primary"
                         >
-                          Select
+                          {item.item_name}
+                        </label>
+                      </td>
+                      <td>
+                        <label
+                          onClick={() => {
+                            setValue("item_id", item.item_id);
+                            setValue("item_name", item.item_name);
+                            showModal(false);
+                          }}
+                          htmlFor="my-modal-6"
+                          className="link underline hover:text-primary"
+                        >
+                          {item.item_description}
                         </label>
                       </td>
                     </tr>
