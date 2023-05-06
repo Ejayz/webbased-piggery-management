@@ -81,7 +81,7 @@ export default function MedicineAdministration() {
             ...prev,
             {
               id: item.operation_id,
-              title: `${item.description} ${item.am_pm ? "" : ""} `,
+              title: `${item.description}`,
               start: item.operation_date,
               backgroundColor:
                 item.status == "overdue"

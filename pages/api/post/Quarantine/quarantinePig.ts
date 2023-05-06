@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -47,8 +47,9 @@ async function UpdateCage(
     const weight = pigInfo[0].weight;
     const pig_old_cage = pigInfo[0].cage_id;
     const history_id = pigInfo[0].pig_history_id;
+    const pig_type = pigInfo[0].pig_type;
     const insertPigHistory =
-      "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id) values (?,?,?,?,?,?,?)";
+      "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id,pig_type) values (?,?,?,?,?,?,?,?)";
     const [insertPigHistoryResult]: any = await conn.query(insertPigHistory, [
       pig_id,
       cage_id,
@@ -57,6 +58,7 @@ async function UpdateCage(
       "Quarantined",
       remarks,
       user_id,
+      pig_type,
     ]);
 
     const updateOldPigHistory =

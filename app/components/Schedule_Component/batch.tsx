@@ -330,14 +330,7 @@ export function Batch() {
   useEffect(() => {
     if (ItemsData) {
       if (ItemsData.code == 200) {
-        ItemsData.data.map((item: any) => {
-          if (
-            useItem.find((i: any) => i.item_id == item.item_id) != undefined
-          ) {
-          } else {
-            setItems([...item_list, item]);
-          }
-        });
+        setItems(ItemsData.data);
       }
     }
   }, [ItemsData]);
@@ -350,7 +343,7 @@ export function Batch() {
   useEffect(() => {
     ItemsRefetch();
   }, [watchActivity]);
-
+  console.log(watchActivity);
   return (
     <>
       <input type="checkbox" id="Items" className="modal-toggle" />
@@ -480,36 +473,46 @@ export function Batch() {
                   </tr>
                 </thead>
                 <tbody>
-                  {item_list.map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        {" "}
-                        <label
-                          onClick={() => {
-                            setUsingItem([...usingItem, item]);
-                            showModal(false);
-                            searchItemReset();
-                          }}
-                          className="link underline hover:text-primary"
-                        >
-                          {item.item_name}
-                        </label>
-                      </td>
-                      <td>
-                        {" "}
-                        <label
-                          onClick={() => {
-                            setUsingItem([...usingItem, item]);
-                            showModal(false);
-                            searchItemReset();
-                          }}
-                          className="link underline hover:text-primary"
-                        >
-                          {item.item_description}
-                        </label>
-                      </td>
-                    </tr>
-                  ))}
+                  {item_list.map((item, index) => {
+                    if (
+                      usingItem.find((x) => x.item_id == item.item_id) ==
+                      undefined
+                    ) {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setUsingItem([...usingItem, item]);
+                                ItemsRefetch();
+                                showModal(false);
+                                searchItemReset();
+                              }}
+                              className="link underline hover:text-primary"
+                            >
+                              {item.item_name}
+                            </label>
+                          </td>
+
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setUsingItem([...usingItem, item]);
+                                ItemsRefetch();
+                                showModal(false);
+                                searchItemReset();
+                              }}
+                              className="link underline hover:text-primary"
+                            >
+                              {item.item_description}
+                            </label>
+                          </td>
+                        </tr>
+                      );
+                    }
+                  })}
                 </tbody>
               </table>
             </label>
@@ -801,7 +804,7 @@ export function Batch() {
               </button>
             </div>
           </form>
-        ) : watchActivity == "2" ? (
+        ) : watchScheduleType == "2" ? (
           <form
             onSubmit={handleSubmitPlan(onSubmit)}
             method="post"
@@ -873,7 +876,7 @@ export function Batch() {
         <div className="overflow-x-auto w-3/4 mx-auto min-h-screen">
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
-            initialDate={new Date("2023-01-01")}
+            initialDate={new Date()}
             initialView="dayGridMonth"
             height={"auto"}
             eventDisplay="block"

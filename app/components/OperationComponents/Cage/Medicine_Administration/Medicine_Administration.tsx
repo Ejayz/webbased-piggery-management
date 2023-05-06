@@ -80,7 +80,7 @@ export default function MedicineAdministration() {
             ...prev,
             {
               id: item.operation_id,
-              title: `${item.description} ${item.am_pm ? "" : ""} `,
+              title: `${item.description}`,
               start: item.operation_date,
               backgroundColor:
                 item.status == "overdue"
@@ -173,24 +173,23 @@ export default function MedicineAdministration() {
     }
   }, [submitable?.operation_id]);
   useEffect(() => {
-    setOperationData([]);
     if (OperationData) {
       if (OperationData.data) {
         console.log(OperationData.data);
+        let list: any = [];
         OperationData.data.map((item: any) => {
-          setOperationData([
-            ...OpData,
-            {
-              operation_details_id: item.operation_item_details_id,
-              operation_id: item.operation_id,
-              item_id: item.item_id,
-              item_name: item.item_name,
-              quantity: "",
-              totalStocks: item.closing_quantity,
-              item_net_weight_unit: item.item_net_weight_unit,
-            },
-          ]);
+          list.push({
+            operation_details_id: item.operation_item_details_id,
+            operation_id: item.operation_id,
+            item_id: item.item_id,
+            item_name: item.item_name,
+            quantity: "",
+            totalStocks: item.closing_quantity,
+            item_net_weight_unit: item.item_net_weight_unit,
+          });
+          console.log(item);
         });
+        setOperationData(list);
       }
     }
   }, [OperationData]);
@@ -253,7 +252,10 @@ export default function MedicineAdministration() {
                   ) : (
                     OpData.map((item: any, key: number) => {
                       return (
-                        <div className="border-t-2 border-b-2 border-black py-2" key={key}>
+                        <div
+                          className="border-t-2 border-b-2 border-black py-2"
+                          key={key}
+                        >
                           <div className="w-full flex flex-row">
                             <span className="text-md font-bold font-mono w-5/12">
                               Item:

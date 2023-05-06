@@ -14,6 +14,7 @@ import SelectInput from "@/components/FormCompsV2/SelectInput";
 import { useQuery, useQueryClient } from "react-query";
 import Loading from "@/components/Loading/loading";
 import BreederDataForms from "@/components/PigDataForms/breederDataForms";
+import { DateTime } from "luxon";
 
 interface SelectInter {
   value: number;
@@ -137,7 +138,7 @@ export default function Page() {
           disabled: false,
         });
       });
-      setValue("birth_date", new Date().toISOString().substr(0, 10));
+      setValue("birth_date", DateTime.now().setZone("Asia/Manila").toISODate());
     },
     {
       refetchOnWindowFocus: false,
