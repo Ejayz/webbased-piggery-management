@@ -885,6 +885,26 @@ export default function User({ children }: { children: React.ReactNode }) {
                         <label
                           onClick={() => {
                             setToggleMenu(!toggleMenu);
+                            router.push(
+                              "/StockCard/worker/Restock/RestockList"
+                            );
+                          }}
+                          htmlFor="my-drawer"
+                        >
+                          <Image
+                            src={"/assets/icons/list.svg"}
+                            className="h-6 w-6 "
+                            alt={""}
+                            height={512}
+                            width={512}
+                          ></Image>
+                          Restock List
+                        </label>
+                      </li>
+                      <li>
+                        <label
+                          onClick={() => {
+                            setToggleMenu(!toggleMenu);
                             router.push("/StockCard/worker/Destock");
                           }}
                           htmlFor="my-drawer"
