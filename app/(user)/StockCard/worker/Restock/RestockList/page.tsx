@@ -2,12 +2,14 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { CancelRestock } from "@/hooks/useStockCard";
+import { DateTime } from "luxon";
 
 export default function Page() {
+  const router = useRouter();
   const [parsed, setParsed] = useState<any[]>([]);
   const [filter, setFilter] = useState({
     sortby: "item_name",
@@ -81,6 +83,16 @@ export default function Page() {
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>
+            <div className="mr-auto ml-8">
+              <button
+                className="btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                Back
+              </button>
+            </div>
           </div>
           <div className="overflow-x-auto ">
             <table className="table  w-11/12  mx-auto  text-center text-base-content">
@@ -105,7 +117,11 @@ export default function Page() {
                     return (
                       <tr key={key} className="hover">
                         <th>{key + 1}</th>
-                        <td>{}</td>
+                        <td>
+                          {`${DateTime.fromISO(item.restock_date)
+                            .setZone("Asia/Manila")
+                            .toFormat("MMMM dd, yyyy ")}`}
+                        </td>
                         <td>
                           <Link
                             href={`https://webbasedpiggeryuploaded.sgp1.cdn.digitaloceanspaces.com/${item.attachment}`}
@@ -114,7 +130,11 @@ export default function Page() {
                           </Link>
                         </td>
                         <td className="flex">
-                          <div className="flex flex-row mx-auto">
+                          <div
+                            className={`flex flex-row mx-auto ${
+                              item.date_now !== 0 ? "hidden" : ""
+                            }`}
+                          >
                             <button
                               className="btn btn-sm btn-primary"
                               onClick={async () => {

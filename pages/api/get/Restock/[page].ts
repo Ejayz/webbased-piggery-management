@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { connection } from "pages/api/mysql";
@@ -57,9 +58,10 @@ async function SearhGetCage(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `select * from tbl_restock   WHERE is_exist='true'   ORDER BY restock_date ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
+    const sql = `select *,DATEDIFF(restock_date,DATE(?)) as date_now from tbl_restock   WHERE is_exist='true'   ORDER BY restock_date ${SortOrder}  LIMIT ${limit} OFFSET ${offset} ;`;
 
     const [result] = await conn.query(sql, [
+      DateTime.now().setZone("Asia/Manila").toISODate(),
       keyword,
       keyword,
       keyword,
