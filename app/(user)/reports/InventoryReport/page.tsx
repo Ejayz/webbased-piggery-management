@@ -53,10 +53,9 @@ export default function Page() {
                     .setZone("Asia/Manila")
                     .toFormat("EEEE',' MMM d',' yyyy"),
                   transaction_quantity: `
-                    ${
-                      parseInt(item.transaction_quantity) /
-                      parseInt(item.item_net_weight)
-                    } ${item.item_unit}`,
+                    ${parseInt(item.transaction_quantity)} ${
+                    item.item_net_weight_unit
+                  }`,
                   remark: item.remark == null ? "N/A" : item.remark,
                 },
               ];
