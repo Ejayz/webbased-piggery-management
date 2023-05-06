@@ -15,5 +15,9 @@ export const resetConnection = () => {
     user: process.env.USERS,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
+    maxIdle: 0,
+    idleTimeout: 60000,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 30 * 60 * 1000,
   });
 };
