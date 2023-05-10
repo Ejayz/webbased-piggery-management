@@ -67,6 +67,38 @@ export default function User({ children }: { children: React.ReactNode }) {
     }
     removeAuth();
   }, [Logout]);
+  useEffect(() => {
+    async function fetchData() {
+      let headersList = {
+        Accept: "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg",
+      };
+
+      let response = await fetch("/api/get/Crons/UpdateToday", {
+        method: "GET",
+        headers: headersList,
+      });
+
+      let data = await response.text();
+
+      let headersList1 = {
+        Accept: "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg",
+      };
+
+      let response1 = await fetch("/api/get/Crons/UpdateDue", {
+        method: "GET",
+        headers: headersList,
+      });
+
+      let data1 = await response1.text();
+    }
+    fetchData();
+  }, [path]);
 
   if (loading.loading) {
     return (

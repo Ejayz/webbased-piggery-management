@@ -400,6 +400,7 @@ export default function Page({ params }: any) {
                               <th></th>
                               <th>Cage Name</th>
                               <th>Pig Tag</th>
+                              <th>Batch</th>
                               <th>Weight</th>
                               <th>Remarks</th>
                               <th>Pig Status</th>
@@ -434,7 +435,16 @@ export default function Page({ params }: any) {
                                         : ""
                                     }`}
                                   >
-                                    {item.pig_id}
+                                    {item.pig_tag}
+                                  </td>
+                                  <td
+                                    className={`${
+                                      item.pig_history_status == "active"
+                                        ? "bg-success"
+                                        : ""
+                                    }`}
+                                  >
+                                    {item.batch_name}
                                   </td>
                                   <td
                                     className={`${

@@ -44,7 +44,7 @@ async function UpdateCage(
     await Promise.all(
       item_list.map(async (item: any) => {
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm,total_patient,user_id,description) values (?,?,?,?,1,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,pig_id,am_pm,total_patient,user_id,description,type) values (?,?,?,?,1,?,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
@@ -52,6 +52,7 @@ async function UpdateCage(
           item.data_time,
           user_id,
           item.description,
+          item.type,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
         if (item.items != undefined) {
@@ -86,10 +87,10 @@ async function InsertOperationItemDetail(
     await Promise.all(
       item.map(async (item: any) => {
         const insertOperationItemDetail =
-          "insert into tbl_operation_item_details (operation_id,item_id) values (?,?)";
+          "insert into tbl_operation_item_details (operation_id,item_id,quantity) values (?,?,?)";
         const [sqlInsertResult]: any = await conn.query(
           insertOperationItemDetail,
-          [operation_id, item.item_id]
+          [operation_id, item.item_id, item.operation_quantity]
         );
       })
     );

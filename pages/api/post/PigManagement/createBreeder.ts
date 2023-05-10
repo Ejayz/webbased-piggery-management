@@ -59,16 +59,16 @@ async function Ops(
     await Promise.all(
       BreederList.map(async (breeder: any) => {
         const sql =
-          "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,  `batch_id`, `breed_id` , `birthdate`,user_id ) VALUES ( ?, ?,?, ?, ?);";
+          "INSERT INTO `piggery_management`.`tbl_pig` (`pig_id`,   `breed_id` , `birthdate`,user_id ) VALUES ( ?, ?,?,?);";
         await conn.query(sql, [
           breeder.pig_id,
-          batch_id,
+
           breeder.breed_id,
           arrivalDate,
           user_id,
         ]);
         const insertPigHistory =
-          "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id,pig_type) values(?,?,?,?,?,?)";
+          "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id,pig_type,batch_id) values(?,?,?,?,?,?,?)";
         await conn.query(insertPigHistory, [
           breeder.pig_id,
           breeder.pig_tag,

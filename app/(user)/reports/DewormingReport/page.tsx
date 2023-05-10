@@ -42,6 +42,7 @@ export default function Page() {
           setItemList([]);
           data.data.map((item: any) => {
             setItemList((prev) => {
+              console.log(item.operation_date,item.quantity);
               return [
                 ...prev,
                 {
@@ -67,7 +68,9 @@ export default function Page() {
                     .setZone("Asia/Manila")
                     .toFormat("EEEE',' MMM d',' yyyy"),
                   quantity: `
-                    ${parseInt(item.quantity)} ${item.item_unit}`,
+                    ${parseFloat(item.quantity).toFixed(2)} ${
+                    item.item_net_weight_unit
+                  }`,
                   status: item.status.toUpperCase(),
                 },
               ];

@@ -33,14 +33,14 @@ export default function Page() {
     "InventoryReport",
     async () => {
       const response = await fetch(
-        `${location.origin}/api/get/Reports/getInventoryReport?from=${range.from}&to=${range.to}`
+        `${location.origin}/api/get/Reports/getInventoryReport`
       );
       const data = await response.json();
       if (data.code == 200) {
         if (data.data) {
           setItemList([]);
           data.data.map((item: any) => {
-            console.log(item.transaction_date);
+            console.log(data.data);
 
             setItemList((prev) => {
               return [
@@ -48,15 +48,11 @@ export default function Page() {
                 {
                   item_name: item.item_name,
                   item_description: item.item_description,
-                  type: item.type == "IN" ? "Restock" : "Destock",
-                  transaction_date: DateTime.fromISO(item.transaction_date)
-                    .setZone("Asia/Manila")
-                    .toFormat("EEEE',' MMM d',' yyyy"),
-                  transaction_quantity: `
-                    ${parseInt(item.transaction_quantity)} ${
-                    item.item_net_weight_unit
-                  }`,
-                  remark: item.remark == null ? "N/A" : item.remark,
+                  category_name: item.category_name,
+                  available_stocks: `${
+                    parseFloat(item.latest_closing_quantity) /
+                    parseFloat(item.item_net_weight)
+                  } ${item.item_unit}`,
                 },
               ];
             });
@@ -110,7 +106,7 @@ export default function Page() {
           return item;
         }
       });
-      console.log(updatedList);
+
       return updatedList;
     });
   };
@@ -194,41 +190,6 @@ export default function Page() {
                 >
                   <div className="overflow-x-auto mb-4">
                     <div className="flex flex-col lg:flex-row gap-2 mb-4">
-                      <span className="text-xl font-bold font-mono mt-auto mb-auto">
-                        Filter:
-                      </span>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text text-xl">Start</span>
-                        </label>
-                        <input
-                          type="date"
-                          placeholder="Type here"
-                          className="input input-bordered w-full max-w-xs"
-                          min={"2023-01-01"}
-                          max={DateTime.now().toISO().split("T")[0]}
-                          value={range.from}
-                          onChange={(e) => {
-                            setRange({ ...range, from: e.target.value });
-                          }}
-                        />
-                      </div>
-                      <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                          <span className="label-text text-xl">End</span>
-                        </label>
-                        <input
-                          type="date"
-                          placeholder="Type here"
-                          className="input input-bordered w-full max-w-xs"
-                          min={"2023-01-01"}
-                          max={DateTime.now().toISO().split("T")[0]}
-                          value={range.to}
-                          onChange={(e) => {
-                            setRange({ ...range, to: e.target.value });
-                          }}
-                        />
-                      </div>
                       <button
                         disabled={requesting}
                         className={`btn btn-active btn-primary mx-4 mt-auto ${
@@ -239,25 +200,17 @@ export default function Page() {
                             printable: itemList,
                             properties: [
                               { field: "item_name", displayName: "Item Name" },
-                              // {
-                              //   field: "item_description",
-                              //   displayName: "Item Description",
-                              // },
                               {
-                                field: "type",
-                                displayName: "Type",
+                                field: "item_description",
+                                displayName: "Item Description",
                               },
                               {
-                                field: "transaction_date",
-                                displayName: "Transaction Date",
+                                field: "category_name",
+                                displayName: "Category",
                               },
                               {
-                                field: "transaction_quantity",
-                                displayName: "Transaction Quantity",
-                              },
-                              {
-                                field: "remark",
-                                displayName: "Remarks",
+                                field: "available_stocks",
+                                displayName: "Available Stocks",
                               },
                             ],
                             header: `
@@ -303,11 +256,9 @@ export default function Page() {
                       <thead>
                         <tr>
                           <th>Item Name</th>
-                          {/* <th>Item Description</th> */}
-                          <th>Type</th>
-                          <th>Transaction_date</th>
-                          <th>Transaction Quantity</th>
-                          <th>Remarks</th>
+                          <th>Item Description</th>
+                          <th>Category</th>
+                          <th>Available Stocks</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -324,11 +275,9 @@ export default function Page() {
                               <tr key={key}>
                                 <td>{data.item_name}</td>
                                 {/* <td>{data.item_description}</td> */}
-
-                                <td>{data.type}</td>
-                                <td>{data.transaction_date}</td>
-                                <td className="uppercase">{`${data.transaction_quantity}`}</td>
-                                <td>{data.remark}</td>
+                                <td>{data.item_description}</td>
+                                <td>{data.category_name}</td>
+                                <td>{data.available_stocks}</td>
                               </tr>
                             );
                           })

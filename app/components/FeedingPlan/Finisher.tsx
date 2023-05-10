@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
+import uniqolor from "uniqolor";
 import NormalInput from "../FormCompsV2/NormalInput";
 import SearchInput from "../FormCompsV2/SearchInput";
 
 export default function farrowing() {
   let day = 0;
+  let legends: any = [];
+  const [finalLegends, setFinalLegends] = useState<any[]>([]);
   const [plans, setPlans] = useState<any[]>([]);
   const [item_list, setItems] = useState<any[]>([]);
   const [show, showModal] = useState(false);
@@ -64,12 +67,41 @@ export default function farrowing() {
   );
 
   useEffect(() => {
-    if (data) {
-      if (data.code == 200) {
-        setPlans(data.data);
+    async function Exec() {
+      if (data) {
+        if (data.code == 200) {
+          setPlans(data.data);
+          data.data.map((plan: any) => {
+            if (legends.length !== 0) {
+              legends.map((legend: any) => {
+                if (legend != plan.item_id) {
+                  legends.push(plan.item_id);
+                }
+              });
+            } else {
+              legends.push(plan.item_id);
+            }
+          });
+        }
       }
+      let uniqueChars = legends.filter((c: any, index: number) => {
+        return legends.indexOf(c) === index;
+      });
+      legends = uniqueChars.map((legend: any) => {
+        return {
+          id: legend,
+          color: uniqolor.random({
+            saturation: 80,
+            lightness: [70, 80],
+          }).color,
+        };
+      });
+      setFinalLegends(legends);
     }
+
+    Exec();
   }, [data]);
+  console.log(setFinalLegends);
   const watchDay = watch("from_day");
   const watchTo = watch("to_day");
 
@@ -246,7 +278,7 @@ export default function farrowing() {
       </div>
       <div className="ml-auto lg:mr-4 mr-auto w-1/2">
         <p className="text-xl font-bold">Legends</p>
-        <div className="flex flex-row">
+        <div className="grid grid-cols-4">
           <div className="flex flex-row my-2 mx-2">
             <div className="h-4 my-auto w-4 rounded-md bg-info mr-2"></div>
             <span className="my-auto"> Created</span>
@@ -259,6 +291,29 @@ export default function farrowing() {
             <div className="h-4 my-auto w-4 rounded-md bg-base-300 mr-2"></div>
             <span className="my-auto"> Empty</span>
           </div>
+          {finalLegends.length == 0 ? (
+            <></>
+          ) : (
+            finalLegends.map((legend: any, index: number) => {
+              return (
+                <div key={index} className="flex flex-row my-2 mx-2">
+                  <div
+                    style={{ backgroundColor: legend.color }}
+                    className="h-4 my-auto w-4 rounded-md  mr-2"
+                  ></div>
+                  <span className="my-auto">
+                    {plans.length == 0
+                      ? ""
+                      : plans[
+                          plans.findIndex(
+                            (item: any) => item.item_id == legend.id
+                          )
+                        ].item_name}
+                  </span>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
       <div className="w-full h-auto mx-auto gap-x-4 lg:grid grid-cols-0 flex flex-col lg:grid-cols-3">
@@ -509,19 +564,26 @@ export default function farrowing() {
                               }
                             }}
                             key={day}
-                            className={`text-center relative cursor-pointer ${
-                              days >= parseInt(range.from) &&
-                              days <= parseInt(range.to)
-                                ? "bg-success"
-                                : plans[days - 1]?.day == days &&
-                                  parseInt(watchDay) != days
-                                ? "bg-info"
-                                : days == parseInt(range.from)
-                                ? "bg-success"
-                                : days == parseInt(range.to)
-                                ? "bg-success"
-                                : "bg-base-300"
-                            }`}
+                            style={{
+                              backgroundColor:
+                                days >= parseInt(range.from) &&
+                                days <= parseInt(range.to)
+                                  ? "#36D399"
+                                  : plans[days - 1]?.day == days &&
+                                    parseInt(watchDay) != days
+                                  ? finalLegends[
+                                      finalLegends.findIndex(
+                                        (legend: any) =>
+                                          legend.id == plans[days - 1]?.item_id
+                                      )
+                                    ].color
+                                  : days == parseInt(range.from)
+                                  ? "#36D399"
+                                  : days == parseInt(range.to)
+                                  ? "#36D399"
+                                  : "#FFFFFF",
+                            }}
+                            className={`text-center relative cursor-pointer `}
                           >
                             {" "}
                             <div

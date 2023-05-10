@@ -72,7 +72,9 @@ export default function Page() {
 
   useEffect(() => {
     refetch();
+    
   }, []);
+  
 
   useEffect(() => {
     if (filter.keyword == "") {

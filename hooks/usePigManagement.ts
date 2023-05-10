@@ -248,7 +248,8 @@ export const Update = async (
   cage_id: any,
   weight: any,
   remarks: any,
-  pig_type: any
+  pig_type: any,
+  batch_id: any
 ) => {
   let headersList = {
     Accept: "*/*",
@@ -264,6 +265,7 @@ export const Update = async (
     weight: weight,
     remarks: remarks,
     pig_type: pig_type,
+    batch_id: batch_id,
   });
 
   let response = await fetch(
@@ -279,3 +281,26 @@ export const Update = async (
   return data;
 };
 export const View = async () => {};
+
+export const moveBatch = async (batch_id: any, cage_id: any) => {
+  console.log(batch_id, cage_id);
+  let headersList = {
+    Accept: "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+  };
+  let bodyContent = JSON.stringify({
+    batch_id: batch_id,
+    cage_id: cage_id,
+  });
+
+  let response = await fetch(
+    `${location.origin}/api/post/BatchManagement/moveBatch`,
+    {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList,
+    }
+  );
+  let data = await response.json();
+  return data;
+};

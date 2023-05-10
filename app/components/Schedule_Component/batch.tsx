@@ -36,12 +36,13 @@ export function Batch() {
   const [useItem, setUseItem] = useState<
     {
       title: string;
-      start: Date;
-      end?: Date;
+      start: string | Date;
+      end?: string | Date;
       backgroundColor?: string;
       item_id?: string;
       description: string;
       items?: any[];
+      type: string;
       activity: string;
       data_time?: string;
       id?: string;
@@ -67,7 +68,7 @@ export function Batch() {
     defaultValues: {
       pig_id: "",
       activity: "",
-
+      operation_time: "",
       operation_date: "",
       schedule_option: "1",
       display: "",
@@ -167,19 +168,25 @@ export function Batch() {
                 ...prev,
                 {
                   title: `Feeding ${item.item_name} AM`,
-                  start: new Date(addedDate),
+                  start: DateTime.fromISO(addedDate)
+                    .setZone("Asia/Manila")
+                    .toFormat("yyyy-MM-dd 21:00:00"),
                   item_id: item.item_id,
                   activity: "1",
+                  description: "Feeding pigs in the morning",
                   data_time: "AM",
-                  description: "Feeding batch morning",
+                  type: "Plan",
                 },
                 {
                   title: `Feeding ${item.item_name} PM`,
-                  start: new Date(addedDate),
+                  start: DateTime.fromISO(addedDate)
+                    .setZone("Asia/Manila")
+                    .toFormat("yyyy-MM-dd 21:00:00"),
                   item_id: item.item_id,
                   activity: "1",
+                  description: "Feeding pigs in the afternoon",
                   data_time: "PM",
-                  description: "Feeding batch afternoon",
+                  type: "Plan",
                 },
               ]);
             });
@@ -236,6 +243,7 @@ export function Batch() {
               value: item.batch_id,
               display: item.batch_name,
               disabled: false,
+              total_batch: item.batch_capacity,
             }))
           );
         }
@@ -250,7 +258,6 @@ export function Batch() {
           setActivity(
             typedata.data.map((item: any) => ({
               value: item.operation_type_id,
-
               display: item.operation_name,
               disabled: false,
             }))
@@ -343,13 +350,13 @@ export function Batch() {
   useEffect(() => {
     ItemsRefetch();
   }, [watchActivity]);
-  console.log(watchActivity);
+  console.log(pig_list);
   return (
     <>
       <input type="checkbox" id="Items" className="modal-toggle" />
 
       <div className="modal">
-        <div className="modal-box">
+        <div className="modal-box w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">
             Add items to scheduled operation
           </h3>
@@ -374,6 +381,8 @@ export function Batch() {
             <thead>
               <tr>
                 <th>Item Name</th>
+                <th>Consumable Quantities</th>
+                <th>Estimate Quantity</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -381,6 +390,8 @@ export function Batch() {
               {usingItem.map((item: any, index: any) => (
                 <tr key={index}>
                   <td>{item.item_name}</td>
+                  <td>{`${item.operation_quantity} ${item.item_net_weight_unit}`}</td>
+                  <td>{`${item.estimated_vial} ${item.item_unit}`}</td>
                   <td>
                     <button
                       onClick={() => {
@@ -484,10 +495,44 @@ export function Batch() {
                             {" "}
                             <label
                               onClick={() => {
-                                setUsingItem([...usingItem, item]);
-                                ItemsRefetch();
-                                showModal(false);
-                                searchItemReset();
+                                const quantity: any = prompt(
+                                  `Enter the quantity of ${item.item_name} (${item.item_net_weight_unit}):`
+                                );
+                                if (quantity) {
+                                  if (!/[a-zA-Z]/.test(quantity)) {
+                                    const multiplicator =
+                                      watch("activity") == "1"
+                                        ? 1
+                                        : pig_list.find(
+                                            (cage: any) =>
+                                              cage.value == watch("pig_id")
+                                          ).total_batch;
+                                    const data =
+                                      (parseFloat(quantity) /
+                                        parseFloat(item.item_net_weight)) *
+                                      multiplicator;
+                                    setUsingItem([
+                                      ...usingItem,
+                                      {
+                                        item_name: item.item_name,
+                                        item_id: item.item_id,
+                                        operation_quantity:
+                                          quantity * multiplicator,
+                                        estimated_vial: data.toFixed(2),
+                                        item_net_weight_unit:
+                                          item.item_net_weight_unit,
+                                        item_unit: item.item_unit,
+                                      },
+                                    ]);
+                                    ItemsRefetch();
+                                    showModal(false);
+                                    searchItemReset();
+                                  } else {
+                                    toast.error(
+                                      "Consumable Quantity must be a number"
+                                    );
+                                  }
+                                }
                               }}
                               className="link underline hover:text-primary"
                             >
@@ -499,10 +544,44 @@ export function Batch() {
                             {" "}
                             <label
                               onClick={() => {
-                                setUsingItem([...usingItem, item]);
-                                ItemsRefetch();
-                                showModal(false);
-                                searchItemReset();
+                                const quantity: any = prompt(
+                                  `Enter the quantity of ${item.item_name} (${item.item_net_weight_unit}):`
+                                );
+                                if (quantity) {
+                                  if (!/[a-zA-Z]/.test(quantity)) {
+                                    const multiplicator =
+                                      watch("activity") == "1"
+                                        ? 1
+                                        : pig_list.find(
+                                            (cage: any) =>
+                                              cage.value == watch("pig_id")
+                                          ).total_batch;
+                                    const data =
+                                      (parseFloat(quantity) /
+                                        parseFloat(item.item_net_weight)) *
+                                      multiplicator;
+                                    setUsingItem([
+                                      ...usingItem,
+                                      {
+                                        item_name: item.item_name,
+                                        item_id: item.item_id,
+                                        operation_quantity:
+                                          quantity * multiplicator,
+                                        estimated_vial: data.toFixed(2),
+                                        item_net_weight_unit:
+                                          item.item_net_weight_unit,
+                                        item_unit: item.item_unit,
+                                      },
+                                    ]);
+                                    ItemsRefetch();
+                                    showModal(false);
+                                    searchItemReset();
+                                  } else {
+                                    toast.error(
+                                      "Consumable Quantity must be a number"
+                                    );
+                                  }
+                                }
                               }}
                               className="link underline hover:text-primary"
                             >
@@ -683,24 +762,35 @@ export function Batch() {
                 register={register}
                 required={true}
               ></Textarea>
-              <DateMinMax
-                label={"Activty Date"}
-                name={"operation_date"}
+              <NormalInput
+                type="datetime-local"
+                name="operation_date"
                 register={register}
                 errors={errors}
+                label="Operation Date and Time"
                 validationSchema={{
-                  required: "Date is required",
+                  required: "Operation time is required",
                   min: {
-                    value: new Date(),
-                    message: "Date must be greater than today",
+                    value: DateTime.now().toFormat("yyyy-MM-dd ") + "07:30",
+                    message:
+                      "Minimium time is during working hour which is 7:30 AM",
+                  },
+                  max: {
+                    value:
+                      DateTime.now()
+                        .plus({ months: 6 })
+                        .toFormat("yyyy-MM-dd ") + "21:00",
+                    message:
+                      "Maximium time is during working hours which is 9:00 PM",
                   },
                 }}
-                type={"date"}
-                required={true}
-                min={DateTime.now().toISODate()}
-                max={DateTime.now().plus({ months: 6 }).toISODate()}
-              />
-              <label htmlFor="Items" className="btn mt-2 mb-2">
+              ></NormalInput>
+              <label
+                htmlFor={`${watch("pig_id") == "" ? "" : "Items"}`}
+                className={`btn ${
+                  watch("pig_id") == "" ? "btn-disabled" : ""
+                } mt-2 mb-2`}
+              >
                 Add Items
               </label>
             </div>
@@ -710,14 +800,19 @@ export function Batch() {
                   processing ? "loading" : ""
                 }`}
                 type={"button"}
-                onClick={() => {
-                  const result = trigger([
+                onClick={async () => {
+                  const result = await trigger([
                     "operation_date",
                     "pig_id",
                     "activity",
+                    "operation_date",
                   ]);
-
-                  if (usingItem.length != 0) {
+                  if (!result) {
+                    toast.warning("Check form inputs for errors");
+                    return false;
+                  }
+                  const desct = watch("description");
+                  if (item_list.length !== 0) {
                     setActivityList([
                       {
                         pig_id: watch("pig_id"),
@@ -727,35 +822,56 @@ export function Batch() {
                       setUseItem([
                         ...useItem,
                         {
-                          title: `${watch("description")} AM`,
-                          start: new Date(watchOperationDate),
-                          items: usingItem,
+                          title: `${desct}`,
+                          start: DateTime.fromISO(watchOperationDate)
+                            .setZone("Asia/Manila")
+                            .toFormat("yyyy-MM-dd HH:mm:ss"),
+                          description: `${desct}`,
                           activity: watchActivity,
-                          description: watch("description"),
                           data_time: "AM",
+                          type: "Custom",
+                          items: usingItem,
                           id: stringGenerator(),
+                          extendedProps: {
+                            id: useItem.length,
+                            type: "Custom",
+                          },
                         },
                         {
-                          title: `${watch("description")} PM`,
-                          start: new Date(watchOperationDate),
-                          items: usingItem,
+                          title: `${desct}`,
+                          start: DateTime.fromISO(watchOperationDate)
+                            .setZone("Asia/Manila")
+                            .toFormat("yyyy-MM-dd HH:mm:ss"),
                           activity: watchActivity,
-                          description: watch("description"),
                           data_time: "PM",
-                          id: stringGenerator(),
+                          type: "Custom",
+                          items: usingItem,
+                          id: `${stringGenerator()}`,
+                          description: `${desct}`,
+                          extendedProps: {
+                            id: useItem.length + 1,
+                            type: "Custom",
+                          },
                         },
                       ]);
                     } else {
                       setUseItem([
                         ...useItem,
                         {
-                          title: `${watch("description")} `,
-                          start: new Date(watchOperationDate),
-                          items: usingItem,
+                          title: `${desct} `,
+                          start: DateTime.fromISO(watchOperationDate)
+                            .setZone("Asia/Manila")
+                            .toFormat("yyyy-MM-dd HH:mm:ss"),
                           activity: watchActivity,
-                          description: watch("description"),
-                          id: stringGenerator(),
                           data_time: undefined,
+                          items: usingItem,
+                          type: "Custom",
+                          description: `${desct}`,
+                          id: `${stringGenerator()}`,
+                          extendedProps: {
+                            id: useItem.length,
+                            type: "Custom",
+                          },
                         },
                       ]);
                     }
@@ -763,11 +879,16 @@ export function Batch() {
                     setValue("activity", "", {
                       shouldValidate: false,
                     });
+
+                    setValue("pig_id", "");
+                    setValue("description", "");
                     setValue("operation_date", "", {
                       shouldValidate: false,
                     });
                   } else {
                     setUsingItem([]);
+                    setValue("pig_id", "");
+                    setValue("description", "");
                     setValue("activity", "", {
                       shouldValidate: false,
                     });
@@ -891,7 +1012,19 @@ export function Batch() {
             eventClick={(info: any) => {
               if (
                 confirm(
-                  `Event:${info.event.title} \r\nDo you want to delete this event?`
+                  `Event:${
+                    info.event.title
+                  } \r\nDo you want to delete this event?
+                 Items used:
+                  ${useItem[info.event.extendedProps.id].items?.map((item) => {
+                    {
+                      return `
+                          Item Name: ${item.item_name}
+                          Consumable Quantity: ${item.operation_quantity} ${item.item_net_weight_unit}
+                          Estimated Vial: ${item.estimated_vial} ${item.item_unit}
+                        `;
+                    }
+                  })}`
                 )
               ) {
                 info.event.remove(info.event.id);

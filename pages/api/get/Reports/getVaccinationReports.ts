@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,17 +26,17 @@ async function UpdateCage(from: any, to: any, type: any) {
     let rows: any = [];
     if (type == "cage") {
       [rows] = await conn.query(
-        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id  INNER JOIN tbl_cage ON tbl_cage.cage_id=tbl_operation.cage_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='4'  AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
+        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id  INNER JOIN tbl_cage ON tbl_cage.cage_id=tbl_operation.cage_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='4'  AND date(operation_date)>=? AND date(operation_date)<=? AND status!='pending' AND status!='today'",
         [from, to]
       );
     } else if (type == "batch") {
       [rows] = await conn.query(
-        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch ON tbl_operation.batch_id=tbl_batch.batch_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='4'  AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
+        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_batch ON tbl_operation.batch_id=tbl_batch.batch_id  INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='4'  AND date(operation_date)>=? AND date(operation_date)<=? AND status!='pending' AND status!='today'",
         [from, to]
       );
     } else if (type == "individual") {
       [rows] = await conn.query(
-        "SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_pig ON tbl_pig.pig_id=tbl_operation.pig_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='4'  AND operation_date>=? AND operation_date<=? AND STATUS!='pending'",
+        "SELECT *,DATEDIFF(date(operation_date),tbl_pig.birthdate) AS days_old FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_pig ON tbl_pig.pig_id=tbl_operation.pig_id INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_operation_item_details.item_id   WHERE operation_type_id='4'  AND date(operation_date)>=? AND date(operation_date)<=? AND status!='pending' AND status!='today'",
         [from, to]
       );
     }

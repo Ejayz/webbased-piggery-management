@@ -37,6 +37,7 @@ export default function Page() {
         `${location.origin}/api/get/Reports/getMedicineAdministrationReports?from=${range.from}&to=${range.to}&type=${range.type}`
       );
       const data = await response.json();
+      console.log(data);
       if (data.code == 200) {
         if (data.data) {
           setItemList([]);
@@ -67,7 +68,9 @@ export default function Page() {
                     .setZone("Asia/Manila")
                     .toFormat("EEEE',' MMM d',' yyyy"),
                   quantity: `
-                    ${parseFloat(item.quantity)} ${item.item_unit}`,
+                    ${parseFloat(item.quantity).toFixed(2)} ${
+                    item.item_net_weight_unit
+                  }`,
                   status: item.status.toUpperCase(),
                 },
               ];
@@ -175,6 +178,7 @@ export default function Page() {
   const upper = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+
   if (loading.loading) {
     return loading.loader;
   } else if (!allowed) {

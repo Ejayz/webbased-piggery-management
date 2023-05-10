@@ -19,14 +19,12 @@ export default async function handler(
   const user_id = users.user_id;
   //get data sent to api
   const { OpData } = req.body;
-  console.log(req.body);
   const conn = await connection.getConnection();
   try {
     conn.beginTransaction();
     await Ops(conn, OpData, user_id);
     await insertStockCardDetails(conn, OpData, user_id);
     await updateItem(OpData);
-
     const result = await updateOperation(conn, OpData[0].operation_id);
     conn.commit();
     return res.status(200).json({ code: 200, message: "Updated successfully" });
@@ -63,7 +61,6 @@ async function updateItem(OpData: any) {
 
 async function Ops(conn: any, OpData: any, user_id: any) {
   const date = DateTime.now().setZone("Asia/Manila").toISODate();
-  console.log(date);
   try {
     await Promise.all(
       OpData.map(async (items: any) => {
@@ -104,6 +101,11 @@ async function insertStockCardDetails(conn: any, OpData: any, user_id: any) {
   try {
     await Promise.all(
       OpData.map(async (items: any) => {
+        const result = updateOperationDetails(
+          conn,
+          items.quantity,
+          items.operation_detail
+        );
         const getStockCardId =
           "SELECT * FROM tbl_stock_card WHERE item_id=? AND transaction_date=? AND is_exist='true'";
         const [stockCardIdResult]: any = await conn.query(getStockCardId, [
@@ -114,10 +116,10 @@ async function insertStockCardDetails(conn: any, OpData: any, user_id: any) {
         const closingQuantity = stockCardIdResult[0].closing_quantity;
         const createStockCardDetails =
           "INSERT INTO tbl_stock_card_details (stock_card_id,transaction_quantity,total_quantity,type,remark,user_id) VALUES (?,?,?,?,?,?)";
-        console.log(parseFloat(closingQuantity), parseFloat(items.quantity));
+
         const total_quantity =
           parseFloat(closingQuantity) - parseFloat(items.quantity);
-        console.log(items.quantity, total_quantity);
+
         if (total_quantity < 0) {
           throw "Current stocks for this item is not enough.";
         }
@@ -154,5 +156,21 @@ async function updateOperation(conn: any, operation_id: any) {
   const update =
     "update tbl_operation set status='confirmed' where operation_id=? and is_exist='true'";
   const updateResult = await conn.query(update, [operation_id]);
+  return updateResult;
+}
+
+async function updateOperationDetails(
+  conn: any,
+  quantity: any,
+  operation_detail_id: any
+) {
+  console.log(quantity, operation_detail_id);
+  const update =
+    "update tbl_operation_item_details set quantity=? where operation_item_details_id=? and is_exist='true'";
+  const updateResult = await conn.query(update, [
+    quantity,
+    operation_detail_id,
+  ]);
+  console.log(updateResult);
   return updateResult;
 }

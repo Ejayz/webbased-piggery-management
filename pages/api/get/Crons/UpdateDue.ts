@@ -27,10 +27,9 @@ export default async function handler(
 async function UpdateCage() {
   const now = DateTime.now()
     .setZone("Asia/Manila")
-    .minus({ day: 1 })
     .toJSDate();
   const updateSetDue =
-    "UPDATE tbl_operation SET status='overdue' WHERE operation_date < DATE(?) AND status='pending' ";
+    "UPDATE tbl_operation SET status='overdue' WHERE DATE(operation_date) < DATE(?) AND status in ('today','pending') ";
   const conn = await connection.getConnection();
   try {
     const [updateSetDueRows]: any = await conn.query(updateSetDue, [now]);

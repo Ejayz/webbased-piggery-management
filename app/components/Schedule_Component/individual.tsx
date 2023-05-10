@@ -17,6 +17,7 @@ import QrCode from "../QrComponent/qrcode";
 import { stringGenerator } from "@/hooks/useStringGenerator";
 import Textarea from "@/components/FormCompsV2/TextArea";
 import DateMinMax from "../FormCompsV2/DateMinMax";
+import RightDisplayState from "../FormCompsV2/RightDisplayState";
 
 interface activity_interface {
   value: string;
@@ -34,12 +35,13 @@ export function Individual() {
   const [useItem, setUseItem] = useState<
     {
       title: string;
-      start: Date;
-      end?: Date;
+      start: string | Date;
+      end?: string | Date;
       backgroundColor?: string;
       item_id?: string;
       description: string;
       items?: any[];
+      type: string;
       activity: string;
       data_time?: string;
       id?: string;
@@ -65,7 +67,7 @@ export function Individual() {
     defaultValues: {
       pig_id: "",
       activity: "",
-
+      operation_time: "",
       operation_date: "",
       schedule_option: "1",
       description: "",
@@ -164,19 +166,25 @@ export function Individual() {
                 ...prev,
                 {
                   title: `Feeding ${item.item_name} AM`,
-                  start: new Date(addedDate),
+                  start: DateTime.fromISO(addedDate)
+                    .setZone("Asia/Manila")
+                    .toFormat("yyyy-MM-dd 21:00:00"),
                   item_id: item.item_id,
                   activity: "1",
                   description: "Feeding pigs in the morning",
                   data_time: "AM",
+                  type: "Plan",
                 },
                 {
                   title: `Feeding ${item.item_name} PM`,
-                  start: new Date(addedDate),
+                  start: DateTime.fromISO(addedDate)
+                    .setZone("Asia/Manila")
+                    .toFormat("yyyy-MM-dd 21:00:00"),
                   item_id: item.item_id,
                   activity: "1",
                   description: "Feeding pigs in the afternoon",
                   data_time: "PM",
+                  type: "Plan",
                 },
               ]);
             });
@@ -345,7 +353,7 @@ export function Individual() {
     <>
       <input type="checkbox" id="Items" className="modal-toggle" />
       <div className="modal">
-        <div className="modal-box ">
+        <div className="modal-box  w-11/12 max-w-5xl">
           <h3 className="font-bold text-lg">
             Add items to scheduled operation
           </h3>
@@ -370,6 +378,8 @@ export function Individual() {
             <thead>
               <tr>
                 <th>Item Name</th>
+                <th>Consumable Quantities</th>
+                <th>Estimate Quantity</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -377,6 +387,8 @@ export function Individual() {
               {usingItem.map((item: any, index: any) => (
                 <tr key={index}>
                   <td>{item.item_name}</td>
+                  <td>{`${item.operation_quantity} ${item.item_net_weight_unit}`}</td>
+                  <td>{`${item.estimated_vial} ${item.item_unit}`}</td>
                   <td>
                     <button
                       onClick={() => {
@@ -512,10 +524,36 @@ export function Individual() {
                             {" "}
                             <label
                               onClick={() => {
-                                setUsingItem([...usingItem, item]);
-                                ItemsRefetch();
-                                showModal(false);
-                                searchItemReset();
+                                const quantity: any = prompt(
+                                  `Enter the quantity of ${item.item_name} (${item.item_net_weight_unit}):`
+                                );
+                                if (quantity) {
+                                  if (!/[a-zA-Z]/.test(quantity)) {
+                                    const data =
+                                      (parseFloat(quantity) /
+                                        parseFloat(item.item_net_weight)) *
+                                      1;
+                                    setUsingItem([
+                                      ...usingItem,
+                                      {
+                                        item_name: item.item_name,
+                                        item_id: item.item_id,
+                                        operation_quantity: quantity,
+                                        estimated_vial: data.toFixed(2),
+                                        item_net_weight_unit:
+                                          item.item_net_weight_unit,
+                                        item_unit: item.item_unit,
+                                      },
+                                    ]);
+                                    ItemsRefetch();
+                                    showModal(false);
+                                    searchItemReset();
+                                  } else {
+                                    toast.error(
+                                      "Consumable Quantity must be a number"
+                                    );
+                                  }
+                                }
                               }}
                               className="link underline hover:text-primary"
                             >
@@ -527,10 +565,36 @@ export function Individual() {
                             {" "}
                             <label
                               onClick={() => {
-                                setUsingItem([...usingItem, item]);
-                                ItemsRefetch();
-                                showModal(false);
-                                searchItemReset();
+                                const quantity: any = prompt(
+                                  `Enter the quantity of ${item.item_name} (${item.item_net_weight_unit}):`
+                                );
+                                if (quantity) {
+                                  if (!/[a-zA-Z]/.test(quantity)) {
+                                    const data =
+                                      (parseFloat(quantity) /
+                                        parseFloat(item.item_net_weight)) *
+                                      1;
+                                    setUsingItem([
+                                      ...usingItem,
+                                      {
+                                        item_name: item.item_name,
+                                        item_id: item.item_id,
+                                        operation_quantity: quantity,
+                                        estimated_vial: data.toFixed(2),
+                                        item_net_weight_unit:
+                                          item.item_net_weight_unit,
+                                        item_unit: item.item_unit,
+                                      },
+                                    ]);
+                                    ItemsRefetch();
+                                    showModal(false);
+                                    searchItemReset();
+                                  } else {
+                                    toast.error(
+                                      "Consumable Quantity must be a number"
+                                    );
+                                  }
+                                }
                               }}
                               className="link underline hover:text-primary"
                             >
@@ -756,19 +820,30 @@ export function Individual() {
                 register={register}
                 required={true}
               ></Textarea>
-              <DateMinMax
-                label={"Activty Date"}
-                name={"operation_date"}
+
+              <NormalInput
+                type="datetime-local"
+                name="operation_date"
                 register={register}
                 errors={errors}
+                label="Operation Date and Time"
                 validationSchema={{
-                  required: "Date is required",
+                  required: "Operation time is required",
+                  min: {
+                    value: DateTime.now().toFormat("yyyy-MM-dd ") + "07:30",
+                    message:
+                      "Minimium time is during working hour which is 7:30 AM",
+                  },
+                  max: {
+                    value:
+                      DateTime.now()
+                        .plus({ months: 6 })
+                        .toFormat("yyyy-MM-dd ") + "21:00",
+                    message:
+                      "Maximium time is during working hours which is 9:00 PM",
+                  },
                 }}
-                type={"date"}
-                required={true}
-                min={DateTime.now().toISODate()}
-                max={DateTime.now().plus({ months: 6 }).toISODate()}
-              />
+              ></NormalInput>
               <label htmlFor="Items" className="btn mt-2 mb-2">
                 Add Items
               </label>
@@ -784,6 +859,7 @@ export function Individual() {
                     "operation_date",
                     "pig_id",
                     "activity",
+                    "operation_date",
                   ]);
                   if (!result) {
                     toast.warning("Check form inputs for errors");
@@ -801,26 +877,34 @@ export function Individual() {
                         ...useItem,
                         {
                           title: `${desct}`,
-                          start: new Date(watchOperationDate),
+                          start: DateTime.fromISO(watchOperationDate)
+                            .setZone("Asia/Manila")
+                            .toFormat("yyyy-MM-dd HH:mm:ss"),
                           description: `${desct}`,
                           activity: watchActivity,
                           data_time: "AM",
+                          type: "Custom",
                           items: usingItem,
                           id: stringGenerator(),
                           extendedProps: {
                             id: useItem.length,
+                            type: "Custom",
                           },
                         },
                         {
                           title: `${desct}`,
-                          start: new Date(watchOperationDate),
+                          start: DateTime.fromISO(watchOperationDate)
+                            .setZone("Asia/Manila")
+                            .toFormat("yyyy-MM-dd HH:mm:ss"),
                           activity: watchActivity,
                           data_time: "PM",
+                          type: "Custom",
                           items: usingItem,
                           id: `${stringGenerator()}`,
                           description: `${desct}`,
                           extendedProps: {
                             id: useItem.length + 1,
+                            type: "Custom",
                           },
                         },
                       ]);
@@ -829,14 +913,18 @@ export function Individual() {
                         ...useItem,
                         {
                           title: `${desct} `,
-                          start: new Date(watchOperationDate),
+                          start: DateTime.fromISO(watchOperationDate)
+                            .setZone("Asia/Manila")
+                            .toFormat("yyyy-MM-dd HH:mm:ss"),
                           activity: watchActivity,
                           data_time: undefined,
                           items: usingItem,
+                          type: "Custom",
                           description: `${desct}`,
                           id: `${stringGenerator()}`,
                           extendedProps: {
                             id: useItem.length,
+                            type: "Custom",
                           },
                         },
                       ]);
@@ -986,11 +1074,22 @@ export function Individual() {
             eventClick={(info: any) => {
               if (
                 confirm(
-                  `Event:${info.event.title} \r\nDo you want to delete this event?`
+                  `Event:${
+                    info.event.title
+                  } \r\nDo you want to delete this event?
+                 Items used:
+                  ${useItem[info.event.extendedProps.id].items?.map((item) => {
+                    {
+                      return `
+                          Item Name: ${item.item_name}
+                          Consumable Quantity: ${item.operation_quantity} ${item.item_net_weight_unit}
+                          Estimated Vial: ${item.estimated_vial} ${item.item_unit}
+                        `;
+                    }
+                  })}`
                 )
               ) {
                 info.event.remove(info.event.id);
-                setUseItem(useItem.filter((item) => item.id !== info.event.id));
               }
             }}
             dateClick={(info: any) => {

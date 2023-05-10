@@ -23,6 +23,7 @@ import { useQuery } from "react-query";
 import TextArea from "@/components/FormCompsV2/TextArea";
 import { QuarantinePig } from "@/hooks/useQuarantine";
 import QrCode from "@/components/QrComponent/qrcode";
+import Loading from "@/components/Loading/loading";
 
 export default function Page() {
   const [allowed, setIsAllowed] = useState(false);
@@ -30,6 +31,26 @@ export default function Page() {
   const [keyword, setKeyword] = useState("");
   const [hideScanner, setHideScanner] = useState(false);
   const [show, showModal] = useState(false);
+
+  const {
+    data: Batch,
+    isLoading: BatchLoading,
+    isError: BatchError,
+    isFetching: BatchFetching,
+  } = useQuery(
+    "batch_list",
+    async () => {
+      const response = await fetch(`/api/get/Searchers/getBatch`);
+      return response.json();
+    },
+    {}
+  );
+  console.log(Batch);
+  const [showBatch, setShowBatch] = useState(false);
+  const [showCage, setShowCage] = useState(false);
+  const [showPig, setShowPig] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState("");
+  const [selectedCage, setSelectedCage] = useState("");
 
   const {
     register,
@@ -155,6 +176,29 @@ export default function Page() {
     reset();
   }
 
+  const {
+    data: Cage,
+    isLoading: CageLoading,
+    isError: CageError,
+    isFetching: CageFetching,
+    refetch: CageRefetch,
+  } = useQuery(
+    "cage_list",
+    async () => {
+      const response = await fetch(
+        `/api/get/Searchers/getCage?batch_id=${selectedBatch}`
+      );
+      return response.json();
+    },
+    {}
+  );
+
+  useEffect(() => {
+    if (selectedBatch != "") {
+      CageRefetch();
+    }
+  }, [selectedBatch]);
+
   useEffect(() => {
     async function exec_get() {
       const returned = await GetCategory();
@@ -210,6 +254,7 @@ export default function Page() {
       refetchOnWindowFocus: false,
     }
   );
+  console.log(Cage);
   useEffect(() => {
     if (data) {
       if (data.code == 200) {
@@ -228,6 +273,28 @@ export default function Page() {
       }
     }
   }, [data]);
+  const {
+    data: Pig,
+    isLoading: PigLoading,
+    isError: PigError,
+    isFetching: PigFetching,
+    refetch: PigRefetch,
+  } = useQuery(
+    "pig_list",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/get/Searchers/getPig?cage_id=${selectedCage}&batch_id=${selectedBatch}`
+      );
+      const data = await response.json();
+      return data;
+    },
+    {}
+  );
+  useEffect(() => {
+    if (selectedCage != "") {
+      PigRefetch();
+    }
+  }, [selectedCage]);
 
   if (loading.loading) {
     return loading.loader;
@@ -268,53 +335,133 @@ export default function Page() {
             </div>
           </div>
         </div>
-
-        <input type="checkbox" id="search_pig" className="modal-toggle" />
+        <input type="checkbox" checked={showCage} className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box w-3/4">
             <label
-              htmlFor="search_pig"
+              onClick={() => {
+                setShowCage(false);
+              }}
               className="btn btn-sm btn-circle absolute right-2 top-2"
             >
               ✕
             </label>
             <h3 className="font-bold text-lg">
-              Search the pig you want to add schedule
+              Find the cage that the pig is enclosed.
             </h3>
             <div className="form-control">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  refetch2();
-                }}
-                className="input-group"
-              >
-                <input
-                  type="text"
-                  placeholder="Search…"
-                  className="input input-bordered w-full"
-                  value={keyword}
-                  onChange={(e) => {
-                    setKeyword(e.target.value);
-                  }}
-                />
-                <button type="submit" className="btn btn-square">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-              </form>
+              <label className="label overflow-y-auto">
+                <table className="table table-compact w-full label-text-alt">
+                  <thead>
+                    <tr>
+                      <th>Batch Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {CageFetching ? (
+                      <Loading></Loading>
+                    ) : Cage.data.length == 0 ? (
+                      <tr className="text-center">
+                        <td colSpan={4}>
+                          No cage available that can be selected
+                        </td>
+                      </tr>
+                    ) : (
+                      Cage.data.map((item: any, index: any) => (
+                        <tr key={index}>
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setShowCage(false);
+                                setSelectedCage(item.cage_id);
+                                setShowPig(true);
+                              }}
+                              className="link underline hover:text-primary"
+                            >
+                              {item.cage_name}
+                            </label>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </label>
+            </div>
+          </div>
+        </div>
+        <input type="checkbox" checked={showBatch} className="modal-toggle" />
+        <div className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box w-3/4">
+            <label
+              onClick={() => {
+                setShowBatch(false);
+              }}
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+            >
+              ✕
+            </label>
+            <h3 className="font-bold text-lg">
+              Find the batch that the pig is belonged
+            </h3>
+            <div className="form-control">
+              <label className="label overflow-y-auto">
+                <table className="table table-compact w-full label-text-alt">
+                  <thead>
+                    <tr>
+                      <th>Batch Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {BatchFetching ? (
+                      <Loading></Loading>
+                    ) : Batch.data.length == 0 ? (
+                      <tr className="text-center">
+                        <td colSpan={4}>
+                          No batch available that can be quarantined
+                        </td>
+                      </tr>
+                    ) : (
+                      Batch.data.map((item: any, index: any) => (
+                        <tr key={index}>
+                          <td>
+                            {" "}
+                            <label
+                              onClick={() => {
+                                setShowBatch(false);
+                                setSelectedBatch(item.batch_id);
+                                setShowCage(true);
+                              }}
+                              className="link underline hover:text-primary"
+                            >
+                              {item.batch_name}{" "}
+                            </label>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </label>
+            </div>
+          </div>
+        </div>
+        <input type="checkbox" checked={showPig} className="modal-toggle" />
+        <div className="modal modal-bottom sm:modal-middle">
+          <div className="modal-box w-3/4">
+            <label
+              onClick={() => {
+                setShowPig(false);
+              }}
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+            >
+              ✕
+            </label>
+            <h3 className="font-bold text-lg">
+              Search the pig you want to quarantine
+            </h3>
+            <div className="form-control">
               <label className="label overflow-y-auto">
                 <table className="table table-compact w-full label-text-alt">
                   <thead>
@@ -325,36 +472,40 @@ export default function Page() {
                     </tr>
                   </thead>
                   <tbody>
-                    {pig_list.length == 0 ? (
+                    {PigFetching ? (
+                      <Loading></Loading>
+                    ) : Pig.length == 0 ? (
                       <tr className="text-center">
                         <td colSpan={4}>
                           No pig available that can be quarantined
                         </td>
                       </tr>
                     ) : (
-                      pig_list.map((item, index) => (
+                      Pig.data.map((item: any, index: any) => (
                         <tr key={index}>
                           <td>
                             {" "}
                             <label
                               onClick={() => {
-                                setValue("pig_id", item.value, {
+                                setValue("pig_id", item.pig_id, {
                                   shouldValidate: true,
                                 });
+                                setShowPig(false);
                               }}
                               htmlFor="search_pig"
                               className="link underline hover:text-primary"
                             >
-                              {item.display}
+                              {item.pig_id}
                             </label>
                           </td>
                           <td>
                             {" "}
                             <label
                               onClick={() => {
-                                setValue("pig_id", item.value, {
+                                setValue("pig_id", item.pig_id, {
                                   shouldValidate: true,
                                 });
+                                setShowPig(false);
                               }}
                               htmlFor="search_pig"
                               className="link underline hover:text-primary"
@@ -366,9 +517,10 @@ export default function Page() {
                             {" "}
                             <label
                               onClick={() => {
-                                setValue("pig_id", item.value, {
+                                setValue("pig_id", item.pig_id, {
                                   shouldValidate: true,
                                 });
+                                setShowPig(false);
                               }}
                               htmlFor="search_pig"
                               className="link underline hover:text-primary"
@@ -410,7 +562,9 @@ export default function Page() {
                   <div className="w-full ml-2 grid lg:grid-cols-2 lg:grid-rows-none gap-2 grid-cols-none grid-rows-1">
                     <div>
                       <label
-                        htmlFor="search_pig"
+                        onClick={() => {
+                          setShowBatch(true);
+                        }}
                         className={`btn my-auto mx-4`}
                       >
                         Choose Pig

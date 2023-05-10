@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +11,7 @@ export default async function handler(
     return false;
   }
   const { page, filters }: any = req.query;
-  
+
   const { sortby, sortorder, keyword }: any = JSON.parse(filters);
   if (page == "0") {
     return res
@@ -132,7 +132,7 @@ async function SearhGetCage(
     FROM tbl_pig
     INNER JOIN tbl_pig_history ON tbl_pig.pig_id = tbl_pig_history.pig_id
     INNER JOIN tbl_cage ON tbl_pig_history.cage_id = tbl_cage.cage_id
-    INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
+    INNER JOIN tbl_batch ON tbl_pig_history.batch_id = tbl_batch.batch_id
     INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE (tbl_pig.pig_id LIKE ?  OR tbl_pig_history.pig_tag LIKE ? OR tbl_pig_history.weight LIKE ? OR tbl_cage.cage_name LIKE ? OR tbl_batch.batch_name LIKE ? OR tbl_breed.breed_name LIKE ?) AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_history_status='active'  
      ORDER BY ${conn.escapeId(
        sortColumn
