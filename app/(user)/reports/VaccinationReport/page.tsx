@@ -46,11 +46,12 @@ export default function Page() {
               return [
                 ...prev,
                 {
-                  age: `${
-                    DateTime.fromISO(item.operation_date).diff(
-                      DateTime.fromISO(item.birthdate)
-                    ).days
-                  } Days Old`,
+                  age:
+                    range.type == "batch"
+                      ? `N/A`
+                      : range.type == "cage"
+                      ? "N/A"
+                      : `${item.days_old} Days Old`,
                   item_name: item.item_name,
                   item_description: item.item_description,
                   type:
@@ -73,7 +74,9 @@ export default function Page() {
                     .setZone("Asia/Manila")
                     .toFormat("EEEE',' MMM d',' yyyy"),
                   quantity: `
-                    ${parseFloat(item.quantity)} ${item.item_unit}`,
+                    ${parseFloat(item.quantity).toFixed(2)} ${
+                    item.item_net_weight_unit
+                  }`,
                   status: item.status.toUpperCase(),
                 },
               ];

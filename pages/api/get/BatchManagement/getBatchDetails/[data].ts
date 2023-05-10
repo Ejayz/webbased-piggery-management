@@ -35,7 +35,7 @@ async function UpdateCage(batch_id: any) {
       [batch_id]
     );
     const [pig_data] = await conn.query(
-      "select * from tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_cage ON tbl_cage.cage_id=tbl_pig_history.cage_id where batch_id=? and tbl_pig_history.pig_history_status='active'",
+      "select * from tbl_pig INNER JOIN tbl_pig_history ON tbl_pig.pig_id=tbl_pig_history.pig_id INNER JOIN tbl_cage ON tbl_cage.cage_id=tbl_pig_history.cage_id where tbl_pig_history.batch_id=? and tbl_pig_history.pig_history_status='active'",
       [batch_id]
     );
     return {

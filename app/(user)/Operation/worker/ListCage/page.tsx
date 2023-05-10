@@ -99,6 +99,7 @@ export default function Page() {
       }
     }
   }, []);
+  
   console.log(parsed);
   return (
     <>

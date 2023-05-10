@@ -84,13 +84,9 @@ export default function FeedingActivity() {
               title: `${item.description} ${item.am_pm} `,
               start: item.operation_date,
               backgroundColor:
-                DateTime.fromISO(item.operation_date).diffNow("days").days <
-                  -1 &&
-                (item.status == "pending" || item.status != "confirmed")
+                item.status == "overdue"
                   ? "red"
-                  : DateTime.fromISO(item.operation_date).diffNow("days").days <
-                      0 &&
-                    (item.status == "pending" || item.status != "confirmed")
+                  : item.status == "today"
                   ? "orange"
                   : item.status == "pending"
                   ? "#87CEEB"
@@ -103,6 +99,7 @@ export default function FeedingActivity() {
                 date_diff: DateTime.fromISO(item.operation_date).diffNow("days")
                   .days,
                 status: item.status,
+                dates: item.operation_date,
               },
             },
           ]);
@@ -179,28 +176,39 @@ export default function FeedingActivity() {
   }, [submitable?.operation_id]);
 
   useEffect(() => {
-    setOperationData([]);
     if (OperationData) {
       if (OperationData.data) {
-        console.log(OperationData.data);
-        OperationData.data.map((item: any) => {
-          setOperationData([
-            ...OpData,
-            {
-              operation_details_id: item.operation_details_id,
+        let arrays: any = [];
+        OperationData.data.operation.map((item: any) => {
+          if (item.type == "Custom") {
+            arrays.push({
+              operation_detail: item.operation_item_details_id,
+              operation_id: item.operation_id,
+              item_id: item.item_id,
+              item_name: item.item_name,
+              quantity: item.quantity,
+              totalStocks: item.latest_closing_quantity,
+              item_net_weight_unit: item.item_net_weight_unit,
+              operation_date: item.operation_date,
+            });
+          } else {
+            arrays.push({
+              operation_detail: item.operation_item_details_id,
               operation_id: item.operation_id,
               item_id: item.item_id,
               item_name: item.item_name,
               quantity: "",
-              totalStocks: item.closing_quantity,
+              totalStocks: item.latest_closing_quantity,
               item_net_weight_unit: item.item_net_weight_unit,
-            },
-          ]);
+              operation_date: item.operation_date,
+            });
+          }
         });
+        setOperationData(arrays);
       }
     }
   }, [OperationData]);
-  console.log(watch("item_quantity"));
+
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -236,7 +244,9 @@ export default function FeedingActivity() {
                       Operation Date:
                     </span>
                     <span>
-                      {DateTime.fromISO(OperationData?.data[0].operation_date)
+                      {DateTime.fromISO(
+                        OperationData?.data.operation[0].operation_date
+                      )
                         .setZone("Asia/Manila")
                         .toFormat("EEEE',' MMM d',' yyyy")}
                     </span>
@@ -245,20 +255,25 @@ export default function FeedingActivity() {
                     <span className="text-md font-bold font-mono w-5/12">
                       Operation Type:
                     </span>
-                    <span>{OperationData?.data[0].operation_name}</span>
+                    <span>
+                      {OperationData?.data.operation[0].operation_name}
+                    </span>
                   </div>
                   <div className="w-full flex flex-row">
                     <span className="text-md font-bold font-mono w-5/12">
                       Operation Time:
                     </span>
-                    <span>{OperationData?.data[0].am_pm}</span>
+                    <span>{OperationData?.data.operation[0].am_pm}</span>
                   </div>
                   {OpData.length < 0 ? (
                     <></>
                   ) : (
                     OpData.map((item: any, key: number) => {
                       return (
-                        <div className="border-t-2 border-b-2 border-black py-2" key={key}>
+                        <div
+                          className="border-t-2 border-b-2 border-black py-2"
+                          key={key}
+                        >
                           <div className="w-full flex flex-row">
                             <span className="text-md font-bold font-mono w-5/12">
                               Item:
@@ -273,7 +288,7 @@ export default function FeedingActivity() {
                           </div>
                           <RightDisplay
                             name="item_quantity"
-                            label={"Item Quantity"}
+                            label={"Consumed Quantity"}
                             type={"number"}
                             register={register}
                             item_unit={item.item_net_weight_unit}
@@ -382,20 +397,14 @@ export default function FeedingActivity() {
                     fixedWeekCount={true}
                     eventClick={(info: any) => {
                       const data = getExtendProps(info);
-                      if (data.date_diff < -1) {
-                        toast.error("Cannot edit past due operation");
-                        return;
-                      }
-                      if (data.date_diff > 0) {
-                        toast.error("Cannot edit future pending operation");
-                        return;
-                      }
-                      if (data.status != "pending") {
+                      console.log(data.status);
+                      if (data.status != "today") {
                         toast.error(
-                          "Interaction with confirmed operation is not permitted."
+                          "Cannot edit past due ,future ,or already been confirmed operation."
                         );
                         return;
                       }
+
                       if (prevInfo == null) {
                         setPrevInfo({
                           prevColor: info.el.style.backgroundColor,

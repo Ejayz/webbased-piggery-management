@@ -12,8 +12,16 @@ export default async function handler(
     return false;
   }
   try {
-    const { cage_id, pig_id, pig_tag, weight, status, remarks, pig_type } =
-      req.body;
+    const {
+      cage_id,
+      pig_id,
+      pig_tag,
+      weight,
+      status,
+      remarks,
+      pig_type,
+      batch_id,
+    } = req.body;
     const users = await getUsers(authorized.cookie);
     const user_id = users.user_id;
     const data: any = await Ops(
@@ -24,7 +32,8 @@ export default async function handler(
       status,
       remarks,
       user_id,
-      pig_type
+      pig_type,
+      batch_id
     );
     if (data == 900) {
       return res
@@ -48,7 +57,8 @@ async function Ops(
   status: any,
   remarks: any,
   user_id: any,
-  pig_type: any
+  pig_type: any,
+  batch_id: any
 ) {
   const conn = await connection.getConnection();
   await conn.beginTransaction();
@@ -71,7 +81,7 @@ async function Ops(
         "update tbl_pig_history set pig_history_status='inactive' where pig_id=? and is_exist='true' and pig_history_status='active'";
       const [inActivateOldR]: any = await conn.query(inActivateOld, [pig_id]);
       const insertNewPigDetails =
-        "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id,pig_type) values (?,?,?,?,?,?,?,?)";
+        "insert into tbl_pig_history (pig_id,cage_id,pig_tag,weight,pig_status,remarks,user_id,pig_type,batch_id) values (?,?,?,?,?,?,?,?,?)";
 
       const [updatePig]: any = await conn.query(insertNewPigDetails, [
         pig_id,
@@ -82,6 +92,7 @@ async function Ops(
         remarks,
         user_id,
         pig_type,
+        batch_id,
       ]);
 
       if (updatePig.affectedRows == 1) {

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function Page() {
   const [parsed, setParsed] = useState([]);
@@ -84,6 +85,18 @@ export default function Page() {
       }
     }
   }, []);
+
+  const processQrCode = async (index: number, id: string) => {
+    let data: any = document.getElementById(`${id}`);
+    let download: any = data.toDataURL();
+    const link = document.createElement("a");
+    link.href = download;
+    link.download = `${id}.png`;
+    link.target = "_blank";
+    link.click();
+    link.remove();
+  };
+
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -196,6 +209,16 @@ export default function Page() {
                     return (
                       <tr key={key} className="hover">
                         <th>{key + 1}</th>
+                        <th className="hidden">
+                          <QRCodeCanvas
+                            id={item.batch_id}
+                            value={JSON.stringify({
+                              batch_id: item.batch_id,
+                              batch_name: item.batch_name,
+                              batch_capacity: item.batch_capacity,
+                            })}
+                          />
+                        </th>
                         <td>{item.batch_name}</td>
                         <td>{item.sow_id != null ? item.sow_id : "N/A"}</td>
                         <td>{item.boar_id != null ? item.boar_id : "N/A"}</td>
@@ -233,23 +256,38 @@ export default function Page() {
                               ></Image>
                               View
                             </Link>
-                            {/* <Link
-                              className="btn btn-sm btn-error mx-2"
+                            <Link
+                              className="btn btn-sm btn-warning mx-2"
                               href={{
-                                pathname: "/pig_management/worker/Remove",
-                                query: { id: item.pig_id },
+                                pathname: `/batch_management/worker/BreederList/Move/${item.batch_id}`,
                               }}
                             >
                               {" "}
                               <Image
-                                src="/assets/table/remove.svg"
+                                src="/assets/icons/move.svg"
                                 height={520}
                                 width={520}
                                 alt={""}
                                 className="mx-auto w-6 h-6"
                               ></Image>
-                              Remove
-                            </Link> */}
+                              Move Cage
+                            </Link>
+                            <button
+                              className="btn btn-info btn-sm mx-2"
+                              type="button"
+                              onClick={() => {
+                                processQrCode(key, item.batch_id);
+                              }}
+                            >
+                              <Image
+                                src="/assets/icons/qrcode.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
+                              Download
+                            </button>
                           </div>
                         </td>
                       </tr>

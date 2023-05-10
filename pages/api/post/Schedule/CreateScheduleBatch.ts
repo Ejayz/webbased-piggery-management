@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
 import { getUsers } from "pages/api/getUserDetails";
@@ -12,7 +13,6 @@ export default async function handler(
     return false;
   }
   const { cage_id, item_list } = req.body;
-  console.log(item_list);
   const users = await getUsers(authorized.cookie);
   const user_id = users.user_id;
   const conn = await connection.getConnection();
@@ -43,11 +43,23 @@ async function UpdateCage(
   try {
     await Promise.all(
       item_list.map(async (item: any) => {
+        let status = "pending";
+
+        if (
+          parseInt(
+            DateTime.fromISO(item.start)
+              .setZone("Asia/Manila")
+              .diffNow()
+              .days.toString()
+          ) < 0
+        ) {
+          status = "today";
+        }
         const selectData = "select * from tbl_batch where batch_id=?";
         const [sqlSelectResult]: any = await conn.query(selectData, [pig_id]);
         const getBatchCapacity = sqlSelectResult[0].batch_capacity;
         const insertOperation =
-          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm,total_patient,user_id,description) values (?,?,?,?,?,?,?) ";
+          "insert into tbl_operation (operation_type_id,operation_date,batch_id,am_pm,total_patient,user_id,description,type,status) values (?,?,?,?,?,?,?,?,?) ";
         const [sqlInsertResult]: any = await conn.query(insertOperation, [
           item.activity,
           item.start,
@@ -56,6 +68,8 @@ async function UpdateCage(
           getBatchCapacity,
           user_id,
           item.description,
+          item.type,
+          status,
         ]);
         const lastInsertedData = sqlInsertResult.insertId;
         if (item.items !== undefined) {
@@ -91,10 +105,10 @@ async function InsertOperationItemDetails(
     await Promise.all(
       items.map(async (item: any) => {
         const insertOperationItemDetail =
-          "insert into tbl_operation_item_details (operation_id,item_id) values (?,?)";
+          "insert into tbl_operation_item_details (operation_id,item_id,quantity) values (?,?,?)";
         const [sqlInsertResult]: any = await conn.query(
           insertOperationItemDetail,
-          [operation_id, item.item_id]
+          [operation_id, item.item_id, item.operation_quantity]
         );
       })
     );

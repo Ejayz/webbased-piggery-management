@@ -37,6 +37,7 @@ export default function Page({ params }: any) {
   const [cageList, setCageList] = useState<SelectInter[]>([]);
   const [cageSelected, setCageSelected] = useState<SelectedCage[]>([]);
   const id: any = useSearchParams().get("id");
+  const [batchList, setBatchList] = useState<SelectInter[]>([]);
   const {
     register,
     handleSubmit,
@@ -54,6 +55,7 @@ export default function Page({ params }: any) {
       status: "",
       weight: "",
       remarks: "",
+      batch_id: "",
     },
     mode: "onChange",
     criteriaMode: "all",
@@ -73,6 +75,38 @@ export default function Page({ params }: any) {
     },
     {}
   );
+  const {
+    data: batches,
+    isLoading: batchLoading,
+    error: batchError,
+    refetch: batchRefetch,
+  } = useQuery(
+    "getBatches",
+    async () => {
+      const response = await fetch(
+        `${location.origin}/api/get/PigManagement/getBatch`
+      );
+      const data = await response.json();
+      return data;
+    },
+    {}
+  );
+
+  useEffect(() => {
+    if (batches !== undefined) {
+      if (batches.code == 200) {
+        let List: any = [];
+        batches.data.map((item: any, key: number) => {
+          List.push({
+            value: item.batch_id,
+            display: item.batch_name,
+            disabled: false,
+          });
+        });
+        setBatchList(List);
+      }
+    }
+  }, [batches]);
 
   const evaluateCage = async (list: any) => {
     for (let i = 0; i < cageSelected.length; i++) {
@@ -198,7 +232,8 @@ export default function Page({ params }: any) {
       data.cage_id,
       data.weight,
       data.remarks,
-      data.pig_type
+      data.pig_type,
+      data.batch_id
     );
     if (returned.code == 200) {
       resetState();
@@ -261,6 +296,7 @@ export default function Page({ params }: any) {
       setValue("weight", pigData.data[0].weight);
       setValue("pig_tag", pigData.data[0].pig_tag);
       setValue("pig_type", pigData.data[0].pig_type);
+      setValue("batch_id", pigData.data[0].batch_id);
       refetch();
     }
   }, [pigData]);
@@ -452,9 +488,7 @@ export default function Page({ params }: any) {
                   errors={errors}
                   required={true}
                   validationSchema={{ required: "This field is required" }}
-                >
-                  {" "}
-                </SelectInput>
+                ></SelectInput>
                 {Action == "View" || Action == "Remove" ? (
                   <></>
                 ) : (
@@ -468,6 +502,16 @@ export default function Page({ params }: any) {
                     validationSchema={{ required: "This field is required" }}
                   />
                 )}
+                <SelectInput
+                  name={"batch_id"}
+                  label={"Batch"}
+                  register={register}
+                  disabled={true}
+                  options={batchList}
+                  errors={errors}
+                  required={true}
+                  validationSchema={{ required: "This field is required" }}
+                ></SelectInput>
               </div>
               <div className="card-actions justify-end mt-6">
                 {params.Action == "View" ? (

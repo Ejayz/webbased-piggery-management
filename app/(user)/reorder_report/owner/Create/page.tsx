@@ -140,6 +140,7 @@ export default function Page() {
                           <th>Item Name</th>
                           <th>Item Description</th>
                           <th>Item Category</th>
+                          <th>Stock Balance</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -157,6 +158,7 @@ export default function Page() {
                                 <td>{data.item_name}</td>
                                 <td>{data.item_description}</td>
                                 <td>{data.category_name}</td>
+                                <td>{data.item_left}</td>
                               </tr>
                             );
                           })
@@ -183,6 +185,10 @@ export default function Page() {
                             {
                               field: "category_name",
                               displayName: "Item Category",
+                            },
+                            {
+                              field: "item_left",
+                              displayName: "Stock Balance",
                             },
                           ],
                           header: `

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { QRCodeCanvas } from "qrcode.react";
 export default function Page() {
   const router = useRouter();
   const [parsed, setParsed] = useState<any[]>([]);
@@ -72,7 +73,16 @@ export default function Page() {
   useEffect(() => {
     refetch();
   }, [page]);
-
+  const processQrCode = async (index: number, id: string) => {
+    let data: any = document.getElementById(`${id}`);
+    let download: any = data.toDataURL();
+    const link = document.createElement("a");
+    link.href = download;
+    link.download = `${id}.png`;
+    link.target = "_blank";
+    link.click();
+    link.remove();
+  };
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
@@ -177,6 +187,17 @@ export default function Page() {
                     return (
                       <tr key={key} className="hover">
                         <th>{key + 1}</th>
+                        <th className="hidden">
+                          <QRCodeCanvas
+                            id={item.cage_id}
+                            value={JSON.stringify({
+                              cage_id: item.cage_id,
+                              cage_name: item.cage_name,
+                              cage_capacity: item.cage_capacity,
+                              cage_current_caged: item.cage_current_caged,
+                            })}
+                          />
+                        </th>
                         <td>{item.cage_name}</td>
                         <td>{item.cage_capacity}</td>
                         <td>{item.cage_type}</td>
@@ -232,6 +253,22 @@ export default function Page() {
                               ></Image>
                               Remove
                             </Link>
+                            <button
+                              className="btn btn-info btn-sm mx-2"
+                              type="button"
+                              onClick={() => {
+                                processQrCode(key, item.cage_id);
+                              }}
+                            >
+                              <Image
+                                src="/assets/icons/qrcode.svg"
+                                height={520}
+                                width={520}
+                                alt={""}
+                                className="mx-auto w-6 h-6"
+                              ></Image>
+                              Download
+                            </button>
                           </div>
                         </td>
                       </tr>

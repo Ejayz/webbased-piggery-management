@@ -32,6 +32,7 @@ interface ArrayedData {
   type: string;
 }
 export default function Page() {
+ 
   const [itemList, setItemList] = useState<any>([]);
   const [dewormerList, setDewormerList] = useState<any>([]);
   const { error, data, isLoading } = useQuery("getItems", async () => {

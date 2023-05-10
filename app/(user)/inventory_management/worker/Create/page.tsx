@@ -240,7 +240,7 @@ export default function Page() {
                           disabled: false,
                         },
                         {
-                          value: "Viel",
+                          value: "Vial",
                           display: "Vial",
                           disabled: false,
                         },

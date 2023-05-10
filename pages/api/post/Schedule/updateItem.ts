@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,7 +27,7 @@ async function UpdateCage(item_id: any, operation_id: any) {
   const conn = await connection.getConnection();
   try {
     const update = await conn.query(
-      "update tbl_operation_item_details set item_id =? where operation_id=?",
+      "update tbl_operation set operation_date =? where operation_id=?",
       [item_id, operation_id]
     );
     return update;

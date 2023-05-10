@@ -21,6 +21,7 @@ import { getExtendProps } from "@/hooks/useSched";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
 import SearchInput from "@/components/FormCompsV2/SearchInput";
 import { ErrorMessage } from "@hookform/error-message";
+import Loading from "@/components/Loading/loading";
 
 interface User {
   user_id: number;
@@ -41,6 +42,7 @@ interface ApiData {
 export default function ModifyMedicineAdministration() {
   const id = useSearchParams().get("id");
   const [item_list, setItems] = useState<any[]>([]);
+  const [displayable, setDisplayable] = useState<any[]>([]);
   const { isLoading, isFetching, data, refetch, error } = useQuery(
     "getModifyOperation",
     async () => {
@@ -75,24 +77,18 @@ export default function ModifyMedicineAdministration() {
     setParsed([]);
     if (data) {
       if (data.data) {
-        console.log(data.data);
+        setDisplayable(data.data);
         data.data.map((item: any) => {
           setParsed((prev) => [
             ...prev,
             {
               id: item.operation_id,
-              title: `${item.operation_name} ${item.item_name} ${
-                item.am_pm ? "" : ""
-              } `,
+              title: `${item.description} `,
               start: item.operation_date,
               backgroundColor:
-                DateTime.fromISO(item.operation_date).diffNow("days").days <
-                  -1 &&
-                (item.status == "pending" || item.status != "confirmed")
+                item.status == "overdue"
                   ? "red"
-                  : DateTime.fromISO(item.operation_date).diffNow("days").days <
-                      0 &&
-                    (item.status == "pending" || item.status != "confirmed")
+                  : item.status == "today"
                   ? "orange"
                   : item.status == "pending"
                   ? "#87CEEB"
@@ -109,6 +105,7 @@ export default function ModifyMedicineAdministration() {
                 item_id: item.item_id,
                 item_name: item.item_name,
                 operation_type: item.operation_type_id,
+                operation_date: item.operation_date,
               },
             },
           ]);
@@ -142,8 +139,7 @@ export default function ModifyMedicineAdministration() {
   } = useForm({
     defaultValues: {
       operation_id: "",
-      item_id: "",
-      item_name: "",
+      operation_date: "",
       operation_type: "",
     },
     criteriaMode: "all",
@@ -154,28 +150,32 @@ export default function ModifyMedicineAdministration() {
     data: OperationData,
     isLoading: OperationLoading,
     refetch: OperationDataRefetch,
+    isFetching: OperationFetching,
   } = useQuery(
     [
       "OperationData",
-      submitable?.operation_id !== undefined ? submitable?.operation_id : "",
+      watch("operation_id") !== undefined ? watch("operation_id") : "",
     ],
     async () => {
       const response = await fetch(
-        `/api/post/Operation/getOperationDetails/${submitable?.operation_id}`
+        `/api/post/Operation/getOperationDetails/${watch("operation_id")}`
       );
       const data = await response.json();
       console.log(data);
       return data;
     },
-    {
-      enabled: false,
-    }
+    {}
   );
+
   useEffect(() => {
-    if (submitable?.operation_id !== undefined) {
+    if (watch("operation_id") !== undefined) {
       OperationDataRefetch();
     }
-  }, [submitable?.operation_id]);
+  }, [watch("operation_id")]);
+
+  useEffect(() => {
+    console.log(OperationData);
+  }, [OperationData]);
 
   const {
     register: searchItem,
@@ -198,6 +198,7 @@ export default function ModifyMedicineAdministration() {
     error: ItemsError,
     isLoading: ItemsLoading,
     refetch: ItemsRefetch,
+    isFetching: ItemsFetching,
   } = useQuery("items", async () => {
     const res = await fetch(
       `/api/get/Schedule/getItems?keyword=${searchItemWatchKeyword}&category=${watchActivity}`
@@ -213,7 +214,11 @@ export default function ModifyMedicineAdministration() {
     }
   }, [ItemsData]);
   const onSubmit = async (data: any) => {
-    const returned = await UpdateOperationItem(data.item_id, data.operation_id);
+    console.log(data);
+    const returned = await UpdateOperationItem(
+      data.operation_date,
+      data.operation_id
+    );
     console.log(returned);
     setProcessing(true);
     if (returned.code == 200) {
@@ -300,24 +305,7 @@ export default function ModifyMedicineAdministration() {
                     <tr key={index}>
                       <td>{item.item_name}</td>
                       <td>{item.item_description}</td>
-                      <td>
-                        <label
-                          onClick={() => {
-                            setValue("item_id", item.item_id, {
-                              shouldValidate: true,
-                            });
-                            setValue("item_name", item.item_name),
-                              {
-                                shouldValidate: true,
-                              };
-                            showModal(false);
-                            searchItemReset();
-                          }}
-                          className="link underline hover:text-primary"
-                        >
-                          Select
-                        </label>
-                      </td>
+                      <td></td>
                     </tr>
                   ))}
                 </tbody>
@@ -353,8 +341,51 @@ export default function ModifyMedicineAdministration() {
             ) : (
               <div className="w-11/12 mx-auto text-base-content">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <h3 className="font-bold text-lg">Confirm Operation</h3>
+                  <h3 className="font-bold text-lg">Move Operation</h3>
                   <div className="flex flex-col">
+                    {OperationFetching || OperationLoading ? (
+                      <Loading></Loading>
+                    ) : (
+                      <div>
+                        <div>
+                          <span className="font-bold text-xl">
+                            Operation Description:
+                          </span>
+                          <span className="text-xl">
+                            {
+                              displayable.find(
+                                (item) =>
+                                  item.operation_id == watch("operation_id")
+                              ).description
+                            }
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-xl">
+                            Operation Date:
+                          </span>
+                          <span className="text-xl">
+                            {DateTime.fromISO(
+                              OperationData?.data.operation[0].operation_date
+                            ).toFormat("yyyy-MM-dd HH:mm:ss ")}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-xl">Patient:</span>
+                          <span className="text-xl">
+                            {OperationData?.data.batch_details.length !== 0
+                              ? OperationData?.data.batch_details[0].batch_name
+                              : ""}
+                            {OperationData?.data.cage_details.length !== 0
+                              ? OperationData?.data.cage_details[0].cage_name
+                              : ""}
+                            {OperationData?.data.pig_details.length !== 0
+                              ? OperationData?.data.pig_details[0].pig_id
+                              : ""}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                     <div className="w-full flex flex-col">
                       <NormalInput
                         label="Operation Id"
@@ -369,27 +400,30 @@ export default function ModifyMedicineAdministration() {
                           },
                         }}
                       />
-                      <SearchInput
-                        label="Selected Item"
-                        type="text"
+                      <NormalInput
+                        type="datetime-local"
+                        name="operation_date"
                         register={register}
-                        name="item_name"
                         errors={errors}
+                        label="Operation Date and Time"
                         validationSchema={{
-                          required: "Item is required",
+                          required: "Operation time is required",
+                          min: {
+                            value:
+                              DateTime.now().toFormat("yyyy-MM-dd ") + "07:30",
+                            message:
+                              "Minimium time is during working hour which is 7:30 AM",
+                          },
+                          max: {
+                            value:
+                              DateTime.now()
+                                .plus({ months: 6 })
+                                .toFormat("yyyy-MM-dd ") + "21:00",
+                            message:
+                              "Maximium time is during working hours which is 9:00 PM",
+                          },
                         }}
-                        required={true}
-                        showModal={showModal}
-                      />
-                      <ErrorMessage
-                        errors={errors}
-                        name="item_id"
-                        render={({ message }) => (
-                          <p className="mt-2 text-sm  text-error">
-                            <span className="font-medium">{message}</span>{" "}
-                          </p>
-                        )}
-                      />
+                      ></NormalInput>
                     </div>
                   </div>
                   <div className=" flex flex-col mt-4 ">
@@ -398,7 +432,7 @@ export default function ModifyMedicineAdministration() {
                         processing ? "loading" : ""
                       } `}
                     >
-                      Confirm
+                      Move Schedule
                     </button>
                     <button
                       type="button"
@@ -475,11 +509,13 @@ export default function ModifyMedicineAdministration() {
                   fixedWeekCount={true}
                   eventClick={(info: any) => {
                     const data = getExtendProps(info);
-
-                    if (data.status != "pending") {
-                      toast.error("cannot update confirmed schedule");
+                    if (data.status != "today") {
+                      toast.error(
+                        "Cannot edit past due ,future ,or already been confirmed operation."
+                      );
                       return;
                     }
+
                     if (prevInfo == null) {
                       setPrevInfo({
                         prevColor: info.el.style.backgroundColor,
@@ -499,10 +535,10 @@ export default function ModifyMedicineAdministration() {
                       data.date_diff < 0 ? console.log(data) : console.log("");
                       info.el.style.backgroundColor = "#9400D3";
                     }
+                    console.log(data.operation_id);
                     setValue("operation_id", data.operation_id);
-                    setValue("item_id", data.item_id);
                     setValue("operation_type", data.operation_type);
-                    setValue("item_name", data.item_name);
+                    setValue("operation_date", data.operation_date);
                   }}
                   dayHeaders={true}
                   events={parsed}

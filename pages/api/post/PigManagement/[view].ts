@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +11,7 @@ export default async function handler(
     return false;
   }
   const { view } = req.query;
-  console.log(view)
+  console.log(view);
   try {
     const data: any = await Ops(view);
 
@@ -35,7 +35,7 @@ async function Ops(pig_id: any) {
   FROM tbl_pig
   INNER JOIN tbl_pig_history ON tbl_pig.pig_id = tbl_pig_history.pig_id
   INNER JOIN tbl_cage ON tbl_pig_history.cage_id = tbl_cage.cage_id
-  INNER JOIN tbl_batch ON tbl_pig.batch_id = tbl_batch.batch_id
+  INNER JOIN tbl_batch ON tbl_pig_history.batch_id = tbl_batch.batch_id
   INNER JOIN tbl_breed ON tbl_pig.breed_id = tbl_breed.breed_id WHERE tbl_pig.pig_id=? AND tbl_pig.is_exist='true' AND tbl_pig_history.pig_history_status='active'`;
     const result = await conn.query(sql, [pig_id]);
     return result[0];

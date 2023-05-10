@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authorizationHandler from "pages/api/authorizationHandler";
-import {connection} from "pages/api/mysql";
+import { connection } from "pages/api/mysql";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,30 +11,21 @@ export default async function handler(
     return false;
   }
   try {
-    const { from, to } = req.query;
-    const result = await UpdateCage(from, to);
-    console.log(result)
+    const result = await UpdateCage();
+    console.log(result);
     res.status(200).json({ code: 200, data: result });
   } catch (error) {
     res.status(500).json({ code: 500, message: error });
   }
 }
 
-async function UpdateCage(from: any, to: any) {
+async function UpdateCage() {
   const conn = await connection.getConnection();
   try {
-    if (to != null || to != "") {
-      const [rows, fields] = await conn.query(
-        "SELECT * FROM tbl_stock_card INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_stock_card.item_id INNER JOIN tbl_stock_card_details ON tbl_stock_card_details.stock_card_id=tbl_stock_card.stock_card_id WHERE transaction_date>=? AND transaction_date<=?",
-        [from, to]
-      );
-      return rows;
-    } else {
-      const [rows, fields] = await conn.query(
-        "SELECT * FROM tbl_stock_card INNER JOIN tbl_inventory ON tbl_inventory.item_id=tbl_stock_card.item_id INNER JOIN tbl_stock_card_details ON tbl_stock_card_details.stock_card_id=tbl_stock_card.stock_card_id WHERE transaction_date>=? ",[from]
-      );
-      return rows;
-    }
+    const [rows, fields] = await conn.query(
+      "SELECT *, (SELECT closing_quantity FROM tbl_stock_card AS sc  WHERE sc.item_id = tbl_inventory.item_id ORDER BY sc.transaction_date DESC   LIMIT 1) AS latest_closing_quantity,COUNT( tbl_stock_card.item_id) AS item_count,  tbl_inventory.* FROM tbl_stock_card  INNER JOIN tbl_inventory ON tbl_stock_card.item_id = tbl_inventory.item_id INNER JOIN tbl_category ON tbl_category.category_id=tbl_inventory.category_id WHERE tbl_stock_card.is_exist = 'true' GROUP BY tbl_inventory.item_id"
+    );
+    return rows;
   } catch (error) {
     console.log(error);
     throw error;

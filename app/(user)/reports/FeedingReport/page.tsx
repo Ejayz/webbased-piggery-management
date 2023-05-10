@@ -67,7 +67,9 @@ export default function Page() {
                     .setZone("Asia/Manila")
                     .toFormat("EEEE',' MMM d',' yyyy")} ${item.am_pm}`,
                   quantity: `
-                    ${parseInt(item.quantity)} ${item.item_unit}`,
+                    ${parseInt(item.quantity).toFixed(2)} ${
+                    item.item_net_weight_unit
+                  }`,
                   total_patient: item.total_patient,
                   status: item.status.toUpperCase(),
                 },
