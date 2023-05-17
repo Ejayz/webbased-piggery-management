@@ -58,7 +58,7 @@ async function SearhGetCage(
   const conn = await connection.getConnection();
   try {
     keyword = `%${keyword}%`;
-    const sql = `SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_pig  ON tbl_operation.pig_id=tbl_pig.pig_id WHERE tbl_operation.is_exist='true' AND tbl_operation.status='pending' and tbl_operation.pig_id!='Null' AND (tbl_pig.pig_id like ?) GROUP BY tbl_operation.pig_id ORDER BY tbl_pig.pig_id ${sortorder}  LIMIT ${limit} OFFSET ${offset}`;
+    const sql = `SELECT * FROM tbl_operation INNER JOIN tbl_operation_item_details ON tbl_operation_item_details.operation_id=tbl_operation.operation_id INNER JOIN tbl_pig  ON tbl_operation.pig_id=tbl_pig.pig_id WHERE tbl_operation.is_exist='true' AND tbl_operation.status!='overdue' and tbl_operation.pig_id!='Null' AND (tbl_pig.pig_id like ?) GROUP BY tbl_operation.pig_id ORDER BY tbl_pig.pig_id ${sortorder}  LIMIT ${limit} OFFSET ${offset}`;
     const [result] = await conn.query(sql, [keyword]);
     return result;
   } catch (error) {
