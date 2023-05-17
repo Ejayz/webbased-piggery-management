@@ -20,10 +20,10 @@ async function Ops() {
     const getMaxBatchId = "select MAX(batch_id) as batch_id from tbl_batch";
     const [LatestBatchId] = await conn.query(getMaxBatchId);
     const getBoarList =
-      "select * from tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id=tbl_pig.pig_id  where pig_type='Boar' and tbl_pig.is_exist='true' and tbl_pig_history.pig_status='active'";
+      "select * from tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id=tbl_pig.pig_id  where pig_type='Boar' and tbl_pig.is_exist='true' and tbl_pig_history.pig_history_status='active'";
     const [BoarList] = await conn.query(getBoarList);
     const getSowList =
-      "select * from tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id=tbl_pig.pig_id   where pig_type='Sow' and tbl_pig.is_exist='true' and tbl_pig_history.pig_status='active' and selectable!='2'";
+      "select * from tbl_pig INNER JOIN tbl_pig_history ON tbl_pig_history.pig_id=tbl_pig.pig_id   where pig_type='Sow' and tbl_pig.is_exist='true' and tbl_pig_history.pig_history_status='active' and selectable!='2'";
     const [SowList] = await conn.query(getSowList);
     const getPigletCage =
       "select * from tbl_cage where is_exist='true' and is_full='false' and cage_type='Nursery Pens'";
