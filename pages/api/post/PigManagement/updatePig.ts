@@ -96,6 +96,15 @@ async function Ops(
       ]);
 
       if (updatePig.affectedRows == 1) {
+        const [updateBatchTotal] = await conn.query(
+          "update tbl_batch set batch_capacity = batch_capacity-1 where batch_id=?",
+          [pigDetails[0].batch_id]
+        );
+        const [removeBatchTotal] = await conn.query(
+          "update tbl_batch set batch_capacity = batch_capacity+1 where batch_id=?",
+          [batch_id]
+        );
+
         console.log(pigDetails[0].cage_id);
         const deductOldCage =
           "Update tbl_cage set is_full='false'  ,current_caged=`current_caged`-1 where cage_id=? and is_exist='true'";
