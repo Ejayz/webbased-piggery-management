@@ -69,6 +69,7 @@ async function Ops(
         ]);
         const insertPigHistory =
           "insert into tbl_pig_history (pig_id,pig_tag,weight,cage_id,user_id,pig_type,batch_id) values(?,?,?,?,?,?,?)";
+          console.log(breeder)
         await conn.query(insertPigHistory, [
           breeder.pig_id,
           breeder.pig_tag,
@@ -76,6 +77,7 @@ async function Ops(
           breeder.cage_id,
           user_id,
           breeder.pig_type,
+          batch_id
         ]);
         const getCageCapacity =
           "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";
