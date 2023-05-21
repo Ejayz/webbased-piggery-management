@@ -77,8 +77,9 @@ async function Ops(
           breeder.cage_id,
           user_id,
           breeder.pig_type,
+
           batch_id
-        ]);
+  ]);
         const getCageCapacity =
           "select * from tbl_cage where cage_id=? and is_exist='true' and is_full='false'";
         const [result]: any = await conn.query(getCageCapacity, [
