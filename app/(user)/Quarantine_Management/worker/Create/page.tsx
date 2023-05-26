@@ -4,17 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import getUserInfo from "@/components/getUserInfo";
 import {} from "@/hooks/useBreedManagement";
-import InputBox from "@/components/FormComponents/inputbox";
 import { toast } from "react-toastify";
-import {
-  validateNormal,
-  validatePassword,
-  validatePhone,
-  validateSelect,
-  validateSkip,
-} from "@/hooks/useValidation";
-import PasswordBox from "@/components/FormComponents/passwordBox";
-import SelectBox from "@/components/FormComponents/selectBox";
 import { GetCategory, Create } from "@/hooks/useInventory";
 import { useForm } from "react-hook-form";
 import NormalInput from "@/components/FormCompsV2/NormalInput";

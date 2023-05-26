@@ -4,18 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { VerifyUser } from "@/hooks/useLogin";
-import Image from "next/image";
-import SelectBox from "@/components/FormComponents/selectBox";
-import { validateSelect } from "@/hooks/useValidation";
 import { useForm } from "react-hook-form";
-import Error from "@/components/Errors/Error";
-import { ErrorMessage } from "@hookform/error-message";
 import NormalInput from "@/components/FormCompsV2/NormalInput";
-import SelectInput from "@/components/FormCompsV2/SelectInput";
 import PasswordInput from "@/components/FormCompsV2/PasswordInput";
 
 export default function Page() {
-  //Create states for username password and remember me
+
   let job_option = [
     {
       value: "worker",

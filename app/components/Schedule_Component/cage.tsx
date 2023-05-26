@@ -489,7 +489,7 @@ export function Cage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {" "}
+                
                   {item_list.map((item, index) => {
                     if (
                       usingItem.find((x) => x.item_id == item.item_id) ==

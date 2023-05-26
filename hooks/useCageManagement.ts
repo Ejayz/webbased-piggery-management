@@ -1,4 +1,3 @@
-//Get Data
 export const getData = async (
   page: any,
   sortby: any,
@@ -18,8 +17,6 @@ export const getData = async (
   const data = await response.json();
   return data;
 };
-
-// Sort Data
 export const sortData = async (
   base_url: string | undefined,
   sortby: any,
@@ -53,7 +50,6 @@ export const sortData = async (
 
   return data;
 };
-//Search Data
 export const Search = async (
   keyword: string,
   sortby: string,

@@ -167,6 +167,11 @@ export default function MedicineAdministration() {
     }
   );
   useEffect(() => {
+    if (submitable?.operation_id !== undefined) {
+      OperationDataRefetch();
+    }
+  }, [submitable?.operation_id]);
+  useEffect(() => {
     if (OperationData) {
       if (OperationData.data) {
         let arrays: any = [];
@@ -199,6 +204,7 @@ export default function MedicineAdministration() {
       }
     }
   }, [OperationData]);
+  console.log(OperationData == undefined);
   return (
     <>
       <div className="w-full h-auto overflow-y-hidden">
