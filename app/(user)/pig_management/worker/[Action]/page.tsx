@@ -73,7 +73,9 @@ export default function Page({ params }: any) {
       data.time = epochTime;
       return data;
     },
-    {}
+    {
+      refetchOnWindowFocus: false,
+    }
   );
   const {
     data: batches,

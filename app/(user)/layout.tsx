@@ -12,7 +12,7 @@ import Head from "../(index)/head";
 import { usePathname, useRouter } from "next/navigation";
 import { themeChange } from "theme-change";
 import Footer from "@/components/Footer/footer";
-import { QueryClientProvider } from "react-query";
+import { QueryClientProvider, useQuery } from "react-query";
 import { QueryClient } from "react-query";
 import "react-calendar/dist/Calendar.css";
 import { useCallback } from "react";
@@ -67,36 +67,41 @@ export default function User({ children }: { children: React.ReactNode }) {
     }
     removeAuth();
   }, [Logout]);
+
   useEffect(() => {
     async function fetchData() {
-      let headersList = {
-        Accept: "*/*",
-        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg",
-      };
+      setInterval(async () => {
+        let headersList = {
+          Accept: "*/*",
+          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg",
+        };
 
-      let response = await fetch("/api/get/Crons/UpdateToday", {
-        method: "GET",
-        headers: headersList,
-      });
+        let response = await fetch("/api/get/Crons/UpdateToday", {
+          method: "GET",
+          headers: headersList,
+        });
 
-      let data = await response.text();
+        let data = await response.text();
 
-      let headersList1 = {
-        Accept: "*/*",
-        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg",
-      };
+        let headersList1 = {
+          Accept: "*/*",
+          "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiRXhlY3V0aW9uZXIiLCJ3ZWIiOiJodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVFIMi1UR1Vsd3U0In0sImlhdCI6MTY4MjE0NjgxOX0.bKXZ-Ir8jkkDQ4Imr1ojVGArDQHjuDYsgduMVlzpSSg",
+        };
 
-      let response1 = await fetch("/api/get/Crons/UpdateDue", {
-        method: "GET",
-        headers: headersList,
-      });
+        let response1 = await fetch("/api/get/Crons/UpdateDue", {
+          method: "GET",
+          headers: headersList,
+        });
 
-      let data1 = await response1.text();
+        let data1 = await response1.text();
+        console.log(data1);
+      }, 10000);
     }
+
     fetchData();
   }, [path]);
 

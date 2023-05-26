@@ -122,7 +122,6 @@ export default function Page() {
                     <li className="font-bold">Create User</li>
                   </ul>
                 </div>
-
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   method="post"

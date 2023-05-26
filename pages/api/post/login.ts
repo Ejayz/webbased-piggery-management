@@ -7,8 +7,6 @@ import { rejects } from "assert";
 dotenv.config();
 
 const jwt_key: any = process.env.JWT_KEY;
-
-//API Function that only accepts post request
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

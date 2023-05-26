@@ -1,15 +1,5 @@
 "use client";
-
-import InputBox from "@/components/FormComponents/inputbox";
-import SelectBox from "@/components/FormComponents/selectBox";
 import { GetCategory, Remove, Update, View } from "@/hooks/useInventory";
-import {
-  validateNormal,
-  validatePhone,
-  validateSelect,
-  validateSkip,
-  validateUpdatePassword,
-} from "@/hooks/useValidation";
 import Loading from "@/components/Loading/loading";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
