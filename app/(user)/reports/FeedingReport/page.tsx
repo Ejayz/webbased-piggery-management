@@ -39,6 +39,7 @@ export default function Page() {
       const data = await response.json();
       if (data.code == 200) {
         if (data.data) {
+          console.log(data.data);
           setItemList([]);
           data.data.map((item: any) => {
             setItemList((prev) => {
@@ -66,10 +67,13 @@ export default function Page() {
                   operation_date: `${DateTime.fromISO(item.operation_date)
                     .setZone("Asia/Manila")
                     .toFormat("EEEE',' MMM d',' yyyy")} ${item.am_pm}`,
-                  quantity: `
-                    ${parseInt(item.quantity).toFixed(2)} ${
-                    item.item_net_weight_unit
-                  }`,
+                  quantity:
+                    item.quantity != null
+                      ? `
+                  ${parseFloat(item.quantity).toFixed(2)} ${
+                          item.item_net_weight_unit
+                        }`
+                      : "N/A",
                   total_patient: item.total_patient,
                   status: item.status.toUpperCase(),
                 },
@@ -270,35 +274,8 @@ export default function Page() {
                         } ${requesting ? "loading" : ""}`}
                         onClick={() => {
                           printJS({
-                            printable: itemList,
-                            properties: [
-                              { field: "patient", displayName: "Patient" },
-                              { field: "item_name", displayName: "Item Name" },
-                              {
-                                field: "item_description",
-                                displayName: "Item Description",
-                              },
-                              {
-                                field: "type",
-                                displayName: "Type",
-                              },
-                              {
-                                field: "operation_date",
-                                displayName: "Operation Date",
-                              },
-                              {
-                                field: "quantity",
-                                displayName: "Quantity",
-                              },
-                              {
-                                field: "total_patient",
-                                displayName: "Total Pig Feed",
-                              },
-                              {
-                                field: "status",
-                                displayName: "Status",
-                              },
-                            ],
+                            printable: "Printables",
+                            targetStyles: ["*"],
                             header: `
                             <div style="display:flex;margin:0; width:100%;flex-direction:column;">
                               <div style="width:100%;height:auto;display:flex;margin-left:auto;
@@ -340,28 +317,14 @@ export default function Page() {
                             </div>`,
                             style:
                               "td { text-align: center; } @page { size: auto;  margin: 0mm; }",
-                            type: "json",
+                            type: "html",
                           });
                         }}
                       >
                         Print
                       </button>
                     </div>
-                    <div
-                      className={`flex flex-row mt-6 mb-2 ${
-                        range.type == "" || range.to == "" || range.from == ""
-                          ? "hidden"
-                          : "block"
-                      }`}
-                    >
-                      <span className="font-bold text-xl my-auto">
-                        Total Feeding Operation:
-                      </span>
-                      <span className="font-mono my-auto text-xl">
-                        {itemList.length}
-                      </span>
-                    </div>
-                    <div className="overflow-x-auto">
+                    <div id="Printables">
                       <table className="table table-compact w-full table-base-content">
                         {/* head*/}
                         <thead>
@@ -397,13 +360,13 @@ export default function Page() {
                             itemList.map((data: any, key: number) => {
                               return (
                                 <tr key={key}>
-                                  <td>{data.patient}</td>
-                                  <td>{data.item_name}</td>
-                                  <td>{data.item_description}</td>
-                                  <td>{data.type}</td>
-                                  <td>{data.operation_date}</td>
-                                  <td className="uppercase">{`${data.quantity}`}</td>
-                                  <td>{data.total_patient}</td>
+                                  <td className="text-ellipsis overflow-hidden" >{data.patient}</td>
+                                  <td className="text-ellipsis overflow-hidden">{data.item_name}</td>
+                                  <td className="text-ellipsis overflow-hidden">{data.item_description}</td>
+                                  <td className="text-ellipsis overflow-hidden">{data.type}</td>
+                                  <td className="text-ellipsis overflow-hidden">{data.operation_date}</td>
+                                  <td className="text-ellipsis overflow-hidden uppercase">{`${data.quantity}`}</td>
+                                  <td className="text-ellipsis overflow-hidden"> {data.total_patient}</td>
                                   <td>{data.status}</td>
                                 </tr>
                               );
@@ -411,9 +374,25 @@ export default function Page() {
                           )}
                         </tbody>
                       </table>
-                    </div>
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <div style={{ height: "20px", marginTop: "20px" }}>
+                        {loading.loading ? (
+                          <></>
+                        ) : (
+                          <span
+                            style={{ height: "20px", marginTop: "20px" }}
+                          >{`Generated By: ${loading.data.first_name} ${
+                            loading.data.middle_name == null
+                              ? ""
+                              : loading.data.middle_name
+                          } ${loading.data.last_name}`}</span>
+                        )}
+                      </div>
+                    </div>{" "}
                   </div>
-                  <div className="card-actions justify-end"></div>
                 </form>
               </div>
             </div>

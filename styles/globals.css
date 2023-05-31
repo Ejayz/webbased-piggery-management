@@ -223,3 +223,58 @@ input[type=number] {
   background-repeat: no-repeat;
   background-size: cover;
 }
+.baseStyle{
+  display:flex;margin:0; width:100%;flex-direction:column;
+}
+.baseStyle1{
+  width:100%;height:auto;display:flex;margin-left:auto;
+    margin-right:auto;margin-top:5px;margin-bottom:5px;
+}
+.baseStyle2{
+  width:25%;display:flex;padding:4px;
+}
+.baseStyle3{
+  width:100px;height:100px;margin-right:auto;margin-left:auto;
+}
+.baseStyle4{
+  width:50%;margin-top:auto ; margin-bottom:auto;
+}
+.baseStyle5{
+  display:flex;justify-content: center;text-align: center; flex-direction: column; padding:4px;
+}
+.baseStyle6{
+  font-size:15px;font-weight:bold;font-family:arial;
+}
+.baseStyle7{
+  font-size:12px;font-family:arial;
+}
+.baseStyle8{
+  display:flex;justify-content: left; flex-direction: column; padding:4px;
+}
+.baseStyle9{
+  font-size:15px;font-weight:bold;font-family:arial;margin-left:10px;
+}.baseStyle10{
+  display:flex;justify-content:left;margin-left:10px;
+}
+.baseStyle11{
+  width:20px;height:20px;margin-top:auto;margin-bottom:auto;
+}
+.baseStyle12{
+  font-size:12px;font-family:arial;margin-top:auto;margin-bottom:auto;
+}
+.baseStyle13{
+  margin:0; border: 1px solid black;
+      border-collapse: collapse;
+      border-width: 1px;
+}
+.baseStyle14{
+  margin-top:20px;
+}
+.st0{fill:#212121;}
+.baseStyle15{
+  font-size:12px;font-family:arial;margin-top:auto;margin-bottom:auto;
+}
+.baseStyle16{
+  font-size:12px;font-family:arial;margin-top:auto;margin-bottom:auto;
+  text-transform: uppercase;
+}
