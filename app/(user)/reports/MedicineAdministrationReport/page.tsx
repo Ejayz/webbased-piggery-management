@@ -273,31 +273,9 @@ export default function Page() {
                         } ${requesting ? "loading" : ""}`}
                         onClick={() => {
                           printJS({
-                            printable: itemList,
-                            properties: [
-                              { field: "patient", displayName: "Patient" },
-                              { field: "item_name", displayName: "Item Name" },
-                              {
-                                field: "item_description",
-                                displayName: "Item Description",
-                              },
-                              {
-                                field: "type",
-                                displayName: "Type",
-                              },
-                              {
-                                field: "operation_date",
-                                displayName: "Operation Date",
-                              },
-                              {
-                                field: "quantity",
-                                displayName: "Quantity",
-                              },
-                              {
-                                field: "status",
-                                displayName: "Status",
-                              },
-                            ],
+                            printable: "Printables",
+                            targetStyles: ["*"],
+                            type: "html",
                             header: `
                             <div style="display:flex;margin:0; width:100%;flex-direction:column;">
                               <div style="width:100%;height:auto;display:flex;margin-left:auto;
@@ -339,7 +317,7 @@ export default function Page() {
                             </div>`,
                             style:
                               "td { text-align: center; } @page { size: auto;  margin: 0mm; }",
-                            type: "json",
+                           
                           });
                         }}
                       >
@@ -361,53 +339,75 @@ export default function Page() {
                       </span>
                     </div>
                     <div className="overflow-x-auto">
-                      <table className="table table-compact w-full table-base-content">
-                        {/* head*/}
-                        <thead>
-                          <tr>
-                            <th>Patient</th>
-                            <th>Item Name</th>
-                            <th>Item Description</th>
-                            <th>Type</th>
-                            <th>Operation Date</th>
-                            <th>Quantity</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {/* row 1 */}
-                          {range.type == "" &&
-                          range.to == "" &&
-                          range.from == "" ? (
+                      <div
+                        id="Printables"
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        <table className="table table-compact w-full table-base-content">
+                          {/* head*/}
+                          <thead>
                             <tr>
-                              <td colSpan={7}>
-                                Choose a date range to view the deworming
-                                report.
-                              </td>
+                              <th>Patient</th>
+                              <th>Item Name</th>
+                              <th>Item Description</th>
+                              <th>Type</th>
+                              <th>Operation Date</th>
+                              <th>Quantity</th>
+                              <th>Status</th>
                             </tr>
-                          ) : itemList.length == 0 ? (
-                            <tr>
-                              <td colSpan={7}>
-                                No data found for the selected date range.
-                              </td>
-                            </tr>
+                          </thead>
+                          <tbody>
+                            {/* row 1 */}
+                            {range.type == "" &&
+                            range.to == "" &&
+                            range.from == "" ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  Choose a date range to view the deworming
+                                  report.
+                                </td>
+                              </tr>
+                            ) : itemList.length == 0 ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  No data found for the selected date range.
+                                </td>
+                              </tr>
+                            ) : (
+                              itemList.map((data: any, key: number) => {
+                                return (
+                                  <tr key={key}>
+                                    <td className="text-ellipsis overflow-hidden">{data.patient}</td>
+                                    <td className="text-ellipsis overflow-hidden">{data.item_name}</td>
+                                    <td className="text-ellipsis overflow-hidden">{data.item_description}</td>
+                                    <td className="text-ellipsis overflow-hidden">{data.type}</td>
+                                    <td className="text-ellipsis overflow-hidden">{data.operation_date}</td>
+                                    <td className="text-ellipsis overflow-hidden uppercase">{`${data.quantity}`}</td>
+                                    <td className="text-ellipsis overflow-hidden">{data.status}</td>
+                                  </tr>
+                                );
+                              })
+                            )}
+                          </tbody>
+                        </table>
+                        <br />
+                        <br />
+                        <div style={{ height: "20px", marginTop: "20px" }}>
+                          {loading.loading ? (
+                            <></>
                           ) : (
-                            itemList.map((data: any, key: number) => {
-                              return (
-                                <tr key={key}>
-                                  <td>{data.patient}</td>
-                                  <td>{data.item_name}</td>
-                                  <td>{data.item_description}</td>
-                                  <td>{data.type}</td>
-                                  <td>{data.operation_date}</td>
-                                  <td className="uppercase">{`${data.quantity}`}</td>
-                                  <td>{data.status}</td>
-                                </tr>
-                              );
-                            })
+                            <span
+                              style={{ height: "20px", marginTop: "20px" }}
+                            >{`Generated By: ${loading.data.first_name} ${
+                              loading.data.middle_name == null
+                                ? ""
+                                : loading.data.middle_name
+                            } ${loading.data.last_name}`}</span>
                           )}
-                        </tbody>
-                      </table>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="card-actions justify-end"></div>
